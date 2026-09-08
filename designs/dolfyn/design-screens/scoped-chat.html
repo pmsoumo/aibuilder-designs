@@ -1,0 +1,1189 @@
+<!-- COMPONENT INVENTORY: app-shell, panel-header, note-surface, note-actions-menu, chat-about-note-btn, scope-bar, scope-chip, scope-add-btn, note-picker, note-picker-search, note-picker-item, chat-thread, chat-msg, chat-bubble, chat-input-bar, chat-input, chat-send, chat-notice, ai-generated-label -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>dolfyn — Scoped Chat (single &amp; multi-note)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --surface: #fafaf7;
+        --surface-subtle: #f2f1ed;
+        --surface-raised: #ffffff;
+        --surface-overlay: rgba(15, 15, 14, 0.32);
+        --ink: #0f0f0e;
+        --ink-2: #3f3f3f;
+        --ink-3: #6b6b6b;
+        --ink-inverse: #fafaf7;
+        --border: #e5e5e1;
+        --border-strong: #c7c7c2;
+        --divider: #edede9;
+        --accent: #c2410c;
+        --accent-strong: #9a330a;
+        --accent-soft-bg: #fcefde;
+        --accent-tint: #f7f2ec;
+        --space-1: 4px;
+        --space-2: 8px;
+        --space-3: 12px;
+        --space-4: 16px;
+        --space-5: 24px;
+        --space-6: 32px;
+        --radius-sm: 6px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-full: 9999px;
+        --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        --duration-fast: 150ms;
+        --elevation-panel:
+          0 8px 24px -8px rgba(15, 15, 14, 0.12),
+          0 2px 4px -2px rgba(15, 15, 14, 0.06);
+        --z-sticky: 100;
+        --z-overlay: 800;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--surface-subtle);
+        color: var(--ink);
+        font-family: Inter, system-ui, sans-serif;
+        font-size: 15px;
+        line-height: 1.5;
+      }
+
+      .spec-note {
+        max-width: 68ch;
+        margin: var(--space-6) auto var(--space-4);
+        padding: 0 var(--space-4);
+        color: var(--ink-2);
+      }
+      .spec-note h1 {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 28px;
+        letter-spacing: -0.02em;
+        margin: 0 0 var(--space-2);
+        color: var(--ink);
+      }
+      .state-label {
+        max-width: 68ch;
+        margin: var(--space-6) auto var(--space-2);
+        padding: 0 var(--space-4);
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--ink-3);
+      }
+
+      .frame {
+        width: 375px;
+        margin: 0 auto var(--space-5);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: var(--elevation-panel);
+      }
+
+      /* panel-header */
+      .panel-header {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-3) var(--space-4);
+        border-bottom: 1px solid var(--divider);
+        background: var(--surface-raised);
+      }
+      .panel-header-title {
+        font-weight: 600;
+        font-size: 14px;
+        flex: 1;
+      }
+      .icon-btn {
+        min-width: 44px;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        background: transparent;
+        color: var(--ink-3);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        font-size: 18px;
+      }
+      .icon-btn:hover,
+      .icon-btn:focus-visible {
+        background: var(--surface-subtle);
+        color: var(--ink);
+      }
+
+      /* scope-bar + scope-chip */
+      .scope-bar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-3) var(--space-4);
+        background: var(--accent-tint);
+        border-bottom: 1px solid var(--divider);
+      }
+      .scope-bar-label {
+        font-size: 12px;
+        color: var(--ink-2);
+        width: 100%;
+        margin-bottom: var(--space-1);
+      }
+      .scope-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        max-width: 100%;
+        padding: var(--space-1) var(--space-1) var(--space-1) var(--space-3);
+        background: var(--surface-raised);
+        border: 1px solid var(--border-strong);
+        border-radius: var(--radius-full);
+        font-size: 13px;
+        color: var(--ink);
+      }
+      .scope-chip-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 180px;
+      }
+      .scope-chip-remove {
+        min-width: 28px;
+        min-height: 28px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        background: transparent;
+        color: var(--ink-3);
+        border-radius: var(--radius-full);
+        cursor: pointer;
+        font-size: 15px;
+        line-height: 1;
+      }
+      .scope-chip-remove:hover,
+      .scope-chip-remove:focus-visible {
+        background: var(--surface-subtle);
+        color: var(--ink);
+      }
+      .scope-chip[data-state="removed"] {
+        opacity: 0.45;
+        text-decoration: line-through;
+      }
+      .scope-add-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-1);
+        min-height: 32px;
+        padding: 0 var(--space-3);
+        background: transparent;
+        border: 1px dashed var(--border-strong);
+        border-radius: var(--radius-full);
+        color: var(--accent-strong);
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+      }
+      .scope-add-btn:hover,
+      .scope-add-btn:focus-visible {
+        background: var(--surface-raised);
+        border-style: solid;
+      }
+      .scope-add-btn[data-state="disabled"] {
+        color: var(--ink-3);
+        cursor: not-allowed;
+        border-color: var(--border);
+      }
+
+      /* thread */
+      .chat-thread {
+        padding: var(--space-4);
+        min-height: 180px;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+      }
+      .chat-msg {
+        display: flex;
+      }
+      .chat-msg[data-variant="user"] {
+        justify-content: flex-end;
+      }
+      .chat-bubble {
+        max-width: 80%;
+        padding: var(--space-3) var(--space-4);
+        border-radius: var(--radius-lg);
+        font-size: 14px;
+      }
+      .chat-msg[data-variant="user"] .chat-bubble {
+        background: var(--ink);
+        color: var(--ink-inverse);
+      }
+      .chat-msg[data-variant="assistant"] .chat-bubble {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        color: var(--ink);
+      }
+      .ai-generated-label {
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+        font-size: 11px;
+        color: var(--accent-strong);
+        margin-bottom: var(--space-2);
+      }
+      .citation-chip {
+        display: inline-flex;
+        align-items: center;
+        min-height: 20px;
+        padding: 0 6px;
+        margin: 0 2px;
+        background: var(--accent-soft-bg);
+        color: var(--accent-strong);
+        border-radius: var(--radius-sm);
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      /* notices */
+      .chat-notice,
+      .chat-error {
+        display: flex;
+        gap: var(--space-2);
+        padding: var(--space-3);
+        border-radius: var(--radius-md);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+      .chat-notice {
+        background: var(--surface-subtle);
+        color: var(--ink-2);
+        border: 1px solid var(--border);
+      }
+      .chat-error {
+        background: var(--surface-subtle);
+        color: var(--ink-2);
+        border: 1px solid var(--border);
+      }
+
+      /* input bar */
+      .chat-input-bar {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-3) var(--space-4);
+        border-top: 1px solid var(--divider);
+        background: var(--surface-raised);
+      }
+      .chat-input {
+        flex: 1;
+        min-height: 44px;
+        padding: 0 var(--space-3);
+        border: 1px solid var(--border-strong);
+        border-radius: var(--radius-full);
+        font: inherit;
+        font-size: 14px;
+        color: var(--ink);
+        background: var(--surface);
+      }
+      .chat-input::placeholder {
+        color: var(--ink-3);
+      }
+      /* Canonical chat-send — matches ambient-chat.html:883. Ink, not accent;
+         radius-md, not a pill. The orange pill was a drift I introduced. */
+      .chat-send {
+        width: 44px;
+        height: 44px;
+        border: none;
+        border-radius: var(--radius-md);
+        background: var(--ink);
+        color: var(--ink-inverse);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        opacity: 0.4;
+      }
+      .chat-send:active {
+        opacity: 0.85;
+      }
+
+      .note-actions-menu {
+        margin-top: var(--space-4);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        background: var(--surface-raised);
+        overflow: hidden;
+      }
+      .menu-item {
+        display: block;
+        width: 100%;
+        min-height: 44px;
+        padding: 0 var(--space-4);
+        border: none;
+        background: none;
+        font: inherit;
+        font-size: 14px;
+        color: var(--ink);
+        text-align: left;
+        cursor: pointer;
+      }
+      .menu-item:hover:not(:disabled) {
+        background: var(--surface-subtle);
+      }
+      .menu-item--disabled {
+        color: var(--ink-3);
+        cursor: not-allowed;
+      }
+      .menu-item--destructive {
+        color: var(--accent-strong);
+      }
+
+      /* note action bar (entry point) */
+      .note-surface {
+        padding: var(--space-4);
+      }
+      .note-title {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 20px;
+        margin: 0 0 var(--space-2);
+      }
+      .note-body {
+        color: var(--ink-2);
+        font-size: 14px;
+        margin: 0 0 var(--space-4);
+      }
+      .note-action-bar {
+        display: flex;
+        gap: var(--space-2);
+        padding-top: var(--space-3);
+        border-top: 1px solid var(--divider);
+      }
+      .chat-about-note-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        min-height: 44px;
+        padding: 0 var(--space-4);
+        background: var(--accent);
+        color: var(--ink-inverse);
+        border: none;
+        border-radius: var(--radius-full);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      /* note picker */
+      .note-picker {
+        border-top: 1px solid var(--divider);
+        background: var(--surface-raised);
+        padding: var(--space-3) var(--space-4) var(--space-4);
+      }
+      .note-picker-search {
+        width: 100%;
+        min-height: 44px;
+        padding: 0 var(--space-3);
+        border: 1px solid var(--border-strong);
+        border-radius: var(--radius-md);
+        font: inherit;
+        font-size: 14px;
+        margin-bottom: var(--space-2);
+      }
+      .note-picker-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        max-height: 168px;
+        overflow-y: auto;
+      }
+      .note-picker-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-3);
+        width: 100%;
+        min-height: 44px;
+        padding: var(--space-2) var(--space-2);
+        border: none;
+        background: transparent;
+        border-radius: var(--radius-md);
+        font: inherit;
+        font-size: 14px;
+        color: var(--ink);
+        text-align: left;
+        cursor: pointer;
+      }
+      .note-picker-item:hover,
+      .note-picker-item:focus-visible {
+        background: var(--surface-subtle);
+      }
+      .note-picker-item[data-state="selected"] {
+        color: var(--ink-3);
+        cursor: default;
+      }
+      .note-picker-item-meta {
+        font-size: 12px;
+        color: var(--ink-3);
+        white-space: nowrap;
+      }
+      .note-picker-empty {
+        padding: var(--space-3);
+        color: var(--ink-3);
+        font-size: 13px;
+      }
+
+      /* desktop variants */
+      .frame--desktop-panel {
+        width: 480px;
+      }
+      .frame--desktop-expanded {
+        width: 720px;
+      }
+      .frame--desktop-panel .chat-thread,
+      .frame--desktop-expanded .chat-thread {
+        padding: var(--space-5);
+      }
+      .frame--desktop-expanded .chat-bubble {
+        max-width: 62ch;
+      }
+      .frame--desktop-panel .panel-header,
+      .frame--desktop-expanded .panel-header {
+        height: 48px;
+        padding: 0 var(--space-4);
+      }
+
+      @media (prefers-reduced-motion: no-preference) {
+        .scope-chip,
+        .note-picker-item {
+          transition: background var(--duration-fast) var(--ease-out);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="spec-note">
+      <h1>Scoped chat — single &amp; multi-note</h1>
+      <p>
+        A chat session carries a scope: a list of notes. Empty scope is today's
+        whole-corpus chat. One note is single-note mode. Two or more is
+        multi-note. Same mechanism at every size — scope grows by attaching,
+        never by a separate flow. Cap is 5 notes.
+      </p>
+      <p>
+        <strong>Scope is optional, never required.</strong> A chat with no scope
+        is exactly today's ambient chat, with no extra UI — see state 0. The
+        scope bar only exists once a note is attached, and disappears again when
+        the last one is removed.
+      </p>
+    </div>
+
+    <p class="state-label">
+      0 · No scope — unchanged from today's ambient chat
+    </p>
+    <section class="frame" data-component="app-shell" data-variant="chat">
+      <header class="panel-header" data-component="panel-header">
+        <span class="panel-header-title">Chat</span>
+        <button class="icon-btn" aria-label="New chat">＋</button>
+        <button class="icon-btn" aria-label="Close chat">✕</button>
+      </header>
+      <!-- No scope-bar. A never-scoped chat gains zero new UI. -->
+      <div class="chat-thread" data-component="chat-thread">
+        <div class="chat-msg" data-variant="user" data-component="chat-msg">
+          <div class="chat-bubble" data-component="chat-bubble">
+            What patterns do you see?
+          </div>
+        </div>
+        <div
+          class="chat-msg"
+          data-variant="assistant"
+          data-component="chat-msg"
+        >
+          <div class="chat-bubble" data-component="chat-bubble">
+            <span class="ai-generated-label" data-component="ai-generated-label"
+              >✦ AI-generated</span
+            >
+            Pace keeps coming up. You protect unstructured time in one note
+            <span class="citation-chip">1</span> and treat every week as an
+            experiment slot in another <span class="citation-chip">2</span>.
+          </div>
+        </div>
+      </div>
+      <div class="chat-input-bar" data-component="chat-input-bar">
+        <input
+          class="chat-input"
+          data-component="chat-input"
+          placeholder="Ask me about your notes"
+        />
+        <button
+          class="chat-send"
+          data-component="chat-send"
+          aria-label="Send message"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M22 2 11 13" />
+            <path d="m22 2-7 20-4-9-9-4z" />
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <p class="state-label">
+      1 · Entry point — note overflow menu (⋮), first item
+    </p>
+    <section class="frame" data-component="app-shell" data-variant="note">
+      <header class="panel-header" data-component="panel-header">
+        <span class="panel-header-title">dolfyn</span>
+        <button class="icon-btn" aria-label="Note actions" aria-expanded="true">
+          ⋮
+        </button>
+      </header>
+      <div class="note-surface" data-component="note-surface">
+        <h2 class="note-title">Ideation Hour</h2>
+        <p class="note-body">
+          Set aside 30 minutes each week with no agenda. The point isn't to
+          decide anything — it's to let half-formed thoughts surface before they
+          get argued away.
+        </p>
+        <div
+          class="note-actions-menu"
+          role="menu"
+          data-component="note-actions-menu"
+        >
+          <button
+            class="menu-item"
+            role="menuitem"
+            data-component="chat-about-note-btn"
+            data-interaction="rotates the session and scopes it to this note"
+          >
+            Chat about this note
+          </button>
+          <button
+            class="menu-item menu-item--disabled"
+            role="menuitem"
+            disabled
+          >
+            Export
+          </button>
+          <button
+            class="menu-item menu-item--disabled"
+            role="menuitem"
+            disabled
+          >
+            Share note
+          </button>
+          <button class="menu-item menu-item--destructive" role="menuitem">
+            Delete
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <p class="state-label">2 · Single-note scope — one chip, removable</p>
+    <section class="frame" data-component="app-shell" data-variant="chat">
+      <header class="panel-header" data-component="panel-header">
+        <span class="panel-header-title">Chat</span>
+        <button class="icon-btn" aria-label="Save as note">🖫</button>
+        <button class="icon-btn" aria-label="New chat">＋</button>
+        <button class="icon-btn" aria-label="Close chat">✕</button>
+      </header>
+
+      <div class="scope-bar" data-component="scope-bar" data-variant="single">
+        <span class="scope-bar-label" id="scope-label-1">Asking about</span>
+        <span class="scope-chip" data-component="scope-chip">
+          <span class="scope-chip-name">Ideation Hour</span>
+          <button
+            class="scope-chip-remove"
+            aria-label="Remove Ideation Hour from this chat"
+          >
+            ✕
+          </button>
+        </span>
+        <button
+          class="scope-add-btn"
+          data-component="scope-add-btn"
+          data-interaction="opens note-picker"
+        >
+          ＋ Add note
+        </button>
+      </div>
+
+      <div class="chat-thread" data-component="chat-thread">
+        <div class="chat-msg" data-variant="user" data-component="chat-msg">
+          <div class="chat-bubble" data-component="chat-bubble">
+            What was I actually trying to protect here?
+          </div>
+        </div>
+        <div
+          class="chat-msg"
+          data-variant="assistant"
+          data-component="chat-msg"
+        >
+          <div class="chat-bubble" data-component="chat-bubble">
+            <span class="ai-generated-label" data-component="ai-generated-label"
+              >✦ AI-generated</span
+            >
+            Unstructured time, before judgement kicks in. You framed the 30
+            minutes as deliberately agenda-free so half-formed thoughts get to
+            exist before they're argued away
+            <span class="citation-chip">1</span>.
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-input-bar" data-component="chat-input-bar">
+        <input
+          class="chat-input"
+          data-component="chat-input"
+          placeholder="Ask about this note"
+          aria-labelledby="scope-label-1"
+        />
+        <button
+          class="chat-send"
+          data-component="chat-send"
+          aria-label="Send message"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M22 2 11 13" />
+            <path d="m22 2-7 20-4-9-9-4z" />
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <p class="state-label">3 · Note picker open — attaching a second note</p>
+    <section class="frame" data-component="app-shell" data-variant="chat">
+      <header class="panel-header" data-component="panel-header">
+        <span class="panel-header-title">Chat</span>
+        <button class="icon-btn" aria-label="Close chat">✕</button>
+      </header>
+
+      <div class="scope-bar" data-component="scope-bar" data-variant="single">
+        <span class="scope-bar-label">Asking about</span>
+        <span class="scope-chip" data-component="scope-chip">
+          <span class="scope-chip-name">Ideation Hour</span>
+          <button class="scope-chip-remove" aria-label="Remove Ideation Hour">
+            ✕
+          </button>
+        </span>
+      </div>
+
+      <div class="note-picker" data-component="note-picker" data-state="open">
+        <input
+          class="note-picker-search"
+          data-component="note-picker-search"
+          placeholder="Search your notes"
+          aria-label="Search notes to add"
+        />
+        <ul class="note-picker-list">
+          <li>
+            <button class="note-picker-item" data-component="note-picker-item">
+              <span>Pricing experiments</span>
+              <span class="note-picker-item-meta">2d ago</span>
+            </button>
+          </li>
+          <li>
+            <button class="note-picker-item" data-component="note-picker-item">
+              <span>Work-life balance</span>
+              <span class="note-picker-item-meta">5d ago</span>
+            </button>
+          </li>
+          <li>
+            <button
+              class="note-picker-item"
+              data-component="note-picker-item"
+              data-state="selected"
+              aria-disabled="true"
+            >
+              <span>Ideation Hour</span>
+              <span class="note-picker-item-meta">Added</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <p class="state-label">4 · Multi-note scope — three notes attached</p>
+    <section class="frame" data-component="app-shell" data-variant="chat">
+      <header class="panel-header" data-component="panel-header">
+        <span class="panel-header-title">Chat</span>
+        <button class="icon-btn" aria-label="Close chat">✕</button>
+      </header>
+
+      <div class="scope-bar" data-component="scope-bar" data-variant="multi">
+        <span class="scope-bar-label">Asking about 3 notes</span>
+        <span class="scope-chip" data-component="scope-chip">
+          <span class="scope-chip-name">Ideation Hour</span>
+          <button class="scope-chip-remove" aria-label="Remove Ideation Hour">
+            ✕
+          </button>
+        </span>
+        <span class="scope-chip" data-component="scope-chip">
+          <span class="scope-chip-name">Pricing experiments</span>
+          <button
+            class="scope-chip-remove"
+            aria-label="Remove Pricing experiments"
+          >
+            ✕
+          </button>
+        </span>
+        <span class="scope-chip" data-component="scope-chip">
+          <span class="scope-chip-name">Work-life balance</span>
+          <button
+            class="scope-chip-remove"
+            aria-label="Remove Work-life balance"
+          >
+            ✕
+          </button>
+        </span>
+        <button class="scope-add-btn" data-component="scope-add-btn">
+          ＋ Add note
+        </button>
+      </div>
+
+      <div class="chat-thread" data-component="chat-thread">
+        <div class="chat-msg" data-variant="user" data-component="chat-msg">
+          <div class="chat-bubble" data-component="chat-bubble">
+            Where do these three disagree?
+          </div>
+        </div>
+        <div
+          class="chat-msg"
+          data-variant="assistant"
+          data-component="chat-msg"
+        >
+          <div class="chat-bubble" data-component="chat-bubble">
+            <span class="ai-generated-label">✦ AI-generated</span>
+            On pace. Ideation Hour argues for protected unstructured time
+            <span class="citation-chip">1</span>, while the pricing note treats
+            every week as an experiment slot
+            <span class="citation-chip">2</span>. The work-life note sides with
+            the first <span class="citation-chip">3</span>.
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-input-bar" data-component="chat-input-bar">
+        <input
+          class="chat-input"
+          data-component="chat-input"
+          placeholder="Ask about these 3 notes"
+        />
+        <button
+          class="chat-send"
+          data-component="chat-send"
+          aria-label="Send message"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M22 2 11 13" />
+            <path d="m22 2-7 20-4-9-9-4z" />
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <p class="state-label">5 · Scope cap reached — 5 notes, add disabled</p>
+    <section class="frame" data-component="app-shell" data-variant="chat">
+      <div class="scope-bar" data-component="scope-bar" data-variant="multi">
+        <span class="scope-bar-label">Asking about 5 notes</span>
+        <span class="scope-chip"
+          ><span class="scope-chip-name">Ideation Hour</span
+          ><button class="scope-chip-remove" aria-label="Remove">
+            ✕
+          </button></span
+        >
+        <span class="scope-chip"
+          ><span class="scope-chip-name">Pricing experiments</span
+          ><button class="scope-chip-remove" aria-label="Remove">
+            ✕
+          </button></span
+        >
+        <span class="scope-chip"
+          ><span class="scope-chip-name">Work-life balance</span
+          ><button class="scope-chip-remove" aria-label="Remove">
+            ✕
+          </button></span
+        >
+        <span class="scope-chip"
+          ><span class="scope-chip-name">Onboarding teardown</span
+          ><button class="scope-chip-remove" aria-label="Remove">
+            ✕
+          </button></span
+        >
+        <span class="scope-chip"
+          ><span class="scope-chip-name">Retention notes</span
+          ><button class="scope-chip-remove" aria-label="Remove">
+            ✕
+          </button></span
+        >
+        <button
+          class="scope-add-btn"
+          data-component="scope-add-btn"
+          data-state="disabled"
+          aria-disabled="true"
+        >
+          ＋ Add note
+        </button>
+      </div>
+      <div class="chat-thread" data-component="chat-thread">
+        <div
+          class="chat-notice"
+          data-component="chat-notice"
+          data-variant="cap"
+        >
+          <span aria-hidden="true">ⓘ</span>
+          <span>5 notes is the limit. Remove one to add another.</span>
+        </div>
+      </div>
+    </section>
+
+    <p class="state-label">
+      6 · Truncation notice — scope too long for one answer
+    </p>
+    <section class="frame" data-component="app-shell" data-variant="chat">
+      <div class="scope-bar" data-component="scope-bar" data-variant="multi">
+        <span class="scope-bar-label">Asking about 4 notes</span>
+        <span class="scope-chip"
+          ><span class="scope-chip-name">Ideation Hour</span
+          ><button class="scope-chip-remove" aria-label="Remove">
+            ✕
+          </button></span
+        >
+        <span class="scope-chip"
+          ><span class="scope-chip-name">Pricing experiments</span
+          ><button class="scope-chip-remove" aria-label="Remove">
+            ✕
+          </button></span
+        >
+        <span class="scope-chip"
+          ><span class="scope-chip-name">Q3 retro (long)</span
+          ><button class="scope-chip-remove" aria-label="Remove">
+            ✕
+          </button></span
+        >
+        <span class="scope-chip"
+          ><span class="scope-chip-name">Work-life balance</span
+          ><button class="scope-chip-remove" aria-label="Remove">
+            ✕
+          </button></span
+        >
+      </div>
+      <div class="chat-thread" data-component="chat-thread">
+        <div
+          class="chat-msg"
+          data-variant="assistant"
+          data-component="chat-msg"
+        >
+          <div class="chat-bubble" data-component="chat-bubble">
+            <span class="ai-generated-label">✦ AI-generated</span>
+            All four treat pace as the real constraint
+            <span class="citation-chip">1</span
+            ><span class="citation-chip">2</span
+            ><span class="citation-chip">3</span
+            ><span class="citation-chip">4</span>.
+          </div>
+        </div>
+        <div
+          class="chat-notice"
+          data-component="chat-notice"
+          data-variant="truncated"
+        >
+          <span aria-hidden="true">ⓘ</span>
+          <span>These notes are long, so I read part of each one.</span>
+        </div>
+      </div>
+    </section>
+
+    <p class="state-label">7 · A scoped note was deleted mid-session</p>
+    <section class="frame" data-component="app-shell" data-variant="chat">
+      <div class="scope-bar" data-component="scope-bar" data-variant="multi">
+        <span class="scope-bar-label">Asking about 1 note</span>
+        <span class="scope-chip" data-state="removed" aria-hidden="true">
+          <span class="scope-chip-name">Pricing experiments</span>
+        </span>
+        <span class="scope-chip"
+          ><span class="scope-chip-name">Ideation Hour</span
+          ><button class="scope-chip-remove" aria-label="Remove">
+            ✕
+          </button></span
+        >
+        <button class="scope-add-btn" data-component="scope-add-btn">
+          ＋ Add note
+        </button>
+      </div>
+      <div class="chat-thread" data-component="chat-thread">
+        <div
+          class="chat-notice"
+          data-component="chat-notice"
+          data-variant="scope-dropped"
+        >
+          <span aria-hidden="true">ⓘ</span>
+          <span
+            >"Pricing experiments" was deleted, so I dropped it. Still working
+            from the rest.</span
+          >
+        </div>
+      </div>
+    </section>
+
+    <p class="state-label">
+      8 · Last note removed — scope bar disappears, back to state 0
+    </p>
+    <section class="frame" data-component="app-shell" data-variant="chat">
+      <!-- No scope-bar: removing the last chip returns the chat to the
+           unscoped shell shown in state 0. -->
+      <div class="chat-thread" data-component="chat-thread">
+        <div
+          class="chat-notice"
+          data-component="chat-notice"
+          data-variant="scope-cleared"
+        >
+          <span aria-hidden="true">ⓘ</span>
+          <span>Back to searching everything you've written.</span>
+        </div>
+      </div>
+      <div class="chat-input-bar" data-component="chat-input-bar">
+        <input
+          class="chat-input"
+          data-component="chat-input"
+          placeholder="Ask me about your notes"
+        />
+        <button
+          class="chat-send"
+          data-component="chat-send"
+          aria-label="Send message"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M22 2 11 13" />
+            <path d="m22 2-7 20-4-9-9-4z" />
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <p class="state-label">9 · Desktop panel (480px) — scoped to 2 notes</p>
+    <section
+      class="frame frame--desktop-panel"
+      data-component="app-shell"
+      data-variant="chat-desktop-panel"
+    >
+      <header class="panel-header" data-component="panel-header">
+        <span class="panel-header-title">Chat</span>
+        <button class="icon-btn" aria-label="Save as note">🖫</button>
+        <button class="icon-btn" aria-label="New chat">＋</button>
+        <button class="icon-btn" aria-label="Expand chat">⤢</button>
+        <button class="icon-btn" aria-label="Close chat">✕</button>
+      </header>
+      <div class="scope-bar" data-component="scope-bar" data-variant="multi">
+        <span class="scope-bar-label">Asking about 2 notes</span>
+        <span class="scope-chip" data-component="scope-chip"
+          ><span class="scope-chip-name">Ideation Hour</span
+          ><button class="scope-chip-remove" aria-label="Remove Ideation Hour">
+            ✕
+          </button></span
+        >
+        <span class="scope-chip" data-component="scope-chip"
+          ><span class="scope-chip-name">Pricing experiments</span
+          ><button
+            class="scope-chip-remove"
+            aria-label="Remove Pricing experiments"
+          >
+            ✕
+          </button></span
+        >
+        <button class="scope-add-btn" data-component="scope-add-btn">
+          ＋ Add note
+        </button>
+      </div>
+      <div class="chat-thread" data-component="chat-thread">
+        <div class="chat-msg" data-variant="user" data-component="chat-msg">
+          <div class="chat-bubble" data-component="chat-bubble">
+            Where do these two disagree?
+          </div>
+        </div>
+        <div
+          class="chat-msg"
+          data-variant="assistant"
+          data-component="chat-msg"
+        >
+          <div class="chat-bubble" data-component="chat-bubble">
+            <span class="ai-generated-label" data-component="ai-generated-label"
+              >✦ AI-generated</span
+            >
+            On pace. One protects unstructured time
+            <span class="citation-chip">1</span>; the other treats every week as
+            an experiment slot <span class="citation-chip">2</span>.
+          </div>
+        </div>
+      </div>
+      <div class="chat-input-bar" data-component="chat-input-bar">
+        <input
+          class="chat-input"
+          data-component="chat-input"
+          placeholder="Ask about these 2 notes"
+        />
+        <button
+          class="chat-send"
+          data-component="chat-send"
+          aria-label="Send message"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M22 2 11 13" />
+            <path d="m22 2-7 20-4-9-9-4z" />
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <p class="state-label">
+      10 · Desktop expanded (720px) — picker open, wider note list
+    </p>
+    <section
+      class="frame frame--desktop-expanded"
+      data-component="app-shell"
+      data-variant="chat-desktop-expanded"
+    >
+      <header class="panel-header" data-component="panel-header">
+        <span class="panel-header-title">Chat</span>
+        <button class="icon-btn" aria-label="Collapse chat">⤡</button>
+        <button class="icon-btn" aria-label="Close chat">✕</button>
+      </header>
+      <div class="scope-bar" data-component="scope-bar" data-variant="single">
+        <span class="scope-bar-label">Asking about</span>
+        <span class="scope-chip" data-component="scope-chip"
+          ><span class="scope-chip-name">Ideation Hour</span
+          ><button class="scope-chip-remove" aria-label="Remove Ideation Hour">
+            ✕
+          </button></span
+        >
+      </div>
+      <div class="note-picker" data-component="note-picker" data-state="open">
+        <input
+          class="note-picker-search"
+          data-component="note-picker-search"
+          placeholder="Search your notes"
+          aria-label="Search notes to add"
+        />
+        <ul class="note-picker-list">
+          <li>
+            <button class="note-picker-item" data-component="note-picker-item">
+              <span>Pricing experiments</span
+              ><span class="note-picker-item-meta">2d ago</span>
+            </button>
+          </li>
+          <li>
+            <button class="note-picker-item" data-component="note-picker-item">
+              <span>Work-life balance</span
+              ><span class="note-picker-item-meta">5d ago</span>
+            </button>
+          </li>
+          <li>
+            <button class="note-picker-item" data-component="note-picker-item">
+              <span>Onboarding teardown</span
+              ><span class="note-picker-item-meta">1w ago</span>
+            </button>
+          </li>
+          <li>
+            <button
+              class="note-picker-item"
+              data-component="note-picker-item"
+              data-state="selected"
+              aria-disabled="true"
+            >
+              <span>Ideation Hour</span
+              ><span class="note-picker-item-meta">Added</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <p class="state-label">
+      11 · Desktop panel — note picker empty search result
+    </p>
+    <section
+      class="frame frame--desktop-panel"
+      data-component="app-shell"
+      data-variant="chat-desktop-panel"
+    >
+      <div class="scope-bar" data-component="scope-bar" data-variant="single">
+        <span class="scope-bar-label">Asking about</span>
+        <span class="scope-chip" data-component="scope-chip"
+          ><span class="scope-chip-name">Ideation Hour</span
+          ><button class="scope-chip-remove" aria-label="Remove Ideation Hour">
+            ✕
+          </button></span
+        >
+      </div>
+      <div class="note-picker" data-component="note-picker" data-state="empty">
+        <input
+          class="note-picker-search"
+          data-component="note-picker-search"
+          value="quarterly"
+          aria-label="Search notes to add"
+        />
+        <p class="note-picker-empty">No notes match "quarterly".</p>
+      </div>
+    </section>
+  </body>
+</html>

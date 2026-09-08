@@ -1,0 +1,2869 @@
+<!-- COMPONENT INVENTORY: note-editor, note-list-item, upgrade-modal, note-limit-indicator, empty-state -->
+<!-- P2-3 note (pre-existing decision): modal renders Think + Deep Think cards only — the Free "Current" card (mobile) / current-plan strip (desktop) per §4.7 is intentionally absent; decide & reconcile at batch level, not per-screen. -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>dolfyn — Note Limits Display</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --surface: #fafaf7;
+        --surface-subtle: #f2f1ed;
+        --surface-raised: #ffffff;
+        --surface-overlay: rgba(15, 15, 14, 0.32);
+        --ink: #0f0f0e;
+        --ink-2: #3f3f3f;
+        --ink-3: #6b6b6b;
+        --ink-inverse: #fafaf7;
+        --border: #e5e5e1;
+        --border-strong: #c7c7c2;
+        --divider: #edede9;
+        --accent: #c2410c;
+        --accent-strong: #9a330a;
+        --accent-soft-bg: #fcefde;
+        --warning: #b45309;
+        --cap-hit: #7c2d12;
+        --space-1: 4px;
+        --space-2: 8px;
+        --space-3: 12px;
+        --space-4: 16px;
+        --space-5: 24px;
+        --space-6: 32px;
+        --space-7: 48px;
+        --radius-sm: 6px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-xl: 16px;
+        --radius-full: 9999px;
+        --elevation-panel:
+          0 8px 24px -8px rgba(15, 15, 14, 0.12),
+          0 2px 4px -2px rgba(15, 15, 14, 0.06);
+        --elevation-modal: 0 24px 48px -12px rgba(15, 15, 14, 0.18);
+        --z-base: 0;
+        --z-sticky: 100;
+        --z-overlay: 800;
+        --z-panel: 900;
+        --z-modal: 1000;
+        --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        --duration-fast: 150ms;
+        --duration-base: 250ms;
+        --duration-slow: 350ms;
+        --meta-bg: #ecebe5;
+        --meta-ink: #2a2a28;
+        --meta-ink-2: #6e6e68;
+        --meta-border: #d8d7d1;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--meta-bg);
+        color: var(--meta-ink);
+        font-family: "Inter", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .mockup-nav {
+        position: sticky;
+        top: 0;
+        z-index: 1100;
+        background: var(--meta-bg);
+        border-bottom: 1px solid var(--meta-border);
+        padding: var(--space-3) var(--space-5);
+        display: flex;
+        align-items: center;
+        gap: var(--space-5);
+        flex-wrap: wrap;
+      }
+      .mockup-title {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink);
+      }
+      .mockup-subtitle {
+        font-size: 12px;
+        color: var(--meta-ink-2);
+      }
+      .state-tabs {
+        display: flex;
+        gap: var(--space-1);
+        margin-left: auto;
+        flex-wrap: wrap;
+      }
+      .state-tab {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--meta-ink-2);
+        text-decoration: none;
+        padding: var(--space-1) var(--space-2);
+        border-radius: var(--radius-sm);
+        border: 1px solid transparent;
+        transition:
+          background var(--duration-fast) var(--ease-out),
+          color var(--duration-fast) var(--ease-out);
+        white-space: nowrap;
+      }
+      .state-tab:hover {
+        background: rgba(15, 15, 14, 0.05);
+        color: var(--meta-ink);
+      }
+      #state-a:target ~ .mockup-nav .state-tab[href="#state-a"],
+      #state-b:target ~ .mockup-nav .state-tab[href="#state-b"],
+      #state-c:target ~ .mockup-nav .state-tab[href="#state-c"],
+      #state-d:target ~ .mockup-nav .state-tab[href="#state-d"],
+      #state-e:target ~ .mockup-nav .state-tab[href="#state-e"] {
+        background: var(--meta-ink);
+        color: var(--ink-inverse);
+      }
+
+      .state {
+        padding: var(--space-7) var(--space-5) var(--space-6);
+        max-width: 1400px;
+        margin: 0 auto;
+        border-top: 1px solid var(--meta-border);
+      }
+      .state:first-of-type {
+        border-top: none;
+      }
+      .state:target {
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: var(--radius-lg);
+      }
+      .state-header {
+        margin-bottom: var(--space-5);
+        max-width: 720px;
+      }
+      .state-tag {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink-2);
+        margin-bottom: var(--space-2);
+      }
+      .state-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--meta-ink);
+        margin: 0 0 var(--space-2);
+        letter-spacing: -0.01em;
+      }
+      .state-desc {
+        font-size: 14px;
+        color: var(--meta-ink-2);
+        line-height: 1.5;
+        margin: 0;
+      }
+
+      .viewports {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-5);
+        align-items: flex-start;
+      }
+      .viewport {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        flex-shrink: 0;
+      }
+      .device-label {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink-2);
+        padding-left: var(--space-1);
+      }
+      .device-frame {
+        background: var(--meta-ink);
+        border-radius: 28px;
+        padding: 8px;
+        box-shadow: 0 2px 8px -2px rgba(15, 15, 14, 0.12);
+      }
+      .screen {
+        position: relative;
+        width: 375px;
+        height: 720px;
+        background: var(--surface);
+        border-radius: 22px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .app {
+        position: relative;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+      .app-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-3) var(--space-4);
+        flex-shrink: 0;
+      }
+      .wordmark {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-weight: 600;
+        font-size: 20px;
+        letter-spacing: -0.01em;
+        color: var(--ink);
+        line-height: 1;
+      }
+      .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-full);
+        background: var(--surface-subtle);
+        color: var(--ink-2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
+        font-size: 13px;
+        flex-shrink: 0;
+      }
+
+      .cursor {
+        display: inline-block;
+        width: 2px;
+        height: 1.1em;
+        background: var(--ink);
+        vertical-align: text-bottom;
+        margin-left: 1px;
+        animation: blink 1s steps(2) infinite;
+      }
+      @keyframes blink {
+        0%,
+        50% {
+          opacity: 1;
+        }
+        50.01%,
+        100% {
+          opacity: 0;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .cursor {
+          animation: none;
+          opacity: 1;
+        }
+      }
+
+      .ai-bar {
+        height: 56px;
+        padding: 0 var(--space-4);
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 14px;
+        line-height: 1.5;
+        flex-shrink: 0;
+      }
+      .ai-bar--passive {
+        background: var(--surface-subtle);
+        color: var(--ink-2);
+      }
+      .ai-bar-sparkle {
+        flex-shrink: 0;
+        color: var(--accent);
+      }
+
+      .bottom-nav {
+        height: 56px;
+        background: var(--surface-raised);
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: stretch;
+        justify-content: space-around;
+        padding: 0 var(--space-2);
+        flex-shrink: 0;
+        position: relative;
+      }
+      .tab {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--ink-3);
+        position: relative;
+        text-decoration: none;
+      }
+      .tab svg {
+        display: block;
+      }
+      .tab--active {
+        color: var(--ink-2);
+      }
+      .tab--active svg {
+        color: var(--ink);
+      }
+      .tab--active::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 32px;
+        height: 3px;
+        background: var(--accent);
+        border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      }
+
+      .sparkle-18 {
+        width: 18px;
+        height: 18px;
+      }
+
+      /* ============================================
+       NOTE EDITOR — §4.10
+       ============================================ */
+      .note-editor {
+        flex: 1;
+        padding: var(--space-5) var(--space-4) 124px;
+        min-height: 100%;
+        overflow-y: auto;
+        scrollbar-width: none;
+      }
+      .note-editor::-webkit-scrollbar {
+        display: none;
+      }
+
+      .note-body {
+        font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 1.6;
+        color: var(--ink);
+        max-width: 480px;
+      }
+
+      .note-title {
+        font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 1.3;
+        color: var(--ink);
+        border: none;
+        outline: none;
+        background: transparent;
+        width: 100%;
+        padding: 0;
+        margin: 0 0 var(--space-5);
+      }
+
+      .note-title::placeholder {
+        color: var(--ink-3);
+      }
+
+      .note-paragraph {
+        margin: 0 0 var(--space-3);
+      }
+      .note-paragraph:last-child {
+        margin-bottom: 0;
+      }
+
+      .cursor {
+        display: inline-block;
+        width: 2px;
+        height: 1.1em;
+        background: var(--ink);
+        vertical-align: text-bottom;
+        margin-left: 1px;
+        animation: blink 1s steps(2) infinite;
+      }
+      @keyframes blink {
+        0%,
+        50% {
+          opacity: 1;
+        }
+        50.01%,
+        100% {
+          opacity: 0;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .cursor {
+          animation: none;
+          opacity: 1;
+        }
+      }
+
+      /* ============================================
+       NOTES LIST — §4.11
+       ============================================ */
+      .notes-list {
+        position: absolute;
+        inset: 0;
+        background: var(--surface);
+        z-index: var(--z-overlay);
+        display: flex;
+        flex-direction: column;
+      }
+      .notes-list-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-3) var(--space-4);
+        flex-shrink: 0;
+        border-bottom: 1px solid var(--divider);
+      }
+      .notes-list-title {
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--ink);
+        margin: 0;
+      }
+      .notes-list-add {
+        background: transparent;
+        border: none;
+        color: var(--accent);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        padding: var(--space-2) var(--space-3);
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+      }
+      .notes-list-add:active {
+        background: var(--accent-soft-bg);
+      }
+
+      .notes-list-body {
+        flex: 1;
+        overflow-y: auto;
+        scrollbar-width: none;
+      }
+      .notes-list-body::-webkit-scrollbar {
+        display: none;
+      }
+
+      .notes-list-item {
+        padding: var(--space-4);
+        border-bottom: 1px solid var(--divider);
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+      }
+      .notes-list-item:active {
+        background: var(--surface-subtle);
+      }
+      .notes-list-item-title {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 16px;
+        line-height: 1.4;
+        color: var(--ink);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+      }
+      .notes-list-item-meta {
+        font-size: 12px;
+        color: var(--ink-3);
+      }
+      .notes-list-item--active {
+        background: var(--surface-subtle);
+      }
+      .notes-list-item--active .notes-list-item-title {
+        font-weight: 600;
+      }
+
+      /* Visual distinction — user-created vs auto-saved */
+      .notes-list-divider {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-2) var(--space-4);
+        background: var(--surface-subtle);
+      }
+      .notes-list-divider-line {
+        flex: 1;
+        height: 1px;
+        background: var(--divider);
+      }
+      .notes-list-divider-label {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        white-space: nowrap;
+      }
+      /* ============================================
+       NOTE COUNT — §4.11
+       ============================================ */
+      .note-count {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: var(--space-1) var(--space-3);
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        color: var(--ink-3);
+        background: var(--surface-raised);
+        border-bottom: 1px solid var(--divider);
+        border-left: 1px solid var(--divider);
+        border-radius: 0 0 0 var(--radius-sm);
+      }
+
+      .note-count--warning {
+        color: var(--warning);
+      }
+      .note-count--cap-hit {
+        color: var(--cap-hit);
+      }
+
+      /* ============================================
+       NOTES DRAWER — tablet
+       ============================================ */
+      .notes-drawer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 360px;
+        background: var(--surface-raised);
+        border-right: 1px solid var(--border);
+        box-shadow: 8px 0 24px -12px rgba(15, 15, 14, 0.18);
+        z-index: 50;
+        display: flex;
+        flex-direction: column;
+      }
+      .notes-drawer-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(15, 15, 14, 0.3);
+        z-index: 49;
+      }
+      .notes-drawer-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-4);
+        border-bottom: 1px solid var(--divider);
+      }
+      .notes-drawer-title {
+        font-size: 13px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        margin: 0;
+      }
+      .notes-drawer-close {
+        background: transparent;
+        border: none;
+        color: var(--ink-2);
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-md);
+      }
+      .notes-drawer-close:active {
+        background: var(--surface-subtle);
+      }
+      .notes-drawer-list {
+        flex: 1;
+        overflow-y: auto;
+      }
+      .notes-drawer-item {
+        padding: var(--space-3) var(--space-4);
+        border-bottom: 1px solid var(--divider);
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+      }
+      .notes-drawer-item:active {
+        background: var(--surface-subtle);
+      }
+      .notes-drawer-item-title {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 15px;
+        line-height: 1.4;
+        color: var(--ink);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+      }
+      .notes-drawer-item-meta {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        color: var(--ink-3);
+      }
+      .notes-drawer-item--active {
+        background: var(--surface-subtle);
+      }
+      .notes-drawer-item--active .notes-drawer-item-title {
+        font-weight: 600;
+      }
+
+      /* Expand/collapse toggle */
+      .notes-panel-toggle {
+        background: transparent;
+        border: none;
+        color: var(--ink-2);
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-md);
+        flex-shrink: 0;
+        transition: transform 200ms var(--ease-in-out);
+      }
+
+      .notes-panel-toggle:active {
+        background: var(--surface-subtle);
+      }
+
+      .notes-panel-toggle svg {
+        transition: transform 200ms var(--ease-in-out);
+      }
+
+      .notes-panel--collapsed .notes-panel-toggle svg {
+        transform: rotate(180deg);
+      }
+
+      /* Cap display in drawer */
+      .notes-drawer-cap {
+        padding: var(--space-3) var(--space-4);
+        border-top: 1px solid var(--divider);
+        flex-shrink: 0;
+      }
+      .notes-drawer-cap-text {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--ink-3);
+        margin: 0;
+      }
+      .notes-drawer-cap-text--warning {
+        color: var(--warning);
+      }
+      .notes-drawer-cap-text--cap-hit {
+        color: var(--cap-hit);
+      }
+      .notes-drawer-cap-upgrade {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 500;
+        cursor: pointer;
+      }
+      .notes-drawer-cap-upgrade:hover {
+        text-decoration: underline;
+      }
+
+      /* ============================================
+       NOTE LIMIT INDICATOR (char counter) — §4.22
+       ============================================ */
+      .note-limit {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-2);
+        max-width: 540px;
+        margin: var(--space-6) auto 0;
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 11px;
+        font-weight: 500;
+        line-height: 1.2;
+        letter-spacing: 0.04em;
+        color: var(--ink-3);
+      }
+      .note-limit--approaching {
+        color: var(--warning);
+      }
+      .note-limit--at-limit {
+        color: var(--cap-hit);
+      }
+      .note-limit-upgrade {
+        color: var(--accent-strong);
+        text-decoration: underline;
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        padding: var(--space-2) var(--space-1);
+        white-space: nowrap;
+        cursor: pointer;
+      }
+
+      /* ============================================
+       UPGRADE MODAL — §4.7
+       ============================================ */
+      .overlay {
+        position: absolute;
+        inset: 0;
+        background: var(--surface-overlay);
+        z-index: var(--z-overlay);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--space-4);
+      }
+
+      .modal {
+        position: relative;
+        z-index: var(--z-modal);
+        background: var(--surface-raised);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--elevation-modal);
+        overflow: hidden;
+      }
+
+      /* Mobile modal */
+      .modal--mobile {
+        width: min(343px, calc(100% - 32px));
+        padding: 20px;
+      }
+      .modal--mobile .modal-sparkle {
+        margin-bottom: 10px;
+      }
+      .modal--mobile .modal-sparkle svg {
+        width: 20px;
+        height: 20px;
+      }
+      .modal--mobile .modal-title {
+        font-size: 22px;
+        margin: 0 0 8px;
+      }
+      .modal--mobile .modal-body {
+        margin: 0 0 16px;
+      }
+      .modal--mobile .tier {
+        padding: 12px 14px;
+        margin-bottom: 6px;
+      }
+      .modal--mobile .tier--recommended {
+        padding-left: 26px;
+      }
+      .modal--mobile .tier-name {
+        font-size: 15px;
+      }
+      .modal--mobile .tier-head {
+        margin-bottom: 4px;
+      }
+      .modal--mobile .tier-metrics {
+        margin: 0;
+      }
+      .modal--mobile .tier-extras {
+        margin: 4px 0 0;
+      }
+      .modal--mobile .tier-pitch {
+        margin: 4px 0 0;
+        font-size: 12px;
+      }
+      .modal--mobile .cta-primary {
+        height: 46px;
+        font-size: 14px;
+        margin-top: 14px;
+      }
+      .modal--mobile .cta-disclosure {
+        font-size: 11px;
+        margin: 6px 0;
+      }
+      .modal--mobile .cta-secondary {
+        height: 36px;
+        font-size: 13px;
+      }
+
+      /* Wide modal (tablet + desktop) */
+      .modal--wide {
+        width: min(560px, calc(100% - 48px));
+        padding: var(--space-6);
+      }
+      .modal--wide .modal-sparkle {
+        margin-bottom: var(--space-3);
+      }
+      .modal--wide .modal-title {
+        font-size: 26px;
+        margin: 0 0 var(--space-3);
+      }
+      .modal--wide .modal-body {
+        margin: 0 0 var(--space-4);
+      }
+      .modal--wide .current-plan {
+        padding: var(--space-2) var(--space-3);
+        margin-bottom: var(--space-4);
+      }
+      .modal--wide .tier {
+        padding: var(--space-4);
+      }
+      .modal--wide .tier--recommended {
+        padding-left: calc(var(--space-4) + 12px);
+      }
+      .modal--wide .tier-name {
+        font-size: 17px;
+      }
+      .modal--wide .tier-head {
+        margin-bottom: var(--space-2);
+      }
+      .modal--wide .tier-price {
+        font-size: 14px;
+      }
+      .modal--wide .tier-price-note {
+        display: block;
+        margin-top: 1px;
+      }
+      .modal--wide .tier-metrics {
+        font-size: 14px;
+        margin: 0 0 var(--space-2);
+      }
+      .modal--wide .tier-extras {
+        font-size: 12px;
+        margin: 0;
+      }
+      .modal--wide .tier-pitch {
+        font-size: 14px;
+        margin: var(--space-2) 0 0;
+      }
+      .modal--wide .cta-primary {
+        height: 48px;
+        font-size: 15px;
+      }
+      .modal--wide .cta-disclosure {
+        font-size: 12px;
+        margin: var(--space-2) 0;
+      }
+      .modal--wide .cta-secondary {
+        height: 40px;
+        font-size: 14px;
+      }
+      .modal--wide .modal-footer {
+        margin-top: var(--space-4);
+        text-align: center;
+      }
+      .modal--wide .modal-footer .cta-secondary {
+        display: inline-block;
+        width: auto;
+        padding: 0 var(--space-5);
+      }
+
+      /* Modal shared */
+      .modal-sparkle {
+        color: var(--accent);
+        display: flex;
+      }
+      .modal-title {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-weight: 600;
+        line-height: 1.25;
+        letter-spacing: -0.02em;
+        color: var(--ink);
+        margin: 0;
+      }
+      .modal-body {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 15px;
+        line-height: 1.55;
+        color: var(--ink-2);
+      }
+      .modal-body strong {
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      /* Tier */
+      .tier {
+        position: relative;
+        border-radius: var(--radius-md);
+      }
+      .tier--recommended {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+      }
+      .tier--recommended::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 10px;
+        bottom: 10px;
+        width: 3px;
+        background: var(--accent);
+        border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      }
+      .tier--secondary {
+        background: var(--surface-subtle);
+        border: 1px solid transparent;
+      }
+      .tier-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .tier-name-group {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .tier-name {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-weight: 600;
+        color: var(--ink);
+      }
+      .tier-name--muted {
+        color: var(--ink-2);
+      }
+      .tier-tag {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      .tier-tag--recommended {
+        color: var(--accent-strong);
+      }
+      .tier-tag--current {
+        color: var(--ink-3);
+      }
+      .tier-price {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+      .tier-price--muted {
+        color: var(--ink-3);
+      }
+      .tier-price-note {
+        font-size: 11px;
+        font-weight: 400;
+        color: var(--ink-3);
+      }
+      .tier-metrics {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 13px;
+        line-height: 1.45;
+        color: var(--ink-2);
+      }
+      .tier-extras {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 11px;
+        font-weight: 500;
+      }
+      .tier-extras--accent {
+        color: var(--accent-strong);
+      }
+      .tier-extras--muted {
+        color: var(--ink-3);
+      }
+      .tier-pitch {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 13px;
+        line-height: 1.45;
+        color: var(--ink-2);
+      }
+
+      /* Current plan */
+      .current-plan {
+        background: var(--surface-subtle);
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+      }
+      .current-plan-label {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+      }
+      .current-plan-text {
+        font-size: 13px;
+        color: var(--ink-2);
+      }
+
+      /* CTA */
+      .cta-primary {
+        display: block;
+        width: 100%;
+        background: var(--ink);
+        color: var(--ink-inverse);
+        border: none;
+        border-radius: var(--radius-md);
+        font-family: "Inter", system-ui, sans-serif;
+        font-weight: 500;
+        cursor: pointer;
+      }
+      .cta-disclosure {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 12px;
+        color: var(--ink-3);
+        text-align: center;
+        line-height: 1.35;
+      }
+      .cta-secondary {
+        display: block;
+        width: 100%;
+        background: transparent;
+        color: var(--ink-3);
+        border: none;
+        font-family: "Inter", system-ui, sans-serif;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      .tier-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-3);
+        margin-bottom: var(--space-4);
+      }
+      .tier-grid .tier {
+        margin-bottom: 0;
+      }
+
+      /* Desktop frame */
+      .device-frame--desktop {
+        width: 1440px;
+        height: 900px;
+        border-radius: 12px;
+        padding: 8px;
+        position: relative;
+        overflow: hidden;
+      }
+      .screen--desktop {
+        width: 100%;
+        height: 100%;
+        background: var(--surface);
+        display: flex;
+        flex-direction: column;
+      }
+      .avatar--tier {
+        position: relative;
+      }
+      .avatar--tier::after {
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        right: -1px;
+        width: 10px;
+        height: 10px;
+        border-radius: var(--radius-full);
+        background: var(--accent);
+        border: 2px solid var(--surface);
+      }
+      .desktop-content-row {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+      }
+      .notes-panel {
+        position: relative;
+        width: 320px;
+        flex-shrink: 0;
+        border-right: 1px solid var(--border);
+        background: var(--surface-raised);
+        display: flex;
+        flex-direction: column;
+      }
+      .notes-panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-4);
+        border-bottom: 1px solid var(--divider);
+      }
+      .notes-panel-title {
+        font-size: 13px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        margin: 0;
+      }
+      .notes-panel-list {
+        flex: 1;
+        overflow-y: auto;
+      }
+
+      /* Chat view (for auto-save cue state) */
+      .chat-view {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .chat-thread {
+        flex: 1;
+        overflow-y: auto;
+        padding: var(--space-5) var(--space-4);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+        scrollbar-width: none;
+      }
+      .chat-thread::-webkit-scrollbar {
+        display: none;
+      }
+      .chat-empty {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .chat-empty p {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 15px;
+        color: var(--ink-3);
+        text-align: center;
+        margin: 0;
+      }
+      .chat-input-bar {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-3) var(--space-4);
+        border-top: 1px solid var(--divider);
+        background: var(--surface-raised);
+        flex-shrink: 0;
+      }
+      .chat-input {
+        flex: 1;
+        height: 40px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: 0 var(--space-3);
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 15px;
+        color: var(--ink);
+        background: var(--surface);
+        outline: none;
+      }
+      .chat-input:focus {
+        border-color: var(--border-strong);
+      }
+      .chat-send {
+        width: 40px;
+        height: 40px;
+        border: none;
+        border-radius: var(--radius-md);
+        background: var(--ink);
+        color: var(--ink-inverse);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+      .chat-send:active {
+        opacity: 0.85;
+      }
+
+      /* Auto-save cue indicator */
+      .auto-save-cue {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-2) var(--space-3);
+        background: var(--accent-tint);
+        border-radius: var(--radius-md);
+        font-size: 13px;
+        color: var(--ink-2);
+        line-height: 1.4;
+      }
+      .auto-save-cue-icon {
+        color: var(--accent);
+        flex-shrink: 0;
+      }
+      .auto-save-cue-dismiss {
+        background: transparent;
+        border: none;
+        color: var(--ink-3);
+        cursor: pointer;
+        padding: 2px;
+        margin-left: auto;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .auto-save-cue-dismiss:hover {
+        color: var(--ink-2);
+      }
+
+      @media (max-width: 480px) {
+        .state {
+          padding: var(--space-5) var(--space-3);
+        }
+        .mockup-nav {
+          padding: var(--space-3);
+        }
+        .state-tabs {
+          width: 100%;
+          margin-left: 0;
+        }
+      }
+      @media (max-width: 900px) {
+        .device-frame--desktop {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="mockup-nav">
+      <div>
+        <div class="mockup-title">dolfyn / Note Limits Display</div>
+        <div class="mockup-subtitle">Phase 4 · Req 06 · 5 states</div>
+      </div>
+      <nav class="state-tabs" aria-label="State selector">
+        <a href="#state-a" class="state-tab">A · under cap</a>
+        <a href="#state-b" class="state-tab">B · at cap</a>
+        <a href="#state-c" class="state-tab">C · cap hit</a>
+        <a href="#state-d" class="state-tab">D · auto-save cue</a>
+        <a href="#state-e" class="state-tab">E · char limit</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- STATE A — Under cap (≥70%) -->
+      <section id="state-a" class="state">
+        <div class="state-header">
+          <span class="state-tag">Note cap</span>
+          <h2 class="state-title">State A — under cap (8/10)</h2>
+          <p class="state-desc">
+            Free-tier user with 8 notes. Counter badge "8/10" visible in the
+            notes tab (§4.11) — only shows at ≥70% (7+/10). Notes list shows
+            visual distinction: user-created notes above a divider, auto-saved
+            AI chat notes below with sparkle badge and accent tint. The divider
+            label reads "AI conversations."
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px — notes list</div>
+            <div class="device-frame">
+              <div class="screen" data-state="A">
+                <div class="app">
+                  <div class="notes-list">
+                    <header class="notes-list-header">
+                      <h1 class="notes-list-title">Notes</h1>
+                      <button type="button" class="notes-list-add">
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        >
+                          <path d="M12 5v14M5 12h14" />
+                        </svg>
+                        New
+                      </button>
+                    </header>
+                    <div class="notes-list-body">
+                      <!-- User-created notes -->
+                      <div class="notes-list-item notes-list-item--active">
+                        <span class="notes-list-item-title"
+                          >What makes a great first-time user experience</span
+                        >
+                        <span class="notes-list-item-meta"
+                          >Today at 2:14 PM</span
+                        >
+                      </div>
+                      <div class="notes-list-item">
+                        <span class="notes-list-item-title"
+                          >Growth channels for the next 90 days</span
+                        >
+                        <span class="notes-list-item-meta">Yesterday</span>
+                      </div>
+                      <div class="notes-list-item">
+                        <span class="notes-list-item-title"
+                          >New user landing decision</span
+                        >
+                        <span class="notes-list-item-meta">Jul 16</span>
+                      </div>
+                      <div class="notes-list-item">
+                        <span class="notes-list-item-title"
+                          >Competitive positioning — Capacities vs dolfyn</span
+                        >
+                        <span class="notes-list-item-meta">Jul 14</span>
+                      </div>
+                      <div class="notes-list-item">
+                        <span class="notes-list-item-title"
+                          >Pricing tier philosophy</span
+                        >
+                        <span class="notes-list-item-meta">Jul 13</span>
+                      </div>
+
+                      <!-- Divider -->
+                      <div class="notes-list-divider">
+                        <div class="notes-list-divider-line"></div>
+                        <span class="notes-list-divider-label"
+                          >AI conversations</span
+                        >
+                        <div class="notes-list-divider-line"></div>
+                      </div>
+
+                      <!-- Auto-saved notes -->
+                      <div class="notes-list-item">
+                        <span class="notes-list-item-title"
+                          >Pricing model discussion</span
+                        >
+                        <span class="notes-list-item-meta"
+                          >Today at 11:30 AM</span
+                        >
+                      </div>
+                      <div class="notes-list-item">
+                        <span class="notes-list-item-title"
+                          >First-time UX patterns</span
+                        >
+                        <span class="notes-list-item-meta">Yesterday</span>
+                      </div>
+                      <div class="notes-list-item">
+                        <span class="notes-list-item-title"
+                          >Token-based pricing exploration</span
+                        >
+                        <span class="notes-list-item-meta">Jul 14</span>
+                      </div>
+                    </div>
+                    <!-- Note count in drawer -->
+                    <div class="notes-drawer-cap">
+                      <p class="notes-drawer-cap-text">8 of 10 notes</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop viewport — persistent left panel -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop" data-state="A">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div
+                    class="avatar avatar--tier"
+                    aria-label="Profile, Free tier"
+                  >
+                    SC
+                  </div>
+                </header>
+                <div class="desktop-content-row">
+                  <!-- Persistent notes panel -->
+                  <aside class="notes-panel">
+                    <div class="notes-panel-header">
+                      <div
+                        style="
+                          display: flex;
+                          align-items: center;
+                          gap: var(--space-3);
+                        "
+                      >
+                        <h2 class="notes-panel-title">Notes</h2>
+                        <span
+                          style="
+                            font-size: 12px;
+                            font-weight: 500;
+                            color: var(--ink-3);
+                          "
+                          >8/10</span
+                        >
+                      </div>
+                      <div
+                        style="
+                          display: flex;
+                          align-items: center;
+                          gap: var(--space-2);
+                        "
+                      >
+                        <button
+                          type="button"
+                          class="notes-list-add"
+                          style="
+                            font-size: 13px;
+                            padding: var(--space-1) var(--space-2);
+                          "
+                        >
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                          >
+                            <path d="M12 5v14M5 12h14" />
+                          </svg>
+                          New
+                        </button>
+                        <button
+                          type="button"
+                          class="notes-panel-toggle"
+                          aria-label="Collapse notes panel"
+                        >
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="m15 18-6-6 6-6" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="notes-panel-list">
+                      <div class="notes-drawer-item notes-drawer-item--active">
+                        <span class="notes-drawer-item-title"
+                          >What makes a great first-time user experience</span
+                        >
+                        <span class="notes-drawer-item-meta"
+                          >Today at 2:14 PM</span
+                        >
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Growth channels for the next 90 days</span
+                        >
+                        <span class="notes-drawer-item-meta">Yesterday</span>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >New user landing decision</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 16</span>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Competitive positioning — Capacities vs dolfyn</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 14</span>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Pricing tier philosophy</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 13</span>
+                      </div>
+                      <div class="notes-list-divider">
+                        <div class="notes-list-divider-line"></div>
+                        <span class="notes-list-divider-label"
+                          >AI conversations</span
+                        >
+                        <div class="notes-list-divider-line"></div>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Pricing model discussion</span
+                        >
+                        <span class="notes-drawer-item-meta"
+                          >Today at 11:30 AM</span
+                        >
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >First-time UX patterns</span
+                        >
+                        <span class="notes-drawer-item-meta">Yesterday</span>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Token-based pricing exploration</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 14</span>
+                      </div>
+                    </div>
+                  </aside>
+                  <!-- Note editor -->
+                  <div class="note-editor" style="flex: 1">
+                    <div
+                      class="note-body"
+                      style="max-width: 540px; margin: 0 auto"
+                    >
+                      <div class="note-title">
+                        What makes a great first-time user experience?
+                      </div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        A great first-time experience doesn't explain.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATE B — At cap (10/10) -->
+      <section id="state-b" class="state">
+        <div class="state-header">
+          <span class="state-tag">Note cap</span>
+          <h2 class="state-title">State B — at cap (10/10)</h2>
+          <p class="state-desc">
+            Free-tier user at the 10-note limit. Counter shows "10/10" in the
+            notes panel header. The "New" button stays tappable at cap — tapping
+            it is the create attempt that fires the upgrade modal (§4.7, Req
+            04); the 11th note is never created. The drawer's "10 of 10 notes —
+            upgrade for unlimited" link is the secondary path into the same
+            modal.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px — notes list at cap</div>
+            <div class="device-frame">
+              <div class="screen" data-state="B">
+                <div class="app">
+                  <div class="notes-list">
+                    <header class="notes-list-header">
+                      <h1 class="notes-list-title">Notes</h1>
+                      <button
+                        type="button"
+                        class="notes-list-add"
+                        data-interaction="open-upgrade-modal"
+                        data-condition="freeTier.notes.length >= 10"
+                      >
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        >
+                          <path d="M12 5v14M5 12h14" />
+                        </svg>
+                        New
+                      </button>
+                    </header>
+                    <div class="notes-list-body">
+                      <div class="notes-list-item notes-list-item--active">
+                        <span class="notes-list-item-title"
+                          >What makes a great first-time user experience</span
+                        >
+                        <span class="notes-list-item-meta"
+                          >Today at 2:14 PM</span
+                        >
+                      </div>
+                      <div class="notes-list-item">
+                        <span class="notes-list-item-title"
+                          >Growth channels for the next 90 days</span
+                        >
+                        <span class="notes-list-item-meta">Yesterday</span>
+                      </div>
+                      <div class="notes-list-item">
+                        <span class="notes-list-item-title"
+                          >New user landing decision</span
+                        >
+                        <span class="notes-list-item-meta">Jul 16</span>
+                      </div>
+                      <div class="notes-list-item">
+                        <span class="notes-list-item-title"
+                          >Competitive positioning — Capacities vs dolfyn</span
+                        >
+                        <span class="notes-list-item-meta">Jul 14</span>
+                      </div>
+                      <div class="notes-list-item">
+                        <span class="notes-list-item-title"
+                          >Pricing tier philosophy</span
+                        >
+                        <span class="notes-list-item-meta">Jul 13</span>
+                      </div>
+                      <div class="notes-list-item">
+                        <span class="notes-list-item-title"
+                          >Auth decision — Better-Auth</span
+                        >
+                        <span class="notes-list-item-meta">Jul 11</span>
+                      </div>
+                      <div class="notes-list-divider">
+                        <div class="notes-list-divider-line"></div>
+                        <span class="notes-list-divider-label"
+                          >AI conversations</span
+                        >
+                        <div class="notes-list-divider-line"></div>
+                      </div>
+                      <div class="notes-list-item">
+                        <span class="notes-list-item-title"
+                          >Pricing model discussion</span
+                        >
+                        <span class="notes-list-item-meta"
+                          >Today at 11:30 AM</span
+                        >
+                      </div>
+                      <div class="notes-list-item">
+                        <span class="notes-list-item-title"
+                          >First-time UX patterns</span
+                        >
+                        <span class="notes-list-item-meta">Yesterday</span>
+                      </div>
+                      <div class="notes-list-item">
+                        <span class="notes-list-item-title"
+                          >Capacities comparison</span
+                        >
+                        <span class="notes-list-item-meta">Jul 15</span>
+                      </div>
+                      <div class="notes-list-item">
+                        <span class="notes-list-item-title"
+                          >Token-based pricing exploration</span
+                        >
+                        <span class="notes-list-item-meta">Jul 14</span>
+                      </div>
+                    </div>
+                    <div class="notes-drawer-cap">
+                      <p
+                        class="notes-drawer-cap-text notes-drawer-cap-text--cap-hit"
+                      >
+                        10 of 10 notes —
+                        <a href="#" class="notes-drawer-cap-upgrade"
+                          >upgrade for unlimited</a
+                        >
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop viewport — at cap -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop" data-state="B">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div
+                    class="avatar avatar--tier"
+                    aria-label="Profile, Free tier"
+                  >
+                    SC
+                  </div>
+                </header>
+                <div class="desktop-content-row">
+                  <aside class="notes-panel">
+                    <div class="notes-panel-header">
+                      <div
+                        style="
+                          display: flex;
+                          align-items: center;
+                          gap: var(--space-3);
+                        "
+                      >
+                        <h2 class="notes-panel-title">Notes</h2>
+                        <span
+                          style="
+                            font-size: 12px;
+                            font-weight: 500;
+                            color: var(--cap-hit);
+                          "
+                          >10/10</span
+                        >
+                      </div>
+                      <div
+                        style="
+                          display: flex;
+                          align-items: center;
+                          gap: var(--space-2);
+                        "
+                      >
+                        <button
+                          type="button"
+                          class="notes-list-add"
+                          style="
+                            font-size: 13px;
+                            padding: var(--space-1) var(--space-2);
+                          "
+                          data-interaction="open-upgrade-modal"
+                          data-condition="freeTier.notes.length >= 10"
+                        >
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                          >
+                            <path d="M12 5v14M5 12h14" />
+                          </svg>
+                          New
+                        </button>
+                        <button
+                          type="button"
+                          class="notes-panel-toggle"
+                          aria-label="Collapse notes panel"
+                        >
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="m15 18-6-6 6-6" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="notes-panel-list">
+                      <div class="notes-drawer-item notes-drawer-item--active">
+                        <span class="notes-drawer-item-title"
+                          >What makes a great first-time user experience</span
+                        >
+                        <span class="notes-drawer-item-meta"
+                          >Today at 2:14 PM</span
+                        >
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Growth channels for the next 90 days</span
+                        >
+                        <span class="notes-drawer-item-meta">Yesterday</span>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >New user landing decision</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 16</span>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Competitive positioning — Capacities vs dolfyn</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 14</span>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Pricing tier philosophy</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 13</span>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Auth decision — Better-Auth</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 11</span>
+                      </div>
+                      <div class="notes-list-divider">
+                        <div class="notes-list-divider-line"></div>
+                        <span class="notes-list-divider-label"
+                          >AI conversations</span
+                        >
+                        <div class="notes-list-divider-line"></div>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Pricing model discussion</span
+                        >
+                        <span class="notes-drawer-item-meta"
+                          >Today at 11:30 AM</span
+                        >
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >First-time UX patterns</span
+                        >
+                        <span class="notes-drawer-item-meta">Yesterday</span>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Capacities comparison</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 15</span>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Token-based pricing exploration</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 14</span>
+                      </div>
+                    </div>
+                    <div class="notes-drawer-cap">
+                      <p
+                        class="notes-drawer-cap-text notes-drawer-cap-text--cap-hit"
+                      >
+                        10 of 10 notes —
+                        <a href="#" class="notes-drawer-cap-upgrade"
+                          >upgrade for unlimited</a
+                        >
+                      </p>
+                    </div>
+                  </aside>
+                  <div class="note-editor" style="flex: 1">
+                    <div
+                      class="note-body"
+                      style="max-width: 540px; margin: 0 auto"
+                    >
+                      <div class="note-title">
+                        What makes a great first-time user experience?
+                      </div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        A great first-time experience doesn't explain.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATE C — Cap hit mid-write (upgrade modal) -->
+      <section id="state-c" class="state">
+        <div class="state-header">
+          <span class="state-tag">Cap hit</span>
+          <h2 class="state-title">
+            State C — cap hit mid-write (upgrade modal)
+          </h2>
+          <p class="state-desc">
+            User attempted to create an 11th note. The upgrade modal fires
+            automatically (§4.7) — the note is never created, so no draft exists
+            behind the modal. The background shows the last existing note (the
+            10/10 state) exactly as it was before the attempt. Body copy:
+            "You've written 10 notes — that's a real thinking habit. Upgrade to
+            keep going." Two-tier layout: Think (recommended, ₹99/mo intro) and
+            Deep Think (₹199/mo intro). Primary CTA: "Start at ₹99/mo."
+            Disclosure: "First 3 months at ₹99, then ₹149/mo. Cancel anytime."
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px — upgrade modal</div>
+            <div class="device-frame">
+              <div class="screen" data-state="C">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar" aria-label="Profile">SC</div>
+                  </header>
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">
+                        What makes a great first-time user experience
+                      </div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        First impressions matter more than features.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle sparkle-18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <!-- Upgrade modal -->
+                <div class="overlay">
+                  <div
+                    class="modal modal--mobile"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="m-title-cap"
+                  >
+                    <svg
+                      class="modal-sparkle"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                    <h1 id="m-title-cap" class="modal-title">Unlock dolfyn</h1>
+                    <p class="modal-body">
+                      You've written <strong>10 notes</strong> — that's a real
+                      thinking habit. Upgrade to keep going.
+                    </p>
+
+                    <!-- Think -->
+                    <div class="tier tier--recommended">
+                      <div class="tier-head">
+                        <div class="tier-name-group">
+                          <span class="tier-name">Think</span>
+                          <span class="tier-tag tier-tag--recommended"
+                            >Recommended</span
+                          >
+                        </div>
+                        <div class="tier-price">₹99/mo</div>
+                      </div>
+                      <p class="tier-metrics">
+                        Unlimited notes · 10K chars/note · 200K tokens/day · 8K
+                        context
+                      </p>
+                      <p class="tier-extras tier-extras--accent">
+                        Public sharing, export
+                      </p>
+                    </div>
+
+                    <!-- Deep Think -->
+                    <div class="tier tier--secondary">
+                      <div class="tier-head">
+                        <div class="tier-name-group">
+                          <span class="tier-name tier-name--muted"
+                            >Deep Think</span
+                          >
+                        </div>
+                        <div class="tier-price tier-price--muted">₹199/mo</div>
+                      </div>
+                      <p class="tier-metrics">
+                        Unlimited notes · 20K chars/note · 600K tokens/day · 32K
+                        context
+                      </p>
+                    </div>
+
+                    <button class="cta-primary" type="button">
+                      Start at ₹99/mo
+                    </button>
+                    <p class="cta-disclosure">
+                      First 3 months at ₹99, then ₹149/mo. Cancel anytime.
+                    </p>
+                    <button class="cta-secondary" type="button">
+                      Maybe later
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop viewport — upgrade modal -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop" data-state="C">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div
+                    class="avatar avatar--tier"
+                    aria-label="Profile, Free tier"
+                  >
+                    SC
+                  </div>
+                </header>
+                <div class="note-editor" style="flex: 1">
+                  <div
+                    class="note-body"
+                    style="max-width: 540px; margin: 0 auto"
+                  >
+                    <div class="note-title">
+                      What makes a great first-time user experience
+                    </div>
+                    <p class="note-paragraph" style="margin-bottom: 0">
+                      First impressions matter more than features.
+                    </p>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle sparkle-18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+                <!-- Upgrade modal (desktop) -->
+                <div class="overlay">
+                  <div
+                    class="modal modal--wide"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="d-title-cap"
+                  >
+                    <svg
+                      class="modal-sparkle"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                    <h1 id="d-title-cap" class="modal-title">Unlock dolfyn</h1>
+                    <p class="modal-body">
+                      You've written <strong>10 notes</strong> — that's a real
+                      thinking habit. Upgrade to keep going.
+                    </p>
+
+                    <div class="tier-grid">
+                      <!-- Think (recommended) -->
+                      <div class="tier tier--recommended">
+                        <div class="tier-head">
+                          <div class="tier-name-group">
+                            <span class="tier-name">Think</span>
+                            <span class="tier-tag tier-tag--recommended"
+                              >Recommended</span
+                            >
+                          </div>
+                        </div>
+                        <div class="tier-price">
+                          ₹99/mo<span class="tier-price-note"
+                            >₹149/mo after 3 months</span
+                          >
+                        </div>
+                        <p class="tier-metrics">
+                          Unlimited notes · 10K chars/note · 200K tokens/day ·
+                          8K context
+                        </p>
+                        <p class="tier-extras tier-extras--accent">
+                          Public sharing, export
+                        </p>
+                      </div>
+
+                      <!-- Deep Think -->
+                      <div class="tier tier--secondary">
+                        <div class="tier-head">
+                          <div class="tier-name-group">
+                            <span class="tier-name">Deep Think</span>
+                          </div>
+                        </div>
+                        <div class="tier-price">
+                          ₹199/mo<span class="tier-price-note"
+                            >₹249/mo after 3 months</span
+                          >
+                        </div>
+                        <p class="tier-metrics">
+                          Unlimited notes · 20K chars/note · 600K tokens/day ·
+                          32K context
+                        </p>
+                      </div>
+                    </div>
+
+                    <button class="cta-primary" type="button">
+                      Start at ₹99/mo
+                    </button>
+                    <p class="cta-disclosure">
+                      First 3 months at ₹99, then ₹149/mo. Cancel anytime.
+                    </p>
+
+                    <div class="modal-footer">
+                      <button class="cta-secondary" type="button">
+                        Maybe later
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATE D — Auto-save cue (chat view) -->
+      <section id="state-d" class="state">
+        <div class="state-header">
+          <span class="state-tag">Auto-save cue</span>
+          <h2 class="state-title">State D — auto-save cue indicator</h2>
+          <p class="state-desc">
+            At the start of every new AI chat session, a subtle, dismissible
+            indicator communicates "This conversation will be saved as a note
+            for you to refer to later." The indicator stays as a persistent icon
+            after dismissal. Per Req 06: AI chat auto-save cue.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px — chat tab</div>
+            <div class="device-frame">
+              <div class="screen" data-state="D">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar" aria-label="Profile">SC</div>
+                  </header>
+                  <div class="chat-view">
+                    <div class="chat-thread">
+                      <!-- Auto-save cue indicator -->
+                      <div class="auto-save-cue" role="status">
+                        <svg
+                          class="auto-save-cue-icon"
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path
+                            d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"
+                          />
+                          <polyline points="17 21 17 13 7 13 7 21" />
+                          <polyline points="7 3 7 8 15 8" />
+                        </svg>
+                        <span
+                          >This conversation will be saved as a note for you to
+                          refer to later.</span
+                        >
+                        <button
+                          class="auto-save-cue-dismiss"
+                          aria-label="Dismiss"
+                          type="button"
+                        >
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                          </svg>
+                        </button>
+                      </div>
+                      <!-- Empty state: no messages yet -->
+                      <div class="chat-empty">
+                        <p>Ask me anything about your notes.</p>
+                      </div>
+                    </div>
+                    <div class="chat-input-bar">
+                      <input
+                        type="text"
+                        class="chat-input"
+                        placeholder="Ask about your notes…"
+                        aria-label="Chat input"
+                      />
+                      <button class="chat-send" aria-label="Send" type="button">
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <line x1="22" y1="2" x2="11" y2="13" />
+                          <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle sparkle-18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATE E — Note at character limit -->
+      <section id="state-e" class="state">
+        <div class="state-header">
+          <span class="state-tag">Note limit</span>
+          <h2 class="state-title">State E — note at character limit</h2>
+          <p class="state-desc">
+            Free-tier note at the 4,000-character limit (§4.22). The note-limit
+            indicator is hidden below 70% (no numbers at rest), turns amber
+            approaching the limit ("Getting close to your plan's note limit"),
+            and at the limit reads "This note has reached its character limit
+            for your plan." with a tappable "Upgrade for more space" link. Input
+            is hard-blocked (typing, paste, inline AI — Req 04); the link opens
+            the char-limit upgrade modal (§4.7). Body copy: "This note has
+            reached its character limit for your plan — that's a lot of thinking
+            in one place. Upgrade for more space." Desktop renders the same
+            states; the indicator sits at the bottom of the writing column above
+            the AI presence bar.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px — approaching (≥70%)</div>
+            <div class="device-frame">
+              <div class="screen" data-state="E-approaching">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar" aria-label="Profile">SC</div>
+                  </header>
+                  <div class="note-editor" style="padding-bottom: 124px">
+                    <div class="note-body">
+                      <div class="note-title">Home renovation ideas</div>
+                      <p class="note-paragraph">
+                        Kitchen — pull-out drawers beside the oven, soft-close
+                        everywhere. Living room — paint the ceiling the same
+                        shade as the walls. Bathroom — heated towel rail, glass
+                        shelf above the sink.
+                      </p>
+                      <p class="note-paragraph">
+                        Bedroom — wardrobe with sliding doors, LED strip inside.
+                        Hallway — shoe bench with a cushion, coat hooks at child
+                        height. Balcony — foldable table and two stools, herb
+                        pots along the railing.
+                      </p>
+                      <div
+                        class="note-limit note-limit--approaching"
+                        data-component="note-limit-indicator"
+                        data-state="approaching"
+                        role="status"
+                      >
+                        <span>Getting close to your plan's note limit</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle sparkle-18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+
+          <div class="viewport">
+            <div class="device-label">375px — at limit + upgrade modal</div>
+            <div class="device-frame">
+              <div class="screen" data-state="E-at-limit">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar" aria-label="Profile">SC</div>
+                  </header>
+                  <div class="note-editor" style="padding-bottom: 124px">
+                    <div class="note-body">
+                      <div class="note-title">Home renovation ideas</div>
+                      <p class="note-paragraph">
+                        Kitchen — pull-out drawers beside the oven, soft-close
+                        everywhere. Living room — paint the ceiling the same
+                        shade as the walls. Bathroom — heated towel rail, glass
+                        shelf above the sink.
+                      </p>
+                      <p class="note-paragraph">
+                        Bedroom — wardrobe with sliding doors, LED strip inside.
+                        Hallway — shoe bench with a cushion, coat hooks at child
+                        height. Balcony — foldable table and two stools, herb
+                        pots along the railing.
+                      </p>
+                      <p class="note-paragraph">
+                        Study — standing desk against the window, corkboard
+                        above it. Spare room — fold-out bed, storage cubes under
+                        it. Utility — washing machine on a platform, drying rack
+                        that pulls out.
+                      </p>
+                      <div
+                        class="note-limit note-limit--at-limit"
+                        data-component="note-limit-indicator"
+                        data-state="at-limit"
+                        role="status"
+                      >
+                        <span
+                          >This note has reached its character limit for your
+                          plan.</span
+                        >
+                        <a
+                          href="#"
+                          class="note-limit-upgrade"
+                          data-interaction="open-upgrade-modal"
+                          >Upgrade for more space</a
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle sparkle-18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <!-- Char-limit upgrade modal -->
+                <div class="overlay">
+                  <div
+                    class="modal modal--mobile"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="m-title-charlimit"
+                  >
+                    <svg
+                      class="modal-sparkle"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                    <h1 id="m-title-charlimit" class="modal-title">
+                      Unlock dolfyn
+                    </h1>
+                    <p class="modal-body">
+                      This note has reached its character limit for your plan —
+                      that's a lot of thinking in one place. Upgrade for more
+                      space.
+                    </p>
+
+                    <!-- Think -->
+                    <div class="tier tier--recommended">
+                      <div class="tier-head">
+                        <div class="tier-name-group">
+                          <span class="tier-name">Think</span>
+                          <span class="tier-tag tier-tag--recommended"
+                            >Recommended</span
+                          >
+                        </div>
+                        <div class="tier-price">₹99/mo</div>
+                      </div>
+                      <p class="tier-metrics">
+                        Unlimited notes · 10K chars/note · 200K tokens/day · 8K
+                        context
+                      </p>
+                      <p class="tier-extras tier-extras--accent">
+                        Public sharing, export
+                      </p>
+                    </div>
+
+                    <!-- Deep Think -->
+                    <div class="tier tier--secondary">
+                      <div class="tier-head">
+                        <div class="tier-name-group">
+                          <span class="tier-name tier-name--muted"
+                            >Deep Think</span
+                          >
+                        </div>
+                        <div class="tier-price tier-price--muted">₹199/mo</div>
+                      </div>
+                      <p class="tier-metrics">
+                        Unlimited notes · 20K chars/note · 600K tokens/day · 32K
+                        context
+                      </p>
+                    </div>
+
+                    <button class="cta-primary" type="button">
+                      Start at ₹99/mo
+                    </button>
+                    <p class="cta-disclosure">
+                      First 3 months at ₹99, then ₹149/mo. Cancel anytime.
+                    </p>
+                    <button class="cta-secondary" type="button">
+                      Maybe later
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="viewport">
+            <div class="device-label">1440px desktop — at limit + modal</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop" data-state="E-at-limit">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div
+                    class="avatar avatar--tier"
+                    aria-label="Profile, Free tier"
+                  >
+                    SC
+                  </div>
+                </header>
+                <div class="note-editor" style="flex: 1">
+                  <div
+                    class="note-body"
+                    style="max-width: 540px; margin: 0 auto"
+                  >
+                    <div class="note-title">Home renovation ideas</div>
+                    <p class="note-paragraph">
+                      Kitchen — pull-out drawers beside the oven, soft-close
+                      everywhere. Living room — paint the ceiling the same shade
+                      as the walls. Bathroom — heated towel rail, glass shelf
+                      above the sink.
+                    </p>
+                    <p class="note-paragraph">
+                      Bedroom — wardrobe with sliding doors, LED strip inside.
+                      Hallway — shoe bench with a cushion, coat hooks at child
+                      height. Balcony — foldable table and two stools, herb pots
+                      along the railing.
+                    </p>
+                    <p class="note-paragraph">
+                      Study — standing desk against the window, corkboard above
+                      it. Spare room — fold-out bed, storage cubes under it.
+                      Utility — washing machine on a platform, drying rack that
+                      pulls out.
+                    </p>
+                    <div
+                      class="note-limit note-limit--at-limit"
+                      data-component="note-limit-indicator"
+                      data-state="at-limit"
+                      role="status"
+                    >
+                      <span
+                        >This note has reached its character limit for your
+                        plan.</span
+                      >
+                      <a
+                        href="#"
+                        class="note-limit-upgrade"
+                        data-interaction="open-upgrade-modal"
+                        >Upgrade for more space</a
+                      >
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle sparkle-18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+                <!-- Char-limit upgrade modal (desktop) -->
+                <div class="overlay">
+                  <div
+                    class="modal modal--wide"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="d-title-charlimit"
+                  >
+                    <svg
+                      class="modal-sparkle"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                    <h1 id="d-title-charlimit" class="modal-title">
+                      Unlock dolfyn
+                    </h1>
+                    <p class="modal-body">
+                      This note has reached its character limit for your plan —
+                      that's a lot of thinking in one place. Upgrade for more
+                      space.
+                    </p>
+
+                    <div class="tier-grid">
+                      <!-- Think (recommended) -->
+                      <div class="tier tier--recommended">
+                        <div class="tier-head">
+                          <div class="tier-name-group">
+                            <span class="tier-name">Think</span>
+                            <span class="tier-tag tier-tag--recommended"
+                              >Recommended</span
+                            >
+                          </div>
+                        </div>
+                        <div class="tier-price">
+                          ₹99/mo<span class="tier-price-note"
+                            >₹149/mo after 3 months</span
+                          >
+                        </div>
+                        <p class="tier-metrics">
+                          Unlimited notes · 10K chars/note · 200K tokens/day ·
+                          8K context
+                        </p>
+                        <p class="tier-extras tier-extras--accent">
+                          Public sharing, export
+                        </p>
+                      </div>
+
+                      <!-- Deep Think -->
+                      <div class="tier tier--secondary">
+                        <div class="tier-head">
+                          <div class="tier-name-group">
+                            <span class="tier-name">Deep Think</span>
+                          </div>
+                        </div>
+                        <div class="tier-price">
+                          ₹199/mo<span class="tier-price-note"
+                            >₹249/mo after 3 months</span
+                          >
+                        </div>
+                        <p class="tier-metrics">
+                          Unlimited notes · 20K chars/note · 600K tokens/day ·
+                          32K context
+                        </p>
+                      </div>
+                    </div>
+
+                    <button class="cta-primary" type="button">
+                      Start at ₹99/mo
+                    </button>
+                    <p class="cta-disclosure">
+                      First 3 months at ₹99, then ₹149/mo. Cancel anytime.
+                    </p>
+
+                    <div class="modal-footer">
+                      <button class="cta-secondary" type="button">
+                        Maybe later
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

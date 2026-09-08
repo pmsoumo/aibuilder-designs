@@ -1,0 +1,860 @@
+<!doctype html>
+<!-- COMPONENT INVENTORY: note-editor, ai-block-evidence, ai-bar, bottom-nav -->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>dolfyn — Back My Claim: Inserted AI Block (Compact Format)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --surface: #fafaf7;
+        --surface-subtle: #f2f1ed;
+        --surface-raised: #fff;
+        --surface-overlay: rgba(15, 15, 14, 0.32);
+        --ink: #0f0f0e;
+        --ink-2: #3f3f3f;
+        --ink-3: #6b6b6b;
+        --ink-inverse: #fafaf7;
+        --border: #e5e5e1;
+        --border-strong: #c7c7c2;
+        --divider: #edede9;
+        --accent: #c2410c;
+        --accent-strong: #9a330a;
+        --accent-soft-bg: #fcefde;
+        --accent-tint: #f7f2ec;
+        --space-2: 8px;
+        --space-3: 12px;
+        --space-4: 16px;
+        --space-5: 24px;
+        --radius-sm: 6px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-full: 9999px;
+        --elevation-panel:
+          0 8px 24px -8px rgba(15, 15, 14, 0.12),
+          0 2px 4px -2px rgba(15, 15, 14, 0.06);
+        --z-overlay: 800;
+        --z-panel: 900;
+        --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        --meta-bg: #ecebe5;
+        --meta-ink: #2a2a28;
+        --meta-ink-2: #6e6e68;
+        --meta-border: #d8d7d1;
+        /* AI Block (evidence variant) */
+        --ai-block-bg: #fdfbf6;
+        --ai-block-border: #f0ebe2;
+        --ai-block-border-left: #c2410c;
+        --ai-block-ink: #1a1a18;
+        --ai-block-ink-2: #4a4a46;
+        --ai-block-source-link: #3a3a36;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--meta-bg);
+        color: var(--meta-ink);
+        font-family: "Inter", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .mockup-nav {
+        position: sticky;
+        top: 0;
+        z-index: 1100;
+        background: var(--meta-bg);
+        border-bottom: 1px solid var(--meta-border);
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+      .mockup-title {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      .mockup-subtitle {
+        font-size: 12px;
+        color: var(--meta-ink-2);
+      }
+      .state {
+        padding: 48px 20px 32px;
+        max-width: 1400px;
+        margin: 0 auto;
+        border-top: 1px solid var(--meta-border);
+      }
+      .state-header {
+        margin-bottom: 20px;
+        max-width: 720px;
+      }
+      .state-tag {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink-2);
+        margin-bottom: 8px;
+      }
+      .state-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--meta-ink);
+        margin: 0 0 8px;
+      }
+      .state-desc {
+        font-size: 14px;
+        color: var(--meta-ink-2);
+        line-height: 1.5;
+        margin: 0;
+      }
+      .viewports {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        align-items: flex-start;
+      }
+      .viewport {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        flex-shrink: 0;
+      }
+      .device-label {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink-2);
+        padding-left: 4px;
+      }
+      .device-frame {
+        background: var(--meta-ink);
+        border-radius: 28px;
+        padding: 8px;
+        box-shadow: 0 2px 8px -2px rgba(15, 15, 14, 0.12);
+      }
+      .screen {
+        position: relative;
+        width: 375px;
+        height: 720px;
+        background: var(--surface);
+        border-radius: 22px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .app {
+        position: relative;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      .app-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px;
+        flex-shrink: 0;
+      }
+      .wordmark {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-weight: 600;
+        font-size: 20px;
+        color: var(--ink);
+      }
+      .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 9999px;
+        background: var(--surface-subtle);
+        color: var(--ink-2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
+        font-size: 13px;
+      }
+      .note-editor {
+        flex: 1;
+        padding: 24px 16px 124px;
+        overflow-y: auto;
+        scrollbar-width: none;
+      }
+      .note-editor::-webkit-scrollbar {
+        display: none;
+      }
+      .note-body {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--ink);
+        max-width: 480px;
+      }
+      .note-title {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 1.3;
+        color: var(--ink);
+        margin: 0 0 24px;
+      }
+      .note-paragraph {
+        margin: 0 0 12px;
+      }
+      .cursor {
+        display: inline-block;
+        width: 2px;
+        height: 1.1em;
+        background: var(--ink);
+        vertical-align: text-bottom;
+        margin-left: 1px;
+        animation: blink 1s steps(2) infinite;
+      }
+      @keyframes blink {
+        0%,
+        50% {
+          opacity: 1;
+        }
+        50.01%,
+        100% {
+          opacity: 0;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .cursor {
+          animation: none;
+          opacity: 1;
+        }
+      }
+      .ai-bar {
+        height: 56px;
+        padding: 0 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 14px;
+        flex-shrink: 0;
+      }
+      .ai-bar--passive {
+        background: var(--surface-subtle);
+        color: var(--ink-2);
+      }
+      .ai-bar-sparkle {
+        flex-shrink: 0;
+        color: var(--accent);
+      }
+      .bottom-nav {
+        height: 56px;
+        background: var(--surface-raised);
+        border-top: 1px solid var(--border);
+        display: flex;
+        flex-shrink: 0;
+      }
+      .tab {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--ink-3);
+        position: relative;
+        text-decoration: none;
+      }
+      .tab svg {
+        display: block;
+      }
+      .tab--active {
+        color: var(--ink-2);
+      }
+      .tab--active svg {
+        color: var(--ink);
+      }
+      .tab--active::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 32px;
+        height: 3px;
+        background: var(--accent);
+        border-radius: 0 0 6px 6px;
+      }
+
+      /* AI Block (evidence variant) — compact inserted format */
+      .ai-block-evidence {
+        background: var(--ai-block-bg);
+        border: 1px solid var(--ai-block-border);
+        border-left: 3px solid var(--ai-block-border-left);
+        border-radius: var(--radius-md);
+        padding: 14px 16px;
+        margin: 16px 0;
+        position: relative;
+      }
+      .ai-block-evidence__delete-btn {
+        position: absolute;
+        top: var(--space-2);
+        right: var(--space-2);
+        width: 22px;
+        height: 22px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        background: var(--surface-raised);
+        color: var(--ink-3);
+        font-size: 15px;
+        line-height: 1;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition:
+          opacity var(--duration-fast) var(--ease-out),
+          background var(--duration-fast) var(--ease-out),
+          color var(--duration-fast) var(--ease-out);
+        z-index: 10;
+        padding: 0;
+      }
+      .ai-block-evidence:hover .ai-block-evidence__delete-btn {
+        opacity: 1;
+      }
+      .ai-block-evidence__delete-btn:hover {
+        background: #fef2f2;
+        color: var(--error);
+        border-color: var(--error);
+      }
+      @media (hover: none) {
+        .ai-block-evidence__delete-btn {
+          opacity: 1;
+        }
+      }
+      .ai-block-evidence__verdict {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        color: var(--accent-strong);
+        margin: 0 0 8px;
+        text-transform: uppercase;
+      }
+      .ai-block-evidence__claim {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 15px;
+        line-height: 1.55;
+        color: var(--ai-block-ink);
+        margin: 0 0 8px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .ai-block-evidence__explanation {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 14px;
+        line-height: 1.55;
+        color: var(--ai-block-ink-2);
+        margin: 0 0 10px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .ai-block-evidence__sources {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .ai-block-evidence__source {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 13px;
+        line-height: 1.5;
+        color: var(--ai-block-source-link);
+        text-decoration: none;
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+      }
+      .ai-block-evidence__source:hover {
+        text-decoration: underline;
+      }
+      .ai-block-evidence__source-more {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--ink-3);
+        letter-spacing: 0.01em;
+        margin-top: 2px;
+      }
+
+      .device-frame--desktop {
+        width: 1440px;
+        height: 900px;
+        background: var(--meta-ink);
+        border-radius: 12px;
+        padding: 8px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 2px 8px -2px rgba(15, 15, 14, 0.12);
+      }
+      .screen--desktop {
+        width: 100%;
+        height: 100%;
+        background: var(--surface);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+      .screen--desktop .app-header {
+        flex-shrink: 0;
+      }
+      .screen--desktop .note-editor {
+        flex: 1;
+        min-height: 0;
+      }
+      .screen--desktop .note-editor .note-body {
+        max-width: 540px;
+        margin: 0 auto;
+      }
+      @media (max-width: 900px) {
+        .device-frame--desktop {
+          display: none;
+        }
+      }
+      @media (max-width: 480px) {
+        .state {
+          padding: 20px 12px;
+        }
+        .mockup-nav {
+          padding: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="mockup-nav">
+      <div>
+        <div class="mockup-title">
+          dolfyn / Back My Claim — Inserted AI Block
+        </div>
+        <div class="mockup-subtitle">
+          Compact format: verdict → claim (~2 lines) → explanation (~2 lines) →
+          sources (≤3)
+        </div>
+      </div>
+    </header>
+    <main>
+      <section class="state">
+        <div class="state-header">
+          <span class="state-tag">Inserted AI Block — Supported Verdict</span>
+          <h2 class="state-title">
+            Compact evidence block inserted into note canvas
+          </h2>
+          <p class="state-desc">
+            After the user taps Insert in the panel, the evidence appears as a
+            compact AI Block inline in the note body. The block shows: (1)
+            verdict label, (2) claim truncated to ~2 lines at sentence boundary,
+            (3) explanation truncated to ~2 lines, (4) up to 3 tappable sources.
+            Total visual height ~7-8 lines.
+          </p>
+        </div>
+        <div class="viewports">
+          <!-- Mobile: Supported verdict -->
+          <div class="viewport">
+            <div class="device-label">375px — Supported (EV station idea)</div>
+            <div class="device-frame">
+              <div class="screen">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar">SC</div>
+                  </header>
+                  <div class="note-editor" style="padding-bottom: 124px">
+                    <div class="note-body">
+                      <div class="note-title">EV Recharge Station Idea</div>
+                      <p class="note-paragraph">
+                        I'm considering opening an EV recharge station on the
+                        Delhi-Dehradun highway near Roorkee. The stretch sees
+                        heavy tourist traffic, especially on weekends, and there
+                        are no dedicated fast-charging facilities between
+                        Haridwar and Dehradun — a ~50 km gap.
+                      </p>
+                      <article
+                        class="ai-block-evidence"
+                        data-variant="evidence"
+                      >
+                        <button
+                          class="ai-block-evidence__delete-btn"
+                          title="Delete AI block"
+                        >
+                          &times;
+                        </button>
+                        <p class="ai-block-evidence__verdict">
+                          Claim supported
+                        </p>
+                        <p class="ai-block-evidence__claim">
+                          Opening an EV fast-charging station on the
+                          Delhi-Dehradun highway near Roorkee fills a ~50 km
+                          infrastructure gap between Haridwar and Dehradun.
+                        </p>
+                        <p class="ai-block-evidence__explanation">
+                          The central position of your note is supported by
+                          below evidence.
+                        </p>
+                        <div class="ai-block-evidence__sources">
+                          <a
+                            href="https://heavyindustries.gov.in/ev-charging-infrastructure"
+                            class="ai-block-evidence__source"
+                            target="_blank"
+                            rel="noopener"
+                          >
+                            Ministry of Heavy Industries — EV Charging
+                            Infrastructure Guidelines
+                          </a>
+                          <a
+                            href="https://www.nhai.org/electric-vehicle-charging"
+                            class="ai-block-evidence__source"
+                            target="_blank"
+                            rel="noopener"
+                          >
+                            NHAI — Electric Vehicle Charging Stations on
+                            National Highways
+                          </a>
+                          <a
+                            href="https://pib.gov.in/PressReleasePage.aspx?PRID=1900000"
+                            class="ai-block-evidence__source"
+                            target="_blank"
+                            rel="noopener"
+                          >
+                            PIB — 12,000+ EV charging stations sanctioned under
+                            FAME-II
+                          </a>
+                        </div>
+                      </article>
+                      <p class="note-paragraph">
+                        The location near Roorkee captures both pilgrim traffic
+                        to Haridwar and weekend tourists heading to Mussoorie.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mobile: Could not verify verdict -->
+          <div class="viewport">
+            <div class="device-label">375px — Could not verify</div>
+            <div class="device-frame">
+              <div class="screen">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar">SC</div>
+                  </header>
+                  <div class="note-editor" style="padding-bottom: 124px">
+                    <div class="note-body">
+                      <div class="note-title">First-time UX Impressions</div>
+                      <p class="note-paragraph">
+                        A great first-time experience doesn't explain. People
+                        judge a product's design in under a tenth of a second.
+                        That instant impression sets the tone for everything
+                        that follows.
+                      </p>
+                      <article
+                        class="ai-block-evidence"
+                        data-variant="evidence"
+                      >
+                        <p
+                          class="ai-block-evidence__verdict"
+                          style="color: var(--ink-3)"
+                        >
+                          Could not verify
+                        </p>
+                        <p class="ai-block-evidence__claim">
+                          First impressions are formed in under 100 milliseconds
+                          and determine long-term product perception.
+                        </p>
+                        <p class="ai-block-evidence__explanation">
+                          The web search did not return strong supporting
+                          sources for this specific timeframe claim.
+                        </p>
+                        <div class="ai-block-evidence__sources">
+                          <a
+                            href="https://example.com/study1"
+                            class="ai-block-evidence__source"
+                            target="_blank"
+                            rel="noopener"
+                          >
+                            Study on First Impression Formation — HCI Journal
+                          </a>
+                          <a
+                            href="https://example.com/study2"
+                            class="ai-block-evidence__source"
+                            target="_blank"
+                            rel="noopener"
+                          >
+                            Google Research — Visual Complexity and Aesthetics
+                          </a>
+                        </div>
+                      </article>
+                      <p class="note-paragraph">
+                        Maybe I should dig deeper into this before building on
+                        it. The web search came up short.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Desktop viewport -->
+      <section class="state" style="border-top: 1px solid var(--meta-border)">
+        <div class="state-header">
+          <span class="state-tag">Desktop viewport</span>
+          <h2 class="state-title">1440px — Supported verdict (desktop)</h2>
+          <p class="state-desc">
+            Same compact AI Block, wider canvas. The block remains visually
+            compact at any viewport width. Line-clamp ensures consistent ~2-line
+            limits for claim and explanation.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="avatar">SC</div>
+                </header>
+                <div class="note-editor">
+                  <div class="note-body">
+                    <div class="note-title">EV Recharge Station Idea</div>
+                    <p class="note-paragraph">
+                      I'm considering opening an EV recharge station on the
+                      Delhi-Dehradun highway near Roorkee. The stretch sees
+                      heavy tourist traffic, especially on weekends, and there
+                      are no dedicated fast-charging facilities between Haridwar
+                      and Dehradun — a ~50 km gap.
+                    </p>
+                    <article class="ai-block-evidence" data-variant="evidence">
+                      <button
+                        class="ai-block-evidence__delete-btn"
+                        title="Delete AI block"
+                      >
+                        &times;
+                      </button>
+                      <p class="ai-block-evidence__verdict">Claim supported</p>
+                      <p class="ai-block-evidence__claim">
+                        Opening an EV fast-charging station on the
+                        Delhi-Dehradun highway near Roorkee fills a ~50 km
+                        infrastructure gap between Haridwar and Dehradun.
+                      </p>
+                      <p class="ai-block-evidence__explanation">
+                        The central position of your note is supported by below
+                        evidence.
+                      </p>
+                      <div class="ai-block-evidence__sources">
+                        <a
+                          href="https://heavyindustries.gov.in/ev-charging-infrastructure"
+                          class="ai-block-evidence__source"
+                          target="_blank"
+                          rel="noopener"
+                        >
+                          Ministry of Heavy Industries — EV Charging
+                          Infrastructure Guidelines
+                        </a>
+                        <a
+                          href="https://www.nhai.org/electric-vehicle-charging"
+                          class="ai-block-evidence__source"
+                          target="_blank"
+                          rel="noopener"
+                        >
+                          NHAI — Electric Vehicle Charging Stations on National
+                          Highways
+                        </a>
+                        <a
+                          href="https://pib.gov.in/PressReleasePage.aspx?PRID=1900000"
+                          class="ai-block-evidence__source"
+                          target="_blank"
+                          rel="noopener"
+                        >
+                          PIB — 12,000+ EV charging stations sanctioned under
+                          FAME-II
+                        </a>
+                      </div>
+                    </article>
+                    <p class="note-paragraph">
+                      The location near Roorkee captures both pilgrim traffic to
+                      Haridwar and weekend tourists heading to Mussoorie.
+                    </p>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

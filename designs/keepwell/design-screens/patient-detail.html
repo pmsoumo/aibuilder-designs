@@ -1,0 +1,488 @@
+<!-- COMPONENT INVENTORY: app-shell, sidebar-nav, bottom-nav, patient-header, vitals-strip, visit-row, section-header, status-tag, button-primary, button-secondary, input-text, empty-state, skeleton-row -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KeepWell — Patients</title>
+    <link rel="stylesheet" href="../tokens.css" />
+    <link rel="stylesheet" href="../screens.css" />
+  </head>
+  <body>
+    <div class="board">
+      <h1>Patients — the directory that was scoped and never built</h1>
+      <p class="lede">
+        Every booking and every accepted check-in already creates a patient row;
+        the app simply never showed them, and the nav item labelled "Patients"
+        rendered the live queue instead. This is that screen. The directory is a
+        rail, not a page, because a name is chosen in order to look at the person
+        — the two are one act, and making it two navigations costs a tap the
+        doctor pays for every patient of the day.
+      </p>
+
+      <h2 class="group">Desktop — list rail beside the record</h2>
+      <p class="groupnote">
+        The <strong>vitals strip carries the change, not just the reading</strong>.
+        A BP of 138/90 is a fact the doctor already had on paper; "138/90, up
+        from 128/84 in March" is the thing paper never gave them, and it is the
+        single most defensible reason this record exists. The timeline merges the
+        next appointment into the same list as past visits, so history and
+        what's coming read as one thread.
+      </p>
+
+      <div class="vp-desktop">
+        <div
+          class="kw-shell has-list"
+          data-component="app-shell"
+          data-variant="desktop-split"
+          data-responsive="1200"
+        >
+          <nav class="kw-sidebar" data-component="sidebar-nav" aria-label="Main">
+            <div class="kw-sidebar-head">
+              <div class="kw-brand">KeepWell</div>
+              <button
+                class="kw-navtoggle"
+                data-component="nav-toggle"
+                data-interaction="toggle-sidebar"
+                aria-label="Collapse navigation"
+                aria-expanded="true"
+              >
+                &#8249;
+              </button>
+            </div>
+            <a class="kw-navitem" href="#"
+              ><span>Today</span><span class="kw-count">11</span></a
+            >
+            <a class="kw-navitem" href="#"
+              ><span>Send</span><span class="kw-count">6</span></a
+            >
+            <a class="kw-navitem" href="#" aria-current="page"
+              ><span>Patients</span><span class="kw-count empty">0</span></a
+            >
+            <a class="kw-navitem" href="#"
+              ><span>Close day</span><span class="kw-count empty">0</span></a
+            >
+            <div class="kw-sidebar-foot">Dr Anjali Rao<br />Rao Clinic, Pune</div>
+          </nav>
+
+          <div class="kw-list">
+            <div class="kw-list-head">
+              <input
+                class="kw-input"
+                data-component="input-text"
+                type="search"
+                aria-label="Search patients"
+                placeholder="Name or phone"
+              />
+            </div>
+            <div class="kw-scroll">
+              <button class="kw-listrow" aria-current="true">
+                <span>
+                  <span class="name">Sunita Deshmukh</span>
+                  <span class="sub">98220 41556 · 6 visits</span>
+                </span>
+                <span class="ago">today</span>
+              </button>
+              <button class="kw-listrow">
+                <span>
+                  <span class="name">Imran Shaikh</span>
+                  <span class="sub">99700 18234 · 1 visit</span>
+                </span>
+                <span class="ago">today</span>
+              </button>
+              <button class="kw-listrow">
+                <span>
+                  <span class="name">Meera Kulkarni</span>
+                  <span class="sub">98501 77310 · 4 visits</span>
+                </span>
+                <span class="ago">3 wks</span>
+              </button>
+              <button class="kw-listrow">
+                <span>
+                  <span class="name">Ramesh Pawar</span>
+                  <span class="sub">90280 63149 · 11 visits</span>
+                </span>
+                <span class="ago">2 mo</span>
+              </button>
+              <button class="kw-listrow">
+                <span>
+                  <span class="name">Fatima Sayyed</span>
+                  <span class="sub">no phone · 2 visits</span>
+                </span>
+                <span class="ago">5 mo</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="kw-main">
+            <header class="kw-phead" data-component="patient-header">
+              <div>
+                <span class="who">Sunita Deshmukh</span>
+                <span class="meta">34 · 98220 41556 · patient since Jan 2025</span>
+                <span class="kw-tag kw-tag--sent" data-component="status-tag"
+                  >Messaging allowed</span
+                >
+              </div>
+              <button
+                class="kw-btn kw-btn--primary"
+                data-component="button-primary"
+                data-primary-action="true"
+                data-interaction="start-visit"
+              >
+                Start visit
+              </button>
+            </header>
+
+            <div class="kw-vstrip" data-component="vitals-strip">
+              <div class="reading">
+                <span class="label">BP</span>
+                <span class="value">138/90</span>
+                <span class="delta alert">&#8593; from 128/84 in March</span>
+              </div>
+              <div class="reading">
+                <span class="label">Weight</span>
+                <span class="value">61 kg</span>
+                <span class="delta">&#8595; 2 kg since March</span>
+              </div>
+              <div class="reading">
+                <span class="label">Pulse</span>
+                <span class="value">92</span>
+                <span class="delta">same as March</span>
+              </div>
+            </div>
+
+            <div class="kw-scroll">
+              <div class="kw-section" data-component="section-header">
+                <span>Visits</span>
+                <span>6</span>
+              </div>
+
+              <div class="kw-vrow" data-component="visit-row" data-variant="upcoming">
+                <span class="date">12 Sep</span>
+                <span>
+                  <span class="what">Follow-up — fever review</span>
+                  <span class="sub">Booked from today's visit · recall not sent yet</span>
+                </span>
+                <span class="kw-tag" data-component="status-tag">Upcoming</span>
+              </div>
+
+              <div class="kw-vrow" data-component="visit-row">
+                <span class="date">7 Sep</span>
+                <span>
+                  <span class="what">Fever, dry cough</span>
+                  <span class="sub">2 medicines · receipt &#8377;400 · review in 5 days</span>
+                </span>
+                <span class="kw-tag kw-tag--sent" data-component="status-tag">Rx sent</span>
+              </div>
+
+              <div class="kw-vrow" data-component="visit-row">
+                <span class="date">14 Mar</span>
+                <span>
+                  <span class="what">BP review</span>
+                  <span class="sub">1 medicine · receipt &#8377;400</span>
+                </span>
+                <span class="kw-tag kw-tag--sent" data-component="status-tag">Rx sent</span>
+              </div>
+
+              <div class="kw-vrow" data-component="visit-row">
+                <span class="date">2 Feb</span>
+                <span>
+                  <span class="what">Acidity, disturbed sleep</span>
+                  <span class="sub">2 medicines · receipt &#8377;350</span>
+                </span>
+                <span class="kw-tag" data-component="status-tag">Rx printed</span>
+              </div>
+
+              <div class="kw-section" data-component="section-header">
+                <span>Messages</span>
+                <span>9</span>
+              </div>
+
+              <div class="kw-sentrow">
+                <span class="name">Reminder — 12 Sep appointment</span>
+                <span class="kw-tag" data-component="status-tag">Not sent</span>
+                <button
+                  class="kw-btn kw-btn--link"
+                  data-component="button-secondary"
+                  data-interaction="send-now"
+                >
+                  Send
+                </button>
+              </div>
+              <div class="kw-sentrow">
+                <span class="name">Prescription — 7 Sep</span>
+                <span class="kw-tag kw-tag--sent" data-component="status-tag">Sent</span>
+                <button
+                  class="kw-btn kw-btn--link"
+                  data-component="button-secondary"
+                  data-interaction="resend"
+                >
+                  Resend
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="group">Desktop — a patient with no history yet</h2>
+      <p class="groupnote">
+        Created seconds ago by a booking or an accepted check-in, which is how
+        most records will begin. The empty state doubles as onboarding and offers
+        the one action that turns a name into a record.
+      </p>
+
+      <div class="vp-desktop">
+        <div
+          class="kw-shell has-list"
+          data-component="app-shell"
+          data-variant="desktop-split"
+          data-state="empty"
+        >
+          <nav class="kw-sidebar" data-component="sidebar-nav" aria-label="Main">
+            <div class="kw-sidebar-head">
+              <div class="kw-brand">KeepWell</div>
+              <button
+                class="kw-navtoggle"
+                data-component="nav-toggle"
+                data-interaction="toggle-sidebar"
+                aria-label="Collapse navigation"
+                aria-expanded="true"
+              >
+                &#8249;
+              </button>
+            </div>
+            <a class="kw-navitem" href="#"
+              ><span>Today</span><span class="kw-count">11</span></a
+            >
+            <a class="kw-navitem" href="#"
+              ><span>Send</span><span class="kw-count">6</span></a
+            >
+            <a class="kw-navitem" href="#" aria-current="page"
+              ><span>Patients</span><span class="kw-count empty">0</span></a
+            >
+            <a class="kw-navitem" href="#"
+              ><span>Close day</span><span class="kw-count empty">0</span></a
+            >
+            <div class="kw-sidebar-foot">Dr Anjali Rao<br />Rao Clinic, Pune</div>
+          </nav>
+
+          <div class="kw-list">
+            <div class="kw-list-head">
+              <input
+                class="kw-input"
+                data-component="input-text"
+                type="search"
+                aria-label="Search patients"
+                placeholder="Name or phone"
+              />
+            </div>
+            <div class="kw-scroll">
+              <button class="kw-listrow" aria-current="true">
+                <span>
+                  <span class="name">Imran Shaikh</span>
+                  <span class="sub">99700 18234 · no visits yet</span>
+                </span>
+                <span class="ago">today</span>
+              </button>
+              <button class="kw-listrow">
+                <span>
+                  <span class="name">Sunita Deshmukh</span>
+                  <span class="sub">98220 41556 · 6 visits</span>
+                </span>
+                <span class="ago">today</span>
+              </button>
+              <div class="kw-skeleton" data-component="skeleton-row">
+                <span>
+                  <span class="kw-bone kw-bone--title"></span>
+                  <span class="kw-bone kw-bone--short"></span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="kw-main">
+            <header class="kw-phead" data-component="patient-header">
+              <div>
+                <span class="who">Imran Shaikh</span>
+                <span class="meta">99700 18234 · added today from the door QR</span>
+                <span class="kw-tag" data-component="status-tag">Messaging not allowed</span>
+              </div>
+              <button
+                class="kw-btn kw-btn--primary"
+                data-component="button-primary"
+                data-primary-action="true"
+                data-interaction="start-visit"
+              >
+                Start visit
+              </button>
+            </header>
+
+            <div
+              class="kw-empty"
+              data-component="empty-state"
+              data-variant="first-run"
+            >
+              <h3>Nothing recorded yet</h3>
+              <p>
+                The record starts with the first visit. Vitals, prescriptions and
+                what you charged all land here, and the trend appears from the
+                second visit onwards.
+              </p>
+              <button
+                class="kw-btn kw-btn--secondary"
+                data-component="button-secondary"
+                data-interaction="edit-patient"
+              >
+                Add age and notes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="group">Phone — list, then record</h2>
+      <p class="groupnote">
+        Identical markup: at 375px the rail becomes the screen, and choosing a
+        name pushes the record with a back control. Start visit sits in the
+        thumb zone, not at the top of a pane the doctor has scrolled.
+      </p>
+
+      <div class="states">
+        <div class="state">
+          <h3>The directory</h3>
+          <p class="note">Search first — a clinic has more names than a screen.</p>
+          <div class="vp-phone">
+            <div
+              class="kw-shell"
+              data-component="app-shell"
+              data-variant="phone"
+              data-responsive="375"
+            >
+              <div class="kw-topbar">
+                <div class="kicker">Rao Clinic</div>
+                <div class="title">Patients</div>
+              </div>
+              <div class="kw-scroll">
+                <div class="kw-list-head">
+                  <input
+                    class="kw-input"
+                    data-component="input-text"
+                    type="search"
+                    aria-label="Search patients"
+                    placeholder="Name or phone"
+                  />
+                </div>
+                <button class="kw-listrow">
+                  <span>
+                    <span class="name">Sunita Deshmukh</span>
+                    <span class="sub">98220 41556 · 6 visits</span>
+                  </span>
+                  <span class="ago">today</span>
+                </button>
+                <button class="kw-listrow">
+                  <span>
+                    <span class="name">Imran Shaikh</span>
+                    <span class="sub">99700 18234 · 1 visit</span>
+                  </span>
+                  <span class="ago">today</span>
+                </button>
+                <button class="kw-listrow">
+                  <span>
+                    <span class="name">Meera Kulkarni</span>
+                    <span class="sub">98501 77310 · 4 visits</span>
+                  </span>
+                  <span class="ago">3 wks</span>
+                </button>
+                <button class="kw-listrow">
+                  <span>
+                    <span class="name">Ramesh Pawar</span>
+                    <span class="sub">90280 63149 · 11 visits</span>
+                  </span>
+                  <span class="ago">2 mo</span>
+                </button>
+              </div>
+              <nav class="kw-bottomnav" data-component="bottom-nav" aria-label="Main">
+                <a href="#">Today<span class="kw-badge">11</span></a>
+                <a href="#">Send<span class="kw-badge">6</span></a>
+                <a href="#" aria-current="page">Patients</a>
+                <a href="#">Close day</a>
+              </nav>
+            </div>
+          </div>
+        </div>
+
+        <div class="state">
+          <h3>One patient</h3>
+          <p class="note">
+            The strip comes first — the change is what the doctor scans for
+            before they say a word.
+          </p>
+          <div class="vp-phone">
+            <div class="kw-shell" data-component="app-shell" data-variant="phone">
+              <div class="kw-topbar with-back">
+                <button
+                  class="kw-back"
+                  data-interaction="back"
+                  aria-label="Back to patients"
+                >
+                  &#8592; Patients
+                </button>
+                <span class="title">Sunita Deshmukh</span>
+              </div>
+              <div class="kw-scroll">
+                <div class="kw-vstrip" data-component="vitals-strip">
+                  <div class="reading">
+                    <span class="label">BP</span>
+                    <span class="value">138/90</span>
+                    <span class="delta alert">&#8593; from 128/84</span>
+                  </div>
+                  <div class="reading">
+                    <span class="label">Weight</span>
+                    <span class="value">61 kg</span>
+                    <span class="delta">&#8595; 2 kg</span>
+                  </div>
+                </div>
+                <div class="kw-section" data-component="section-header">
+                  <span>Visits</span>
+                  <span>6</span>
+                </div>
+                <div class="kw-vrow" data-component="visit-row" data-variant="upcoming">
+                  <span class="date">12 Sep</span>
+                  <span>
+                    <span class="what">Follow-up</span>
+                    <span class="sub">Recall not sent</span>
+                  </span>
+                </div>
+                <div class="kw-vrow" data-component="visit-row">
+                  <span class="date">7 Sep</span>
+                  <span>
+                    <span class="what">Fever, dry cough</span>
+                    <span class="sub">2 medicines · &#8377;400</span>
+                  </span>
+                </div>
+                <div class="kw-vrow" data-component="visit-row">
+                  <span class="date">14 Mar</span>
+                  <span>
+                    <span class="what">BP review</span>
+                    <span class="sub">1 medicine · &#8377;400</span>
+                  </span>
+                </div>
+              </div>
+              <div class="kw-actionbar">
+                <button
+                  class="kw-btn kw-btn--primary kw-btn--tall kw-btn--block"
+                  data-component="button-primary"
+                  data-primary-action="true"
+                  data-interaction="start-visit"
+                >
+                  Start visit
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

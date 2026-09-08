@@ -1,0 +1,3278 @@
+<!-- COMPONENT INVENTORY: app-shell, app-header, wordmark, new-chat-btn, avatar, bottom-nav, tab, chat-view, chat-thread, chat-msg, chat-bubble, chat-msg-meta, chat-input-bar, chat-input, chat-send, panel-header, chat-expand-toggle, chat-save-status, save-status-icon, save-status-text, save-status-retry, sparkle-spin, notes-panel, notes-drawer-item, desktop-content-row, chat-panel--desktop, desktop-expanded-content -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>dolfyn — Chat Panel Save Status (Live Autosave)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --surface: #fafaf7;
+        --surface-subtle: #f2f1ed;
+        --surface-raised: #ffffff;
+        --surface-overlay: rgba(15, 15, 14, 0.32);
+        --ink: #0f0f0e;
+        --ink-2: #3f3f3f;
+        --ink-3: #6b6b6b;
+        --ink-inverse: #fafaf7;
+        --border: #e5e5e1;
+        --border-strong: #c7c7c2;
+        --divider: #edede9;
+        --accent: #c2410c;
+        --accent-strong: #9a330a;
+        --accent-soft-bg: #fcefde;
+        --accent-tint: #f7f2ec;
+        --success: #15803d;
+        --error: #b91c1c;
+        --space-1: 4px;
+        --space-2: 8px;
+        --space-3: 12px;
+        --space-4: 16px;
+        --space-5: 24px;
+        --space-6: 32px;
+        --space-7: 48px;
+        --radius-sm: 6px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-xl: 16px;
+        --radius-full: 9999px;
+        --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        --ease-in: cubic-bezier(0.4, 0, 1, 1);
+        --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+        --duration-fast: 150ms;
+        --duration-base: 250ms;
+        --duration-slow: 350ms;
+        --elevation-panel:
+          0 8px 24px -8px rgba(15, 15, 14, 0.12),
+          0 2px 4px -2px rgba(15, 15, 14, 0.06);
+        --elevation-toast: 0 4px 12px -2px rgba(15, 15, 14, 0.08);
+        --z-base: 0;
+        --z-sticky: 100;
+        --z-overlay: 800;
+        --z-panel: 900;
+        --z-modal: 1000;
+        --z-toast: 1100;
+        --meta-bg: #ecebe5;
+        --meta-ink: #2a2a28;
+        --meta-ink-2: #6e6e68;
+        --meta-border: #d8d7d1;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        background: var(--meta-bg);
+        color: var(--meta-ink);
+        font-family: "Inter", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .mockup-nav {
+        position: sticky;
+        top: 0;
+        z-index: 1100;
+        background: var(--meta-bg);
+        border-bottom: 1px solid var(--meta-border);
+        padding: var(--space-3) var(--space-5);
+        display: flex;
+        align-items: center;
+        gap: var(--space-5);
+        flex-wrap: wrap;
+      }
+      .mockup-title {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink);
+      }
+      .mockup-subtitle {
+        font-size: 12px;
+        color: var(--meta-ink-2);
+      }
+      .state-tabs {
+        display: flex;
+        gap: var(--space-1);
+        margin-left: auto;
+        flex-wrap: wrap;
+      }
+      .state-tab {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--meta-ink-2);
+        text-decoration: none;
+        padding: var(--space-1) var(--space-2);
+        border-radius: var(--radius-sm);
+        border: 1px solid transparent;
+        transition:
+          background var(--duration-fast) var(--ease-out),
+          color var(--duration-fast) var(--ease-out);
+        white-space: nowrap;
+      }
+      .state-tab:hover {
+        background: rgba(15, 15, 14, 0.05);
+        color: var(--meta-ink);
+      }
+      #state-a:target ~ .mockup-nav .state-tab[href="#state-a"],
+      #state-b:target ~ .mockup-nav .state-tab[href="#state-b"],
+      #state-c:target ~ .mockup-nav .state-tab[href="#state-c"],
+      #state-d:target ~ .mockup-nav .state-tab[href="#state-d"],
+      #state-e:target ~ .mockup-nav .state-tab[href="#state-e"] {
+        background: var(--meta-ink);
+        color: var(--ink-inverse);
+      }
+
+      .state {
+        padding: var(--space-7) var(--space-5) var(--space-6);
+        max-width: 1400px;
+        margin: 0 auto;
+        border-top: 1px solid var(--meta-border);
+      }
+      .state:first-of-type {
+        border-top: none;
+      }
+      .state:target {
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: var(--radius-lg);
+      }
+      .state-header {
+        margin-bottom: var(--space-5);
+        max-width: 720px;
+      }
+      .state-tag {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink-2);
+        margin-bottom: var(--space-2);
+      }
+      .state-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--meta-ink);
+        margin: 0 0 var(--space-2);
+        letter-spacing: -0.01em;
+      }
+      .state-desc {
+        font-size: 14px;
+        color: var(--meta-ink-2);
+        line-height: 1.5;
+        margin: 0;
+      }
+      .viewports {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-5);
+        align-items: flex-start;
+      }
+      .viewport {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        flex-shrink: 0;
+      }
+      .device-label {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink-2);
+        padding-left: var(--space-1);
+      }
+      .device-frame {
+        background: var(--meta-ink);
+        border-radius: 28px;
+        padding: 8px;
+        box-shadow: 0 2px 8px -2px rgba(15, 15, 14, 0.12);
+        width: fit-content;
+        max-width: 100%;
+      }
+      .device-frame--desktop {
+        width: 1440px;
+        height: 900px;
+        border-radius: 12px;
+        padding: 8px;
+        position: relative;
+        overflow: hidden;
+      }
+      .screen {
+        position: relative;
+        width: 375px;
+        height: 720px;
+        background: var(--surface);
+        border-radius: 22px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .screen--desktop-canvas {
+        width: 100%;
+        height: 100%;
+        background: var(--surface);
+        border-radius: 4px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+
+      /* App shell */
+      .app {
+        position: relative;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+      .app-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-3) var(--space-4);
+        flex-shrink: 0;
+      }
+      .wordmark {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-weight: 600;
+        font-size: 20px;
+        letter-spacing: -0.01em;
+        color: var(--ink);
+        line-height: 1;
+      }
+      .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-full);
+        background: var(--surface-subtle);
+        color: var(--ink-2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
+        font-size: 13px;
+        flex-shrink: 0;
+      }
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+      }
+      .new-chat-btn {
+        background: transparent;
+        border: none;
+        color: var(--ink-2);
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-md);
+        flex-shrink: 0;
+      }
+      .new-chat-btn:active {
+        background: var(--surface-subtle);
+      }
+      .avatar--tier {
+        position: relative;
+      }
+      .avatar--tier::after {
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        right: -1px;
+        width: 10px;
+        height: 10px;
+        border-radius: var(--radius-full);
+        background: var(--accent);
+        border: 2px solid var(--surface);
+      }
+
+      /* Chat view */
+      .chat-view {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .chat-thread {
+        flex: 1;
+        overflow-y: auto;
+        padding: var(--space-5) var(--space-4);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+        scrollbar-width: none;
+      }
+      .chat-thread::-webkit-scrollbar {
+        display: none;
+      }
+      .chat-msg {
+        max-width: 85%;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+      }
+      .chat-msg--user {
+        align-self: flex-end;
+      }
+      .chat-msg--ai {
+        align-self: flex-start;
+      }
+      .chat-bubble {
+        padding: var(--space-3) var(--space-4);
+        border-radius: var(--radius-lg);
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 15px;
+        line-height: 1.6;
+      }
+      .chat-bubble--user {
+        background: var(--ink);
+        color: var(--ink-inverse);
+        border-bottom-right-radius: var(--radius-sm);
+      }
+      .chat-bubble--ai {
+        background: var(--surface-subtle);
+        color: var(--ink);
+        border-bottom-left-radius: var(--radius-sm);
+      }
+      .chat-bubble p {
+        margin: 0;
+      }
+      .chat-msg-meta {
+        font-size: 11px;
+        color: var(--ink-3);
+        padding: 0 var(--space-1);
+      }
+      .chat-msg--user .chat-msg-meta {
+        text-align: right;
+      }
+
+      /* ============================================
+       CHAT-SAVE-STATUS — Req 21 header status line (S0–S4)
+       ============================================ */
+      .chat-save-status {
+        height: 32px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: 0 var(--space-4);
+        background: var(--surface-raised);
+        border-bottom: 1px solid var(--divider);
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+      }
+      .chat-save-status .icon {
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+      }
+      .chat-save-status--created {
+        color: var(--ink-2);
+      }
+      .chat-save-status--created .icon {
+        color: var(--success);
+      }
+      .chat-save-status--updating {
+        color: var(--ink-2);
+      }
+      .chat-save-status--updating .icon {
+        color: var(--accent);
+        animation: spin 1s linear infinite;
+      }
+      .chat-save-status--updated {
+        color: var(--success);
+      }
+      .chat-save-status--updated .icon {
+        color: var(--success);
+      }
+      .chat-save-status--failed {
+        color: var(--error);
+      }
+      .chat-save-status--failed .icon {
+        color: var(--error);
+      }
+      .chat-save-status--hidden {
+        display: none;
+      }
+      .chat-save-status .retry {
+        background: none;
+        border: none;
+        padding: 0 var(--space-2);
+        margin: 0 0 0 var(--space-1);
+        height: 44px;
+        display: inline-flex;
+        align-items: center;
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--accent-strong);
+        text-decoration: underline;
+        cursor: pointer;
+      }
+      .chat-save-status .retry:active {
+        opacity: 0.7;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .chat-save-status--updating .icon {
+          animation: none;
+        }
+      }
+
+      /* Panel header (desktop split/expanded) — unchanged */
+      .panel-header {
+        height: 48px;
+        flex-shrink: 0;
+        padding: 0 var(--space-4);
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        border-bottom: 1px solid var(--divider);
+        background: var(--surface-raised);
+      }
+      .panel-sparkle {
+        color: var(--accent);
+        flex-shrink: 0;
+      }
+      .panel-title {
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.3;
+        color: var(--ink-2);
+        letter-spacing: 0;
+      }
+      .chat-expand-toggle {
+        background: transparent;
+        border: none;
+        color: var(--ink-2);
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-md);
+        flex-shrink: 0;
+        margin-left: auto;
+      }
+      .chat-expand-toggle:active {
+        background: var(--surface-subtle);
+      }
+
+      /* Chat input bar */
+      .chat-input-bar {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-3) var(--space-4);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        background: var(--surface-raised);
+        margin: 0 var(--space-4) var(--space-3);
+      }
+      .chat-input {
+        flex: 1;
+        height: 44px;
+        border: none;
+        background: transparent;
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 15px;
+        color: var(--ink);
+        outline: none;
+        padding: 0 var(--space-2);
+      }
+      .chat-input::placeholder {
+        color: var(--ink-3);
+      }
+      .chat-send {
+        width: 44px;
+        height: 44px;
+        border: none;
+        border-radius: var(--radius-md);
+        background: var(--ink);
+        color: var(--ink-inverse);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        opacity: 0.4;
+      }
+
+      /* Citation chip */
+      .citation-chip {
+        display: inline-flex;
+        align-items: center;
+        height: 28px;
+        padding: 0 var(--space-2);
+        margin: 0 2px;
+        background: var(--surface-subtle);
+        border-radius: var(--radius-md);
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 14px;
+        line-height: 1.4;
+        color: var(--ink-2);
+        white-space: nowrap;
+        max-width: 220px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        vertical-align: baseline;
+        position: relative;
+        top: 2px;
+        cursor: pointer;
+      }
+
+      /* Bottom nav */
+      .bottom-nav {
+        height: 56px;
+        background: var(--surface-raised);
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: stretch;
+        justify-content: space-around;
+        padding: 0 var(--space-2);
+        flex-shrink: 0;
+      }
+      .tab {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--ink-3);
+        position: relative;
+        text-decoration: none;
+      }
+      .tab svg {
+        display: block;
+      }
+      .tab--active {
+        color: var(--ink-2);
+      }
+      .tab--active svg {
+        color: var(--ink);
+      }
+      .tab--active::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 32px;
+        height: 3px;
+        background: var(--accent);
+        border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      }
+
+      /* Desktop split — notes panel + chat panel */
+      .desktop-content-row {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+      }
+      .notes-panel {
+        position: relative;
+        width: 320px;
+        flex-shrink: 0;
+        border-right: 1px solid var(--border);
+        background: var(--surface-raised);
+        display: flex;
+        flex-direction: column;
+      }
+      .notes-panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-4);
+        border-bottom: 1px solid var(--divider);
+      }
+      .notes-panel-title {
+        font-size: 13px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        margin: 0;
+      }
+      .notes-panel-list {
+        flex: 1;
+        overflow-y: auto;
+      }
+      .notes-drawer-item {
+        padding: var(--space-3) var(--space-4);
+        border-bottom: 1px solid var(--divider);
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+      }
+      .notes-drawer-item:active {
+        background: var(--surface-subtle);
+      }
+      .notes-drawer-item-title {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 15px;
+        line-height: 1.4;
+        color: var(--ink);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+      }
+      .notes-drawer-item-snippet {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 13px;
+        line-height: 1.4;
+        color: var(--ink-3);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+      }
+      .notes-drawer-item-meta {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        color: var(--ink-3);
+      }
+      .notes-drawer-item--active {
+        background: var(--surface-subtle);
+      }
+      .notes-drawer-item--from-chat .notes-drawer-item-meta {
+        color: var(--accent-strong);
+      }
+      .notes-list-divider {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-2) var(--space-4);
+        background: var(--surface-subtle);
+      }
+      .notes-list-divider-line {
+        flex: 1;
+        height: 1px;
+        background: var(--divider);
+      }
+      .notes-list-divider-label {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        white-space: nowrap;
+      }
+      .chat-panel--desktop {
+        position: relative;
+        width: 480px;
+        flex-shrink: 0;
+        background: var(--surface-raised);
+        border-left: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Desktop expanded — chat fills full width */
+      .desktop-expanded-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .desktop-expanded-content .chat-view {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .desktop-expanded-content .chat-thread {
+        max-width: 720px;
+        margin: 0 auto;
+        width: 100%;
+      }
+      .desktop-expanded-content .chat-input-bar {
+        max-width: 720px;
+        margin-left: auto;
+        margin-right: auto;
+        width: calc(100% - var(--space-4) * 2);
+      }
+
+      .note-editor {
+        flex: 1;
+        min-width: 0;
+        overflow-y: auto;
+      }
+      .note-body {
+        max-width: 540px;
+        margin: 0 auto;
+        padding: var(--space-5) var(--space-4);
+      }
+      .note-title {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--ink);
+        line-height: 1.3;
+        margin-bottom: var(--space-4);
+      }
+      .note-paragraph {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 16px;
+        line-height: 1.7;
+        color: var(--ink-2);
+        margin-bottom: var(--space-4);
+      }
+
+      @media (max-width: 900px) {
+        .device-frame--desktop {
+          display: none;
+        }
+      }
+      @media (max-width: 480px) {
+        .state {
+          padding: var(--space-5) var(--space-3);
+        }
+        .mockup-nav {
+          padding: var(--space-3);
+        }
+        .state-tabs {
+          width: 100%;
+          margin-left: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="mockup-nav">
+      <div>
+        <div class="mockup-title">dolfyn / Chat Panel Save Status</div>
+        <div class="mockup-subtitle">
+          Req 21 · Workstream B · S0–S4 · 5 states
+        </div>
+      </div>
+      <nav class="state-tabs" aria-label="State selector">
+        <a href="#state-a" class="state-tab">S0 · empty</a>
+        <a href="#state-b" class="state-tab">S1 · saved as note</a>
+        <a href="#state-c" class="state-tab">S2 · updating</a>
+        <a href="#state-d" class="state-tab">S3 · updated</a>
+        <a href="#state-e" class="state-tab">S4 · failed + retry</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- ============================================
+         STATE A — S0 Empty: no status row
+         ============================================ -->
+      <section id="state-a" class="state">
+        <div class="state-header">
+          <span class="state-tag">All viewports · State machine</span>
+          <h2 class="state-title">
+            S0 — No completed exchange: no status shown
+          </h2>
+          <p class="state-desc">
+            Chat open, nothing sent (or a response still in flight). The
+            save-status row is not rendered — zero chrome before the first
+            completed exchange (AC-15, AC-5). The header stays exactly as it is
+            today: app-header (mobile) or panel-header (desktop). Nothing new is
+            visible until a note actually exists.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div
+                class="screen"
+                data-component="app-shell"
+                data-state="save-s0-empty"
+              >
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="header-actions">
+                      <button
+                        type="button"
+                        class="new-chat-btn"
+                        aria-label="New chat"
+                      >
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        >
+                          <path d="M12 5v14M5 12h14" />
+                        </svg>
+                      </button>
+                      <div class="avatar" aria-label="Profile">SC</div>
+                    </div>
+                  </header>
+                  <!-- S0: .chat-save-status not rendered (data-state="hidden") -->
+                  <div
+                    class="chat-save-status chat-save-status--hidden"
+                    data-component="chat-save-status"
+                    data-state="hidden"
+                    aria-hidden="true"
+                  ></div>
+                  <div class="chat-view">
+                    <div class="chat-thread">
+                      <div class="chat-msg chat-msg--ai">
+                        <div class="chat-bubble chat-bubble--ai">
+                          <p>
+                            I know everything you've written. Ask me anything —
+                            or try: What are the key ideas in my notes?
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chat-input-bar">
+                      <input
+                        type="text"
+                        class="chat-input"
+                        placeholder="Ask me about your notes"
+                        aria-label="Chat message input"
+                      />
+                      <button
+                        type="button"
+                        class="chat-send"
+                        aria-label="Send message"
+                        disabled
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M22 2 11 13" />
+                          <path d="m22 2-7 20-4-9-9-4z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop Split View -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop — split view</div>
+            <div class="device-frame device-frame--desktop">
+              <div
+                class="screen screen--desktop-canvas"
+                data-component="app-shell"
+                data-state="save-s0-split"
+              >
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="header-actions">
+                    <button
+                      type="button"
+                      class="new-chat-btn"
+                      aria-label="New chat"
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      >
+                        <path d="M12 5v14M5 12h14" />
+                      </svg>
+                    </button>
+                    <div
+                      class="avatar avatar--tier"
+                      aria-label="Profile, Think tier"
+                    >
+                      SC
+                    </div>
+                  </div>
+                </header>
+                <div class="desktop-content-row">
+                  <!-- Center: Note content (flex: 1) -->
+                  <div class="note-editor" style="flex: 1; min-width: 0">
+                    <div
+                      class="note-body"
+                      style="
+                        max-width: 540px;
+                        margin: 0 auto;
+                        padding: var(--space-5) var(--space-4);
+                      "
+                    >
+                      <div class="note-title">
+                        What makes a great first-time user experience?
+                      </div>
+                      <p class="note-paragraph">
+                        I've been thinking about this all week, mostly in the
+                        context of dolfyn but the question is bigger than that.
+                        What separates a first experience that clicks from one
+                        that doesn't?
+                      </p>
+                      <p class="note-paragraph">
+                        A great first-time experience doesn't explain. It
+                        doesn't onboard. It just lets the user do the thing they
+                        came to do, and shows them a glimpse of why it was worth
+                        coming.
+                      </p>
+                    </div>
+                  </div>
+                  <!-- Right: Chat panel (480px) -->
+                  <aside class="chat-panel--desktop">
+                    <div class="panel-header">
+                      <svg
+                        class="panel-sparkle"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        />
+                      </svg>
+                      <span class="panel-title">Chat</span>
+                      <button
+                        class="chat-expand-toggle"
+                        type="button"
+                        aria-label="Expand chat to full width"
+                      >
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M8 3H5a2 2 0 0 0-2 2v3" />
+                          <path d="M21 8V5a2 2 0 0 0-2-2h-3" />
+                          <path d="M3 16v3a2 2 0 0 0 2 2h3" />
+                          <path d="M16 21h3a2 2 0 0 0 2-2v-3" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div
+                      class="chat-save-status chat-save-status--hidden"
+                      data-component="chat-save-status"
+                      data-state="hidden"
+                      aria-hidden="true"
+                    ></div>
+                    <div class="chat-view">
+                      <div class="chat-thread">
+                        <div class="chat-msg chat-msg--ai">
+                          <div class="chat-bubble chat-bubble--ai">
+                            <p>
+                              I know everything you've written. Ask me anything
+                              — or try: What are the key ideas in my notes?
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="chat-input-bar">
+                        <input
+                          type="text"
+                          class="chat-input"
+                          placeholder="Ask me about your notes"
+                          aria-label="Chat message input"
+                        />
+                        <button
+                          type="button"
+                          class="chat-send"
+                          aria-label="Send message"
+                          disabled
+                        >
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M22 2 11 13" />
+                            <path d="m22 2-7 20-4-9-9-4z" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </aside>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop Expanded View -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop — expanded view</div>
+            <div class="device-frame device-frame--desktop">
+              <div
+                class="screen screen--desktop-canvas"
+                data-component="app-shell"
+                data-state="save-s0-expanded"
+              >
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="header-actions">
+                    <button
+                      type="button"
+                      class="new-chat-btn"
+                      aria-label="New chat"
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      >
+                        <path d="M12 5v14M5 12h14" />
+                      </svg>
+                    </button>
+                    <div
+                      class="avatar avatar--tier"
+                      aria-label="Profile, Think tier"
+                    >
+                      SC
+                    </div>
+                  </div>
+                </header>
+                <div class="desktop-expanded-content">
+                  <div class="panel-header">
+                    <svg
+                      class="panel-sparkle"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                    <span class="panel-title">Chat</span>
+                    <button
+                      class="chat-expand-toggle"
+                      type="button"
+                      aria-label="Collapse chat to split view"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M4 4h6v6H4z" />
+                        <path d="M14 4h6v6h-6z" />
+                        <path d="M4 14h6v6H4z" />
+                        <path d="M14 14h6v6h-6z" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div
+                    class="chat-save-status chat-save-status--hidden"
+                    data-component="chat-save-status"
+                    data-state="hidden"
+                    aria-hidden="true"
+                  ></div>
+                  <div class="chat-view">
+                    <div class="chat-thread">
+                      <div class="chat-msg chat-msg--ai">
+                        <div class="chat-bubble chat-bubble--ai">
+                          <p>
+                            I know everything you've written. Ask me anything —
+                            or try: What are the key ideas in my notes?
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chat-input-bar">
+                      <input
+                        type="text"
+                        class="chat-input"
+                        placeholder="Ask me about your notes"
+                        aria-label="Chat message input"
+                      />
+                      <button
+                        type="button"
+                        class="chat-send"
+                        aria-label="Send message"
+                        disabled
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M22 2 11 13" />
+                          <path d="m22 2-7 20-4-9-9-4z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE B — S1 Created: "Saved as note" (steady state)
+         ============================================ -->
+      <section id="state-b" class="state">
+        <div class="state-header">
+          <span class="state-tag">All viewports · State machine</span>
+          <h2 class="state-title">
+            S1 — First exchange complete: "Saved as note"
+          </h2>
+          <p class="state-desc">
+            The first completed exchange creates the note and it appears in the
+            notes list immediately (AC-1). The save-status row appears pinned
+            under the app-header with a green check and "Saved as note". This is
+            the persistent steady state for the rest of the session — quiet,
+            ambient, trustworthy. S2/S3 flash over it during each subsequent
+            write, then it settles back here.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div
+                class="screen"
+                data-component="app-shell"
+                data-state="save-s1-created"
+              >
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="header-actions">
+                      <button
+                        type="button"
+                        class="new-chat-btn"
+                        aria-label="New chat"
+                      >
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        >
+                          <path d="M12 5v14M5 12h14" />
+                        </svg>
+                      </button>
+                      <div class="avatar" aria-label="Profile">SC</div>
+                    </div>
+                  </header>
+                  <div
+                    class="chat-save-status chat-save-status--created"
+                    data-component="chat-save-status"
+                    data-state="created"
+                    role="status"
+                    aria-live="polite"
+                  >
+                    <svg
+                      class="icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M20 6 9 17l-5-5" />
+                    </svg>
+                    <span>Saved as note</span>
+                  </div>
+                  <div class="chat-view">
+                    <div class="chat-thread">
+                      <div class="chat-msg chat-msg--user">
+                        <div class="chat-bubble chat-bubble--user">
+                          <p>
+                            What patterns do you see across my notes about
+                            first-time UX?
+                          </p>
+                        </div>
+                      </div>
+                      <div class="chat-msg chat-msg--ai">
+                        <div class="chat-bubble chat-bubble--ai">
+                          <p>
+                            You keep circling back to one idea:
+                            <strong
+                              >don't explain the product, let the user do the
+                              thing.</strong
+                            >
+                            The empty canvas IS the onboarding
+                            <span
+                              class="citation-chip"
+                              role="button"
+                              tabindex="0"
+                              >What makes a great first-time...</span
+                            >.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chat-input-bar">
+                      <input
+                        type="text"
+                        class="chat-input"
+                        placeholder="Ask me about your notes"
+                        aria-label="Chat message input"
+                      />
+                      <button
+                        type="button"
+                        class="chat-send"
+                        aria-label="Send message"
+                        disabled
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M22 2 11 13" />
+                          <path d="m22 2-7 20-4-9-9-4z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop Split View -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop — split view</div>
+            <div class="device-frame device-frame--desktop">
+              <div
+                class="screen screen--desktop-canvas"
+                data-component="app-shell"
+                data-state="save-s1-split"
+              >
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="header-actions">
+                    <button
+                      type="button"
+                      class="new-chat-btn"
+                      aria-label="New chat"
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      >
+                        <path d="M12 5v14M5 12h14" />
+                      </svg>
+                    </button>
+                    <div
+                      class="avatar avatar--tier"
+                      aria-label="Profile, Think tier"
+                    >
+                      SC
+                    </div>
+                  </div>
+                </header>
+                <div class="desktop-content-row">
+                  <!-- Center: Note content (flex: 1) -->
+                  <div class="note-editor" style="flex: 1; min-width: 0">
+                    <div
+                      class="note-body"
+                      style="
+                        max-width: 540px;
+                        margin: 0 auto;
+                        padding: var(--space-5) var(--space-4);
+                      "
+                    >
+                      <div class="note-title">
+                        What patterns do you see across my notes about
+                        first-time UX?
+                      </div>
+                      <p class="note-paragraph">
+                        You keep circling back to one idea:
+                        <strong
+                          >don't explain the product, let the user do the
+                          thing.</strong
+                        >
+                        The empty canvas IS the onboarding.
+                      </p>
+                      <p class="note-paragraph">
+                        Across your notes, the pattern is clear — the best
+                        first-time experiences hand the user the tool
+                        immediately, with no ceremony, no tutorial, no preamble.
+                        Just the thing they came to do.
+                      </p>
+                    </div>
+                  </div>
+                  <!-- Right: Chat panel (480px) -->
+                  <aside class="chat-panel--desktop">
+                    <div class="panel-header">
+                      <svg
+                        class="panel-sparkle"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        />
+                      </svg>
+                      <span class="panel-title">Chat</span>
+                      <button
+                        class="chat-expand-toggle"
+                        type="button"
+                        aria-label="Expand chat to full width"
+                      >
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M8 3H5a2 2 0 0 0-2 2v3" />
+                          <path d="M21 8V5a2 2 0 0 0-2-2h-3" />
+                          <path d="M3 16v3a2 2 0 0 0 2 2h3" />
+                          <path d="M16 21h3a2 2 0 0 0 2-2v-3" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div
+                      class="chat-save-status chat-save-status--created"
+                      data-component="chat-save-status"
+                      data-state="created"
+                      role="status"
+                      aria-live="polite"
+                    >
+                      <svg
+                        class="icon"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M20 6 9 17l-5-5" />
+                      </svg>
+                      <span>Saved as note</span>
+                    </div>
+                    <div class="chat-view">
+                      <div class="chat-thread">
+                        <div class="chat-msg chat-msg--user">
+                          <div class="chat-bubble chat-bubble--user">
+                            <p>
+                              What patterns do you see across my notes about
+                              first-time UX?
+                            </p>
+                          </div>
+                        </div>
+                        <div class="chat-msg chat-msg--ai">
+                          <div class="chat-bubble chat-bubble--ai">
+                            <p>
+                              You keep circling back to one idea:
+                              <strong
+                                >don't explain the product, let the user do the
+                                thing.</strong
+                              >
+                              The empty canvas IS the onboarding
+                              <span
+                                class="citation-chip"
+                                role="button"
+                                tabindex="0"
+                                >What makes a great first-time...</span
+                              >.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="chat-input-bar">
+                        <input
+                          type="text"
+                          class="chat-input"
+                          placeholder="Ask me about your notes"
+                          aria-label="Chat message input"
+                        />
+                        <button
+                          type="button"
+                          class="chat-send"
+                          aria-label="Send message"
+                          disabled
+                        >
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M22 2 11 13" />
+                            <path d="m22 2-7 20-4-9-9-4z" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </aside>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop Expanded View -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop — expanded view</div>
+            <div class="device-frame device-frame--desktop">
+              <div
+                class="screen screen--desktop-canvas"
+                data-component="app-shell"
+                data-state="save-s1-expanded"
+              >
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="header-actions">
+                    <button
+                      type="button"
+                      class="new-chat-btn"
+                      aria-label="New chat"
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      >
+                        <path d="M12 5v14M5 12h14" />
+                      </svg>
+                    </button>
+                    <div
+                      class="avatar avatar--tier"
+                      aria-label="Profile, Think tier"
+                    >
+                      SC
+                    </div>
+                  </div>
+                </header>
+                <div class="desktop-expanded-content">
+                  <div class="panel-header">
+                    <svg
+                      class="panel-sparkle"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                    <span class="panel-title">Chat</span>
+                    <button
+                      class="chat-expand-toggle"
+                      type="button"
+                      aria-label="Collapse chat to split view"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M4 4h6v6H4z" />
+                        <path d="M14 4h6v6h-6z" />
+                        <path d="M4 14h6v6H4z" />
+                        <path d="M14 14h6v6h-6z" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div
+                    class="chat-save-status chat-save-status--created"
+                    data-component="chat-save-status"
+                    data-state="created"
+                    role="status"
+                    aria-live="polite"
+                  >
+                    <svg
+                      class="icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M20 6 9 17l-5-5" />
+                    </svg>
+                    <span>Saved as note</span>
+                  </div>
+                  <div class="chat-view">
+                    <div class="chat-thread">
+                      <div class="chat-msg chat-msg--user">
+                        <div class="chat-bubble chat-bubble--user">
+                          <p>
+                            What patterns do you see across my notes about
+                            first-time UX?
+                          </p>
+                        </div>
+                      </div>
+                      <div class="chat-msg chat-msg--ai">
+                        <div class="chat-bubble chat-bubble--ai">
+                          <p>
+                            You keep circling back to one idea:
+                            <strong
+                              >don't explain the product, let the user do the
+                              thing.</strong
+                            >
+                            The empty canvas IS the onboarding
+                            <span
+                              class="citation-chip"
+                              role="button"
+                              tabindex="0"
+                              >What makes a great first-time...</span
+                            >.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chat-input-bar">
+                      <input
+                        type="text"
+                        class="chat-input"
+                        placeholder="Ask me about your notes"
+                        aria-label="Chat message input"
+                      />
+                      <button
+                        type="button"
+                        class="chat-send"
+                        aria-label="Send message"
+                        disabled
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M22 2 11 13" />
+                          <path d="m22 2-7 20-4-9-9-4z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE C — S2 Updating: "Updating note…" (write in flight)
+         ============================================ -->
+      <section id="state-c" class="state">
+        <div class="state-header">
+          <span class="state-tag">All viewports · State machine</span>
+          <h2 class="state-title">
+            S2 — Subsequent exchange completes: "Updating note…"
+          </h2>
+          <p class="state-desc">
+            A follow-up exchange completed and the write to the existing note is
+            in flight (AC-2). The status swaps to "Updating note…" with the
+            accent sparkle spinning — the system's only busy indicator, so it
+            reads as an AI write, not a generic spinner. Transient; resolves to
+            S3 then back to S1. The row is reserved, so there is no layout jump.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div
+                class="screen"
+                data-component="app-shell"
+                data-state="save-s2-updating"
+              >
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="header-actions">
+                      <button
+                        type="button"
+                        class="new-chat-btn"
+                        aria-label="New chat"
+                      >
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        >
+                          <path d="M12 5v14M5 12h14" />
+                        </svg>
+                      </button>
+                      <div class="avatar" aria-label="Profile">SC</div>
+                    </div>
+                  </header>
+                  <div
+                    class="chat-save-status chat-save-status--updating"
+                    data-component="chat-save-status"
+                    data-state="updating"
+                    role="status"
+                    aria-live="polite"
+                  >
+                    <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                    <span>Updating note…</span>
+                  </div>
+                  <div class="chat-view">
+                    <div class="chat-thread">
+                      <div class="chat-msg chat-msg--user">
+                        <div class="chat-bubble chat-bubble--user">
+                          <p>
+                            What patterns do you see across my notes about
+                            first-time UX?
+                          </p>
+                        </div>
+                      </div>
+                      <div class="chat-msg chat-msg--ai">
+                        <div class="chat-bubble chat-bubble--ai">
+                          <p>
+                            You keep circling back to one idea:
+                            <strong
+                              >don't explain the product, let the user do the
+                              thing.</strong
+                            >
+                            The empty canvas IS the onboarding.
+                          </p>
+                        </div>
+                      </div>
+                      <div class="chat-msg chat-msg--user">
+                        <div class="chat-bubble chat-bubble--user">
+                          <p>So what's the one thing to remember?</p>
+                        </div>
+                      </div>
+                      <div class="chat-msg chat-msg--ai">
+                        <div class="chat-bubble chat-bubble--ai">
+                          <p>
+                            <strong>Show, don't tell.</strong> It's the lens
+                            across every design call.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chat-input-bar">
+                      <input
+                        type="text"
+                        class="chat-input"
+                        placeholder="Ask me about your notes"
+                        aria-label="Chat message input"
+                      />
+                      <button
+                        type="button"
+                        class="chat-send"
+                        aria-label="Send message"
+                        disabled
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M22 2 11 13" />
+                          <path d="m22 2-7 20-4-9-9-4z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop Split View -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop — split view</div>
+            <div class="device-frame device-frame--desktop">
+              <div
+                class="screen screen--desktop-canvas"
+                data-component="app-shell"
+                data-state="save-s2-split"
+              >
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="header-actions">
+                    <button
+                      type="button"
+                      class="new-chat-btn"
+                      aria-label="New chat"
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      >
+                        <path d="M12 5v14M5 12h14" />
+                      </svg>
+                    </button>
+                    <div
+                      class="avatar avatar--tier"
+                      aria-label="Profile, Think tier"
+                    >
+                      SC
+                    </div>
+                  </div>
+                </header>
+                <div class="desktop-content-row">
+                  <!-- Center: Note content (flex: 1) -->
+                  <div class="note-editor" style="flex: 1; min-width: 0">
+                    <div
+                      class="note-body"
+                      style="
+                        max-width: 540px;
+                        margin: 0 auto;
+                        padding: var(--space-5) var(--space-4);
+                      "
+                    >
+                      <div class="note-title">
+                        What patterns do you see across my notes about
+                        first-time UX?
+                      </div>
+                      <p class="note-paragraph">
+                        You keep circling back to one idea:
+                        <strong
+                          >don't explain the product, let the user do the
+                          thing.</strong
+                        >
+                        The empty canvas IS the onboarding.
+                      </p>
+                      <p class="note-paragraph">
+                        Across your notes, the pattern is clear — the best
+                        first-time experiences hand the user the tool
+                        immediately, with no ceremony, no tutorial, no preamble.
+                        Just the thing they came to do.
+                      </p>
+                    </div>
+                  </div>
+                  <!-- Right: Chat panel (480px) -->
+                  <aside class="chat-panel--desktop">
+                    <div class="panel-header">
+                      <svg
+                        class="panel-sparkle"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        />
+                      </svg>
+                      <span class="panel-title">Chat</span>
+                      <button
+                        class="chat-expand-toggle"
+                        type="button"
+                        aria-label="Expand chat to full width"
+                      >
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M8 3H5a2 2 0 0 0-2 2v3" />
+                          <path d="M21 8V5a2 2 0 0 0-2-2h-3" />
+                          <path d="M3 16v3a2 2 0 0 0 2 2h3" />
+                          <path d="M16 21h3a2 2 0 0 0 2-2v-3" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div
+                      class="chat-save-status chat-save-status--updating"
+                      data-component="chat-save-status"
+                      data-state="updating"
+                      role="status"
+                      aria-live="polite"
+                    >
+                      <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        />
+                      </svg>
+                      <span>Updating note…</span>
+                    </div>
+                    <div class="chat-view">
+                      <div class="chat-thread">
+                        <div class="chat-msg chat-msg--user">
+                          <div class="chat-bubble chat-bubble--user">
+                            <p>
+                              What patterns do you see across my notes about
+                              first-time UX?
+                            </p>
+                          </div>
+                        </div>
+                        <div class="chat-msg chat-msg--ai">
+                          <div class="chat-bubble chat-bubble--ai">
+                            <p>
+                              You keep circling back to one idea:
+                              <strong
+                                >don't explain the product, let the user do the
+                                thing.</strong
+                              >
+                              The empty canvas IS the onboarding.
+                            </p>
+                          </div>
+                        </div>
+                        <div class="chat-msg chat-msg--user">
+                          <div class="chat-bubble chat-bubble--user">
+                            <p>So what's the one thing to remember?</p>
+                          </div>
+                        </div>
+                        <div class="chat-msg chat-msg--ai">
+                          <div class="chat-bubble chat-bubble--ai">
+                            <p>
+                              <strong>Show, don't tell.</strong> It's the lens
+                              across every design call.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="chat-input-bar">
+                        <input
+                          type="text"
+                          class="chat-input"
+                          placeholder="Ask me about your notes"
+                          aria-label="Chat message input"
+                        />
+                        <button
+                          type="button"
+                          class="chat-send"
+                          aria-label="Send message"
+                          disabled
+                        >
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M22 2 11 13" />
+                            <path d="m22 2-7 20-4-9-9-4z" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </aside>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop Expanded View -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop — expanded view</div>
+            <div class="device-frame device-frame--desktop">
+              <div
+                class="screen screen--desktop-canvas"
+                data-component="app-shell"
+                data-state="save-s2-expanded"
+              >
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="header-actions">
+                    <button
+                      type="button"
+                      class="new-chat-btn"
+                      aria-label="New chat"
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      >
+                        <path d="M12 5v14M5 12h14" />
+                      </svg>
+                    </button>
+                    <div
+                      class="avatar avatar--tier"
+                      aria-label="Profile, Think tier"
+                    >
+                      SC
+                    </div>
+                  </div>
+                </header>
+                <div class="desktop-expanded-content">
+                  <div class="panel-header">
+                    <svg
+                      class="panel-sparkle"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                    <span class="panel-title">Chat</span>
+                    <button
+                      class="chat-expand-toggle"
+                      type="button"
+                      aria-label="Collapse chat to split view"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M4 4h6v6H4z" />
+                        <path d="M14 4h6v6h-6z" />
+                        <path d="M4 14h6v6H4z" />
+                        <path d="M14 14h6v6h-6z" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div
+                    class="chat-save-status chat-save-status--updating"
+                    data-component="chat-save-status"
+                    data-state="updating"
+                    role="status"
+                    aria-live="polite"
+                  >
+                    <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                    <span>Updating note…</span>
+                  </div>
+                  <div class="chat-view">
+                    <div class="chat-thread">
+                      <div class="chat-msg chat-msg--user">
+                        <div class="chat-bubble chat-bubble--user">
+                          <p>
+                            What patterns do you see across my notes about
+                            first-time UX?
+                          </p>
+                        </div>
+                      </div>
+                      <div class="chat-msg chat-msg--ai">
+                        <div class="chat-bubble chat-bubble--ai">
+                          <p>
+                            You keep circling back to one idea:
+                            <strong
+                              >don't explain the product, let the user do the
+                              thing.</strong
+                            >
+                            The empty canvas IS the onboarding.
+                          </p>
+                        </div>
+                      </div>
+                      <div class="chat-msg chat-msg--user">
+                        <div class="chat-bubble chat-bubble--user">
+                          <p>So what's the one thing to remember?</p>
+                        </div>
+                      </div>
+                      <div class="chat-msg chat-msg--ai">
+                        <div class="chat-bubble chat-bubble--ai">
+                          <p>
+                            <strong>Show, don't tell.</strong> It's the lens
+                            across every design call.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chat-input-bar">
+                      <input
+                        type="text"
+                        class="chat-input"
+                        placeholder="Ask me about your notes"
+                        aria-label="Chat message input"
+                      />
+                      <button
+                        type="button"
+                        class="chat-send"
+                        aria-label="Send message"
+                        disabled
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M22 2 11 13" />
+                          <path d="m22 2-7 20-4-9-9-4z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE D — S3 Updated: "Updated" (transient)
+         ============================================ -->
+      <section id="state-d" class="state">
+        <div class="state-header">
+          <span class="state-tag">All viewports · State machine</span>
+          <h2 class="state-title">
+            S3 — Live update finished: "Updated" (transient)
+          </h2>
+          <p class="state-desc">
+            The write completed. The status briefly reads "Updated" in success
+            green (~1.5s), then settles back to "Saved as note" (S1). The copy
+            swaps in place — no layout shift, just a 150ms fade. This is the
+            confirmation beat between "Updating note…" and the quiet steady
+            state.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div
+                class="screen"
+                data-component="app-shell"
+                data-state="save-s3-updated"
+              >
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="header-actions">
+                      <button
+                        type="button"
+                        class="new-chat-btn"
+                        aria-label="New chat"
+                      >
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        >
+                          <path d="M12 5v14M5 12h14" />
+                        </svg>
+                      </button>
+                      <div class="avatar" aria-label="Profile">SC</div>
+                    </div>
+                  </header>
+                  <div
+                    class="chat-save-status chat-save-status--updated"
+                    data-component="chat-save-status"
+                    data-state="updated"
+                    role="status"
+                    aria-live="polite"
+                    data-animation="fade"
+                    data-animation-duration="150ms"
+                  >
+                    <svg
+                      class="icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M20 6 9 17l-5-5" />
+                    </svg>
+                    <span>Updated</span>
+                  </div>
+                  <div class="chat-view">
+                    <div class="chat-thread">
+                      <div class="chat-msg chat-msg--user">
+                        <div class="chat-bubble chat-bubble--user">
+                          <p>
+                            What patterns do you see across my notes about
+                            first-time UX?
+                          </p>
+                        </div>
+                      </div>
+                      <div class="chat-msg chat-msg--ai">
+                        <div class="chat-bubble chat-bubble--ai">
+                          <p>
+                            You keep circling back to one idea:
+                            <strong
+                              >don't explain the product, let the user do the
+                              thing.</strong
+                            >
+                          </p>
+                        </div>
+                      </div>
+                      <div class="chat-msg chat-msg--user">
+                        <div class="chat-bubble chat-bubble--user">
+                          <p>So what's the one thing to remember?</p>
+                        </div>
+                      </div>
+                      <div class="chat-msg chat-msg--ai">
+                        <div class="chat-bubble chat-bubble--ai">
+                          <p><strong>Show, don't tell.</strong></p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chat-input-bar">
+                      <input
+                        type="text"
+                        class="chat-input"
+                        placeholder="Ask me about your notes"
+                        aria-label="Chat message input"
+                      />
+                      <button
+                        type="button"
+                        class="chat-send"
+                        aria-label="Send message"
+                        disabled
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M22 2 11 13" />
+                          <path d="m22 2-7 20-4-9-9-4z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop Split View -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop — split view</div>
+            <div class="device-frame device-frame--desktop">
+              <div
+                class="screen screen--desktop-canvas"
+                data-component="app-shell"
+                data-state="save-s3-split"
+              >
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="header-actions">
+                    <button
+                      type="button"
+                      class="new-chat-btn"
+                      aria-label="New chat"
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      >
+                        <path d="M12 5v14M5 12h14" />
+                      </svg>
+                    </button>
+                    <div
+                      class="avatar avatar--tier"
+                      aria-label="Profile, Think tier"
+                    >
+                      SC
+                    </div>
+                  </div>
+                </header>
+                <div class="desktop-content-row">
+                  <!-- Center: Note content (flex: 1) -->
+                  <div class="note-editor" style="flex: 1; min-width: 0">
+                    <div
+                      class="note-body"
+                      style="
+                        max-width: 540px;
+                        margin: 0 auto;
+                        padding: var(--space-5) var(--space-4);
+                      "
+                    >
+                      <div class="note-title">
+                        What patterns do you see across my notes about
+                        first-time UX?
+                      </div>
+                      <p class="note-paragraph">
+                        You keep circling back to one idea:
+                        <strong
+                          >don't explain the product, let the user do the
+                          thing.</strong
+                        >
+                        The empty canvas IS the onboarding.
+                      </p>
+                      <p class="note-paragraph">
+                        Across your notes, the pattern is clear — the best
+                        first-time experiences hand the user the tool
+                        immediately, with no ceremony, no tutorial, no preamble.
+                        Just the thing they came to do.
+                      </p>
+                    </div>
+                  </div>
+                  <!-- Right: Chat panel (480px) -->
+                  <aside class="chat-panel--desktop">
+                    <div class="panel-header">
+                      <svg
+                        class="panel-sparkle"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        />
+                      </svg>
+                      <span class="panel-title">Chat</span>
+                      <button
+                        class="chat-expand-toggle"
+                        type="button"
+                        aria-label="Expand chat to full width"
+                      >
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M8 3H5a2 2 0 0 0-2 2v3" />
+                          <path d="M21 8V5a2 2 0 0 0-2-2h-3" />
+                          <path d="M3 16v3a2 2 0 0 0 2 2h3" />
+                          <path d="M16 21h3a2 2 0 0 0 2-2v-3" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div
+                      class="chat-save-status chat-save-status--updated"
+                      data-component="chat-save-status"
+                      data-state="updated"
+                      role="status"
+                      aria-live="polite"
+                      data-animation="fade"
+                      data-animation-duration="150ms"
+                    >
+                      <svg
+                        class="icon"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M20 6 9 17l-5-5" />
+                      </svg>
+                      <span>Updated</span>
+                    </div>
+                    <div class="chat-view">
+                      <div class="chat-thread">
+                        <div class="chat-msg chat-msg--user">
+                          <div class="chat-bubble chat-bubble--user">
+                            <p>
+                              What patterns do you see across my notes about
+                              first-time UX?
+                            </p>
+                          </div>
+                        </div>
+                        <div class="chat-msg chat-msg--ai">
+                          <div class="chat-bubble chat-bubble--ai">
+                            <p>
+                              You keep circling back to one idea:
+                              <strong
+                                >don't explain the product, let the user do the
+                                thing.</strong
+                              >
+                            </p>
+                          </div>
+                        </div>
+                        <div class="chat-msg chat-msg--user">
+                          <div class="chat-bubble chat-bubble--user">
+                            <p>So what's the one thing to remember?</p>
+                          </div>
+                        </div>
+                        <div class="chat-msg chat-msg--ai">
+                          <div class="chat-bubble chat-bubble--ai">
+                            <p><strong>Show, don't tell.</strong></p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="chat-input-bar">
+                        <input
+                          type="text"
+                          class="chat-input"
+                          placeholder="Ask me about your notes"
+                          aria-label="Chat message input"
+                        />
+                        <button
+                          type="button"
+                          class="chat-send"
+                          aria-label="Send message"
+                          disabled
+                        >
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M22 2 11 13" />
+                            <path d="m22 2-7 20-4-9-9-4z" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </aside>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop Expanded View -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop — expanded view</div>
+            <div class="device-frame device-frame--desktop">
+              <div
+                class="screen screen--desktop-canvas"
+                data-component="app-shell"
+                data-state="save-s3-expanded"
+              >
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="header-actions">
+                    <button
+                      type="button"
+                      class="new-chat-btn"
+                      aria-label="New chat"
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      >
+                        <path d="M12 5v14M5 12h14" />
+                      </svg>
+                    </button>
+                    <div
+                      class="avatar avatar--tier"
+                      aria-label="Profile, Think tier"
+                    >
+                      SC
+                    </div>
+                  </div>
+                </header>
+                <div class="desktop-expanded-content">
+                  <div class="panel-header">
+                    <svg
+                      class="panel-sparkle"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                    <span class="panel-title">Chat</span>
+                    <button
+                      class="chat-expand-toggle"
+                      type="button"
+                      aria-label="Collapse chat to split view"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M4 4h6v6H4z" />
+                        <path d="M14 4h6v6h-6z" />
+                        <path d="M4 14h6v6H4z" />
+                        <path d="M14 14h6v6h-6z" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div
+                    class="chat-save-status chat-save-status--updated"
+                    data-component="chat-save-status"
+                    data-state="updated"
+                    role="status"
+                    aria-live="polite"
+                    data-animation="fade"
+                    data-animation-duration="150ms"
+                  >
+                    <svg
+                      class="icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M20 6 9 17l-5-5" />
+                    </svg>
+                    <span>Updated</span>
+                  </div>
+                  <div class="chat-view">
+                    <div class="chat-thread">
+                      <div class="chat-msg chat-msg--user">
+                        <div class="chat-bubble chat-bubble--user">
+                          <p>
+                            What patterns do you see across my notes about
+                            first-time UX?
+                          </p>
+                        </div>
+                      </div>
+                      <div class="chat-msg chat-msg--ai">
+                        <div class="chat-bubble chat-bubble--ai">
+                          <p>
+                            You keep circling back to one idea:
+                            <strong
+                              >don't explain the product, let the user do the
+                              thing.</strong
+                            >
+                          </p>
+                        </div>
+                      </div>
+                      <div class="chat-msg chat-msg--user">
+                        <div class="chat-bubble chat-bubble--user">
+                          <p>So what's the one thing to remember?</p>
+                        </div>
+                      </div>
+                      <div class="chat-msg chat-msg--ai">
+                        <div class="chat-bubble chat-bubble--ai">
+                          <p><strong>Show, don't tell.</strong></p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chat-input-bar">
+                      <input
+                        type="text"
+                        class="chat-input"
+                        placeholder="Ask me about your notes"
+                        aria-label="Chat message input"
+                      />
+                      <button
+                        type="button"
+                        class="chat-send"
+                        aria-label="Send message"
+                        disabled
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M22 2 11 13" />
+                          <path d="m22 2-7 20-4-9-9-4z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE E — S4 Failed: "Save failed" + Retry + desktop proof
+         ============================================ -->
+      <section id="state-e" class="state">
+        <div class="state-header">
+          <span class="state-tag">All viewports · State machine</span>
+          <h2 class="state-title">S4 — Write failed: "Save failed" + Retry</h2>
+          <p class="state-desc">
+            A create/update write failed mid-session (AC-14). The status reads
+            "Save failed" in error red with a tappable Retry (accent-strong,
+            44px hit area). The conversation stays visible and retained —
+            nothing is lost from view. Retry re-attempts the write; on success
+            it returns to S3 then S1. The failure state persists until retry or
+            dismiss, and does NOT auto-dismiss.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div
+                class="screen"
+                data-component="app-shell"
+                data-state="save-s4-failed"
+              >
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="header-actions">
+                      <button
+                        type="button"
+                        class="new-chat-btn"
+                        aria-label="New chat"
+                      >
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        >
+                          <path d="M12 5v14M5 12h14" />
+                        </svg>
+                      </button>
+                      <div class="avatar" aria-label="Profile">SC</div>
+                    </div>
+                  </header>
+                  <div
+                    class="chat-save-status chat-save-status--failed"
+                    data-component="chat-save-status"
+                    data-state="failed"
+                    role="alert"
+                    aria-live="assertive"
+                  >
+                    <svg
+                      class="icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="9" />
+                      <path d="M12 8v4" />
+                      <path d="M12 16h.01" />
+                    </svg>
+                    <span>Save failed</span>
+                    <button
+                      type="button"
+                      class="retry"
+                      aria-label="Retry saving note"
+                    >
+                      Retry
+                    </button>
+                  </div>
+                  <div class="chat-view">
+                    <div class="chat-thread">
+                      <div class="chat-msg chat-msg--user">
+                        <div class="chat-bubble chat-bubble--user">
+                          <p>
+                            What patterns do you see across my notes about
+                            first-time UX?
+                          </p>
+                        </div>
+                      </div>
+                      <div class="chat-msg chat-msg--ai">
+                        <div class="chat-bubble chat-bubble--ai">
+                          <p>
+                            You keep circling back to one idea:
+                            <strong
+                              >don't explain the product, let the user do the
+                              thing.</strong
+                            >
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chat-input-bar">
+                      <input
+                        type="text"
+                        class="chat-input"
+                        placeholder="Ask me about your notes"
+                        aria-label="Chat message input"
+                      />
+                      <button
+                        type="button"
+                        class="chat-send"
+                        aria-label="Send message"
+                        disabled
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M22 2 11 13" />
+                          <path d="m22 2-7 20-4-9-9-4z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop Split View -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop — split view</div>
+            <div class="device-frame device-frame--desktop">
+              <div
+                class="screen screen--desktop-canvas"
+                data-component="app-shell"
+                data-state="save-s4-split"
+              >
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="header-actions">
+                    <button
+                      type="button"
+                      class="new-chat-btn"
+                      aria-label="New chat"
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      >
+                        <path d="M12 5v14M5 12h14" />
+                      </svg>
+                    </button>
+                    <div
+                      class="avatar avatar--tier"
+                      aria-label="Profile, Think tier"
+                    >
+                      SC
+                    </div>
+                  </div>
+                </header>
+                <div class="desktop-content-row">
+                  <!-- Center: Note content (flex: 1) -->
+                  <div class="note-editor" style="flex: 1; min-width: 0">
+                    <div
+                      class="note-body"
+                      style="
+                        max-width: 540px;
+                        margin: 0 auto;
+                        padding: var(--space-5) var(--space-4);
+                      "
+                    >
+                      <div class="note-title">
+                        What patterns do you see across my notes about
+                        first-time UX?
+                      </div>
+                      <p class="note-paragraph">
+                        You keep circling back to one idea:
+                        <strong
+                          >don't explain the product, let the user do the
+                          thing.</strong
+                        >
+                        The empty canvas IS the onboarding.
+                      </p>
+                      <p class="note-paragraph">
+                        Across your notes, the pattern is clear — the best
+                        first-time experiences hand the user the tool
+                        immediately, with no ceremony, no tutorial, no preamble.
+                        Just the thing they came to do.
+                      </p>
+                    </div>
+                  </div>
+                  <!-- Right: Chat panel (480px) -->
+                  <aside class="chat-panel--desktop">
+                    <div class="panel-header">
+                      <svg
+                        class="panel-sparkle"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        />
+                      </svg>
+                      <span class="panel-title">Chat</span>
+                      <button
+                        class="chat-expand-toggle"
+                        type="button"
+                        aria-label="Expand chat to full width"
+                      >
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M8 3H5a2 2 0 0 0-2 2v3" />
+                          <path d="M21 8V5a2 2 0 0 0-2-2h-3" />
+                          <path d="M3 16v3a2 2 0 0 0 2 2h3" />
+                          <path d="M16 21h3a2 2 0 0 0 2-2v-3" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div
+                      class="chat-save-status chat-save-status--failed"
+                      data-component="chat-save-status"
+                      data-state="failed"
+                      role="alert"
+                      aria-live="assertive"
+                    >
+                      <svg
+                        class="icon"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="12" r="9" />
+                        <path d="M12 8v4" />
+                        <path d="M12 16h.01" />
+                      </svg>
+                      <span>Save failed</span>
+                      <button
+                        type="button"
+                        class="retry"
+                        aria-label="Retry saving note"
+                      >
+                        Retry
+                      </button>
+                    </div>
+                    <div class="chat-view">
+                      <div class="chat-thread">
+                        <div class="chat-msg chat-msg--user">
+                          <div class="chat-bubble chat-bubble--user">
+                            <p>
+                              What patterns do you see across my notes about
+                              first-time UX?
+                            </p>
+                          </div>
+                        </div>
+                        <div class="chat-msg chat-msg--ai">
+                          <div class="chat-bubble chat-bubble--ai">
+                            <p>
+                              You keep circling back to one idea:
+                              <strong
+                                >don't explain the product, let the user do the
+                                thing.</strong
+                              >
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="chat-input-bar">
+                        <input
+                          type="text"
+                          class="chat-input"
+                          placeholder="Ask me about your notes"
+                          aria-label="Chat message input"
+                        />
+                        <button
+                          type="button"
+                          class="chat-send"
+                          aria-label="Send message"
+                          disabled
+                        >
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M22 2 11 13" />
+                            <path d="m22 2-7 20-4-9-9-4z" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </aside>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop Expanded View -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop — expanded view</div>
+            <div class="device-frame device-frame--desktop">
+              <div
+                class="screen screen--desktop-canvas"
+                data-component="app-shell"
+                data-state="save-s4-expanded"
+              >
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="header-actions">
+                    <button
+                      type="button"
+                      class="new-chat-btn"
+                      aria-label="New chat"
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      >
+                        <path d="M12 5v14M5 12h14" />
+                      </svg>
+                    </button>
+                    <div
+                      class="avatar avatar--tier"
+                      aria-label="Profile, Think tier"
+                    >
+                      SC
+                    </div>
+                  </div>
+                </header>
+                <div class="desktop-expanded-content">
+                  <div class="panel-header">
+                    <svg
+                      class="panel-sparkle"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                    <span class="panel-title">Chat</span>
+                    <button
+                      class="chat-expand-toggle"
+                      type="button"
+                      aria-label="Collapse chat to split view"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M4 4h6v6H4z" />
+                        <path d="M14 4h6v6h-6z" />
+                        <path d="M4 14h6v6H4z" />
+                        <path d="M14 14h6v6h-6z" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div
+                    class="chat-save-status chat-save-status--failed"
+                    data-component="chat-save-status"
+                    data-state="failed"
+                    role="alert"
+                    aria-live="assertive"
+                  >
+                    <svg
+                      class="icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="9" />
+                      <path d="M12 8v4" />
+                      <path d="M12 16h.01" />
+                    </svg>
+                    <span>Save failed</span>
+                    <button
+                      type="button"
+                      class="retry"
+                      aria-label="Retry saving note"
+                    >
+                      Retry
+                    </button>
+                  </div>
+                  <div class="chat-view">
+                    <div class="chat-thread">
+                      <div class="chat-msg chat-msg--user">
+                        <div class="chat-bubble chat-bubble--user">
+                          <p>
+                            What patterns do you see across my notes about
+                            first-time UX?
+                          </p>
+                        </div>
+                      </div>
+                      <div class="chat-msg chat-msg--ai">
+                        <div class="chat-bubble chat-bubble--ai">
+                          <p>
+                            You keep circling back to one idea:
+                            <strong
+                              >don't explain the product, let the user do the
+                              thing.</strong
+                            >
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chat-input-bar">
+                      <input
+                        type="text"
+                        class="chat-input"
+                        placeholder="Ask me about your notes"
+                        aria-label="Chat message input"
+                      />
+                      <button
+                        type="button"
+                        class="chat-send"
+                        aria-label="Send message"
+                        disabled
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M22 2 11 13" />
+                          <path d="m22 2-7 20-4-9-9-4z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,3689 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>dolfyn — Inline AI: Text Transform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --surface: #fafaf7;
+        --surface-subtle: #f2f1ed;
+        --surface-raised: #ffffff;
+        --surface-overlay: rgba(15, 15, 14, 0.32);
+        --ink: #0f0f0e;
+        --ink-2: #3f3f3f;
+        --ink-3: #6b6b6b;
+        --ink-inverse: #fafaf7;
+        --border: #e5e5e1;
+        --border-strong: #c7c7c2;
+        --divider: #edede9;
+        --accent: #c2410c;
+        --accent-strong: #9a330a;
+        --accent-soft-bg: #fcefde;
+        --space-1: 4px;
+        --space-2: 8px;
+        --space-3: 12px;
+        --space-4: 16px;
+        --space-5: 24px;
+        --space-6: 32px;
+        --radius-sm: 6px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-full: 9999px;
+        --elevation-panel:
+          0 8px 24px -8px rgba(15, 15, 14, 0.12),
+          0 2px 4px -2px rgba(15, 15, 14, 0.06);
+        --z-overlay: 800;
+        --z-panel: 900;
+        --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        --duration-fast: 150ms;
+        --meta-bg: #ecebe5;
+        --meta-ink: #2a2a28;
+        --meta-ink-2: #6e6e68;
+        --meta-border: #d8d7d1;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--meta-bg);
+        color: var(--meta-ink);
+        font-family: "Inter", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .mockup-nav {
+        position: sticky;
+        top: 0;
+        z-index: 1100;
+        background: var(--meta-bg);
+        border-bottom: 1px solid var(--meta-border);
+        padding: var(--space-3) var(--space-5);
+        display: flex;
+        align-items: center;
+        gap: var(--space-5);
+        flex-wrap: wrap;
+      }
+      .mockup-title {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink);
+      }
+      .mockup-subtitle {
+        font-size: 12px;
+        color: var(--meta-ink-2);
+      }
+      .state-tabs {
+        display: flex;
+        gap: var(--space-1);
+        margin-left: auto;
+        flex-wrap: wrap;
+      }
+      .state-tab {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--meta-ink-2);
+        text-decoration: none;
+        padding: var(--space-1) var(--space-2);
+        border-radius: var(--radius-sm);
+        border: 1px solid transparent;
+        transition: background var(--duration-fast) var(--ease-out);
+        white-space: nowrap;
+      }
+      .state-tab:hover {
+        background: rgba(15, 15, 14, 0.05);
+        color: var(--meta-ink);
+      }
+      #state-a:target ~ .mockup-nav .state-tab[href="#state-a"],
+      #state-b:target ~ .mockup-nav .state-tab[href="#state-b"],
+      #state-c:target ~ .mockup-nav .state-tab[href="#state-c"],
+      #state-d:target ~ .mockup-nav .state-tab[href="#state-d"],
+      #state-e:target ~ .mockup-nav .state-tab[href="#state-e"],
+      #state-f:target ~ .mockup-nav .state-tab[href="#state-f"],
+      #state-g:target ~ .mockup-nav .state-tab[href="#state-g"],
+      #state-h:target ~ .mockup-nav .state-tab[href="#state-h"],
+      #state-i:target ~ .mockup-nav .state-tab[href="#state-i"],
+      #state-j:target ~ .mockup-nav .state-tab[href="#state-j"] {
+        background: var(--meta-ink);
+        color: var(--ink-inverse);
+      }
+
+      .state {
+        padding: 48px 20px 32px;
+        max-width: 1400px;
+        margin: 0 auto;
+        border-top: 1px solid var(--meta-border);
+      }
+      .state:first-of-type {
+        border-top: none;
+      }
+      .state:target {
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: var(--radius-lg);
+      }
+      .state-header {
+        margin-bottom: 20px;
+        max-width: 720px;
+      }
+      .state-tag {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink-2);
+        margin-bottom: 8px;
+      }
+      .state-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--meta-ink);
+        margin: 0 0 8px;
+      }
+      .state-desc {
+        font-size: 14px;
+        color: var(--meta-ink-2);
+        line-height: 1.5;
+        margin: 0;
+      }
+
+      .viewports {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        align-items: flex-start;
+      }
+      .viewport {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        flex-shrink: 0;
+      }
+      .device-label {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink-2);
+        padding-left: 4px;
+      }
+      .device-frame {
+        background: var(--meta-ink);
+        border-radius: 28px;
+        padding: 8px;
+        box-shadow: 0 2px 8px -2px rgba(15, 15, 14, 0.12);
+      }
+      .screen {
+        position: relative;
+        width: 375px;
+        height: 720px;
+        background: var(--surface);
+        border-radius: 22px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .app {
+        position: relative;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      .app-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px;
+        flex-shrink: 0;
+      }
+      .wordmark {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-weight: 600;
+        font-size: 20px;
+        color: var(--ink);
+      }
+      .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 9999px;
+        background: var(--surface-subtle);
+        color: var(--ink-2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
+        font-size: 13px;
+      }
+
+      .note-editor {
+        flex: 1;
+        padding: 24px 16px 124px;
+        overflow-y: auto;
+        scrollbar-width: none;
+      }
+      .note-editor::-webkit-scrollbar {
+        display: none;
+      }
+      .note-body {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--ink);
+        max-width: 480px;
+      }
+      .note-title {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 1.3;
+        color: var(--ink);
+        margin: 0 0 24px;
+      }
+      .note-paragraph {
+        margin: 0 0 12px;
+      }
+      .note-paragraph:last-child {
+        margin-bottom: 0;
+      }
+      .cursor {
+        display: inline-block;
+        width: 2px;
+        height: 1.1em;
+        background: var(--ink);
+        vertical-align: text-bottom;
+        margin-left: 1px;
+        animation: blink 1s steps(2) infinite;
+      }
+      @keyframes blink {
+        0%,
+        50% {
+          opacity: 1;
+        }
+        50.01%,
+        100% {
+          opacity: 0;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .cursor {
+          animation: none;
+          opacity: 1;
+        }
+      }
+
+      .ai-bar {
+        height: 56px;
+        padding: 0 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 14px;
+        flex-shrink: 0;
+      }
+      .ai-bar--passive {
+        background: var(--surface-subtle);
+        color: var(--ink-2);
+      }
+      .ai-bar-sparkle {
+        flex-shrink: 0;
+        color: var(--accent);
+      }
+
+      .bottom-nav {
+        height: 56px;
+        background: var(--surface-raised);
+        border-top: 1px solid var(--border);
+        display: flex;
+        flex-shrink: 0;
+      }
+      .tab {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--ink-3);
+        position: relative;
+        text-decoration: none;
+      }
+      .tab svg {
+        display: block;
+      }
+      .tab--active {
+        color: var(--ink-2);
+      }
+      .tab--active svg {
+        color: var(--ink);
+      }
+      .tab--active::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 32px;
+        height: 3px;
+        background: var(--accent);
+        border-radius: 0 0 6px 6px;
+      }
+
+      /* Panel */
+      .panel-backdrop {
+        position: absolute;
+        inset: 0;
+        background: var(--surface-overlay);
+        z-index: var(--z-overlay);
+      }
+      .inline-ai-panel {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 80%;
+        background: var(--surface-raised);
+        border-radius: 12px 12px 0 0;
+        box-shadow: var(--elevation-panel);
+        z-index: var(--z-panel);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .panel-header {
+        height: 48px;
+        flex-shrink: 0;
+        padding: 0 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-bottom: 1px solid var(--divider);
+      }
+      .panel-sparkle {
+        color: var(--accent);
+      }
+      .panel-title {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--ink-2);
+      }
+
+      .panel-response {
+        flex: 1;
+        padding: 16px 20px;
+        overflow-y: auto;
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--ink);
+      }
+      .panel-response p {
+        margin: 0 0 12px;
+      }
+      .panel-response p:last-child {
+        margin-bottom: 0;
+      }
+
+      /* Improve Writing title distinction — Req 10 (title = first line, H1) */
+      .panel-response-title {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 1.3;
+        color: var(--ink);
+        margin: 0 0 var(--space-4);
+      }
+      .panel-context .panel-context-title {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1.4;
+        color: var(--ink);
+        margin: 0 0 var(--space-1);
+      }
+
+      /* Diff highlights for Fix Grammar */
+      .diff-remove {
+        background: #fee2e2;
+        text-decoration: line-through;
+        color: #991b1b;
+        padding: 1px 2px;
+        border-radius: 3px;
+      }
+      .diff-add {
+        background: #dcfce7;
+        color: #166534;
+        padding: 1px 2px;
+        border-radius: 3px;
+      }
+
+      .panel-context {
+        border-top: 1px solid var(--divider);
+        padding: 12px 16px;
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--ink-2);
+        background: var(--surface);
+        flex-shrink: 0;
+        max-height: 25%;
+        overflow-y: auto;
+      }
+      .panel-context-label {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        margin: 0 0 8px;
+      }
+      .panel-context p {
+        margin: 0;
+      }
+
+      .panel-actions {
+        flex-shrink: 0;
+        display: flex;
+        gap: 8px;
+        padding: 12px 16px;
+        border-top: 1px solid var(--divider);
+        background: var(--surface-raised);
+      }
+      .btn {
+        flex: 1;
+        height: 44px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .btn--ghost {
+        background: transparent;
+        color: var(--ink-2);
+      }
+      .btn--primary {
+        background: var(--ink);
+        color: var(--ink-inverse);
+      }
+      .btn:active {
+        opacity: 0.85;
+      }
+
+      .error-message {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 32px 20px;
+        gap: 12px;
+      }
+      .error-icon {
+        width: 24px;
+        height: 24px;
+        color: var(--ink-3);
+        opacity: 0.4;
+      }
+      .error-text {
+        font-size: 14px;
+        color: var(--ink-2);
+        margin: 0;
+      }
+      .error-retry {
+        height: 36px;
+        padding: 0 16px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--ink);
+        cursor: pointer;
+      }
+
+      @media (max-width: 480px) {
+        .state {
+          padding: 20px 12px;
+        }
+        .mockup-nav {
+          padding: 12px;
+        }
+        .state-tabs {
+          width: 100%;
+          margin-left: 0;
+        }
+      }
+
+      /* ============================================
+       DESKTOP VIEWPORT
+       ============================================ */
+      .device-frame--desktop {
+        width: 1440px;
+        height: 900px;
+        border-radius: 12px;
+        padding: 8px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .screen--desktop {
+        width: 100%;
+        height: 100%;
+        background: var(--surface);
+        border-radius: 22px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .desktop-content-row {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+        position: relative;
+      }
+
+      .desktop-content-row .note-editor {
+        flex: 1;
+        padding-bottom: 24px;
+      }
+
+      .desktop-content-row .note-body {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      /* ============================================
+       DESKTOP PANEL — side panel (§4.4)
+       ============================================ */
+      .inline-ai-panel--desktop {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 420px;
+        background: var(--surface-raised);
+        border-left: 1px solid var(--border);
+        box-shadow: -8px 0 24px -12px rgba(15, 15, 14, 0.18);
+        z-index: 50;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .inline-ai-panel--desktop .panel-backdrop {
+        display: none;
+      }
+
+      .inline-ai-panel--desktop .panel-close {
+        margin-left: auto;
+        background: transparent;
+        border: none;
+        color: var(--ink-2);
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-md);
+      }
+
+      .inline-ai-panel--desktop .panel-close:active {
+        background: var(--surface-subtle);
+      }
+
+      @media (max-width: 900px) {
+        .device-frame--desktop {
+          display: none;
+        }
+      }
+
+      .ai-marked {
+        border-left: 3px solid var(--accent);
+        padding: 12px 16px;
+        background: var(--accent-tint);
+        border-radius: 0 6px 6px 0;
+        margin: 12px 0;
+      }
+      .ai-marked p {
+        margin: 0;
+      }
+
+      /* AI feedback affordance — §4.18 (WS-4) */
+      .ai-feedback {
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+        margin-top: var(--space-3);
+      }
+      .ai-feedback-btn {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: none;
+        border-radius: var(--radius-md);
+        color: var(--ink-3);
+        cursor: pointer;
+        transition:
+          background var(--duration-fast) var(--ease-out),
+          color var(--duration-fast) var(--ease-out);
+      }
+      .ai-feedback-btn svg {
+        width: 18px;
+        height: 18px;
+        stroke-width: 1.5;
+      }
+      .ai-feedback-btn:active {
+        background: var(--surface-subtle);
+      }
+      .ai-feedback-btn--selected {
+        color: var(--accent-strong);
+      }
+
+      /* AI-limitations footer note — §4.20 (WS-4) */
+      .panel-limitations-note {
+        flex-shrink: 0;
+        padding: var(--space-2) var(--space-4);
+        border-top: 1px solid var(--divider);
+        background: var(--surface-raised);
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        color: var(--ink-3);
+      }
+
+      /* Long-note replace guard notice — §4.21 (WS-3) */
+      .replace-guard {
+        flex-shrink: 0;
+        margin: var(--space-3) var(--space-4);
+        padding: var(--space-3);
+        background: var(--surface-subtle);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        display: flex;
+        gap: var(--space-2);
+        align-items: flex-start;
+      }
+      .replace-guard-icon {
+        width: 16px;
+        height: 16px;
+        color: var(--ink-3);
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+      .replace-guard-title {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--ink);
+        margin: 0 0 var(--space-1);
+      }
+      .replace-guard-body {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--ink-2);
+        margin: 0 0 var(--space-2);
+      }
+      .replace-guard-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+      }
+      .replace-guard-primary {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--accent-strong);
+        background: none;
+        border: none;
+        padding: 0;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+      }
+      .replace-guard-dismiss {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--ink-3);
+        background: none;
+        border: none;
+        padding: 0;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="mockup-nav">
+      <div>
+        <div class="mockup-title">dolfyn / Inline AI: Text Transform</div>
+        <div class="mockup-subtitle">Phase 2 cont · Req 10 · 10 states</div>
+      </div>
+      <nav class="state-tabs" aria-label="State selector">
+        <a href="#state-a" class="state-tab">A · Fix Grammar</a>
+        <a href="#state-b" class="state-tab">B · Improve Writing</a>
+        <a href="#state-c" class="state-tab">C · Change Length</a>
+        <a href="#state-d" class="state-tab">D · Change Tone</a>
+        <a href="#state-g" class="state-tab">G · Longer result</a>
+        <a href="#state-h" class="state-tab">H · Tone result</a>
+        <a href="#state-e" class="state-tab">E · Replace flow</a>
+        <a href="#state-f" class="state-tab">F · Insert below</a>
+        <a href="#state-i" class="state-tab">I · error</a>
+        <a href="#state-j" class="state-tab">J · after replace</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- STATE A — Fix Grammar (highlighted changes) -->
+      <section id="state-a" class="state">
+        <div class="state-header">
+          <span class="state-tag">Text transform</span>
+          <h2 class="state-title">
+            State A — Fix Grammar (highlighted changes)
+          </h2>
+          <p class="state-desc">
+            AI corrected spelling, grammar, and punctuation. Changes are
+            highlighted: removed text in red with strikethrough, added text in
+            green. Action bar: Replace / Discard. The user sees exactly what
+            changed before committing.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar">SC</div>
+                  </header>
+                  <div class="note-editor" style="padding-bottom: 124px">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        First impressions matter more
+                        <span
+                          style="color: #991b1b; text-decoration: line-through"
+                          >then</span
+                        >
+                        features.
+                        <span
+                          style="color: #991b1b; text-decoration: line-through"
+                          >Their</span
+                        >
+                        are several reasons why this is true.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    /></svg
+                  ><span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  ><a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+                <div class="panel-backdrop"></div>
+                <div class="inline-ai-panel" role="dialog" aria-modal="true">
+                  <div class="panel-header">
+                    <svg
+                      class="panel-sparkle"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      /></svg
+                    ><span class="panel-title">Fix Grammar</span>
+                  </div>
+                  <div class="panel-response">
+                    <p>
+                      First impressions matter more
+                      <span class="diff-remove">then</span
+                      ><span class="diff-add">than</span> features.
+                      <span class="diff-remove">Their</span
+                      ><span class="diff-add">There</span> are several reasons
+                      why this is true.
+                    </p>
+
+                    <div class="ai-feedback" aria-label="Rate this answer">
+                      <button
+                        type="button"
+                        class="ai-feedback-btn"
+                        aria-label="Mark as helpful"
+                        aria-pressed="false"
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M7 10v12" />
+                          <path
+                            d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        type="button"
+                        class="ai-feedback-btn"
+                        aria-label="Mark as not helpful"
+                        aria-pressed="false"
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M17 14V2" />
+                          <path
+                            d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="panel-context">
+                    <div class="panel-context-label">Your note</div>
+                    <p class="panel-context-title" data-role="note-title">
+                      Onboarding thoughts
+                    </p>
+                    <p>
+                      First impressions matter more then features. Their are
+                      several reasons why this is true.
+                    </p>
+                  </div>
+
+                  <div class="replace-guard" role="note">
+                    <svg
+                      class="replace-guard-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M12 16v-4M12 8h.01" />
+                    </svg>
+                    <div>
+                      <p class="replace-guard-title">Long note detected</p>
+                      <p class="replace-guard-body">
+                        Your note is longer than the AI can rewrite at once.
+                        Replace will apply to the section you selected, not the
+                        whole note.
+                      </p>
+                      <div class="replace-guard-actions">
+                        <button type="button" class="replace-guard-primary">
+                          Replace selected section
+                        </button>
+                        <button type="button" class="replace-guard-dismiss">
+                          Dismiss
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="panel-actions">
+                    <button type="button" class="btn btn--ghost">
+                      Discard
+                    </button>
+                    <button type="button" class="btn btn--primary">
+                      Replace
+                    </button>
+                  </div>
+
+                  <div class="panel-limitations-note">
+                    AI may not always be accurate — always verify.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="avatar">SC</div>
+                </header>
+                <div class="desktop-content-row">
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph">
+                        First impressions matter more
+                        <span
+                          style="color: #991b1b; text-decoration: line-through"
+                          >then</span
+                        >
+                        features.
+                        <span
+                          style="color: #991b1b; text-decoration: line-through"
+                          >Their</span
+                        >
+                        are several reasons why this is true.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                  <aside
+                    class="inline-ai-panel--desktop"
+                    role="dialog"
+                    aria-modal="false"
+                    aria-label="Fix Grammar"
+                  >
+                    <div class="panel-header">
+                      <svg
+                        class="panel-sparkle"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        /></svg
+                      ><span class="panel-title">Fix Grammar</span>
+                    </div>
+                    <div class="panel-response">
+                      <p>
+                        First impressions matter more
+                        <span class="diff-remove">then</span
+                        ><span class="diff-add">than</span> features.
+                        <span class="diff-remove">Their</span
+                        ><span class="diff-add">There</span> are several reasons
+                        why this is true.
+                      </p>
+
+                      <div class="ai-feedback" aria-label="Rate this answer">
+                        <button
+                          type="button"
+                          class="ai-feedback-btn"
+                          aria-label="Mark as helpful"
+                          aria-pressed="false"
+                        >
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M7 10v12" />
+                            <path
+                              d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          type="button"
+                          class="ai-feedback-btn"
+                          aria-label="Mark as not helpful"
+                          aria-pressed="false"
+                        >
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M17 14V2" />
+                            <path
+                              d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="panel-context">
+                      <div class="panel-context-label">Your note</div>
+                      <p class="panel-context-title" data-role="note-title">
+                        Onboarding thoughts
+                      </p>
+                      <p>
+                        First impressions matter more then features. Their are
+                        several reasons why this is true.
+                      </p>
+                    </div>
+                    <div class="panel-actions">
+                      <button type="button" class="btn btn--ghost">
+                        Discard
+                      </button>
+                      <button type="button" class="btn btn--primary">
+                        Replace
+                      </button>
+                    </div>
+                    <div class="panel-limitations-note">
+                      AI may not always be accurate — always verify.
+                    </div>
+                  </aside>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  ><a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATE B — Improve Writing (voice-matched rewrite) -->
+      <section id="state-b" class="state">
+        <div class="state-header">
+          <span class="state-tag">Text transform</span>
+          <h2 class="state-title">
+            State B — Improve Writing (voice-matched rewrite)
+          </h2>
+          <p class="state-desc">
+            Full-note Improve Writing: AI rewrote the note for clarity while
+            preserving the user's voice. The first line (note title) renders as
+            a heading, distinct from the razor-sharp body. Action bar: Replace /
+            Insert below / Discard. "Insert below" keeps the original and places
+            the rewrite underneath for comparison.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar">SC</div>
+                  </header>
+                  <div class="note-editor" style="padding-bottom: 124px">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        First impressions matter more than features. Users
+                        decide in the first minute whether to stay or leave, and
+                        that decision has nothing to do with how many features
+                        you built.<span class="cursor"></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    /></svg
+                  ><span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  ><a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+                <div class="panel-backdrop"></div>
+                <div class="inline-ai-panel" role="dialog" aria-modal="true">
+                  <div class="panel-header">
+                    <svg
+                      class="panel-sparkle"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      /></svg
+                    ><span class="panel-title">Improve Writing</span>
+                  </div>
+                  <div class="panel-response">
+                    <h1 class="panel-response-title" data-role="note-title">
+                      Onboarding thoughts
+                    </h1>
+                    <p>
+                      First impressions aren't just important — they're the
+                      product. A user decides in the first minute whether to
+                      stay, and that decision has nothing to do with your
+                      feature count.
+                    </p>
+
+                    <div class="ai-feedback" aria-label="Rate this answer">
+                      <button
+                        type="button"
+                        class="ai-feedback-btn"
+                        aria-label="Mark as helpful"
+                        aria-pressed="false"
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M7 10v12" />
+                          <path
+                            d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        type="button"
+                        class="ai-feedback-btn"
+                        aria-label="Mark as not helpful"
+                        aria-pressed="false"
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M17 14V2" />
+                          <path
+                            d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="panel-context">
+                    <div class="panel-context-label">Your note</div>
+                    <p class="panel-context-title" data-role="note-title">
+                      Onboarding thoughts
+                    </p>
+                    <p>
+                      First impressions matter more than features. Users decide
+                      in the first minute whether to stay or leave, and that
+                      decision has nothing to do with how many features you
+                      built.
+                    </p>
+                  </div>
+                  <div class="panel-actions">
+                    <button type="button" class="btn btn--ghost">
+                      Discard
+                    </button>
+                    <button type="button" class="btn btn--ghost">
+                      Insert below
+                    </button>
+                    <button type="button" class="btn btn--primary">
+                      Replace
+                    </button>
+                  </div>
+                  <div class="panel-limitations-note">
+                    AI may not always be accurate — always verify.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="avatar">SC</div>
+                </header>
+                <div class="desktop-content-row">
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph">
+                        First impressions matter more than features. Users
+                        decide in the first minute whether to stay or leave, and
+                        that decision has nothing to do with how many features
+                        you built.<span class="cursor"></span>
+                      </p>
+                    </div>
+                  </div>
+                  <aside
+                    class="inline-ai-panel--desktop"
+                    role="dialog"
+                    aria-modal="false"
+                    aria-label="Improve Writing"
+                  >
+                    <div class="panel-header">
+                      <svg
+                        class="panel-sparkle"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        /></svg
+                      ><span class="panel-title">Improve Writing</span>
+                    </div>
+                    <div class="panel-response">
+                      <h1 class="panel-response-title" data-role="note-title">
+                        Onboarding thoughts
+                      </h1>
+                      <p>
+                        First impressions aren't just important — they're the
+                        product. A user decides in the first minute whether to
+                        stay, and that decision has nothing to do with your
+                        feature count.
+                      </p>
+
+                      <div class="ai-feedback" aria-label="Rate this answer">
+                        <button
+                          type="button"
+                          class="ai-feedback-btn"
+                          aria-label="Mark as helpful"
+                          aria-pressed="false"
+                        >
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M7 10v12" />
+                            <path
+                              d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          type="button"
+                          class="ai-feedback-btn"
+                          aria-label="Mark as not helpful"
+                          aria-pressed="false"
+                        >
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M17 14V2" />
+                            <path
+                              d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="panel-context">
+                      <div class="panel-context-label">Your note</div>
+                      <p class="panel-context-title" data-role="note-title">
+                        Onboarding thoughts
+                      </p>
+                      <p>
+                        First impressions matter more than features. Users
+                        decide in the first minute whether to stay or leave, and
+                        that decision has nothing to do with how many features
+                        you built.
+                      </p>
+                    </div>
+                    <div class="panel-actions">
+                      <button type="button" class="btn btn--ghost">
+                        Discard
+                      </button>
+                      <button type="button" class="btn btn--ghost">
+                        Insert below
+                      </button>
+                      <button type="button" class="btn btn--primary">
+                        Replace
+                      </button>
+                    </div>
+                    <div class="panel-limitations-note">
+                      AI may not always be accurate — always verify.
+                    </div>
+                  </aside>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  ><a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATE C — Change Length (selection only, no action buttons) -->
+      <section id="state-c" class="state">
+        <div class="state-header">
+          <span class="state-tag">Text transform</span>
+          <h2 class="state-title">State C — Change Length (Longer/Shorter)</h2>
+          <p class="state-desc">
+            Phase 1 — Selection only. No action buttons. User picks Longer or
+            Shorter. Action buttons appear only after AI generates the result.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar">SC</div>
+                  </header>
+                  <div class="note-editor" style="padding-bottom: 124px">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        First impressions matter more than features.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    /></svg
+                  ><span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  ><a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+                <div class="panel-backdrop"></div>
+                <div class="inline-ai-panel" role="dialog" aria-modal="true">
+                  <div class="panel-header">
+                    <svg
+                      class="panel-sparkle"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      /></svg
+                    ><span class="panel-title">Change Length</span>
+                  </div>
+                  <div
+                    class="panel-response"
+                    style="
+                      display: flex;
+                      flex-direction: column;
+                      justify-content: center;
+                      align-items: center;
+                      text-align: center;
+                      color: var(--ink-3);
+                      font-size: 14px;
+                    "
+                  >
+                    <p>Choose Longer or Shorter below</p>
+                  </div>
+                  <div class="panel-context">
+                    <div class="panel-context-label">Your note</div>
+                    <p class="panel-context-title" data-role="note-title">
+                      Onboarding thoughts
+                    </p>
+                    <p>First impressions matter more than features.</p>
+                  </div>
+                  <div
+                    style="
+                      display: flex;
+                      gap: 6px;
+                      padding: 12px 16px;
+                      border-top: 1px solid var(--divider);
+                      background: var(--surface);
+                    "
+                  >
+                    <button
+                      type="button"
+                      class="btn"
+                      style="
+                        flex: 1;
+                        background: var(--surface-raised);
+                        border: 1px solid var(--border);
+                        color: var(--ink);
+                        font-size: 13px;
+                      "
+                    >
+                      Longer
+                    </button>
+                    <button
+                      type="button"
+                      class="btn"
+                      style="
+                        flex: 1;
+                        background: var(--surface-raised);
+                        border: 1px solid var(--border);
+                        color: var(--ink);
+                        font-size: 13px;
+                      "
+                    >
+                      Shorter
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="avatar">SC</div>
+                </header>
+                <div class="desktop-content-row">
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph">
+                        First impressions matter more than features.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                  <aside
+                    class="inline-ai-panel--desktop"
+                    role="dialog"
+                    aria-modal="false"
+                    aria-label="Change Length"
+                  >
+                    <div class="panel-header">
+                      <svg
+                        class="panel-sparkle"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        /></svg
+                      ><span class="panel-title">Change Length</span>
+                    </div>
+                    <div
+                      class="panel-response"
+                      style="
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+                        text-align: center;
+                        color: var(--ink-3);
+                        font-size: 14px;
+                      "
+                    >
+                      <p>Choose Longer or Shorter below</p>
+                    </div>
+                    <div class="panel-context">
+                      <div class="panel-context-label">Your note</div>
+                      <p class="panel-context-title" data-role="note-title">
+                        Onboarding thoughts
+                      </p>
+                      <p>First impressions matter more than features.</p>
+                    </div>
+                    <div
+                      style="
+                        display: flex;
+                        gap: 6px;
+                        padding: 12px 16px;
+                        border-top: 1px solid var(--divider);
+                        background: var(--surface);
+                      "
+                    >
+                      <button
+                        type="button"
+                        class="btn"
+                        style="
+                          flex: 1;
+                          background: var(--surface-raised);
+                          border: 1px solid var(--border);
+                          color: var(--ink);
+                          font-size: 13px;
+                        "
+                      >
+                        Longer
+                      </button>
+                      <button
+                        type="button"
+                        class="btn"
+                        style="
+                          flex: 1;
+                          background: var(--surface-raised);
+                          border: 1px solid var(--border);
+                          color: var(--ink);
+                          font-size: 13px;
+                        "
+                      >
+                        Shorter
+                      </button>
+                    </div>
+                  </aside>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  ><a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATE D — Change Tone (selection only, no action buttons) -->
+      <section id="state-d" class="state">
+        <div class="state-header">
+          <span class="state-tag">Text transform</span>
+          <h2 class="state-title">State D — Change Tone (4 tones)</h2>
+          <p class="state-desc">
+            Phase 1 — Selection only. No action buttons. User picks a tone.
+            Action buttons appear only after AI generates the result.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar">SC</div>
+                  </header>
+                  <div class="note-editor" style="padding-bottom: 124px">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        First impressions matter more than features.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    /></svg
+                  ><span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  ><a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+                <div class="panel-backdrop"></div>
+                <div class="inline-ai-panel" role="dialog" aria-modal="true">
+                  <div class="panel-header">
+                    <svg
+                      class="panel-sparkle"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      /></svg
+                    ><span class="panel-title">Change Tone</span>
+                  </div>
+                  <div
+                    class="panel-response"
+                    style="
+                      display: flex;
+                      flex-direction: column;
+                      justify-content: center;
+                      align-items: center;
+                      text-align: center;
+                      color: var(--ink-3);
+                      font-size: 14px;
+                    "
+                  >
+                    <p>Choose a tone below</p>
+                  </div>
+                  <div class="panel-context">
+                    <div class="panel-context-label">Your note</div>
+                    <p class="panel-context-title" data-role="note-title">
+                      Onboarding thoughts
+                    </p>
+                    <p>First impressions matter more than features.</p>
+                  </div>
+                  <div
+                    style="
+                      display: flex;
+                      gap: 6px;
+                      padding: 12px 16px;
+                      border-top: 1px solid var(--divider);
+                      background: var(--surface);
+                      flex-wrap: wrap;
+                    "
+                  >
+                    <button
+                      type="button"
+                      class="btn"
+                      style="
+                        flex: 1;
+                        min-width: 70px;
+                        background: var(--surface-raised);
+                        border: 1px solid var(--border);
+                        color: var(--ink);
+                        font-size: 12px;
+                      "
+                    >
+                      Professional
+                    </button>
+                    <button
+                      type="button"
+                      class="btn"
+                      style="
+                        flex: 1;
+                        min-width: 70px;
+                        background: var(--surface-raised);
+                        border: 1px solid var(--border);
+                        color: var(--ink);
+                        font-size: 12px;
+                      "
+                    >
+                      Casual
+                    </button>
+                    <button
+                      type="button"
+                      class="btn"
+                      style="
+                        flex: 1;
+                        min-width: 70px;
+                        background: var(--surface-raised);
+                        border: 1px solid var(--border);
+                        color: var(--ink);
+                        font-size: 12px;
+                      "
+                    >
+                      Excited
+                    </button>
+                    <button
+                      type="button"
+                      class="btn"
+                      style="
+                        flex: 1;
+                        min-width: 70px;
+                        background: var(--accent-soft-bg);
+                        border: 1px solid var(--accent);
+                        color: var(--accent-strong);
+                        font-size: 12px;
+                      "
+                    >
+                      Assertive
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="avatar">SC</div>
+                </header>
+                <div class="desktop-content-row">
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph">
+                        First impressions matter more than features.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                  <aside
+                    class="inline-ai-panel--desktop"
+                    role="dialog"
+                    aria-modal="false"
+                    aria-label="Change Tone"
+                  >
+                    <div class="panel-header">
+                      <svg
+                        class="panel-sparkle"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        /></svg
+                      ><span class="panel-title">Change Tone</span>
+                    </div>
+                    <div
+                      class="panel-response"
+                      style="
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+                        text-align: center;
+                        color: var(--ink-3);
+                        font-size: 14px;
+                      "
+                    >
+                      <p>Choose a tone below</p>
+                    </div>
+                    <div class="panel-context">
+                      <div class="panel-context-label">Your note</div>
+                      <p class="panel-context-title" data-role="note-title">
+                        Onboarding thoughts
+                      </p>
+                      <p>First impressions matter more than features.</p>
+                    </div>
+                    <div
+                      style="
+                        display: flex;
+                        gap: 6px;
+                        padding: 12px 16px;
+                        border-top: 1px solid var(--divider);
+                        background: var(--surface);
+                        flex-wrap: wrap;
+                      "
+                    >
+                      <button
+                        type="button"
+                        class="btn"
+                        style="
+                          flex: 1;
+                          min-width: 70px;
+                          background: var(--surface-raised);
+                          border: 1px solid var(--border);
+                          color: var(--ink);
+                          font-size: 12px;
+                        "
+                      >
+                        Professional
+                      </button>
+                      <button
+                        type="button"
+                        class="btn"
+                        style="
+                          flex: 1;
+                          min-width: 70px;
+                          background: var(--surface-raised);
+                          border: 1px solid var(--border);
+                          color: var(--ink);
+                          font-size: 12px;
+                        "
+                      >
+                        Casual
+                      </button>
+                      <button
+                        type="button"
+                        class="btn"
+                        style="
+                          flex: 1;
+                          min-width: 70px;
+                          background: var(--surface-raised);
+                          border: 1px solid var(--border);
+                          color: var(--ink);
+                          font-size: 12px;
+                        "
+                      >
+                        Excited
+                      </button>
+                      <button
+                        type="button"
+                        class="btn"
+                        style="
+                          flex: 1;
+                          min-width: 70px;
+                          background: var(--accent-soft-bg);
+                          border: 1px solid var(--accent);
+                          color: var(--accent-strong);
+                          font-size: 12px;
+                        "
+                      >
+                        Assertive
+                      </button>
+                    </div>
+                  </aside>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  ><a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATE G — Change Length · Longer (result with action buttons) -->
+      <section id="state-g" class="state">
+        <div class="state-header">
+          <span class="state-tag">Text transform</span>
+          <h2 class="state-title">State G — Change Length · Longer (result)</h2>
+          <p class="state-desc">
+            Phase 2 — Result. User tapped "Longer". AI generated an expanded
+            version. Action buttons now appear: Discard / Insert below /
+            Replace.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar">SC</div>
+                  </header>
+                  <div class="note-editor" style="padding-bottom: 124px">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        First impressions matter more than features.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    /></svg
+                  ><span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  ><a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+                <div class="panel-backdrop"></div>
+                <div class="inline-ai-panel" role="dialog" aria-modal="true">
+                  <div class="panel-header">
+                    <svg
+                      class="panel-sparkle"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      /></svg
+                    ><span class="panel-title">Change Length · Longer</span>
+                  </div>
+                  <div class="panel-response">
+                    <h1 class="panel-response-title" data-role="note-title">
+                      First impressions matter more than features.
+                    </h1>
+                    <p>
+                      Users decide in the first minute whether to stay or leave,
+                      and that decision has nothing to do with how many features
+                      you built.
+                    </p>
+
+                    <div class="ai-feedback" aria-label="Rate this answer">
+                      <button
+                        type="button"
+                        class="ai-feedback-btn"
+                        aria-label="Mark as helpful"
+                        aria-pressed="false"
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M7 10v12" />
+                          <path
+                            d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        type="button"
+                        class="ai-feedback-btn"
+                        aria-label="Mark as not helpful"
+                        aria-pressed="false"
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M17 14V2" />
+                          <path
+                            d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="panel-context">
+                    <div class="panel-context-label">Your note</div>
+                    <p class="panel-context-title" data-role="note-title">
+                      Onboarding thoughts
+                    </p>
+                    <p>First impressions matter more than features.</p>
+                  </div>
+                  <div class="panel-actions">
+                    <button type="button" class="btn btn--ghost">
+                      Discard
+                    </button>
+                    <button type="button" class="btn btn--ghost">
+                      Insert below
+                    </button>
+                    <button type="button" class="btn btn--primary">
+                      Replace
+                    </button>
+                  </div>
+                  <div class="panel-limitations-note">
+                    AI may not always be accurate — always verify.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="avatar">SC</div>
+                </header>
+                <div class="desktop-content-row">
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph">
+                        First impressions matter more than features.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                  <aside
+                    class="inline-ai-panel--desktop"
+                    role="dialog"
+                    aria-modal="false"
+                    aria-label="Change Length Longer"
+                  >
+                    <div class="panel-header">
+                      <svg
+                        class="panel-sparkle"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        /></svg
+                      ><span class="panel-title">Change Length · Longer</span>
+                    </div>
+                    <div class="panel-response">
+                      <h1 class="panel-response-title" data-role="note-title">
+                        First impressions matter more than features.
+                      </h1>
+                      <p>
+                        Users decide in the first minute whether to stay or
+                        leave, and that decision has nothing to do with how many
+                        features you built.
+                      </p>
+
+                      <div class="ai-feedback" aria-label="Rate this answer">
+                        <button
+                          type="button"
+                          class="ai-feedback-btn"
+                          aria-label="Mark as helpful"
+                          aria-pressed="false"
+                        >
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M7 10v12" />
+                            <path
+                              d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          type="button"
+                          class="ai-feedback-btn"
+                          aria-label="Mark as not helpful"
+                          aria-pressed="false"
+                        >
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M17 14V2" />
+                            <path
+                              d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="panel-context">
+                      <div class="panel-context-label">Your note</div>
+                      <p class="panel-context-title" data-role="note-title">
+                        Onboarding thoughts
+                      </p>
+                      <p>First impressions matter more than features.</p>
+                    </div>
+                    <div class="panel-actions">
+                      <button type="button" class="btn btn--ghost">
+                        Discard
+                      </button>
+                      <button type="button" class="btn btn--ghost">
+                        Insert below
+                      </button>
+                      <button type="button" class="btn btn--primary">
+                        Replace
+                      </button>
+                    </div>
+                    <div class="panel-limitations-note">
+                      AI may not always be accurate — always verify.
+                    </div>
+                  </aside>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  ><a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATE H — Change Tone · Professional (result with action buttons) -->
+      <section id="state-h" class="state">
+        <div class="state-header">
+          <span class="state-tag">Text transform</span>
+          <h2 class="state-title">
+            State H — Change Tone · Professional (result)
+          </h2>
+          <p class="state-desc">
+            Phase 2 — Result. User tapped "Professional". AI rewrote in
+            professional tone. Action buttons: Discard / Replace. No "Insert
+            below" — tone shift transforms, not appends.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar">SC</div>
+                  </header>
+                  <div class="note-editor" style="padding-bottom: 124px">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        First impressions matter more than features.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    /></svg
+                  ><span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  ><a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+                <div class="panel-backdrop"></div>
+                <div class="inline-ai-panel" role="dialog" aria-modal="true">
+                  <div class="panel-header">
+                    <svg
+                      class="panel-sparkle"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      /></svg
+                    ><span class="panel-title">Change Tone · Professional</span>
+                  </div>
+                  <div class="panel-response">
+                    <p>
+                      Initial user impressions significantly outweigh feature
+                      breadth in determining adoption outcomes.
+                    </p>
+
+                    <div class="ai-feedback" aria-label="Rate this answer">
+                      <button
+                        type="button"
+                        class="ai-feedback-btn"
+                        aria-label="Mark as helpful"
+                        aria-pressed="false"
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M7 10v12" />
+                          <path
+                            d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        type="button"
+                        class="ai-feedback-btn"
+                        aria-label="Mark as not helpful"
+                        aria-pressed="false"
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M17 14V2" />
+                          <path
+                            d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="panel-context">
+                    <div class="panel-context-label">Your note</div>
+                    <p class="panel-context-title" data-role="note-title">
+                      Onboarding thoughts
+                    </p>
+                    <p>First impressions matter more than features.</p>
+                  </div>
+                  <div class="panel-actions">
+                    <button type="button" class="btn btn--ghost">
+                      Discard
+                    </button>
+                    <button type="button" class="btn btn--primary">
+                      Replace
+                    </button>
+                  </div>
+                  <div class="panel-limitations-note">
+                    AI may not always be accurate — always verify.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="avatar">SC</div>
+                </header>
+                <div class="desktop-content-row">
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph">
+                        First impressions matter more than features.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                  <aside
+                    class="inline-ai-panel--desktop"
+                    role="dialog"
+                    aria-modal="false"
+                    aria-label="Change Tone Professional"
+                  >
+                    <div class="panel-header">
+                      <svg
+                        class="panel-sparkle"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        /></svg
+                      ><span class="panel-title"
+                        >Change Tone · Professional</span
+                      >
+                    </div>
+                    <div class="panel-response">
+                      <p>
+                        Initial user impressions significantly outweigh feature
+                        breadth in determining adoption outcomes.
+                      </p>
+
+                      <div class="ai-feedback" aria-label="Rate this answer">
+                        <button
+                          type="button"
+                          class="ai-feedback-btn"
+                          aria-label="Mark as helpful"
+                          aria-pressed="false"
+                        >
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M7 10v12" />
+                            <path
+                              d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          type="button"
+                          class="ai-feedback-btn"
+                          aria-label="Mark as not helpful"
+                          aria-pressed="false"
+                        >
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M17 14V2" />
+                            <path
+                              d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="panel-context">
+                      <div class="panel-context-label">Your note</div>
+                      <p class="panel-context-title" data-role="note-title">
+                        Onboarding thoughts
+                      </p>
+                      <p>First impressions matter more than features.</p>
+                    </div>
+                    <div class="panel-actions">
+                      <button type="button" class="btn btn--ghost">
+                        Discard
+                      </button>
+                      <button type="button" class="btn btn--primary">
+                        Replace
+                      </button>
+                    </div>
+                    <div class="panel-limitations-note">
+                      AI may not always be accurate — always verify.
+                    </div>
+                  </aside>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  ><a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATE I — AI Error -->
+      <section id="state-i" class="state">
+        <div class="state-header">
+          <span class="state-tag">Error state</span>
+          <h2 class="state-title">State I — AI Error</h2>
+          <p class="state-desc">
+            AI failed to respond. Error message shown with a retry option. The
+            user can dismiss and try again, or retry immediately.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar">SC</div>
+                  </header>
+                  <div class="note-editor" style="padding-bottom: 124px">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        First impressions matter more than features.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    /></svg
+                  ><span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  ><a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+                <div class="panel-backdrop"></div>
+                <div class="inline-ai-panel" role="dialog" aria-modal="true">
+                  <div class="panel-header">
+                    <svg
+                      class="panel-sparkle"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      /></svg
+                    ><span class="panel-title">Fix Grammar</span>
+                  </div>
+                  <div class="panel-response">
+                    <div class="error-message">
+                      <svg
+                        class="error-icon"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="12" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                      </svg>
+                      <p class="error-text">Something went wrong. Try again.</p>
+                      <button type="button" class="error-retry">Retry</button>
+                    </div>
+
+                    <div class="ai-feedback" aria-label="Rate this answer">
+                      <button
+                        type="button"
+                        class="ai-feedback-btn"
+                        aria-label="Mark as helpful"
+                        aria-pressed="false"
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M7 10v12" />
+                          <path
+                            d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        type="button"
+                        class="ai-feedback-btn"
+                        aria-label="Mark as not helpful"
+                        aria-pressed="false"
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M17 14V2" />
+                          <path
+                            d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="panel-context">
+                    <div class="panel-context-label">Your note</div>
+                    <p class="panel-context-title" data-role="note-title">
+                      Onboarding thoughts
+                    </p>
+                    <p>First impressions matter more than features.</p>
+                  </div>
+                  <div class="panel-actions">
+                    <button type="button" class="btn btn--ghost">
+                      Dismiss
+                    </button>
+                  </div>
+                  <div class="panel-limitations-note">
+                    AI may not always be accurate — always verify.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="avatar">SC</div>
+                </header>
+                <div class="desktop-content-row">
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph">
+                        First impressions matter more than features.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                  <aside
+                    class="inline-ai-panel--desktop"
+                    role="dialog"
+                    aria-modal="false"
+                    aria-label="Fix Grammar"
+                  >
+                    <div class="panel-header">
+                      <svg
+                        class="panel-sparkle"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        /></svg
+                      ><span class="panel-title">Fix Grammar</span>
+                    </div>
+                    <div class="panel-response">
+                      <div class="error-message">
+                        <svg
+                          class="error-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <circle cx="12" cy="12" r="10" />
+                          <line x1="12" y1="8" x2="12" y2="12" />
+                          <line x1="12" y1="16" x2="12.01" y2="16" />
+                        </svg>
+                        <p class="error-text">
+                          Something went wrong. Try again.
+                        </p>
+                        <button type="button" class="error-retry">Retry</button>
+                      </div>
+
+                      <div class="ai-feedback" aria-label="Rate this answer">
+                        <button
+                          type="button"
+                          class="ai-feedback-btn"
+                          aria-label="Mark as helpful"
+                          aria-pressed="false"
+                        >
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M7 10v12" />
+                            <path
+                              d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          type="button"
+                          class="ai-feedback-btn"
+                          aria-label="Mark as not helpful"
+                          aria-pressed="false"
+                        >
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M17 14V2" />
+                            <path
+                              d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="panel-context">
+                      <div class="panel-context-label">Your note</div>
+                      <p class="panel-context-title" data-role="note-title">
+                        Onboarding thoughts
+                      </p>
+                      <p>First impressions matter more than features.</p>
+                    </div>
+                    <div class="panel-actions">
+                      <button type="button" class="btn btn--ghost">
+                        Dismiss
+                      </button>
+                    </div>
+                    <div class="panel-limitations-note">
+                      AI may not always be accurate — always verify.
+                    </div>
+                  </aside>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  ><a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATE E — Replace flow (after selection) -->
+      <section id="state-e" class="state">
+        <div class="state-header">
+          <span class="state-tag">Action flow</span>
+          <h2 class="state-title">
+            State E — Replace flow (text selected, ready to commit)
+          </h2>
+          <p class="state-desc">
+            User selected "Professional" tone. The AI rewrote the text in a
+            professional tone. The response shows the rewrite. Action bar:
+            Replace (primary) / Discard. Tapping Replace swaps the original text
+            in the note.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar">SC</div>
+                  </header>
+                  <div class="note-editor" style="padding-bottom: 124px">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        First impressions matter more than features.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    /></svg
+                  ><span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  ><a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+                <div class="panel-backdrop"></div>
+                <div class="inline-ai-panel" role="dialog" aria-modal="true">
+                  <div class="panel-header">
+                    <svg
+                      class="panel-sparkle"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      /></svg
+                    ><span class="panel-title">Change Tone · Professional</span>
+                  </div>
+                  <div class="panel-response">
+                    <p>
+                      Initial user impressions significantly outweigh feature
+                      breadth in determining adoption outcomes.
+                    </p>
+
+                    <div class="ai-feedback" aria-label="Rate this answer">
+                      <button
+                        type="button"
+                        class="ai-feedback-btn"
+                        aria-label="Mark as helpful"
+                        aria-pressed="false"
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M7 10v12" />
+                          <path
+                            d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        type="button"
+                        class="ai-feedback-btn"
+                        aria-label="Mark as not helpful"
+                        aria-pressed="false"
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M17 14V2" />
+                          <path
+                            d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="panel-context">
+                    <div class="panel-context-label">Your note</div>
+                    <p class="panel-context-title" data-role="note-title">
+                      Onboarding thoughts
+                    </p>
+                    <p>First impressions matter more than features.</p>
+                  </div>
+                  <div class="panel-actions">
+                    <button type="button" class="btn btn--ghost">
+                      Discard
+                    </button>
+                    <button type="button" class="btn btn--primary">
+                      Replace
+                    </button>
+                  </div>
+                  <div class="panel-limitations-note">
+                    AI may not always be accurate — always verify.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="avatar">SC</div>
+                </header>
+                <div class="desktop-content-row">
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph">
+                        First impressions matter more than features.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                  <aside
+                    class="inline-ai-panel--desktop"
+                    role="dialog"
+                    aria-modal="false"
+                    aria-label="Change Tone Professional"
+                  >
+                    <div class="panel-header">
+                      <svg
+                        class="panel-sparkle"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        /></svg
+                      ><span class="panel-title"
+                        >Change Tone · Professional</span
+                      >
+                    </div>
+                    <div class="panel-response">
+                      <p>
+                        Initial user impressions significantly outweigh feature
+                        breadth in determining adoption outcomes.
+                      </p>
+
+                      <div class="ai-feedback" aria-label="Rate this answer">
+                        <button
+                          type="button"
+                          class="ai-feedback-btn"
+                          aria-label="Mark as helpful"
+                          aria-pressed="false"
+                        >
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M7 10v12" />
+                            <path
+                              d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          type="button"
+                          class="ai-feedback-btn"
+                          aria-label="Mark as not helpful"
+                          aria-pressed="false"
+                        >
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M17 14V2" />
+                            <path
+                              d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="panel-context">
+                      <div class="panel-context-label">Your note</div>
+                      <p class="panel-context-title" data-role="note-title">
+                        Onboarding thoughts
+                      </p>
+                      <p>First impressions matter more than features.</p>
+                    </div>
+                    <div class="panel-actions">
+                      <button type="button" class="btn btn--ghost">
+                        Discard
+                      </button>
+                      <button type="button" class="btn btn--primary">
+                        Replace
+                      </button>
+                    </div>
+                    <div class="panel-limitations-note">
+                      AI may not always be accurate — always verify.
+                    </div>
+                  </aside>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  ><a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATE J — After Replace (note updated) -->
+      <section id="state-j" class="state">
+        <div class="state-header">
+          <span class="state-tag">Action flow</span>
+          <h2 class="state-title">State J — After Replace (note updated)</h2>
+          <p class="state-desc">
+            User tapped "Replace". The original text is swapped with the
+            AI-generated version. Panel is closed. The replaced content is
+            marked as AI-generated (accent border, tint). The note now reads
+            with the professional tone.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar">SC</div>
+                  </header>
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <div class="ai-marked">
+                        <p>
+                          Initial user impressions significantly outweigh
+                          feature breadth in determining adoption outcomes.
+                        </p>
+                      </div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        <span class="cursor"></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    /></svg
+                  ><span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  ><a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="avatar">SC</div>
+                </header>
+                <div class="desktop-content-row">
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <div class="ai-marked">
+                        <p>
+                          Initial user impressions significantly outweigh
+                          feature breadth in determining adoption outcomes.
+                        </p>
+                      </div>
+                      <p class="note-paragraph"><span class="cursor"></span></p>
+                    </div>
+                  </div>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  ><a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATE F — Insert below flow -->
+      <section id="state-f" class="state">
+        <div class="state-header">
+          <span class="state-tag">Action flow</span>
+          <h2 class="state-title">State F — Insert below flow</h2>
+          <p class="state-desc">
+            After Improve Writing, the user chose "Insert below". The original
+            text stays, and the rewrite is placed underneath for comparison. The
+            user can then manually delete whichever version they prefer. Action
+            bar: Discard (to remove the inserted text).
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px — note after insert</div>
+            <div class="device-frame">
+              <div class="screen">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar">SC</div>
+                  </header>
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph">
+                        First impressions matter more than features. Users
+                        decide in the first minute whether to stay or leave, and
+                        that decision has nothing to do with how many features
+                        you built.
+                      </p>
+                      <div
+                        style="
+                          border-left: 3px solid var(--accent);
+                          padding-left: 16px;
+                          background: var(--accent-tint);
+                          border-radius: 0 6px 6px 0;
+                          padding: 12px 16px;
+                          margin: 12px 0;
+                        "
+                      >
+                        <p class="note-paragraph" style="margin: 0">
+                          First impressions aren't just important — they're the
+                          product. A user decides in the first minute whether to
+                          stay, and that decision has nothing to do with your
+                          feature count.
+                        </p>
+                      </div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        <span class="cursor"></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    /></svg
+                  ><span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  ><a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop — note after insert</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="avatar">SC</div>
+                </header>
+                <div class="desktop-content-row">
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph">
+                        First impressions matter more than features. Users
+                        decide in the first minute whether to stay or leave, and
+                        that decision has nothing to do with how many features
+                        you built.
+                      </p>
+                      <div
+                        style="
+                          border-left: 3px solid var(--accent);
+                          padding-left: 16px;
+                          background: var(--accent-tint);
+                          border-radius: 0 6px 6px 0;
+                          padding: 12px 16px;
+                          margin: 12px 0;
+                        "
+                      >
+                        <p class="note-paragraph" style="margin: 0">
+                          First impressions aren't just important — they're the
+                          product. A user decides in the first minute whether to
+                          stay, and that decision has nothing to do with your
+                          feature count.
+                        </p>
+                      </div>
+                      <p class="note-paragraph"><span class="cursor"></span></p>
+                    </div>
+                  </div>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  ><a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

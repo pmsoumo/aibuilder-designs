@@ -1,0 +1,3274 @@
+<!-- COMPONENT INVENTORY: app-shell, app-header, wordmark, avatar, bottom-nav, ai-presence-bar, note-editor, notes-list, notes-panel, notes-drawer, inline-ai-panel, chat-view, chat-input, empty-state, skeleton -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>dolfyn — App Shell & Navigation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ============================================
+       Design System Tokens — dolfyn
+       Source: designs/design-system.md
+       ============================================ */
+      :root {
+        --surface: #fafaf7;
+        --surface-subtle: #f2f1ed;
+        --surface-raised: #ffffff;
+        --surface-overlay: rgba(15, 15, 14, 0.32);
+        --ink: #0f0f0e;
+        --ink-2: #3f3f3f;
+        --ink-3: #6b6b6b;
+        --ink-inverse: #fafaf7;
+        --border: #e5e5e1;
+        --border-strong: #c7c7c2;
+        --divider: #edede9;
+        --accent: #c2410c;
+        --accent-strong: #9a330a;
+        --accent-soft-bg: #fcefde;
+        --accent-tint: #f7f2ec;
+        --space-1: 4px;
+        --space-2: 8px;
+        --space-3: 12px;
+        --space-4: 16px;
+        --space-5: 24px;
+        --space-6: 32px;
+        --space-7: 48px;
+        --radius-sm: 6px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-xl: 16px;
+        --radius-full: 9999px;
+        --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        --ease-in: cubic-bezier(0.4, 0, 1, 1);
+        --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+        --duration-fast: 150ms;
+        --duration-base: 250ms;
+        --duration-slow: 350ms;
+        --elevation-panel:
+          0 8px 24px -8px rgba(15, 15, 14, 0.12),
+          0 2px 4px -2px rgba(15, 15, 14, 0.06);
+        --elevation-modal: 0 24px 48px -12px rgba(15, 15, 14, 0.18);
+        --elevation-toast: 0 4px 12px -2px rgba(15, 15, 14, 0.08);
+        --z-base: 0;
+        --z-sticky: 100;
+        --z-overlay: 800;
+        --z-panel: 900;
+        --z-modal: 1000;
+        --z-toast: 1100;
+        --meta-bg: #ecebe5;
+        --meta-ink: #2a2a28;
+        --meta-ink-2: #6e6e68;
+        --meta-border: #d8d7d1;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        background: var(--meta-bg);
+        color: var(--meta-ink);
+        font-family: "Inter", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* ============================================
+       Mockup meta-header
+       ============================================ */
+      .mockup-nav {
+        position: sticky;
+        top: 0;
+        z-index: 1100;
+        background: var(--meta-bg);
+        border-bottom: 1px solid var(--meta-border);
+        padding: var(--space-3) var(--space-5);
+        display: flex;
+        align-items: center;
+        gap: var(--space-5);
+        flex-wrap: wrap;
+      }
+      .mockup-title {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink);
+      }
+      .mockup-subtitle {
+        font-size: 12px;
+        color: var(--meta-ink-2);
+      }
+      .state-tabs {
+        display: flex;
+        gap: var(--space-1);
+        margin-left: auto;
+        flex-wrap: wrap;
+      }
+      .state-tab {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--meta-ink-2);
+        text-decoration: none;
+        padding: var(--space-1) var(--space-2);
+        border-radius: var(--radius-sm);
+        border: 1px solid transparent;
+        transition:
+          background var(--duration-fast) var(--ease-out),
+          color var(--duration-fast) var(--ease-out);
+        white-space: nowrap;
+      }
+      .state-tab:hover {
+        background: rgba(15, 15, 14, 0.05);
+        color: var(--meta-ink);
+      }
+      #state-a:target ~ .mockup-nav .state-tab[href="#state-a"],
+      #state-b:target ~ .mockup-nav .state-tab[href="#state-b"],
+      #state-c:target ~ .mockup-nav .state-tab[href="#state-c"],
+      #state-d:target ~ .mockup-nav .state-tab[href="#state-d"],
+      #state-e:target ~ .mockup-nav .state-tab[href="#state-e"],
+      #state-f:target ~ .mockup-nav .state-tab[href="#state-f"],
+      #state-g:target ~ .mockup-nav .state-tab[href="#state-g"],
+      #state-h:target ~ .mockup-nav .state-tab[href="#state-h"] {
+        background: var(--meta-ink);
+        color: var(--ink-inverse);
+      }
+
+      /* ============================================
+       State section wrapper
+       ============================================ */
+      .state {
+        padding: var(--space-7) var(--space-5) var(--space-6);
+        max-width: 1400px;
+        margin: 0 auto;
+        border-top: 1px solid var(--meta-border);
+      }
+      .state:first-of-type {
+        border-top: none;
+      }
+      .state:target {
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: var(--radius-lg);
+      }
+      .state-header {
+        margin-bottom: var(--space-5);
+        max-width: 720px;
+      }
+      .state-tag {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink-2);
+        margin-bottom: var(--space-2);
+      }
+      .state-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--meta-ink);
+        margin: 0 0 var(--space-2);
+        letter-spacing: -0.01em;
+      }
+      .state-desc {
+        font-size: 14px;
+        color: var(--meta-ink-2);
+        line-height: 1.5;
+        margin: 0;
+      }
+
+      .viewports {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-5);
+        align-items: flex-start;
+      }
+      .viewport {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        flex-shrink: 0;
+      }
+      .device-label {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink-2);
+        padding-left: var(--space-1);
+      }
+      .device-frame {
+        background: var(--meta-ink);
+        border-radius: 28px;
+        padding: 8px;
+        box-shadow: 0 2px 8px -2px rgba(15, 15, 14, 0.12);
+      }
+      .device-frame--desktop {
+        width: 1440px;
+        height: 900px;
+        border-radius: 12px;
+        padding: 8px;
+        position: relative;
+        overflow: hidden;
+      }
+      .device-frame--tablet {
+        width: 768px;
+        height: 1024px;
+        border-radius: 20px;
+        padding: 8px;
+        position: relative;
+        overflow: hidden;
+      }
+      .screen {
+        position: relative;
+        width: 375px;
+        height: 720px;
+        background: var(--surface);
+        border-radius: 22px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .screen--desktop {
+        width: 100%;
+        height: 100%;
+        background: var(--surface);
+        display: flex;
+        flex-direction: column;
+      }
+      .screen--desktop-canvas {
+        width: 100%;
+        height: 100%;
+        background: var(--surface);
+        border-radius: 4px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+      .screen--desktop-canvas .app-header {
+        flex-shrink: 0;
+      }
+      .screen--desktop-canvas .note-editor {
+        flex: 1;
+        min-height: 0;
+      }
+      .screen--desktop-canvas .note-body {
+        max-width: 540px;
+        margin: 0 auto;
+      }
+      .screen--desktop-canvas .ai-bar {
+        flex-shrink: 0;
+      }
+      .screen--desktop-canvas .empty-state {
+        flex: 1;
+      }
+      .screen--tablet {
+        width: 100%;
+        height: 100%;
+        background: var(--surface);
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ============================================
+       APP SHELL — production layout
+       ============================================ */
+      .app {
+        position: relative;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+      .app-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-3) var(--space-4);
+        flex-shrink: 0;
+      }
+      .wordmark {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-weight: 600;
+        font-size: 20px;
+        letter-spacing: -0.01em;
+        color: var(--ink);
+        line-height: 1;
+      }
+      .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-full);
+        background: var(--surface-subtle);
+        color: var(--ink-2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
+        font-size: 13px;
+        flex-shrink: 0;
+      }
+      .avatar--tier {
+        position: relative;
+      }
+      .avatar--tier::after {
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        right: -1px;
+        width: 10px;
+        height: 10px;
+        border-radius: var(--radius-full);
+        background: var(--accent);
+        border: 2px solid var(--surface);
+      }
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+      }
+      .new-chat-btn {
+        background: transparent;
+        border: none;
+        color: var(--ink-2);
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-md);
+        flex-shrink: 0;
+      }
+      .new-chat-btn:active {
+        background: var(--surface-subtle);
+      }
+
+      /* Universal default: canvas-first for ALL users; panels open only on intent.
+         Bottom nav is governed by §4.12 (hasNotes), not by the panel default. */
+      .screen[data-state="default-canvas-first"] .notes-panel,
+      .screen[data-state="default-canvas-first"] .inline-ai-panel--desktop {
+        display: none;
+      }
+
+      /* ============================================
+       NOTE EDITOR — the canvas (§4.10)
+       ============================================ */
+      .note-editor {
+        flex: 1;
+        padding: var(--space-5) var(--space-4) 124px;
+        overflow-y: auto;
+        scrollbar-width: none;
+      }
+      .note-editor::-webkit-scrollbar {
+        display: none;
+      }
+      .note-body {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--ink);
+        max-width: 480px;
+      }
+      .note-title {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 1.3;
+        color: var(--ink);
+        margin: 0 0 var(--space-5);
+      }
+      .note-paragraph {
+        margin: 0 0 var(--space-3);
+      }
+      .note-paragraph:last-child {
+        margin-bottom: 0;
+      }
+      .note-placeholder {
+        color: var(--ink-3);
+      }
+      .cursor {
+        display: inline-block;
+        width: 2px;
+        height: 1.1em;
+        background: var(--ink);
+        vertical-align: text-bottom;
+        margin-left: 1px;
+        animation: blink 1s steps(2) infinite;
+      }
+      @keyframes blink {
+        0%,
+        50% {
+          opacity: 1;
+        }
+        50.01%,
+        100% {
+          opacity: 0;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .cursor {
+          animation: none;
+          opacity: 1;
+        }
+      }
+
+      /* ============================================
+       NOTES LIST — mobile full-screen push (§4.11)
+       ============================================ */
+      .notes-list {
+        position: absolute;
+        inset: 0;
+        background: var(--surface);
+        z-index: var(--z-overlay);
+        display: flex;
+        flex-direction: column;
+      }
+      .notes-list-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-3) var(--space-4);
+        flex-shrink: 0;
+        border-bottom: 1px solid var(--divider);
+      }
+      .notes-list-title {
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--ink);
+        margin: 0;
+      }
+      .notes-list-add {
+        background: transparent;
+        border: none;
+        color: var(--accent);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        padding: var(--space-2) var(--space-3);
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+      }
+      .notes-list-add:active {
+        background: var(--accent-soft-bg);
+      }
+      .notes-list-body {
+        flex: 1;
+        overflow-y: auto;
+        scrollbar-width: none;
+      }
+      .notes-list-body::-webkit-scrollbar {
+        display: none;
+      }
+      .notes-list-item {
+        padding: var(--space-4);
+        border-bottom: 1px solid var(--divider);
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+      }
+      .notes-list-item:active {
+        background: var(--surface-subtle);
+      }
+      .notes-list-item-title {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 16px;
+        line-height: 1.4;
+        color: var(--ink);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+      }
+      .notes-list-item-meta {
+        font-size: 12px;
+        color: var(--ink-3);
+      }
+      .notes-list-item--active {
+        background: var(--surface-subtle);
+      }
+      .notes-list-item--active .notes-list-item-title {
+        font-weight: 600;
+      }
+      .notes-list-divider {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-2) var(--space-4);
+        background: var(--surface-subtle);
+      }
+      .notes-list-divider-line {
+        flex: 1;
+        height: 1px;
+        background: var(--divider);
+      }
+      .notes-list-divider-label {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        white-space: nowrap;
+      }
+      .notes-drawer-cap {
+        padding: var(--space-3) var(--space-4);
+        border-top: 1px solid var(--divider);
+        flex-shrink: 0;
+      }
+      .notes-drawer-cap-text {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--ink-3);
+        margin: 0;
+      }
+
+      /* ============================================
+       NOTES PANEL — desktop persistent left panel
+       ============================================ */
+      .desktop-content-row {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+      }
+      .notes-panel {
+        position: relative;
+        width: 320px;
+        flex-shrink: 0;
+        border-right: 1px solid var(--border);
+        background: var(--surface-raised);
+        display: flex;
+        flex-direction: column;
+      }
+      .notes-panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-4);
+        border-bottom: 1px solid var(--divider);
+      }
+      .notes-panel-title {
+        font-size: 13px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        margin: 0;
+      }
+      .notes-panel-list {
+        flex: 1;
+        overflow-y: auto;
+      }
+      .notes-drawer-item {
+        padding: var(--space-3) var(--space-4);
+        border-bottom: 1px solid var(--divider);
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+      }
+      .notes-drawer-item:active {
+        background: var(--surface-subtle);
+      }
+      .notes-drawer-item-title {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 15px;
+        line-height: 1.4;
+        color: var(--ink);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+      }
+      .notes-drawer-item-meta {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        color: var(--ink-3);
+      }
+      .notes-drawer-item--active {
+        background: var(--surface-subtle);
+      }
+      .notes-drawer-item--active .notes-drawer-item-title {
+        font-weight: 600;
+      }
+      .notes-panel-toggle {
+        background: transparent;
+        border: none;
+        color: var(--ink-2);
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-md);
+        flex-shrink: 0;
+      }
+      .notes-panel-toggle:active {
+        background: var(--surface-subtle);
+      }
+
+      /* ============================================
+       NOTES DRAWER — tablet 768px slide-out
+       ============================================ */
+      .drawer-backdrop {
+        position: absolute;
+        inset: 0;
+        background: var(--surface-overlay);
+        z-index: var(--z-overlay);
+      }
+      .notes-drawer {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 360px;
+        background: var(--surface-raised);
+        z-index: var(--z-panel);
+        display: flex;
+        flex-direction: column;
+        box-shadow: var(--elevation-panel);
+      }
+
+      /* ============================================
+       AI PRESENCE BAR (§4.2)
+       ============================================ */
+      .ai-bar {
+        height: 56px;
+        padding: 0 var(--space-4);
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 14px;
+        line-height: 1.5;
+        flex-shrink: 0;
+      }
+      .ai-bar--passive {
+        background: var(--surface-subtle);
+        color: var(--ink-2);
+      }
+      .ai-bar--active {
+        background: var(--accent-soft-bg);
+        color: var(--accent-strong);
+      }
+      .ai-bar-sparkle {
+        flex-shrink: 0;
+        color: var(--accent);
+      }
+      .sparkle-18 {
+        width: 18px;
+        height: 18px;
+      }
+      @keyframes pulse {
+        0% {
+          opacity: 0.6;
+          transform: scale(1);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1.08);
+        }
+      }
+      .sparkle-pulse {
+        animation: pulse 1.5s var(--ease-in-out) infinite alternate;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .sparkle-pulse {
+          animation: none;
+          opacity: 1;
+        }
+      }
+
+      /* ============================================
+       BOTTOM NAV (§4.12)
+       ============================================ */
+      .bottom-nav {
+        height: 56px;
+        background: var(--surface-raised);
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: stretch;
+        justify-content: space-around;
+        padding: 0 var(--space-2);
+        flex-shrink: 0;
+      }
+      .tab {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--ink-3);
+        position: relative;
+        text-decoration: none;
+      }
+      .tab svg {
+        display: block;
+      }
+      .tab--active {
+        color: var(--ink-2);
+      }
+      .tab--active svg {
+        color: var(--ink);
+      }
+      .tab--active::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 32px;
+        height: 3px;
+        background: var(--accent);
+        border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      }
+
+      /* ============================================
+       INLINE AI PANEL — desktop side panel (§4.4)
+       ============================================ */
+      .inline-ai-panel--desktop {
+        position: relative;
+        width: 420px;
+        flex-shrink: 0;
+        background: var(--surface-raised);
+        border-left: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+      }
+      .panel-header {
+        height: 48px;
+        flex-shrink: 0;
+        padding: 0 var(--space-4);
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        border-bottom: 1px solid var(--divider);
+        background: var(--surface-raised);
+      }
+      .panel-sparkle {
+        color: var(--accent);
+        flex-shrink: 0;
+      }
+      .panel-title {
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.3;
+        color: var(--ink-2);
+        letter-spacing: 0;
+      }
+      .panel-close {
+        margin-left: auto;
+        background: transparent;
+        border: none;
+        color: var(--ink-2);
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-md);
+      }
+      .panel-close:active {
+        background: var(--surface-subtle);
+      }
+      .chip-panel {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: var(--space-4) var(--space-5);
+        overflow-y: auto;
+      }
+      .chip-state-label {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        margin-bottom: var(--space-3);
+      }
+      .chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-2);
+        margin-bottom: var(--space-3);
+      }
+      .chip {
+        height: 44px;
+        padding: 0 var(--space-3);
+        background: var(--surface-subtle);
+        border: none;
+        border-radius: var(--radius-md);
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--ink);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        transition: background var(--duration-fast) var(--ease-out);
+        white-space: nowrap;
+      }
+      .chip:active {
+        background: var(--border);
+      }
+      .chip--active {
+        background: var(--accent-soft-bg);
+        color: var(--accent-strong);
+      }
+      .chip-icon {
+        width: 18px;
+        height: 18px;
+        color: var(--accent);
+        flex-shrink: 0;
+      }
+      .more-row {
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        color: var(--ink-3);
+        cursor: pointer;
+        padding: var(--space-2) 0;
+        border: none;
+        background: none;
+        text-align: left;
+        transition: color var(--duration-fast) var(--ease-out);
+      }
+      .more-row:hover {
+        color: var(--ink-2);
+      }
+      .panel-actions {
+        flex-shrink: 0;
+        display: flex;
+        gap: var(--space-2);
+        padding: var(--space-3) var(--space-4);
+        border-top: 1px solid var(--divider);
+        background: var(--surface-raised);
+      }
+      .btn {
+        flex: 1;
+        height: 44px;
+        border: none;
+        border-radius: var(--radius-md);
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 0;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          opacity var(--duration-fast) var(--ease-out),
+          background var(--duration-fast) var(--ease-out);
+      }
+      .btn--ghost {
+        background: transparent;
+        color: var(--ink-2);
+      }
+      .btn--primary {
+        background: var(--ink);
+        color: var(--ink-inverse);
+      }
+      .btn:active {
+        opacity: 0.85;
+      }
+
+      /* ============================================
+       CHAT VIEW (§4.8, §4.9)
+       ============================================ */
+      .chat-view {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: var(--space-5) var(--space-4);
+        scrollbar-width: none;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+      }
+      .chat-messages::-webkit-scrollbar {
+        display: none;
+      }
+      .chat-msg {
+        max-width: 80%;
+        padding: var(--space-3) var(--space-4);
+        border-radius: var(--radius-lg);
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 16px;
+        line-height: 1.6;
+      }
+      .chat-msg--user {
+        align-self: flex-end;
+        background: var(--ink);
+        color: var(--ink-inverse);
+        border-bottom-right-radius: var(--radius-sm);
+      }
+      .chat-msg--ai {
+        align-self: flex-start;
+        background: var(--surface-subtle);
+        color: var(--ink);
+        border-bottom-left-radius: var(--radius-sm);
+      }
+      .chat-input-bar {
+        height: 64px;
+        padding: 0 var(--space-4);
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        flex-shrink: 0;
+      }
+      .chat-input {
+        flex: 1;
+        height: 44px;
+        padding: 0 var(--space-3);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 16px;
+        color: var(--ink);
+        background: transparent;
+        outline: none;
+      }
+      .chat-input::placeholder {
+        color: var(--ink-3);
+      }
+      .chat-input:focus {
+        border-color: var(--border-strong);
+      }
+      .chat-send {
+        width: 44px;
+        height: 44px;
+        border: none;
+        border-radius: var(--radius-md);
+        background: var(--ink);
+        color: var(--ink-inverse);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .chat-send:active {
+        opacity: 0.85;
+      }
+      .chat-send:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      /* ============================================
+       DESKTOP CHAT PANEL (§4.8 desktop split view)
+       ============================================ */
+      .chat-panel--desktop {
+        position: relative;
+        width: 480px;
+        flex-shrink: 0;
+        background: var(--surface-raised);
+        border-left: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+      }
+      .chat-panel--desktop .chat-view {
+        flex: 1;
+        min-height: 0;
+      }
+      .chat-panel--desktop .chat-messages {
+        padding: var(--space-5);
+      }
+      .chat-panel--desktop .chat-input-bar {
+        padding: 0 var(--space-4);
+      }
+      .chat-expand-toggle {
+        background: transparent;
+        border: none;
+        color: var(--ink-2);
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-md);
+        flex-shrink: 0;
+      }
+      .chat-expand-toggle:active {
+        background: var(--surface-subtle);
+      }
+
+      /* ============================================
+       EMPTY STATE (§4.14)
+       ============================================ */
+      .empty-state {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: var(--space-7) var(--space-5);
+        text-align: center;
+      }
+      .empty-state-sparkle {
+        width: 24px;
+        height: 24px;
+        color: var(--accent);
+        margin-bottom: var(--space-4);
+      }
+      .empty-state-headline {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 28px;
+        font-weight: 600;
+        line-height: 1.25;
+        letter-spacing: -0.02em;
+        color: var(--ink);
+        margin: 0 0 var(--space-3);
+        max-width: 280px;
+      }
+      .empty-state-body {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--ink-2);
+        margin: 0;
+        max-width: 320px;
+      }
+      .empty-state-body a {
+        color: var(--accent-strong);
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      /* ============================================
+       SPARKLE UTILITY
+       ============================================ */
+      .sparkle-14 {
+        width: 14px;
+        height: 14px;
+      }
+      .sparkle-24 {
+        width: 24px;
+        height: 24px;
+      }
+
+      /* ============================================
+       SKELETON
+       ============================================ */
+      .skeleton {
+        background: linear-gradient(
+          90deg,
+          var(--surface-subtle) 25%,
+          var(--divider) 50%,
+          var(--surface-subtle) 75%
+        );
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        border-radius: var(--radius-sm);
+      }
+      @keyframes shimmer {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .skeleton {
+          animation: none;
+          background: var(--surface-subtle);
+        }
+      }
+
+      /* ============================================
+       Responsive — mockup meta only
+       ============================================ */
+      @media (max-width: 900px) {
+        .device-frame--desktop,
+        .device-frame--tablet {
+          display: none;
+        }
+      }
+      @media (max-width: 480px) {
+        .state {
+          padding: var(--space-5) var(--space-3);
+        }
+        .mockup-nav {
+          padding: var(--space-3);
+        }
+        .state-tabs {
+          width: 100%;
+          margin-left: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="mockup-nav">
+      <div>
+        <div class="mockup-title">dolfyn / App Shell & Navigation</div>
+        <div class="mockup-subtitle">
+          Req 02 · Structural container · 8 states
+        </div>
+      </div>
+      <nav class="state-tabs" aria-label="State selector">
+        <a href="#state-a" class="state-tab">A · default canvas-first</a>
+        <a href="#state-b" class="state-tab">B · desktop AI closed</a>
+        <a href="#state-c" class="state-tab">C · panel collapsed</a>
+        <a href="#state-d" class="state-tab">D · collapsed + AI</a>
+        <a href="#state-e" class="state-tab">E · tablet drawer</a>
+        <a href="#state-f" class="state-tab">F · chat empty</a>
+        <a href="#state-g" class="state-tab">G · chat (from notes)</a>
+        <a href="#state-h" class="state-tab">H · notes (from chat)</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- ============================================
+         STATE A — Universal default: canvas-first for all users
+          ============================================ -->
+      <section id="state-a" class="state">
+        <div class="state-header">
+          <span class="state-tag">Desktop · ≥1024px</span>
+          <h2 class="state-title">State A — Universal default (canvas-first)</h2>
+          <p class="state-desc">
+            The default composition for EVERY user on open — first-login and
+            returning alike. Only the note canvas opens: the Notes and Chat
+            side panels are closed by default; bottom navigation follows
+            §4.12 (visible once notes exist). No top-right Notes/Chat header
+            controls are shown; they were not intended. A stored panel
+            preference wins across refresh (BUG-007). Panels open only on
+            existing intentional actions — the focused canvas is the whole
+            point.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div
+                class="screen screen--desktop"
+                data-component="app-shell"
+                data-state="default-canvas-first"
+                data-default-composition="focused-new-note-canvas"
+              >
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                    <div class="header-actions">
+                    <div
+                      class="avatar avatar--tier"
+                      aria-label="Profile, Think tier"
+                    >
+                      SC
+                    </div>
+                  </div>
+                </header>
+                <div class="desktop-content-row">
+                  <!-- Left: Notes panel -->
+                  <aside class="notes-panel">
+                    <div class="notes-panel-header">
+                      <div
+                        style="
+                          display: flex;
+                          align-items: center;
+                          gap: var(--space-3);
+                        "
+                      >
+                        <h2 class="notes-panel-title">Notes</h2>
+                        <span
+                          style="
+                            font-size: 12px;
+                            font-weight: 500;
+                            color: var(--ink-3);
+                          "
+                          >8/10</span
+                        >
+                      </div>
+                      <div
+                        style="
+                          display: flex;
+                          align-items: center;
+                          gap: var(--space-2);
+                        "
+                      >
+                        <button
+                          type="button"
+                          class="notes-list-add"
+                          style="
+                            font-size: 13px;
+                            padding: var(--space-1) var(--space-2);
+                          "
+                        >
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                          >
+                            <path d="M12 5v14M5 12h14" />
+                          </svg>
+                          New
+                        </button>
+                        <button
+                          type="button"
+                          class="notes-panel-toggle"
+                          aria-label="Collapse notes panel"
+                        >
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="m15 18-6-6 6-6" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="notes-panel-list">
+                      <div class="notes-drawer-item notes-drawer-item--active">
+                        <span class="notes-drawer-item-title"
+                          >What makes a great first-time user experience</span
+                        >
+                        <span class="notes-drawer-item-meta"
+                          >Today at 2:14 PM</span
+                        >
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Growth channels for the next 90 days</span
+                        >
+                        <span class="notes-drawer-item-meta">Yesterday</span>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >New user landing decision</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 16</span>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Competitive positioning — Capacities vs dolfyn</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 14</span>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Pricing tier philosophy</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 13</span>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Note-taking app positioning</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 12</span>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Auth decision — Better-Auth</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 11</span>
+                      </div>
+                      <div class="notes-list-divider">
+                        <div class="notes-list-divider-line"></div>
+                        <span class="notes-list-divider-label"
+                          >AI conversations</span
+                        >
+                        <div class="notes-list-divider-line"></div>
+                      </div>
+                      <div
+                        class="notes-drawer-item"
+                      >
+                        <span class="notes-drawer-item-title"
+                          >Pricing model discussion</span
+                        >
+                        <span class="notes-drawer-item-meta"
+                          >Today at 11:30 AM</span
+                        >
+                      </div>
+                      <div
+                        class="notes-drawer-item"
+                      >
+                        <span class="notes-drawer-item-title"
+                          >First-time UX patterns</span
+                        >
+                        <span class="notes-drawer-item-meta">Yesterday</span>
+                      </div>
+                      <div
+                        class="notes-drawer-item"
+                      >
+                        <span class="notes-drawer-item-title"
+                          >Capacities comparison</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 15</span>
+                      </div>
+                    </div>
+                    <div class="notes-drawer-cap">
+                      <p class="notes-drawer-cap-text">8 of 10 notes</p>
+                    </div>
+                  </aside>
+                  <!-- Center: Note editor -->
+                  <div class="note-editor" style="flex: 1; min-width: 0">
+                    <div
+                      class="note-body"
+                      style="max-width: 540px; margin: 0 auto"
+                    >
+                       <p class="note-placeholder">
+                         What's on your mind?<span class="cursor"></span>
+                       </p>
+                    </div>
+                  </div>
+                  <!-- Right: AI panel -->
+                  <aside
+                    class="inline-ai-panel--desktop"
+                    role="dialog"
+                    aria-modal="false"
+                    aria-label="Inline AI actions"
+                  >
+                    <div class="panel-header">
+                      <svg
+                        class="panel-sparkle sparkle-18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        />
+                      </svg>
+                      <span class="panel-title">Thinking partner</span>
+                      <button
+                        class="panel-close"
+                        type="button"
+                        aria-label="Close panel"
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path d="M18 6 6 18" />
+                          <path d="m6 6 12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div class="chip-panel">
+                      <div class="chip-state-label">Building</div>
+                      <div class="chip-row">
+                        <button type="button" class="chip">
+                          <svg
+                            class="chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                          >
+                            <path
+                              d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                            />
+                          </svg>
+                          Critique
+                        </button>
+                      </div>
+                      <button type="button" class="more-row">
+                        More actions →
+                      </button>
+                    </div>
+                    <div class="panel-actions">
+                      <button type="button" class="btn btn--ghost">
+                        Dismiss
+                      </button>
+                    </div>
+                  </aside>
+                </div>
+                <!-- AI presence bar (visible when AI panel is closed) -->
+                <div
+                  class="ai-bar ai-bar--passive"
+                  data-component="ai-presence-bar"
+                  data-state="passive"
+                >
+                  <svg
+                    class="ai-bar-sparkle sparkle-18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE B — Desktop: Three-panel, AI panel closed
+         ============================================ -->
+      <section id="state-b" class="state">
+        <div class="state-header">
+          <span class="state-tag">Desktop · ≥1024px</span>
+          <h2 class="state-title">
+            State B — Three-panel layout, AI panel closed
+          </h2>
+          <p class="state-desc">
+            The editor-focused state. Left: persistent notes list (320px).
+            Center: note editor fills the remaining width (no AI panel). The AI
+            presence bar is visible above the bottom nav — passive or active
+            based on note content. The user is writing, not asking the AI. The
+            notes panel provides context (what else they've written), but the
+            editor commands attention.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div
+                class="screen screen--desktop"
+                data-component="app-shell"
+                data-state="three-panel-ai-closed"
+              >
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="header-actions">
+                    <button
+                      type="button"
+                      class="new-chat-btn"
+                      aria-label="New chat"
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      >
+                        <path d="M12 5v14M5 12h14" />
+                      </svg>
+                    </button>
+                    <div
+                      class="avatar avatar--tier"
+                      aria-label="Profile, Think tier"
+                    >
+                      SC
+                    </div>
+                  </div>
+                </header>
+                <div class="desktop-content-row">
+                  <!-- Left: Notes panel -->
+                  <aside class="notes-panel">
+                    <div class="notes-panel-header">
+                      <div
+                        style="
+                          display: flex;
+                          align-items: center;
+                          gap: var(--space-3);
+                        "
+                      >
+                        <h2 class="notes-panel-title">Notes</h2>
+                        <span
+                          style="
+                            font-size: 12px;
+                            font-weight: 500;
+                            color: var(--ink-3);
+                          "
+                          >8/10</span
+                        >
+                      </div>
+                      <div
+                        style="
+                          display: flex;
+                          align-items: center;
+                          gap: var(--space-2);
+                        "
+                      >
+                        <button
+                          type="button"
+                          class="notes-list-add"
+                          style="
+                            font-size: 13px;
+                            padding: var(--space-1) var(--space-2);
+                          "
+                        >
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                          >
+                            <path d="M12 5v14M5 12h14" />
+                          </svg>
+                          New
+                        </button>
+                        <button
+                          type="button"
+                          class="notes-panel-toggle"
+                          aria-label="Collapse notes panel"
+                        >
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="m15 18-6-6 6-6" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="notes-panel-list">
+                      <div class="notes-drawer-item notes-drawer-item--active">
+                        <span class="notes-drawer-item-title"
+                          >What makes a great first-time user experience</span
+                        >
+                        <span class="notes-drawer-item-meta"
+                          >Today at 2:14 PM</span
+                        >
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Growth channels for the next 90 days</span
+                        >
+                        <span class="notes-drawer-item-meta">Yesterday</span>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >New user landing decision</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 16</span>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Competitive positioning — Capacities vs dolfyn</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 14</span>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Pricing tier philosophy</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 13</span>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Note-taking app positioning</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 12</span>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Auth decision — Better-Auth</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 11</span>
+                      </div>
+                      <div class="notes-list-divider">
+                        <div class="notes-list-divider-line"></div>
+                        <span class="notes-list-divider-label"
+                          >AI conversations</span
+                        >
+                        <div class="notes-list-divider-line"></div>
+                      </div>
+                      <div
+                        class="notes-drawer-item"
+                      >
+                        <span class="notes-drawer-item-title"
+                          >Pricing model discussion</span
+                        >
+                        <span class="notes-drawer-item-meta"
+                          >Today at 11:30 AM</span
+                        >
+                      </div>
+                      <div
+                        class="notes-drawer-item"
+                      >
+                        <span class="notes-drawer-item-title"
+                          >First-time UX patterns</span
+                        >
+                        <span class="notes-drawer-item-meta">Yesterday</span>
+                      </div>
+                      <div
+                        class="notes-drawer-item"
+                      >
+                        <span class="notes-drawer-item-title"
+                          >Capacities comparison</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 15</span>
+                      </div>
+                    </div>
+                    <div class="notes-drawer-cap">
+                      <p class="notes-drawer-cap-text">8 of 10 notes</p>
+                    </div>
+                  </aside>
+                  <!-- Center: Note editor (fills remaining width, no AI panel) -->
+                  <div class="note-editor" style="flex: 1; min-width: 0">
+                    <div
+                      class="note-body"
+                      style="max-width: 540px; margin: 0 auto"
+                    >
+                      <div class="note-title">
+                        What makes a great first-time user experience?
+                      </div>
+                      <p class="note-paragraph">
+                        What makes a great first-time user experience? I've been
+                        thinking about this all week, mostly in the context of
+                        dolfyn but the question is bigger than that.
+                      </p>
+                      <p class="note-paragraph">
+                        A great first-time experience doesn't explain. It
+                        doesn't onboard. It just lets the user do the thing they
+                        came to do, and shows them a glimpse of why it was worth
+                        coming.
+                      </p>
+                      <p class="note-paragraph">
+                        The empty canvas is the onboarding. The blinking cursor
+                        is the invitation. The first note saved is the
+                        investment that makes the second visit more valuable
+                        than the first.<span class="cursor"></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <!-- AI presence bar (visible when AI panel is closed) -->
+                <div
+                  class="ai-bar ai-bar--active"
+                  data-component="ai-presence-bar"
+                  data-state="active"
+                >
+                  <svg
+                    class="ai-bar-sparkle sparkle-18 sparkle-pulse"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>Want help with this?</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE C — Desktop: Notes panel collapsed
+         ============================================ -->
+      <section id="state-c" class="state">
+        <div class="state-header">
+          <span class="state-tag">Desktop · ≥1024px</span>
+          <h2 class="state-title">State C — Notes panel collapsed</h2>
+          <p class="state-desc">
+            The user collapsed the notes panel. No left strip — the editor fills
+            the full width. To bring back the notes list, the user taps the
+            Notes tab in the bottom nav, which opens the notes panel as an
+            overlay (same as the tablet drawer pattern). AI presence bar
+            visible. Maximum writing space with minimal chrome.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div
+                class="screen screen--desktop"
+                data-component="app-shell"
+                data-state="panel-collapsed"
+              >
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="header-actions">
+                    <button
+                      type="button"
+                      class="new-chat-btn"
+                      aria-label="New chat"
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      >
+                        <path d="M12 5v14M5 12h14" />
+                      </svg>
+                    </button>
+                    <div
+                      class="avatar avatar--tier"
+                      aria-label="Profile, Think tier"
+                    >
+                      SC
+                    </div>
+                  </div>
+                </header>
+                <div class="desktop-content-row">
+                  <!-- Note editor (fills full width — no left strip) -->
+                  <div class="note-editor" style="flex: 1; min-width: 0">
+                    <div
+                      class="note-body"
+                      style="max-width: 540px; margin: 0 auto"
+                    >
+                      <div class="note-title">
+                        What makes a great first-time user experience?
+                      </div>
+                      <p class="note-paragraph">
+                        What makes a great first-time user experience? I've been
+                        thinking about this all week, mostly in the context of
+                        dolfyn but the question is bigger than that.
+                      </p>
+                      <p class="note-paragraph">
+                        A great first-time experience doesn't explain. It
+                        doesn't onboard. It just lets the user do the thing they
+                        came to do, and shows them a glimpse of why it was worth
+                        coming.
+                      </p>
+                      <p class="note-paragraph">
+                        The empty canvas is the onboarding. The blinking cursor
+                        is the invitation. The first note saved is the
+                        investment that makes the second visit more valuable
+                        than the first.<span class="cursor"></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ai-bar ai-bar--active"
+                  data-component="ai-presence-bar"
+                  data-state="active"
+                >
+                  <svg
+                    class="ai-bar-sparkle sparkle-18 sparkle-pulse"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>Want help with this?</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE D — Desktop: Notes panel collapsed + AI panel open
+         ============================================ -->
+      <section id="state-d" class="state">
+        <div class="state-header">
+          <span class="state-tag">Desktop · ≥1024px</span>
+          <h2 class="state-title">State D — Notes collapsed + AI panel open</h2>
+          <p class="state-desc">
+            Maximum writing + AI space. No left strip — the notes panel is
+            collapsed. The AI panel is open (420px on the right). The editor
+            fills the center. No AI presence bar (the AI panel fulfils its
+            role). To bring back the notes list, the user taps the Notes tab in
+            the bottom nav. This is the "deep work" state.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div
+                class="screen screen--desktop"
+                data-component="app-shell"
+                data-state="collapsed-ai-open"
+              >
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="header-actions">
+                    <button
+                      type="button"
+                      class="new-chat-btn"
+                      aria-label="New chat"
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      >
+                        <path d="M12 5v14M5 12h14" />
+                      </svg>
+                    </button>
+                    <div
+                      class="avatar avatar--tier"
+                      aria-label="Profile, Think tier"
+                    >
+                      SC
+                    </div>
+                  </div>
+                </header>
+                <div class="desktop-content-row">
+                  <!-- Note editor (fills center — no left strip) -->
+                  <div class="note-editor" style="flex: 1; min-width: 0">
+                    <div
+                      class="note-body"
+                      style="max-width: 540px; margin: 0 auto"
+                    >
+                      <div class="note-title">
+                        What makes a great first-time user experience?
+                      </div>
+                      <p class="note-paragraph">
+                        What makes a great first-time user experience? I've been
+                        thinking about this all week, mostly in the context of
+                        dolfyn but the question is bigger than that.
+                      </p>
+                      <p class="note-paragraph">
+                        A great first-time experience doesn't explain. It
+                        doesn't onboard. It just lets the user do the thing they
+                        came to do, and shows them a glimpse of why it was worth
+                        coming.
+                      </p>
+                      <p class="note-paragraph">
+                        The empty canvas is the onboarding. The blinking cursor
+                        is the invitation.<span class="cursor"></span>
+                      </p>
+                    </div>
+                  </div>
+                  <!-- AI panel (right) -->
+                  <aside
+                    class="inline-ai-panel--desktop"
+                    role="dialog"
+                    aria-modal="false"
+                    aria-label="Inline AI actions"
+                  >
+                    <div class="panel-header">
+                      <svg
+                        class="panel-sparkle sparkle-18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        />
+                      </svg>
+                      <span class="panel-title">Thinking partner</span>
+                      <button
+                        class="panel-close"
+                        type="button"
+                        aria-label="Close panel"
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path d="M18 6 6 18" />
+                          <path d="m6 6 12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div class="chip-panel">
+                      <div class="chip-state-label">Building</div>
+                      <div class="chip-row">
+                        <button type="button" class="chip">
+                          <svg
+                            class="chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                          >
+                            <path
+                              d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                            />
+                          </svg>
+                          Critique
+                        </button>
+                      </div>
+                      <button type="button" class="more-row">
+                        More actions →
+                      </button>
+                    </div>
+                    <div class="panel-actions">
+                      <button type="button" class="btn btn--ghost">
+                        Dismiss
+                      </button>
+                    </div>
+                  </aside>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE E — Tablet: Notes drawer open
+         ============================================ -->
+      <section id="state-e" class="state">
+        <div class="state-header">
+          <span class="state-tag">Tablet · 768px</span>
+          <h2 class="state-title">
+            State E — Notes drawer (360px slide-out from left)
+          </h2>
+          <p class="state-desc">
+            Tablet viewport. The user tapped the Notes tab. A 360px drawer
+            slides in from the left, overlaying the content area. The drawer
+            shows the same notes list as mobile (title + timestamp, "New"
+            button, note count). A backdrop behind the drawer dims the editor.
+            Tapping the backdrop or swiping left closes the drawer. The drawer
+            is the tablet midpoint between mobile's full-screen push and
+            desktop's persistent panel.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">768px tablet</div>
+            <div class="device-frame device-frame--tablet">
+              <div
+                class="screen screen--tablet"
+                data-component="app-shell"
+                data-state="tablet-drawer"
+              >
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="header-actions">
+                      <button
+                        type="button"
+                        class="new-chat-btn"
+                        aria-label="New chat"
+                      >
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        >
+                          <path d="M12 5v14M5 12h14" />
+                        </svg>
+                      </button>
+                      <div
+                        class="avatar avatar--tier"
+                        aria-label="Profile, Think tier"
+                      >
+                        SC
+                      </div>
+                    </div>
+                  </header>
+                  <!-- Note editor (visible behind drawer) -->
+                  <div class="note-editor" style="padding-bottom: 124px">
+                    <div
+                      class="note-body"
+                      style="max-width: 540px; margin: 0 auto"
+                    >
+                      <div class="note-title">
+                        What makes a great first-time user experience?
+                      </div>
+                      <p class="note-paragraph">
+                        A great first-time experience doesn't explain.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ai-bar ai-bar--passive"
+                  data-component="ai-presence-bar"
+                >
+                  <svg
+                    class="ai-bar-sparkle sparkle-18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <!-- Drawer backdrop -->
+                <div class="drawer-backdrop"></div>
+                <!-- Notes drawer (360px from left) -->
+                <div
+                  class="notes-drawer"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label="Notes list"
+                >
+                  <div class="notes-list-header">
+                    <h1 class="notes-list-title">Notes</h1>
+                    <button type="button" class="notes-list-add">
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      >
+                        <path d="M12 5v14M5 12h14" />
+                      </svg>
+                      New
+                    </button>
+                  </div>
+                  <div class="notes-list-body">
+                    <div class="notes-list-item notes-list-item--active">
+                      <span class="notes-list-item-title"
+                        >What makes a great first-time user experience</span
+                      >
+                      <span class="notes-list-item-meta">Today at 2:14 PM</span>
+                    </div>
+                    <div class="notes-list-item">
+                      <span class="notes-list-item-title"
+                        >Growth channels for the next 90 days</span
+                      >
+                      <span class="notes-list-item-meta">Yesterday</span>
+                    </div>
+                    <div class="notes-list-item">
+                      <span class="notes-list-item-title"
+                        >New user landing decision</span
+                      >
+                      <span class="notes-list-item-meta">Jul 16</span>
+                    </div>
+                    <div class="notes-list-item">
+                      <span class="notes-list-item-title"
+                        >Competitive positioning — Capacities vs dolfyn</span
+                      >
+                      <span class="notes-list-item-meta">Jul 14</span>
+                    </div>
+                    <div class="notes-list-item">
+                      <span class="notes-list-item-title"
+                        >Pricing tier philosophy</span
+                      >
+                      <span class="notes-list-item-meta">Jul 13</span>
+                    </div>
+                    <div class="notes-list-item">
+                      <span class="notes-list-item-title"
+                        >Note-taking app positioning</span
+                      >
+                      <span class="notes-list-item-meta">Jul 12</span>
+                    </div>
+                    <div class="notes-list-item">
+                      <span class="notes-list-item-title"
+                        >Auth decision — Better-Auth</span
+                      >
+                      <span class="notes-list-item-meta">Jul 11</span>
+                    </div>
+                    <div class="notes-list-divider">
+                      <div class="notes-list-divider-line"></div>
+                      <span class="notes-list-divider-label"
+                        >AI conversations</span
+                      >
+                      <div class="notes-list-divider-line"></div>
+                    </div>
+                    <div class="notes-list-item">
+                      <span class="notes-list-item-title"
+                        >Pricing model discussion</span
+                      >
+                      <span class="notes-list-item-meta"
+                        >Today at 11:30 AM</span
+                      >
+                    </div>
+                    <div class="notes-list-item">
+                      <span class="notes-list-item-title"
+                        >First-time UX patterns</span
+                      >
+                      <span class="notes-list-item-meta">Yesterday</span>
+                    </div>
+                    <div class="notes-list-item">
+                      <span class="notes-list-item-title"
+                        >Capacities comparison</span
+                      >
+                      <span class="notes-list-item-meta">Jul 15</span>
+                    </div>
+                  </div>
+                  <div class="notes-drawer-cap">
+                    <p class="notes-drawer-cap-text">8 of 10 notes</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE F — Chat tab: Defensive empty state
+         ============================================ -->
+      <section id="state-f" class="state">
+        <div class="state-header">
+          <span class="state-tag">All viewports</span>
+          <h2 class="state-title">
+            State F — Chat tab empty state (no notes yet)
+          </h2>
+          <p class="state-desc">
+            The user navigated to the Chat tab before writing a note. The chat
+            shows a defensive empty state: "Write your first note and I'll have
+            something to talk about. Tap the Notes tab to get started." No input
+            bar is shown — the user must write a note first. No AI presence bar
+            — the chat has nothing to offer without notes. The Notes tab is the
+            escape hatch. This state exists because the AI has nothing to
+            retrieve without notes — the empty state is honest about that.
+          </p>
+        </div>
+        <div class="viewports">
+          <!-- Mobile -->
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div
+                class="screen"
+                data-component="app-shell"
+                data-state="chat-empty"
+              >
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="header-actions">
+                      <button
+                        type="button"
+                        class="new-chat-btn"
+                        aria-label="New chat"
+                      >
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        >
+                          <path d="M12 5v14M5 12h14" />
+                        </svg>
+                      </button>
+                      <div class="avatar" aria-label="Profile">SC</div>
+                    </div>
+                  </header>
+                  <div class="empty-state">
+                    <svg
+                      class="empty-state-sparkle sparkle-24"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                    <h2 class="empty-state-headline">
+                      Write your first note and I'll have something to talk
+                      about.
+                    </h2>
+                    <p class="empty-state-body">
+                      Tap the Notes tab to get started.
+                    </p>
+                  </div>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab">
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" />
+                    </svg>
+                    <span>Notes</span>
+                  </a>
+                  <a href="#" class="tab tab--active" aria-current="page">
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      />
+                    </svg>
+                    <span>Chat</span>
+                  </a>
+                </nav>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div
+                class="screen screen--desktop-canvas"
+                data-component="app-shell"
+                data-state="chat-empty"
+              >
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="header-actions">
+                    <button
+                      type="button"
+                      class="new-chat-btn"
+                      aria-label="New chat"
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      >
+                        <path d="M12 5v14M5 12h14" />
+                      </svg>
+                    </button>
+                    <div class="avatar" aria-label="Profile">SC</div>
+                  </div>
+                </header>
+                <div class="empty-state">
+                  <svg
+                    class="empty-state-sparkle sparkle-24"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <h2 class="empty-state-headline">
+                    Write your first note and I'll have something to talk about.
+                  </h2>
+                  <p class="empty-state-body">
+                    Tap the Notes tab to get started.
+                  </p>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab">
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" />
+                    </svg>
+                    <span>Notes</span>
+                  </a>
+                  <a href="#" class="tab tab--active" aria-current="page">
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      />
+                    </svg>
+                    <span>Chat</span>
+                  </a>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE G — Tab switch: Chat view (from Notes)
+         ============================================ -->
+      <section id="state-g" class="state">
+        <div class="state-header">
+          <span class="state-tag">All viewports · Tab switching</span>
+          <h2 class="state-title">
+            State G — Chat tab with existing conversation
+          </h2>
+          <p class="state-desc">
+            The user switched from Notes to Chat. The Chat tab is active. An
+            existing conversation is visible — user and AI messages, with the
+            input bar at the bottom. The conversation scroll position is
+            preserved from the last visit. The AI presence bar is not shown (the
+            chat input bar fulfils the interaction role). On desktop, the chat
+            opens as a right-side panel (480px) alongside the note editor — the
+            user keeps their note context while chatting. An expand toggle in
+            the chat header lets the user go full-width. The Notes tab is the
+            other option — tapping it switches back while preserving the note
+            editor state.
+          </p>
+        </div>
+        <div class="viewports">
+          <!-- Mobile -->
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div
+                class="screen"
+                data-component="app-shell"
+                data-state="chat-active"
+              >
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="header-actions">
+                      <button
+                        type="button"
+                        class="new-chat-btn"
+                        aria-label="New chat"
+                      >
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        >
+                          <path d="M12 5v14M5 12h14" />
+                        </svg>
+                      </button>
+                      <div class="avatar" aria-label="Profile">SC</div>
+                    </div>
+                  </header>
+                  <div class="chat-view">
+                    <div class="chat-messages">
+                      <div class="chat-msg chat-msg--user">
+                        What are the key ideas in my notes?
+                      </div>
+                      <div class="chat-msg chat-msg--ai">
+                        You've been exploring two main themes:
+                        <strong>first-time user experience</strong> and
+                        <strong>product positioning</strong>. On UX, you're
+                        thinking about how the empty canvas IS the onboarding —
+                        no explanation needed. On positioning, you're comparing
+                        dolfyn against Capacities and noting that "simplicity as
+                        service" is the differentiator.<span
+                          style="
+                            display: inline-block;
+                            width: 1px;
+                            height: 1em;
+                            background: var(--accent);
+                            vertical-align: text-bottom;
+                            margin-left: 2px;
+                            animation: blink 1s steps(2) infinite;
+                          "
+                        ></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="chat-input-bar" data-component="chat-input-bar">
+                  <input
+                    type="text"
+                    class="chat-input"
+                    placeholder="Ask me about your notes"
+                    aria-label="Chat message input"
+                  />
+                  <button
+                    type="button"
+                    class="chat-send"
+                    aria-label="Send message"
+                    disabled
+                  >
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M22 2 11 13" />
+                      <path d="m22 2-7 20-4-9-9-4z" />
+                    </svg>
+                  </button>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop: Split view (note editor left + chat right) -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop — split view</div>
+            <div class="device-frame device-frame--desktop">
+              <div
+                class="screen screen--desktop"
+                data-component="app-shell"
+                data-state="chat-split"
+              >
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="header-actions">
+                    <button
+                      type="button"
+                      class="new-chat-btn"
+                      aria-label="New chat"
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      >
+                        <path d="M12 5v14M5 12h14" />
+                      </svg>
+                    </button>
+                    <div
+                      class="avatar avatar--tier"
+                      aria-label="Profile, Think tier"
+                    >
+                      SC
+                    </div>
+                  </div>
+                </header>
+                <div class="desktop-content-row">
+                  <!-- Note editor (left) -->
+                  <div class="note-editor" style="flex: 1; min-width: 0">
+                    <div
+                      class="note-body"
+                      style="max-width: 540px; margin: 0 auto"
+                    >
+                      <div class="note-title">
+                        What makes a great first-time user experience?
+                      </div>
+                      <p class="note-paragraph">
+                        What makes a great first-time user experience? I've been
+                        thinking about this all week, mostly in the context of
+                        dolfyn but the question is bigger than that.
+                      </p>
+                      <p class="note-paragraph">
+                        A great first-time experience doesn't explain. It
+                        doesn't onboard. It just lets the user do the thing they
+                        came to do, and shows them a glimpse of why it was worth
+                        coming.<span class="cursor"></span>
+                      </p>
+                    </div>
+                  </div>
+                  <!-- Chat panel (right, 480px) -->
+                  <aside class="chat-panel--desktop">
+                    <div class="panel-header">
+                      <svg
+                        class="panel-sparkle sparkle-18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        />
+                      </svg>
+                      <span class="panel-title">Chat</span>
+                      <button
+                        class="chat-expand-toggle"
+                        type="button"
+                        aria-label="Expand chat to full width"
+                      >
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M8 3H5a2 2 0 0 0-2 2v3" />
+                          <path d="M21 8V5a2 2 0 0 0-2-2h-3" />
+                          <path d="M3 16v3a2 2 0 0 0 2 2h3" />
+                          <path d="M16 21h3a2 2 0 0 0 2-2v-3" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div
+                      style="
+                        flex: 1;
+                        display: flex;
+                        flex-direction: column;
+                        overflow: hidden;
+                      "
+                    >
+                      <div
+                        style="
+                          flex: 1;
+                          overflow-y: auto;
+                          padding: var(--space-5) var(--space-4);
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space-4);
+                        "
+                      >
+                        <div class="chat-msg chat-msg--user">
+                          What are the key ideas in my notes?
+                        </div>
+                        <div class="chat-msg chat-msg--ai">
+                          You've been exploring two main themes:
+                          <strong>first-time user experience</strong> and
+                          <strong>product positioning</strong>. On UX, you're
+                          thinking about how the empty canvas IS the onboarding
+                          — no explanation needed. On positioning, you're
+                          comparing dolfyn against Capacities and noting that
+                          "simplicity as service" is the differentiator.<span
+                            style="
+                              display: inline-block;
+                              width: 1px;
+                              height: 1em;
+                              background: var(--accent);
+                              vertical-align: text-bottom;
+                              margin-left: 2px;
+                              animation: blink 1s steps(2) infinite;
+                            "
+                          ></span>
+                        </div>
+                      </div>
+                      <div
+                        style="
+                          flex-shrink: 0;
+                          padding: var(--space-3) var(--space-4);
+                        "
+                      >
+                        <div
+                          style="
+                            display: flex;
+                            align-items: center;
+                            gap: var(--space-3);
+                            border: 1px solid var(--border);
+                            border-radius: var(--radius-lg);
+                            background: var(--surface-raised);
+                            padding: var(--space-2) var(--space-3);
+                          "
+                        >
+                          <input
+                            type="text"
+                            style="
+                              flex: 1;
+                              border: none;
+                              background: transparent;
+                              height: 40px;
+                              padding: 0 var(--space-2);
+                              font-family:
+                                &quot;Source Serif 4&quot;, Georgia, serif;
+                              font-size: 16px;
+                              color: var(--ink);
+                              outline: none;
+                            "
+                            placeholder="Ask me about your notes"
+                            aria-label="Chat message input"
+                          />
+                          <button
+                            type="button"
+                            style="
+                              width: 36px;
+                              height: 36px;
+                              border: none;
+                              border-radius: var(--radius-md);
+                              background: var(--ink);
+                              color: var(--ink-inverse);
+                              cursor: pointer;
+                              display: flex;
+                              align-items: center;
+                              justify-content: center;
+                              flex-shrink: 0;
+                              opacity: 0.3;
+                            "
+                            aria-label="Send message"
+                            disabled
+                          >
+                            <svg
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <path d="M22 2 11 13" />
+                              <path d="m22 2-7 20-4-9-9-4z" />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </aside>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab tab--active" aria-current="page"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop: Expanded chat (full width) -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop — chat expanded</div>
+            <div class="device-frame device-frame--desktop">
+              <div
+                class="screen screen--desktop"
+                data-component="app-shell"
+                data-state="chat-expanded"
+              >
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="header-actions">
+                    <button
+                      type="button"
+                      class="new-chat-btn"
+                      aria-label="New chat"
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      >
+                        <path d="M12 5v14M5 12h14" />
+                      </svg>
+                    </button>
+                    <div
+                      class="avatar avatar--tier"
+                      aria-label="Profile, Think tier"
+                    >
+                      SC
+                    </div>
+                  </div>
+                </header>
+                <div class="desktop-content-row">
+                  <!-- Chat fills full width -->
+                  <div class="chat-view" style="flex: 1; min-width: 0">
+                    <div class="panel-header">
+                      <svg
+                        class="panel-sparkle sparkle-18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        />
+                      </svg>
+                      <span class="panel-title">Chat</span>
+                      <button
+                        class="chat-expand-toggle"
+                        type="button"
+                        aria-label="Collapse chat to split view"
+                      >
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M4 4h6v6H4z" />
+                          <path d="M14 4h6v6h-6z" />
+                          <path d="M4 14h6v6H4z" />
+                          <path d="M14 14h6v6h-6z" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div
+                      style="
+                        flex: 1;
+                        display: flex;
+                        flex-direction: column;
+                        overflow: hidden;
+                      "
+                    >
+                      <div
+                        style="
+                          flex: 1;
+                          overflow-y: auto;
+                          padding: var(--space-5) var(--space-4);
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space-4);
+                          max-width: 720px;
+                          margin: 0 auto;
+                          width: 100%;
+                        "
+                      >
+                        <div class="chat-msg chat-msg--user">
+                          What are the key ideas in my notes?
+                        </div>
+                        <div class="chat-msg chat-msg--ai">
+                          You've been exploring two main themes:
+                          <strong>first-time user experience</strong> and
+                          <strong>product positioning</strong>. On UX, you're
+                          thinking about how the empty canvas IS the onboarding
+                          — no explanation needed. On positioning, you're
+                          comparing dolfyn against Capacities and noting that
+                          "simplicity as service" is the differentiator.<span
+                            style="
+                              display: inline-block;
+                              width: 1px;
+                              height: 1em;
+                              background: var(--accent);
+                              vertical-align: text-bottom;
+                              margin-left: 2px;
+                              animation: blink 1s steps(2) infinite;
+                            "
+                          ></span>
+                        </div>
+                      </div>
+                      <div
+                        style="
+                          flex-shrink: 0;
+                          padding: var(--space-3) var(--space-4);
+                          max-width: 720px;
+                          margin: 0 auto;
+                          width: 100%;
+                        "
+                      >
+                        <div
+                          style="
+                            display: flex;
+                            align-items: center;
+                            gap: var(--space-3);
+                            border: 1px solid var(--border);
+                            border-radius: var(--radius-lg);
+                            background: var(--surface-raised);
+                            padding: var(--space-2) var(--space-3);
+                          "
+                        >
+                          <input
+                            type="text"
+                            style="
+                              flex: 1;
+                              border: none;
+                              background: transparent;
+                              height: 40px;
+                              padding: 0 var(--space-2);
+                              font-family:
+                                &quot;Source Serif 4&quot;, Georgia, serif;
+                              font-size: 16px;
+                              color: var(--ink);
+                              outline: none;
+                            "
+                            placeholder="Ask me about your notes"
+                            aria-label="Chat message input"
+                          />
+                          <button
+                            type="button"
+                            style="
+                              width: 36px;
+                              height: 36px;
+                              border: none;
+                              border-radius: var(--radius-md);
+                              background: var(--ink);
+                              color: var(--ink-inverse);
+                              cursor: pointer;
+                              display: flex;
+                              align-items: center;
+                              justify-content: center;
+                              flex-shrink: 0;
+                              opacity: 0.3;
+                            "
+                            aria-label="Send message"
+                            disabled
+                          >
+                            <svg
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <path d="M22 2 11 13" />
+                              <path d="m22 2-7 20-4-9-9-4z" />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </aside>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab tab--active" aria-current="page"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE H — Tab switch: Notes view (from Chat)
+         ============================================ -->
+      <section id="state-h" class="state">
+        <div class="state-header">
+          <span class="state-tag">All viewports · Tab switching</span>
+          <h2 class="state-title">
+            State H — Notes tab with open note preserved
+          </h2>
+          <p class="state-desc">
+            The user switched from Chat back to Notes. The Notes tab is active.
+            The note editor shows the same content as before — scroll position
+            preserved, cursor at the last position. The AI presence bar reflects
+            the note context (passive or active based on content). The Chat tab
+            is the other option — tapping it switches back while preserving the
+            conversation state. This is the reverse of State G.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div
+                class="screen"
+                data-component="app-shell"
+                data-state="notes-preserved"
+              >
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="header-actions">
+                      <button
+                        type="button"
+                        class="new-chat-btn"
+                        aria-label="New chat"
+                      >
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        >
+                          <path d="M12 5v14M5 12h14" />
+                        </svg>
+                      </button>
+                      <div class="avatar" aria-label="Profile">SC</div>
+                    </div>
+                  </header>
+                  <div
+                    class="note-editor"
+                    data-component="note-editor"
+                    data-state="has-content"
+                  >
+                    <div class="note-body">
+                      <div class="note-title">
+                        What makes a great first-time user experience?
+                      </div>
+                      <p class="note-paragraph">
+                        What makes a great first-time user experience? I've been
+                        thinking about this all week, mostly in the context of
+                        dolfyn but the question is bigger than that.
+                      </p>
+                      <p class="note-paragraph">
+                        A great first-time experience doesn't explain. It
+                        doesn't onboard. It just lets the user do the thing they
+                        came to do, and shows them a glimpse of why it was worth
+                        coming.<span class="cursor"></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ai-bar ai-bar--active"
+                  data-component="ai-presence-bar"
+                  data-state="active"
+                >
+                  <svg
+                    class="ai-bar-sparkle sparkle-18 sparkle-pulse"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>Want help with this?</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

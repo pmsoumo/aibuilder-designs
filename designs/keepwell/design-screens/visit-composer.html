@@ -1,0 +1,937 @@
+<!-- COMPONENT INVENTORY: app-shell, sidebar-nav, nav-toggle, composer-section, vitals-grid, rx-row, input-textarea, input-text, chip-select, button-primary, button-secondary, inline-error -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KeepWell — Visit composer</title>
+    <link rel="stylesheet" href="../tokens.css" />
+    <link rel="stylesheet" href="../screens.css" />
+  </head>
+  <body>
+    <div class="board">
+      <h1>Visit composer — the note and the prescription in one pass</h1>
+      <p class="lede">
+        The rule this screen exists to prove:
+        <strong>structure at the section level, freedom inside it.</strong> The
+        headings are what make a printed prescription look professional. Fields
+        are what make a doctor abandon the software. So only three things here
+        are real fields — vitals, Rx rows, and the follow-up date — because only
+        those three need to be machine-readable, for trends, for favourites, and
+        for the recall that books itself. Everything else is prose under a
+        printed heading. One save writes the visit record and renders the Rx;
+        the doctor never writes a note and then writes a prescription.
+      </p>
+
+      <h2 class="group">Desktop — mid-consult, partly filled</h2>
+      <p class="groupnote">
+        Six minutes per patient. The complaint came from a chip, the vitals were
+        just measured, two drugs came from favourites the clinic's own history
+        taught the app. Nothing is required: this visit would save right now.
+        <strong>Empty sections simply do not print</strong> — no "Vitals: —" on
+        a document a patient carries out of the building.
+      </p>
+
+      <div class="vp-desktop">
+        <div
+          class="kw-shell"
+          data-component="app-shell"
+          data-variant="desktop"
+          data-responsive="1200"
+        >
+          <nav class="kw-sidebar" data-component="sidebar-nav" aria-label="Main">
+            <div class="kw-sidebar-head">
+              <div class="kw-brand">KeepWell</div>
+              <button
+                class="kw-navtoggle"
+                data-component="nav-toggle"
+                data-interaction="toggle-sidebar"
+                aria-label="Collapse navigation"
+                aria-expanded="true"
+              >
+                &#8249;
+              </button>
+            </div>
+            <a class="kw-navitem" href="#"
+              ><span>Today</span><span class="kw-count">11</span></a
+            >
+            <a class="kw-navitem" href="#"
+              ><span>Send</span><span class="kw-count">6</span></a
+            >
+            <a class="kw-navitem" href="#" aria-current="page"
+              ><span>Patients</span><span class="kw-count empty">0</span></a
+            >
+            <a class="kw-navitem" href="#"
+              ><span>Close day</span><span class="kw-count empty">0</span></a
+            >
+            <div class="kw-sidebar-foot">Dr Anjali Rao<br />Rao Clinic, Pune</div>
+          </nav>
+
+          <div class="kw-main">
+            <div class="kw-head">
+              <div>
+                <div class="kicker">
+                  Token 4 · Sunita Deshmukh · 34 · seen 6 times
+                </div>
+                <div class="title">Visit — 7 September</div>
+              </div>
+              <div class="kw-head-actions">
+                <button
+                  class="kw-btn kw-btn--secondary"
+                  data-component="button-secondary"
+                  data-interaction="cancel-visit"
+                >
+                  Cancel
+                </button>
+                <button
+                  class="kw-btn kw-btn--primary"
+                  data-component="button-primary"
+                  data-primary-action="true"
+                  data-interaction="save-visit"
+                >
+                  Save &amp; print Rx
+                </button>
+              </div>
+            </div>
+
+            <div class="kw-scroll">
+              <div class="kw-composer">
+                <section
+                  class="kw-csection"
+                  data-component="composer-section"
+                  data-state="filled"
+                >
+                  <h4>Complaint</h4>
+                  <div
+                    class="kw-chips"
+                    data-component="chip-select"
+                    role="group"
+                    aria-label="Frequent complaints"
+                  >
+                    <button type="button" class="kw-chip" aria-pressed="true">
+                      Fever
+                    </button>
+                    <button type="button" class="kw-chip" aria-pressed="false">
+                      Cough
+                    </button>
+                    <button type="button" class="kw-chip" aria-pressed="false">
+                      Body ache
+                    </button>
+                    <button type="button" class="kw-chip" aria-pressed="false">
+                      Acidity
+                    </button>
+                    <button type="button" class="kw-chip" aria-pressed="false">
+                      BP review
+                    </button>
+                  </div>
+                  <textarea
+                    class="kw-textarea"
+                    data-component="input-textarea"
+                    aria-label="Complaint"
+                    rows="2"
+                  >
+Fever 3 days, worse at night. Dry cough since yesterday.</textarea
+                  >
+                </section>
+
+                <section
+                  class="kw-csection"
+                  data-component="composer-section"
+                  data-variant="vitals"
+                  data-state="filled"
+                >
+                  <h4>Vitals</h4>
+                  <p class="hint">
+                    All optional. Blank readings never print, and never appear in
+                    the trend.
+                  </p>
+                  <div class="kw-vitals" data-component="vitals-grid">
+                    <div class="kw-vital">
+                      <label for="v-bp">BP</label>
+                      <div class="well">
+                        <input
+                          id="v-bp"
+                          type="text"
+                          inputmode="numeric"
+                          value="134/88"
+                        />
+                        <span class="unit">mmHg</span>
+                      </div>
+                    </div>
+                    <div class="kw-vital">
+                      <label for="v-pulse">Pulse</label>
+                      <div class="well">
+                        <input
+                          id="v-pulse"
+                          type="text"
+                          inputmode="numeric"
+                          value="92"
+                        />
+                        <span class="unit">bpm</span>
+                      </div>
+                    </div>
+                    <div class="kw-vital">
+                      <label for="v-temp">Temp</label>
+                      <div class="well">
+                        <input
+                          id="v-temp"
+                          type="text"
+                          inputmode="numeric"
+                          value="100.4"
+                        />
+                        <span class="unit">&deg;F</span>
+                      </div>
+                    </div>
+                    <div class="kw-vital">
+                      <label for="v-weight">Weight</label>
+                      <div class="well">
+                        <input
+                          id="v-weight"
+                          type="text"
+                          inputmode="numeric"
+                          value="61"
+                        />
+                        <span class="unit">kg</span>
+                      </div>
+                    </div>
+                    <div class="kw-vital">
+                      <label for="v-spo2">SpO&#8322;</label>
+                      <div class="well">
+                        <input
+                          id="v-spo2"
+                          type="text"
+                          inputmode="numeric"
+                          placeholder="—"
+                        />
+                        <span class="unit">%</span>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <section
+                  class="kw-csection"
+                  data-component="composer-section"
+                  data-state="filled"
+                >
+                  <h4>Findings &amp; diagnosis</h4>
+                  <p class="hint">
+                    One box on purpose. Splitting examination from diagnosis is
+                    two fields holding one sentence.
+                  </p>
+                  <textarea
+                    class="kw-textarea"
+                    data-component="input-textarea"
+                    aria-label="Findings and diagnosis"
+                    rows="3"
+                  >
+Throat congested, no exudate. Chest clear. Viral fever, likely self-limiting.</textarea
+                  >
+                </section>
+
+                <section
+                  class="kw-csection"
+                  data-component="composer-section"
+                  data-variant="rx"
+                  data-state="filled"
+                >
+                  <h4>Prescription</h4>
+                  <p class="hint">
+                    Favourites are learned from this clinic's own history at
+                    three uses. Nothing here is an authored drug list.
+                  </p>
+                  <div class="kw-favs" role="group" aria-label="Favourites">
+                    <button type="button" class="kw-fav" data-interaction="add-favourite">
+                      Paracetamol 650 · 1-0-1 · 3d<span class="times">41&times;</span>
+                    </button>
+                    <button type="button" class="kw-fav" data-interaction="add-favourite">
+                      Cetirizine 10 · 0-0-1 · 5d<span class="times">28&times;</span>
+                    </button>
+                    <button type="button" class="kw-fav" data-interaction="add-favourite">
+                      Pan-D · 1-0-0 · 7d<span class="times">19&times;</span>
+                    </button>
+                  </div>
+
+                  <div class="kw-rxrow" data-component="rx-row" data-variant="favourite">
+                    <input
+                      class="kw-input drug"
+                      data-component="input-text"
+                      aria-label="Drug"
+                      value="Paracetamol 650mg"
+                    />
+                    <input
+                      class="kw-input"
+                      data-component="input-text"
+                      aria-label="Dose"
+                      value="1 tab"
+                    />
+                    <input
+                      class="kw-input"
+                      data-component="input-text"
+                      aria-label="Frequency"
+                      value="1-0-1"
+                    />
+                    <input
+                      class="kw-input"
+                      data-component="input-text"
+                      aria-label="Duration"
+                      value="3 days"
+                    />
+                    <input
+                      class="kw-input instruction"
+                      data-component="input-text"
+                      aria-label="Instruction"
+                      value="After food"
+                    />
+                    <button
+                      type="button"
+                      class="kw-rxdrop"
+                      data-interaction="remove-rx-line"
+                      aria-label="Remove Paracetamol"
+                    >
+                      &times;
+                    </button>
+                  </div>
+
+                  <div class="kw-rxrow" data-component="rx-row" data-variant="favourite">
+                    <input
+                      class="kw-input drug"
+                      data-component="input-text"
+                      aria-label="Drug"
+                      value="Cetirizine 10mg"
+                    />
+                    <input
+                      class="kw-input"
+                      data-component="input-text"
+                      aria-label="Dose"
+                      value="1 tab"
+                    />
+                    <input
+                      class="kw-input"
+                      data-component="input-text"
+                      aria-label="Frequency"
+                      value="0-0-1"
+                    />
+                    <input
+                      class="kw-input"
+                      data-component="input-text"
+                      aria-label="Duration"
+                      value="5 days"
+                    />
+                    <input
+                      class="kw-input instruction"
+                      data-component="input-text"
+                      aria-label="Instruction"
+                      value="At bedtime"
+                    />
+                    <button
+                      type="button"
+                      class="kw-rxdrop"
+                      data-interaction="remove-rx-line"
+                      aria-label="Remove Cetirizine"
+                    >
+                      &times;
+                    </button>
+                  </div>
+
+                  <button
+                    class="kw-btn kw-btn--secondary kw-rxadd"
+                    data-component="button-secondary"
+                    data-interaction="add-rx-line"
+                  >
+                    Add medicine
+                  </button>
+                </section>
+
+                <section
+                  class="kw-csection"
+                  data-component="composer-section"
+                  data-state="filled"
+                >
+                  <h4>Advice &amp; follow-up</h4>
+                  <textarea
+                    class="kw-textarea"
+                    data-component="input-textarea"
+                    aria-label="Advice"
+                    rows="2"
+                  >
+Warm fluids, rest. Return sooner if fever crosses 102 or breathing gets hard.</textarea
+                  >
+                  <p class="hint" style="margin-top: 12px">
+                    A date here books the next appointment and prepares its
+                    recall message. This is the number the pilot is measured on.
+                  </p>
+                  <div
+                    class="kw-chips"
+                    data-component="chip-select"
+                    role="group"
+                    aria-label="Follow-up"
+                  >
+                    <button type="button" class="kw-chip" aria-pressed="false">
+                      None
+                    </button>
+                    <button type="button" class="kw-chip" aria-pressed="true">
+                      5 days
+                    </button>
+                    <button type="button" class="kw-chip" aria-pressed="false">
+                      2 weeks
+                    </button>
+                    <button type="button" class="kw-chip" aria-pressed="false">
+                      1 month
+                    </button>
+                    <button type="button" class="kw-chip" aria-pressed="false">
+                      Pick a date
+                    </button>
+                  </div>
+                </section>
+
+                <section
+                  class="kw-csection"
+                  data-component="composer-section"
+                  data-state="filled"
+                >
+                  <h4>Fee collected</h4>
+                  <p class="hint">
+                    One line, not an invoice. A receipt PDF is offered on save
+                    when an amount is present.
+                  </p>
+                  <div class="kw-vitals" style="grid-template-columns: minmax(0, 1fr)">
+                    <div class="kw-vital">
+                      <label for="v-fee">Amount</label>
+                      <div class="well">
+                        <input
+                          id="v-fee"
+                          type="text"
+                          inputmode="numeric"
+                          value="400"
+                        />
+                        <span class="unit">&#8377;</span>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="group">Desktop — a fresh visit, nothing entered</h2>
+      <p class="groupnote">
+        The empty state is the same screen, not a different one. Every section is
+        visible from the start: a collapsed section is a section that never gets
+        filled. Favourites carry the clinic's three most-prescribed lines, so the
+        first useful tap is available before a single character is typed.
+      </p>
+
+      <div class="vp-desktop">
+        <div
+          class="kw-shell"
+          data-component="app-shell"
+          data-variant="desktop"
+          data-state="empty"
+        >
+          <nav class="kw-sidebar" data-component="sidebar-nav" aria-label="Main">
+            <div class="kw-sidebar-head">
+              <div class="kw-brand">KeepWell</div>
+              <button
+                class="kw-navtoggle"
+                data-component="nav-toggle"
+                data-interaction="toggle-sidebar"
+                aria-label="Collapse navigation"
+                aria-expanded="true"
+              >
+                &#8249;
+              </button>
+            </div>
+            <a class="kw-navitem" href="#"
+              ><span>Today</span><span class="kw-count">11</span></a
+            >
+            <a class="kw-navitem" href="#"
+              ><span>Send</span><span class="kw-count">6</span></a
+            >
+            <a class="kw-navitem" href="#" aria-current="page"
+              ><span>Patients</span><span class="kw-count empty">0</span></a
+            >
+            <a class="kw-navitem" href="#"
+              ><span>Close day</span><span class="kw-count empty">0</span></a
+            >
+            <div class="kw-sidebar-foot">Dr Anjali Rao<br />Rao Clinic, Pune</div>
+          </nav>
+
+          <div class="kw-main">
+            <div class="kw-head">
+              <div>
+                <div class="kicker">Token 5 · Imran Shaikh · new patient</div>
+                <div class="title">Visit — 7 September</div>
+              </div>
+              <div class="kw-head-actions">
+                <button
+                  class="kw-btn kw-btn--secondary"
+                  data-component="button-secondary"
+                  data-interaction="cancel-visit"
+                >
+                  Cancel
+                </button>
+                <button
+                  class="kw-btn kw-btn--primary"
+                  data-component="button-primary"
+                  data-primary-action="true"
+                  data-interaction="save-visit"
+                >
+                  Save &amp; print Rx
+                </button>
+              </div>
+            </div>
+
+            <div class="kw-scroll">
+              <div class="kw-composer">
+                <section class="kw-csection" data-component="composer-section">
+                  <h4>Complaint</h4>
+                  <div
+                    class="kw-chips"
+                    data-component="chip-select"
+                    role="group"
+                    aria-label="Frequent complaints"
+                  >
+                    <button type="button" class="kw-chip" aria-pressed="false">
+                      Fever
+                    </button>
+                    <button type="button" class="kw-chip" aria-pressed="false">
+                      Cough
+                    </button>
+                    <button type="button" class="kw-chip" aria-pressed="false">
+                      Body ache
+                    </button>
+                    <button type="button" class="kw-chip" aria-pressed="false">
+                      Acidity
+                    </button>
+                    <button type="button" class="kw-chip" aria-pressed="false">
+                      BP review
+                    </button>
+                  </div>
+                  <textarea
+                    class="kw-textarea"
+                    data-component="input-textarea"
+                    aria-label="Complaint"
+                    rows="2"
+                    placeholder="Tap a chip, or type it"
+                  ></textarea>
+                </section>
+
+                <section
+                  class="kw-csection"
+                  data-component="composer-section"
+                  data-variant="vitals"
+                >
+                  <h4>Vitals</h4>
+                  <p class="hint">
+                    All optional. Blank readings never print, and never appear in
+                    the trend.
+                  </p>
+                  <div class="kw-vitals" data-component="vitals-grid">
+                    <div class="kw-vital">
+                      <label for="e-bp">BP</label>
+                      <div class="well">
+                        <input id="e-bp" type="text" inputmode="numeric" placeholder="—" />
+                        <span class="unit">mmHg</span>
+                      </div>
+                    </div>
+                    <div class="kw-vital">
+                      <label for="e-pulse">Pulse</label>
+                      <div class="well">
+                        <input id="e-pulse" type="text" inputmode="numeric" placeholder="—" />
+                        <span class="unit">bpm</span>
+                      </div>
+                    </div>
+                    <div class="kw-vital">
+                      <label for="e-temp">Temp</label>
+                      <div class="well">
+                        <input id="e-temp" type="text" inputmode="numeric" placeholder="—" />
+                        <span class="unit">&deg;F</span>
+                      </div>
+                    </div>
+                    <div class="kw-vital">
+                      <label for="e-weight">Weight</label>
+                      <div class="well">
+                        <input id="e-weight" type="text" inputmode="numeric" placeholder="—" />
+                        <span class="unit">kg</span>
+                      </div>
+                    </div>
+                    <div class="kw-vital">
+                      <label for="e-spo2">SpO&#8322;</label>
+                      <div class="well">
+                        <input id="e-spo2" type="text" inputmode="numeric" placeholder="—" />
+                        <span class="unit">%</span>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="kw-csection" data-component="composer-section">
+                  <h4>Findings &amp; diagnosis</h4>
+                  <textarea
+                    class="kw-textarea"
+                    data-component="input-textarea"
+                    aria-label="Findings and diagnosis"
+                    rows="3"
+                    placeholder="What you saw, and what you think it is"
+                  ></textarea>
+                </section>
+
+                <section
+                  class="kw-csection"
+                  data-component="composer-section"
+                  data-variant="rx"
+                >
+                  <h4>Prescription</h4>
+                  <div class="kw-favs" role="group" aria-label="Favourites">
+                    <button type="button" class="kw-fav" data-interaction="add-favourite">
+                      Paracetamol 650 · 1-0-1 · 3d<span class="times">41&times;</span>
+                    </button>
+                    <button type="button" class="kw-fav" data-interaction="add-favourite">
+                      Cetirizine 10 · 0-0-1 · 5d<span class="times">28&times;</span>
+                    </button>
+                    <button type="button" class="kw-fav" data-interaction="add-favourite">
+                      Pan-D · 1-0-0 · 7d<span class="times">19&times;</span>
+                    </button>
+                  </div>
+                  <div class="kw-rxrow" data-component="rx-row">
+                    <input
+                      class="kw-input drug"
+                      data-component="input-text"
+                      aria-label="Drug"
+                      placeholder="Medicine"
+                    />
+                    <input
+                      class="kw-input"
+                      data-component="input-text"
+                      aria-label="Dose"
+                      placeholder="Dose"
+                    />
+                    <input
+                      class="kw-input"
+                      data-component="input-text"
+                      aria-label="Frequency"
+                      placeholder="1-0-1"
+                    />
+                    <input
+                      class="kw-input"
+                      data-component="input-text"
+                      aria-label="Duration"
+                      placeholder="Days"
+                    />
+                    <input
+                      class="kw-input instruction"
+                      data-component="input-text"
+                      aria-label="Instruction"
+                      placeholder="After food"
+                    />
+                    <button
+                      type="button"
+                      class="kw-rxdrop"
+                      data-interaction="remove-rx-line"
+                      aria-label="Remove line"
+                    >
+                      &times;
+                    </button>
+                  </div>
+                  <button
+                    class="kw-btn kw-btn--secondary kw-rxadd"
+                    data-component="button-secondary"
+                    data-interaction="add-rx-line"
+                  >
+                    Add medicine
+                  </button>
+                </section>
+
+                <section class="kw-csection" data-component="composer-section">
+                  <h4>Advice &amp; follow-up</h4>
+                  <textarea
+                    class="kw-textarea"
+                    data-component="input-textarea"
+                    aria-label="Advice"
+                    rows="2"
+                    placeholder="What they should do at home"
+                  ></textarea>
+                  <p class="hint" style="margin-top: 12px">
+                    A date here books the next appointment and prepares its
+                    recall message.
+                  </p>
+                  <div
+                    class="kw-chips"
+                    data-component="chip-select"
+                    role="group"
+                    aria-label="Follow-up"
+                  >
+                    <button type="button" class="kw-chip" aria-pressed="true">
+                      None
+                    </button>
+                    <button type="button" class="kw-chip" aria-pressed="false">
+                      5 days
+                    </button>
+                    <button type="button" class="kw-chip" aria-pressed="false">
+                      2 weeks
+                    </button>
+                    <button type="button" class="kw-chip" aria-pressed="false">
+                      1 month
+                    </button>
+                    <button type="button" class="kw-chip" aria-pressed="false">
+                      Pick a date
+                    </button>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="group">Phone — same markup, thumb-zone save</h2>
+      <p class="groupnote">
+        Identical structure at 375px: vitals drop to two columns, an Rx row
+        stacks drug over dose and frequency, and the one primary action sits in
+        a fixed action bar rather than at the top of a screen the doctor has
+        scrolled away from. Error state shown too — a save that fails states the
+        consequence and keeps every character the doctor typed.
+      </p>
+
+      <div class="states">
+        <div class="state">
+          <h3>Filled, mid-consult</h3>
+          <p class="note">
+            Scrolled to the prescription block. Save is always reachable.
+          </p>
+          <div class="vp-phone">
+            <div
+              class="kw-shell"
+              data-component="app-shell"
+              data-variant="phone"
+              data-responsive="375"
+            >
+              <div class="kw-topbar with-back">
+                <button
+                  class="kw-back"
+                  data-interaction="back"
+                  aria-label="Back to today"
+                >
+                  &#8592; Today
+                </button>
+                <span class="title">Sunita Deshmukh</span>
+              </div>
+
+              <div class="kw-scroll">
+                <div class="kw-composer">
+                  <section
+                    class="kw-csection"
+                    data-component="composer-section"
+                    data-variant="vitals"
+                    data-state="filled"
+                  >
+                    <h4>Vitals</h4>
+                    <div class="kw-vitals" data-component="vitals-grid">
+                      <div class="kw-vital">
+                        <label for="p-bp">BP</label>
+                        <div class="well">
+                          <input id="p-bp" type="text" inputmode="numeric" value="134/88" />
+                          <span class="unit">mmHg</span>
+                        </div>
+                      </div>
+                      <div class="kw-vital">
+                        <label for="p-pulse">Pulse</label>
+                        <div class="well">
+                          <input id="p-pulse" type="text" inputmode="numeric" value="92" />
+                          <span class="unit">bpm</span>
+                        </div>
+                      </div>
+                      <div class="kw-vital">
+                        <label for="p-temp">Temp</label>
+                        <div class="well">
+                          <input id="p-temp" type="text" inputmode="numeric" value="100.4" />
+                          <span class="unit">&deg;F</span>
+                        </div>
+                      </div>
+                      <div class="kw-vital">
+                        <label for="p-weight">Weight</label>
+                        <div class="well">
+                          <input id="p-weight" type="text" inputmode="numeric" value="61" />
+                          <span class="unit">kg</span>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section
+                    class="kw-csection"
+                    data-component="composer-section"
+                    data-variant="rx"
+                    data-state="filled"
+                  >
+                    <h4>Prescription</h4>
+                    <div class="kw-favs" role="group" aria-label="Favourites">
+                      <button type="button" class="kw-fav" data-interaction="add-favourite">
+                        Paracetamol 650<span class="times">41&times;</span>
+                      </button>
+                      <button type="button" class="kw-fav" data-interaction="add-favourite">
+                        Cetirizine 10<span class="times">28&times;</span>
+                      </button>
+                    </div>
+                    <div class="kw-rxrow" data-component="rx-row" data-variant="favourite">
+                      <input
+                        class="kw-input drug"
+                        data-component="input-text"
+                        aria-label="Drug"
+                        value="Paracetamol 650mg"
+                      />
+                      <input
+                        class="kw-input"
+                        data-component="input-text"
+                        aria-label="Dose"
+                        value="1 tab"
+                      />
+                      <input
+                        class="kw-input"
+                        data-component="input-text"
+                        aria-label="Frequency"
+                        value="1-0-1"
+                      />
+                      <input
+                        class="kw-input instruction"
+                        data-component="input-text"
+                        aria-label="Instruction"
+                        value="After food, 3 days"
+                      />
+                    </div>
+                    <button
+                      class="kw-btn kw-btn--secondary kw-rxadd"
+                      data-component="button-secondary"
+                      data-interaction="add-rx-line"
+                    >
+                      Add medicine
+                    </button>
+                  </section>
+
+                  <section
+                    class="kw-csection"
+                    data-component="composer-section"
+                    data-state="filled"
+                  >
+                    <h4>Advice &amp; follow-up</h4>
+                    <div
+                      class="kw-chips"
+                      data-component="chip-select"
+                      role="group"
+                      aria-label="Follow-up"
+                    >
+                      <button type="button" class="kw-chip" aria-pressed="false">
+                        None
+                      </button>
+                      <button type="button" class="kw-chip" aria-pressed="true">
+                        5 days
+                      </button>
+                      <button type="button" class="kw-chip" aria-pressed="false">
+                        2 weeks
+                      </button>
+                    </div>
+                  </section>
+                </div>
+              </div>
+
+              <div class="kw-actionbar">
+                <button
+                  class="kw-btn kw-btn--secondary kw-btn--tall"
+                  data-component="button-secondary"
+                  data-interaction="cancel-visit"
+                >
+                  Cancel
+                </button>
+                <button
+                  class="kw-btn kw-btn--primary kw-btn--tall"
+                  data-component="button-primary"
+                  data-primary-action="true"
+                  data-interaction="save-visit"
+                >
+                  Save &amp; print
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="state">
+          <h3>Save failed</h3>
+          <p class="note">
+            States the consequence, not the rule. Nothing typed is lost, and the
+            retry is the same primary action in the same place.
+          </p>
+          <div class="vp-phone">
+            <div
+              class="kw-shell"
+              data-component="app-shell"
+              data-variant="phone"
+              data-state="error"
+            >
+              <div class="kw-topbar with-back">
+                <button class="kw-back" data-interaction="back" aria-label="Back to today">
+                  &#8592; Today
+                </button>
+                <span class="title">Sunita Deshmukh</span>
+              </div>
+
+              <div class="kw-scroll">
+                <div class="kw-error" data-component="inline-error" role="alert">
+                  <p>
+                    This visit hasn't saved yet — the clinic's connection dropped.
+                    Everything you typed is still here.
+                  </p>
+                  <button
+                    class="kw-btn kw-btn--secondary"
+                    data-component="button-secondary"
+                    data-interaction="retry-save"
+                  >
+                    Try again
+                  </button>
+                </div>
+                <div class="kw-composer">
+                  <section
+                    class="kw-csection"
+                    data-component="composer-section"
+                    data-state="filled"
+                  >
+                    <h4>Complaint</h4>
+                    <textarea
+                      class="kw-textarea"
+                      data-component="input-textarea"
+                      aria-label="Complaint"
+                      rows="2"
+                    >
+Fever 3 days, worse at night. Dry cough since yesterday.</textarea
+                    >
+                  </section>
+                </div>
+              </div>
+
+              <div class="kw-actionbar">
+                <button
+                  class="kw-btn kw-btn--secondary kw-btn--tall"
+                  data-component="button-secondary"
+                  data-interaction="cancel-visit"
+                >
+                  Cancel
+                </button>
+                <button
+                  class="kw-btn kw-btn--primary kw-btn--tall"
+                  data-component="button-primary"
+                  data-primary-action="true"
+                  data-interaction="save-visit"
+                >
+                  Save &amp; print
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

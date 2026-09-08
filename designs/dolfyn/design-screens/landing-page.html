@@ -1,0 +1,2016 @@
+<!-- COMPONENT INVENTORY: hero-section, cta-button-primary, cta-button-secondary, social-proof-strip, demo-step, feature-card, testimonial-card, pricing-card, pricing-card-recommended, faq-accordion, final-cta-section, footer-section, tricolor-badge, play-button-overlay, section-header -->
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>dolfyn — Zero-organization AI notes</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../tokens.css" />
+
+    <style>
+      /* ===== Landing page extended type scale ===== */
+      /* These extend -- not replace -- the token system for the landing page's larger canvas. */
+      /* Same families, same principles. */
+      :root {
+        --type-hero-size: 48px;
+        --type-hero-line: 1.15;
+        --type-hero-weight: 600;
+        --type-hero-tracking: -0.02em;
+
+        --type-section-size: 28px;
+        --type-section-line: 1.3;
+        --type-section-weight: 600;
+        --type-section-tracking: -0.01em;
+
+        --type-subhead-size: 18px;
+        --type-subhead-line: 1.5;
+        --type-subhead-weight: 400;
+        --type-subhead-tracking: 0;
+
+        --type-eyebrow-size: 13px;
+        --type-eyebrow-line: 1.3;
+        --type-eyebrow-weight: 500;
+        --type-eyebrow-tracking: 0.06em;
+      }
+
+      /* ===== Reset & base ===== */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        -webkit-text-size-adjust: 100%;
+      }
+
+      body {
+        font-family: var(--font-serif);
+        background: var(--surface);
+        color: var(--ink);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        overflow-x: hidden;
+      }
+
+      /* ===== Layout container ===== */
+      .lp-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 var(--space-4);
+      }
+
+      @media (min-width: 768px) {
+        .lp-container {
+          padding: 0 var(--space-6);
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .lp-container {
+          padding: 0 var(--space-7);
+        }
+      }
+
+      /* ===== Section spacing ===== */
+      .lp-section {
+        padding: var(--space-7) 0;
+      }
+
+      @media (min-width: 768px) {
+        .lp-section {
+          padding: 80px 0;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .lp-section {
+          padding: 100px 0;
+        }
+      }
+
+      /* ===== Typography utilities ===== */
+      .type-hero {
+        font-family: var(--font-serif);
+        font-size: var(--type-hero-size);
+        line-height: var(--type-hero-line);
+        font-weight: var(--type-hero-weight);
+        letter-spacing: var(--type-hero-tracking);
+        color: var(--ink);
+      }
+
+      .type-section {
+        font-family: var(--font-serif);
+        font-size: var(--type-section-size);
+        line-height: var(--type-section-line);
+        font-weight: var(--type-section-weight);
+        letter-spacing: var(--type-section-tracking);
+        color: var(--ink);
+      }
+
+      .type-subhead {
+        font-family: var(--font-serif);
+        font-size: var(--type-subhead-size);
+        line-height: var(--type-subhead-line);
+        font-weight: var(--type-subhead-weight);
+        letter-spacing: var(--type-subhead-tracking);
+        color: var(--ink-2);
+      }
+
+      .type-eyebrow {
+        font-family: var(--font-sans);
+        font-size: var(--type-eyebrow-size);
+        line-height: var(--type-eyebrow-line);
+        font-weight: var(--type-eyebrow-weight);
+        letter-spacing: var(--type-eyebrow-tracking);
+        color: var(--ink-3);
+        text-transform: uppercase;
+      }
+
+      /* ===== Buttons ===== */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: var(--space-3) var(--space-5);
+        border-radius: var(--radius-md);
+        font-family: var(--font-sans);
+        font-size: var(--type-label-size);
+        font-weight: 500;
+        line-height: var(--type-label-line);
+        text-decoration: none;
+        cursor: pointer;
+        transition: opacity var(--duration-fast) var(--ease-out);
+        border: none;
+        white-space: nowrap;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .btn:active {
+        opacity: 0.85;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: var(--ink-inverse);
+      }
+
+      .btn-secondary {
+        background: transparent;
+        color: var(--ink);
+        border: 1px solid var(--border);
+      }
+
+      .btn-ghost {
+        background: transparent;
+        color: var(--ink-2);
+        min-height: 44px;
+      }
+
+      @media (min-width: 768px) {
+        .btn {
+          min-height: 44px;
+        }
+      }
+
+      /* ===== Tricolor badge ===== */
+      .tricolor-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+      }
+
+      .tricolor-strip {
+        display: inline-flex;
+        gap: 0;
+        height: 12px;
+        width: 18px;
+        border-radius: 1px;
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+
+      .tricolor-strip span {
+        width: 6px;
+        height: 12px;
+        display: block;
+      }
+
+      .tricolor-strip .saffron {
+        background: #ff9933;
+      }
+      .tricolor-strip .white {
+        background: #ffffff;
+      }
+      .tricolor-strip .green {
+        background: #138808;
+      }
+
+      .tricolor-badge .label {
+        font-family: var(--font-sans);
+        font-size: var(--type-caption-size);
+        font-weight: var(--type-caption-weight);
+        letter-spacing: var(--type-caption-tracking);
+        color: var(--ink-3);
+      }
+
+      /* ===== Section headers ===== */
+      .section-header {
+        text-align: center;
+        max-width: 640px;
+        margin: 0 auto var(--space-7);
+      }
+
+      .section-header .eyebrow {
+        margin-bottom: var(--space-3);
+      }
+
+      .section-header h2 {
+        margin-bottom: var(--space-4);
+      }
+
+      .section-header p {
+        color: var(--ink-2);
+      }
+
+      /* ===== SECTION 1: Hero ===== */
+      .hero-section {
+        padding-top: var(--space-7);
+        padding-bottom: var(--space-7);
+      }
+
+      .hero-section .lp-container {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-7);
+      }
+
+      .hero-content {
+        max-width: 600px;
+      }
+
+      .hero-eyebrow {
+        margin-bottom: var(--space-4);
+      }
+
+      .hero-headline {
+        margin-bottom: var(--space-5);
+      }
+
+      .hero-subheadline {
+        margin-bottom: var(--space-5);
+      }
+
+      .hero-body {
+        margin-bottom: var(--space-6);
+      }
+
+      .hero-ctas {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+        margin-bottom: var(--space-4);
+      }
+
+      @media (min-width: 400px) {
+        .hero-ctas {
+          flex-direction: row;
+          align-items: center;
+        }
+      }
+
+      .hero-microcopy {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+        flex-wrap: wrap;
+      }
+
+      .hero-microcopy .micro-line {
+        color: var(--ink-3);
+      }
+
+      /* Hero visual — demo placeholder */
+      .hero-visual {
+        position: relative;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+        background: var(--surface-raised);
+        overflow: hidden;
+        box-shadow: var(--elevation-panel);
+      }
+
+      .hero-visual .demo-frame {
+        padding: var(--space-5);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+        min-height: 320px;
+      }
+
+      .hero-visual .note-mock {
+        flex: 1;
+      }
+
+      .hero-visual .note-mock .mock-title {
+        font-family: var(--font-serif);
+        font-size: var(--type-title-size);
+        line-height: var(--type-title-line);
+        font-weight: var(--type-title-weight);
+        color: var(--ink);
+        margin-bottom: var(--space-4);
+      }
+
+      .hero-visual .note-mock .mock-text {
+        color: var(--ink-2);
+        margin-bottom: var(--space-5);
+      }
+
+      .hero-visual .note-mock .mock-sentence {
+        margin-bottom: var(--space-2);
+      }
+
+      .hero-visual .note-mock .ai-result {
+        background: var(--accent-soft-bg);
+        border-radius: var(--radius-md);
+        padding: var(--space-4);
+        position: relative;
+      }
+
+      .hero-visual .note-mock .ai-result .sparkle-icon {
+        position: absolute;
+        top: var(--space-3);
+        right: var(--space-3);
+        color: var(--accent);
+        font-size: 18px;
+        line-height: 1;
+      }
+
+      .hero-visual .note-mock .ai-result .ai-label {
+        font-family: var(--font-sans);
+        font-size: var(--type-caption-size);
+        font-weight: var(--type-caption-weight);
+        color: var(--accent-strong);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: var(--space-2);
+      }
+
+      .hero-visual .note-mock .ai-result .ai-content {
+        font-family: var(--font-serif);
+        font-size: var(--type-body-sm-size);
+        line-height: var(--type-body-sm-line);
+        color: var(--ink);
+      }
+
+      .hero-visual .note-mock .ai-result .ai-content s {
+        color: var(--ink-3);
+        text-decoration: line-through;
+        text-decoration-color: var(--accent);
+      }
+
+      .hero-visual .note-mock .ai-result .ai-content .corrected {
+        color: var(--accent-strong);
+      }
+
+      /* Play button overlay */
+      .play-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(15, 15, 14, 0.08);
+      }
+
+      .play-btn {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: transform var(--duration-fast) var(--ease-out);
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .play-btn:active {
+        transform: scale(0.95);
+      }
+
+      .play-btn::after {
+        content: "";
+        display: block;
+        width: 0;
+        height: 0;
+        border-left: 14px solid var(--accent);
+        border-top: 9px solid transparent;
+        border-bottom: 9px solid transparent;
+        margin-left: 3px;
+      }
+
+      @media (min-width: 1024px) {
+        .hero-section .lp-container {
+          flex-direction: row;
+          align-items: center;
+          gap: var(--space-7);
+        }
+
+        .hero-content {
+          flex: 1;
+        }
+
+        .hero-visual-wrap {
+          flex: 1;
+          max-width: 500px;
+        }
+
+        .hero-visual .demo-frame {
+          min-height: 380px;
+        }
+
+        .type-hero {
+          font-size: 56px;
+        }
+      }
+
+      @media (min-width: 375px) and (max-width: 1023px) {
+        .hero-visual .demo-frame {
+          min-height: 260px;
+        }
+      }
+
+      /* ===== SECTION 2: Social Proof ===== */
+      .social-proof-section {
+        padding: var(--space-7) 0;
+        border-top: 1px solid var(--divider);
+        border-bottom: 1px solid var(--divider);
+      }
+
+      .social-proof-content {
+        text-align: center;
+        max-width: 560px;
+        margin: 0 auto;
+      }
+
+      .social-proof-content .proof-line {
+        color: var(--ink-2);
+        margin-bottom: var(--space-4);
+      }
+
+      .kicker-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: var(--space-2) var(--space-5);
+      }
+
+      .kicker-row .kicker-item {
+        color: var(--ink-3);
+        white-space: nowrap;
+      }
+
+      /* ===== SECTION 3: How it works / Demo ===== */
+      .demo-steps {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-7);
+      }
+
+      .demo-step {
+        text-align: center;
+        max-width: 400px;
+        margin: 0 auto;
+      }
+
+      .demo-step .step-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--surface-subtle);
+        color: var(--ink-2);
+        font-family: var(--font-sans);
+        font-size: var(--type-label-size);
+        font-weight: 500;
+        margin-bottom: var(--space-4);
+      }
+
+      .demo-step .step-illustration {
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+        background: var(--surface-raised);
+        padding: var(--space-7) var(--space-4);
+        margin-bottom: var(--space-5);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 200px;
+      }
+
+      .demo-step .step-illustration .illustration-label {
+        font-family: var(--font-sans);
+        font-size: var(--type-caption-size);
+        font-weight: var(--type-caption-weight);
+        color: var(--ink-3);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-top: var(--space-3);
+      }
+
+      .demo-step .step-illustration .illustration-icon {
+        color: var(--ink-3);
+        margin-bottom: var(--space-3);
+      }
+
+      .demo-step h3 {
+        font-family: var(--font-serif);
+        font-size: var(--type-title-size);
+        line-height: var(--type-title-line);
+        font-weight: var(--type-title-weight);
+        color: var(--ink);
+        margin-bottom: var(--space-2);
+      }
+
+      .demo-step p {
+        color: var(--ink-2);
+      }
+
+      .demo-step.step-2 .step-illustration {
+        background: var(--accent-soft-bg);
+        border-color: var(--accent-soft-bg);
+      }
+
+      .demo-step.step-2 .step-number {
+        background: var(--accent-soft-bg);
+        color: var(--accent-strong);
+      }
+
+      .demo-section-closer {
+        text-align: center;
+        margin-top: var(--space-7);
+        padding-top: var(--space-6);
+        border-top: 1px solid var(--divider);
+      }
+
+      .demo-section-closer p {
+        color: var(--ink-2);
+        margin-bottom: var(--space-4);
+      }
+
+      @media (min-width: 768px) {
+        .demo-steps {
+          flex-direction: row;
+          gap: var(--space-6);
+        }
+
+        .demo-step {
+          flex: 1;
+          max-width: none;
+        }
+      }
+
+      /* ===== SECTION 4: Features ===== */
+      .feature-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-4);
+      }
+
+      .feature-card {
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+        background: var(--surface-raised);
+        padding: var(--space-5);
+        text-align: left;
+      }
+
+      .feature-card .feature-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius-md);
+        background: var(--surface-subtle);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: var(--space-4);
+        color: var(--ink-2);
+        font-size: 18px;
+      }
+
+      .feature-card h4 {
+        font-family: var(--font-serif);
+        font-size: var(--type-title-size);
+        line-height: var(--type-title-line);
+        font-weight: var(--type-title-weight);
+        color: var(--ink);
+        margin-bottom: var(--space-2);
+      }
+
+      .feature-card p {
+        color: var(--ink-2);
+      }
+
+      @media (min-width: 768px) {
+        .feature-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .feature-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      /* ===== SECTION 5: Testimonials ===== */
+      .testimonial-grid {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+      }
+
+      .testimonial-card {
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+        background: var(--surface-raised);
+        padding: var(--space-5);
+        text-align: center;
+      }
+
+      .testimonial-card .avatar-placeholder {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: var(--surface-subtle);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto var(--space-4);
+        color: var(--ink-3);
+        font-size: 20px;
+      }
+
+      .testimonial-card .coming-soon-label {
+        color: var(--ink-3);
+        margin-bottom: var(--space-2);
+      }
+
+      .testimonial-card .coming-soon-sub {
+        color: var(--ink-3);
+      }
+
+      @media (min-width: 768px) {
+        .testimonial-grid {
+          flex-direction: row;
+          gap: var(--space-5);
+        }
+
+        .testimonial-card {
+          flex: 1;
+        }
+      }
+
+      /* ===== SECTION 6: Pricing ===== */
+      .pricing-grid {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+        max-width: 900px;
+        margin: 0 auto;
+      }
+
+      .pricing-card {
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+        background: var(--surface-raised);
+        padding: var(--space-5);
+        position: relative;
+      }
+
+      .pricing-card.recommended {
+        border-left: 3px solid var(--accent);
+      }
+
+      .pricing-card.recommended .recommended-badge {
+        display: inline-block;
+        font-family: var(--font-sans);
+        font-size: var(--type-caption-size);
+        font-weight: var(--type-caption-weight);
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: var(--space-2);
+      }
+
+      .pricing-card .tier-name {
+        font-family: var(--font-serif);
+        font-size: var(--type-title-size);
+        line-height: var(--type-title-line);
+        font-weight: var(--type-title-weight);
+        color: var(--ink);
+        margin-bottom: var(--space-1);
+      }
+
+      .pricing-card .tier-price {
+        margin-bottom: var(--space-4);
+      }
+
+      .pricing-card .tier-price .price-main {
+        font-family: var(--font-sans);
+        font-size: 32px;
+        font-weight: 600;
+        color: var(--ink);
+        line-height: 1.2;
+      }
+
+      .pricing-card .tier-price .price-free {
+        font-family: var(--font-sans);
+        font-size: 32px;
+        font-weight: 600;
+        color: var(--ink-2);
+        line-height: 1.2;
+      }
+
+      .pricing-card .tier-price .price-after {
+        color: var(--ink-3);
+        margin-top: var(--space-1);
+      }
+
+      .pricing-card .tier-detail {
+        padding-top: var(--space-4);
+        border-top: 1px solid var(--divider);
+      }
+
+      .pricing-card .tier-detail .detail-row {
+        display: flex;
+        justify-content: space-between;
+        padding: var(--space-1) 0;
+        color: var(--ink-2);
+      }
+
+      .pricing-card .tier-detail .detail-label {
+        color: var(--ink-3);
+      }
+
+      .pricing-card .tier-detail .detail-value {
+        color: var(--ink);
+        font-weight: 500;
+      }
+
+      .pricing-card .tier-features {
+        margin-top: var(--space-4);
+        padding-top: var(--space-4);
+        border-top: 1px solid var(--divider);
+      }
+
+      .pricing-card .tier-features .feature-item {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-1) 0;
+        color: var(--ink-2);
+        font-size: var(--type-body-sm-size);
+      }
+
+      .pricing-card .feature-item .check {
+        color: var(--success);
+        flex-shrink: 0;
+        font-weight: 600;
+      }
+
+      .pricing-guarantee {
+        text-align: center;
+        margin-top: var(--space-5);
+        color: var(--ink-3);
+      }
+
+      .pricing-disclosure {
+        text-align: center;
+        margin-top: var(--space-2);
+        color: var(--ink-3);
+      }
+
+      @media (min-width: 768px) {
+        .pricing-grid {
+          flex-direction: row;
+          align-items: stretch;
+        }
+
+        .pricing-card {
+          flex: 1;
+        }
+
+        .pricing-card.recommended {
+          border: 1px solid var(--border);
+          border-left: 3px solid var(--accent);
+        }
+      }
+
+      /* ===== SECTION 7: FAQ ===== */
+      .faq-list {
+        max-width: 640px;
+        margin: 0 auto;
+      }
+
+      .faq-item {
+        border-bottom: 1px solid var(--divider);
+      }
+
+      .faq-item summary {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 56px;
+        padding: var(--space-4) 0;
+        cursor: pointer;
+        list-style: none;
+        -webkit-tap-highlight-color: transparent;
+        font-family: var(--font-serif);
+        font-size: var(--type-body-size);
+        line-height: var(--type-body-line);
+        font-weight: 400;
+        color: var(--ink);
+      }
+
+      .faq-item summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .faq-item summary::after {
+        content: "+";
+        font-family: var(--font-sans);
+        font-size: 20px;
+        font-weight: 400;
+        color: var(--ink-3);
+        margin-left: var(--space-3);
+        flex-shrink: 0;
+        transition: transform var(--duration-base) var(--ease-out);
+      }
+
+      .faq-item[open] summary::after {
+        content: "-";
+        transform: rotate(0deg);
+      }
+
+      .faq-item .faq-answer {
+        padding: 0 0 var(--space-5);
+        color: var(--ink-2);
+        max-width: 540px;
+      }
+
+      /* ===== SECTION 8: Final CTA ===== */
+      .final-cta-section {
+        text-align: center;
+        padding: 80px 0;
+      }
+
+      .final-cta-section h2 {
+        max-width: 580px;
+        margin: 0 auto var(--space-5);
+      }
+
+      .final-cta-section .btn {
+        margin-bottom: var(--space-4);
+      }
+
+      .final-cta-section .final-micro {
+        color: var(--ink-3);
+      }
+
+      /* ===== SECTION 9: Footer ===== */
+      .footer-section {
+        padding: var(--space-7) 0;
+        border-top: 1px solid var(--divider);
+      }
+
+      .footer-top {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-6);
+        margin-bottom: var(--space-6);
+      }
+
+      .footer-guarantee {
+        color: var(--ink-2);
+      }
+
+      .footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-3) var(--space-5);
+      }
+
+      .footer-links a {
+        font-family: var(--font-sans);
+        font-size: var(--type-caption-size);
+        font-weight: var(--type-caption-weight);
+        color: var(--ink-3);
+        text-decoration: none;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        transition: color var(--duration-fast) var(--ease-out);
+      }
+
+      .footer-links a:hover {
+        color: var(--ink-2);
+      }
+
+      .footer-bottom {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+        align-items: flex-start;
+      }
+
+      @media (min-width: 768px) {
+        .footer-top {
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: flex-start;
+        }
+
+        .footer-bottom {
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+        }
+      }
+
+      /* ===== Scroll-triggered animations (CSS-only, view-timeline where supported) ===== */
+      @supports (animation-timeline: view()) {
+        .animate-reveal {
+          animation: reveal-up linear both;
+          animation-timeline: view();
+          animation-range: entry 0% entry 100%;
+        }
+      }
+
+      @supports not (animation-timeline: view()) {
+        .animate-reveal {
+          opacity: 1;
+        }
+      }
+
+      @keyframes reveal-up {
+        from {
+          opacity: 0;
+          transform: translateY(24px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .hero-content {
+        animation: fade-in 500ms var(--ease-out) both;
+      }
+
+      .hero-visual-wrap {
+        animation: fade-in 600ms var(--ease-out) 200ms both;
+      }
+
+      /* ===== Reduced motion ===== */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
+
+        .animate-reveal {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      /* ===== Mobile refinements ===== */
+      @media (max-width: 374px) {
+        .type-hero {
+          font-size: 36px;
+        }
+
+        .hero-section {
+          padding-top: var(--space-6);
+        }
+      }
+
+      /* ===== SVG icons (inline, Lucide-inspired 1.5px stroke) ===== */
+      .icon-sm {
+        width: 18px;
+        height: 18px;
+      }
+      .icon-md {
+        width: 24px;
+        height: 24px;
+      }
+      .icon-lg {
+        width: 28px;
+        height: 28px;
+      }
+      .icon-stroke {
+        stroke: currentColor;
+        stroke-width: 1.5;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      /* Sparkle pulse animation for step-2 icon */
+      @keyframes sparkle-pulse {
+        0%,
+        100% {
+          opacity: 0.6;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.08);
+        }
+      }
+
+      .sparkle-pulse {
+        animation: sparkle-pulse var(--duration-sparkle-pulse)
+          var(--ease-in-out) infinite;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .sparkle-pulse {
+          animation: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ===== SECTION 1: Hero ===== -->
+    <section
+      class="lp-section hero-section"
+      data-component="hero-section"
+      data-section="1"
+    >
+      <div class="lp-container">
+        <div class="hero-content" data-focus-order="1">
+          <p class="hero-eyebrow type-eyebrow">Zero-organization AI notes</p>
+
+          <h1 class="hero-headline type-hero">
+            Tired of organizing notes before you can find them?
+          </h1>
+
+          <p class="hero-subheadline type-subhead">
+            One AI knows everything you've written — helping you write, edit,
+            retrieve, and connect. Capture first. Think with AI. Organize never.
+          </p>
+
+          <p
+            class="hero-body type-body-sm"
+            style="
+              font-family: var(--font-serif);
+              color: var(--ink-2);
+              max-width: 540px;
+            "
+          >
+            Your current tool makes you organize before it helps you find — and
+            leaves you alone while you write. dolfyn flips that: one AI thinks
+            with you at every step, fixing your grammar, sharpening your drafts,
+            critiquing your thinking, and finding anything you've ever written.
+            No paywall for the features that actually connect your thinking.
+          </p>
+
+          <div class="hero-ctas">
+            <a
+              href="https://dolfyn-app.pages.dev?source=landing&medium=organic&campaign=hero_cta&content=primary"
+              class="btn btn-primary"
+              data-component="cta-button"
+              data-variant="primary"
+              data-interaction="navigate"
+              data-primary-action
+              data-focus-order="2"
+              aria-label="Start thinking, not organizing — free forever"
+            >
+              Start thinking, not organizing — free forever
+            </a>
+
+            <a
+              href="#how-it-works"
+              class="btn btn-secondary"
+              data-component="cta-button"
+              data-variant="secondary"
+              data-interaction="scroll"
+              data-focus-order="3"
+              aria-label="See it think with you"
+            >
+              See it think with you
+            </a>
+          </div>
+
+          <div class="hero-microcopy">
+            <span class="micro-line type-caption"
+              >Free tier includes full AI</span
+            >
+            <span
+              class="micro-line type-caption"
+              style="color: var(--ink-3); opacity: 0.5"
+              >·</span
+            >
+            <span class="micro-line type-caption">30-second signup</span>
+            <span
+              class="micro-line type-caption"
+              style="color: var(--ink-3); opacity: 0.5"
+              >·</span
+            >
+            <span class="micro-line type-caption">No credit card</span>
+          </div>
+        </div>
+
+        <!-- Hero visual: Demo placeholder -->
+        <div
+          class="hero-visual-wrap"
+          data-component="demo-placeholder"
+          data-animation="fade-in"
+          data-animation-duration="600ms"
+        >
+          <div class="hero-visual" data-responsive="stack-at-mobile">
+            <div class="demo-frame">
+              <div class="note-mock">
+                <div class="mock-title">Project outline — Q3 roadmap</div>
+                <div class="mock-text type-body-sm">
+                  <div class="mock-sentence">
+                    We need to finalize the Q3 priorities and this quarter, we
+                    are focusing on user activation.
+                  </div>
+                </div>
+                <div
+                  class="ai-result"
+                  data-component="ai-result"
+                  data-variant="inline"
+                >
+                  <div class="sparkle-icon">✦</div>
+                  <div class="ai-label">Fix Grammar</div>
+                  <div class="ai-content">
+                    We need to finalize the Q3 priorities. <s>and</s>
+                    <span class="corrected">This</span> quarter, we are focusing
+                    on user activation.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="play-overlay" data-interaction="play">
+              <div
+                class="play-btn"
+                role="button"
+                aria-label="Play demo"
+                tabindex="0"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 2: Social Proof Strip ===== -->
+    <section
+      class="social-proof-section"
+      data-component="social-proof-strip"
+      data-section="2"
+    >
+      <div class="lp-container">
+        <div class="social-proof-content">
+          <p class="proof-line type-body" style="color: var(--ink-2)">
+            Built for writers, researchers, and builders who want to think, not
+            organize.
+          </p>
+          <div class="kicker-row" data-responsive="wrap-at-mobile">
+            <span class="kicker-item type-caption"
+              >One AI that writes with you</span
+            >
+            <span
+              class="kicker-item type-caption"
+              style="color: var(--ink-3); opacity: 0.5"
+              >·</span
+            >
+            <span class="kicker-item type-caption">Free on every tier</span>
+            <span
+              class="kicker-item type-caption"
+              style="color: var(--ink-3); opacity: 0.5"
+              >·</span
+            >
+            <span class="kicker-item type-caption">Zero organizing</span>
+            <span
+              class="kicker-item type-caption"
+              style="color: var(--ink-3); opacity: 0.5"
+              >·</span
+            >
+            <span class="kicker-item type-caption">Nothing gets lost</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 3: How it works / Demo ===== -->
+    <section
+      class="lp-section"
+      id="how-it-works"
+      data-component="demo-section"
+      data-section="3"
+    >
+      <div class="lp-container">
+        <div class="section-header" data-component="section-header">
+          <p class="eyebrow type-eyebrow">How it works</p>
+          <h2 class="type-section">Write. Think with AI. Find anything.</h2>
+          <p class="type-body" style="color: var(--ink-2)">
+            Three steps. No folders, no tags, no setup.
+          </p>
+        </div>
+
+        <div class="demo-steps">
+          <!-- Step 1: Write -->
+          <div
+            class="demo-step animate-reveal"
+            data-component="demo-step"
+            data-step="1"
+          >
+            <div class="step-number">1</div>
+            <div class="step-illustration" data-component="demo-illustration">
+              <svg
+                class="icon-md icon-stroke"
+                viewBox="0 0 24 24"
+                style="margin-bottom: var(--space-3); color: var(--ink-3)"
+              >
+                <path d="M12 20h9" />
+                <path
+                  d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"
+                />
+              </svg>
+              <span class="illustration-label"
+                >Write freely — no structure</span
+              >
+            </div>
+            <h3>Write</h3>
+            <p class="type-body-sm">
+              Just start writing. No folders. No tags. No setup.
+            </p>
+          </div>
+
+          <!-- Step 2: Think with AI -->
+          <div
+            class="demo-step step-2 animate-reveal"
+            data-component="demo-step"
+            data-variant="ai"
+            data-step="2"
+          >
+            <div class="step-number">2</div>
+            <div
+              class="step-illustration"
+              data-component="demo-illustration"
+              data-variant="ai-active"
+            >
+              <span
+                style="
+                  font-size: 28px;
+                  color: var(--accent);
+                  margin-bottom: var(--space-3);
+                "
+                class="sparkle-pulse"
+                aria-hidden="true"
+                >✦</span
+              >
+              <span
+                class="illustration-label"
+                style="color: var(--accent-strong)"
+                >AI works beside you</span
+              >
+            </div>
+            <h3>Think with AI</h3>
+            <p class="type-body-sm">
+              Fix grammar, sharpen a draft, critique your thinking — right where
+              you're writing, from the very first note.
+            </p>
+          </div>
+
+          <!-- Step 3: Find & connect -->
+          <div
+            class="demo-step animate-reveal"
+            data-component="demo-step"
+            data-step="3"
+          >
+            <div class="step-number">3</div>
+            <div class="step-illustration" data-component="demo-illustration">
+              <svg
+                class="icon-md icon-stroke"
+                viewBox="0 0 24 24"
+                style="margin-bottom: var(--space-3); color: var(--ink-3)"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="M21 21l-4.35-4.35" />
+                <path d="M11 8v6" />
+                <path d="M8 11h6" />
+              </svg>
+              <span class="illustration-label">Ask, get cited answers</span>
+            </div>
+            <h3>Find &#38; connect</h3>
+            <p class="type-body-sm">
+              Ask anything. The AI reads across every note you've written and
+              cites its sources. Every conversation saves as a note.
+            </p>
+          </div>
+        </div>
+
+        <div class="demo-section-closer" data-component="section-closer">
+          <p class="type-body-sm">
+            Bring your old notes — import in one click. Or start blank; you
+            already know how to write.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 4: Features ===== -->
+    <section
+      class="lp-section"
+      data-component="features-section"
+      data-section="4"
+    >
+      <div class="lp-container">
+        <div class="section-header" data-component="section-header">
+          <p class="eyebrow type-eyebrow">Features</p>
+          <h2 class="type-section">Stop organizing. Start thinking.</h2>
+        </div>
+
+        <div class="feature-grid">
+          <!-- Card 1 -->
+          <article
+            class="feature-card animate-reveal"
+            data-component="feature-card"
+            data-card="1"
+          >
+            <div class="feature-icon" aria-hidden="true">
+              <svg class="icon-sm icon-stroke" viewBox="0 0 24 24">
+                <path
+                  d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                />
+                <polyline points="14 2 14 8 20 8" />
+              </svg>
+            </div>
+            <h4>No folders, no tags, no object types</h4>
+            <p class="type-body-sm">
+              Capture without a single "what type is this?" decision. Every note
+              is a note — that's it.
+            </p>
+          </article>
+
+          <!-- Card 2 -->
+          <article
+            class="feature-card animate-reveal"
+            data-component="feature-card"
+            data-card="2"
+          >
+            <div class="feature-icon" aria-hidden="true">
+              <span style="font-size: 18px; color: var(--accent)">✦</span>
+            </div>
+            <h4>AI thinking partner, inline</h4>
+            <p class="type-body-sm">
+              Fix grammar, improve writing, change tone, brainstorm, extract
+              actions — the AI works beside you on every note, from the blank
+              page to the final draft.
+            </p>
+          </article>
+
+          <!-- Card 3 -->
+          <article
+            class="feature-card animate-reveal"
+            data-component="feature-card"
+            data-card="3"
+          >
+            <div class="feature-icon" aria-hidden="true">
+              <span style="font-size: 18px; color: var(--accent)">✦</span>
+            </div>
+            <h4>Free AI retrieval</h4>
+            <p class="type-body-sm">
+              AI included in the free tier. No paywall for the feature that
+              actually connects your thinking.
+            </p>
+          </article>
+
+          <!-- Card 4 -->
+          <article
+            class="feature-card animate-reveal"
+            data-component="feature-card"
+            data-card="4"
+          >
+            <div class="feature-icon" aria-hidden="true">
+              <svg class="icon-sm icon-stroke" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="3" />
+                <path
+                  d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"
+                />
+              </svg>
+            </div>
+            <h4>Invisible link graph</h4>
+            <p class="type-body-sm">
+              The AI builds your connections for you and surfaces them when you
+              ask.
+            </p>
+          </article>
+
+          <!-- Card 5 -->
+          <article
+            class="feature-card animate-reveal"
+            data-component="feature-card"
+            data-card="5"
+          >
+            <div class="feature-icon" aria-hidden="true">
+              <svg class="icon-sm icon-stroke" viewBox="0 0 24 24">
+                <path
+                  d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"
+                />
+              </svg>
+            </div>
+            <h4>Auto-save conversations</h4>
+            <p class="type-body-sm">
+              Every AI conversation saves as a note. Nothing you think gets
+              lost.
+            </p>
+          </article>
+
+          <!-- Card 6 -->
+          <article
+            class="feature-card animate-reveal"
+            data-component="feature-card"
+            data-card="6"
+          >
+            <div class="feature-icon" aria-hidden="true">
+              <svg class="icon-sm icon-stroke" viewBox="0 0 24 24">
+                <path
+                  d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"
+                />
+              </svg>
+            </div>
+            <h4>Affordable by design</h4>
+            <p class="type-body-sm">
+              ₹149/mo for unlimited notes — 5x cheaper than the next paid
+              competitor. Free tier includes full AI.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 5: Testimonials ===== -->
+    <section
+      class="lp-section"
+      data-component="testimonials-section"
+      data-section="5"
+    >
+      <div class="lp-container">
+        <div class="section-header" data-component="section-header">
+          <p class="eyebrow type-eyebrow">Testimonials</p>
+          <h2 class="type-section">From people who stopped organizing</h2>
+        </div>
+
+        <div class="testimonial-grid">
+          <div
+            class="testimonial-card animate-reveal"
+            data-component="testimonial-card"
+            data-state="placeholder"
+          >
+            <div class="avatar-placeholder" aria-hidden="true">
+              <svg class="icon-sm icon-stroke" viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </div>
+            <p
+              class="type-caption coming-soon-label"
+              style="color: var(--ink-3)"
+            >
+              Coming soon
+            </p>
+            <p class="type-caption coming-soon-sub" style="color: var(--ink-3)">
+              Real stories from real users
+            </p>
+          </div>
+
+          <div
+            class="testimonial-card animate-reveal"
+            data-component="testimonial-card"
+            data-state="placeholder"
+          >
+            <div class="avatar-placeholder" aria-hidden="true">
+              <svg class="icon-sm icon-stroke" viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </div>
+            <p
+              class="type-caption coming-soon-label"
+              style="color: var(--ink-3)"
+            >
+              Coming soon
+            </p>
+            <p class="type-caption coming-soon-sub" style="color: var(--ink-3)">
+              Early adopter feedback
+            </p>
+          </div>
+
+          <div
+            class="testimonial-card animate-reveal"
+            data-component="testimonial-card"
+            data-state="placeholder"
+          >
+            <div class="avatar-placeholder" aria-hidden="true">
+              <svg class="icon-sm icon-stroke" viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </div>
+            <p
+              class="type-caption coming-soon-label"
+              style="color: var(--ink-3)"
+            >
+              Coming soon
+            </p>
+            <p class="type-caption coming-soon-sub" style="color: var(--ink-3)">
+              Validation interview quotes
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 6: Pricing ===== -->
+    <section
+      class="lp-section"
+      data-component="pricing-section"
+      data-section="6"
+    >
+      <div class="lp-container">
+        <div class="section-header" data-component="section-header">
+          <p class="eyebrow type-eyebrow">Pricing</p>
+          <h2 class="type-section">AI notes, priced so anyone can use them.</h2>
+        </div>
+
+        <div class="pricing-grid">
+          <!-- Free tier -->
+          <div
+            class="pricing-card"
+            data-component="pricing-card"
+            data-tier="free"
+          >
+            <h3 class="tier-name">Free</h3>
+            <div class="tier-price">
+              <span class="price-free">Free</span>
+            </div>
+            <div class="tier-detail">
+              <div class="detail-row">
+                <span
+                  class="detail-label type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >Daily tokens</span
+                >
+                <span
+                  class="detail-value type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >42K/day</span
+                >
+              </div>
+              <div class="detail-row">
+                <span
+                  class="detail-label type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >Context</span
+                >
+                <span
+                  class="detail-value type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >4K</span
+                >
+              </div>
+              <div class="detail-row">
+                <span
+                  class="detail-label type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >Notes</span
+                >
+                <span
+                  class="detail-value type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >10 notes</span
+                >
+              </div>
+            </div>
+            <div class="tier-features">
+              <div class="feature-item">
+                <span class="check">✓</span> AI chat
+              </div>
+              <div class="feature-item">
+                <span class="check">✓</span> 14 inline AI features
+              </div>
+              <div class="feature-item">
+                <span class="check">✓</span> Auto-save conversations
+              </div>
+              <div class="feature-item">
+                <span class="check">✓</span> 10 notes, generous per-note space
+              </div>
+            </div>
+          </div>
+
+          <!-- Think tier (recommended) -->
+          <div
+            class="pricing-card recommended"
+            data-component="pricing-card"
+            data-tier="think"
+            data-variant="recommended"
+          >
+            <span class="recommended-badge">Recommended</span>
+            <h3 class="tier-name">Think</h3>
+            <div class="tier-price">
+              <span class="price-main">₹99</span
+              ><span class="type-caption" style="color: var(--ink-2)">/mo</span>
+              <p class="price-after type-caption">
+                First 3 months, then ₹149/mo
+              </p>
+            </div>
+            <div class="tier-detail">
+              <div class="detail-row">
+                <span
+                  class="detail-label type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >Daily tokens</span
+                >
+                <span
+                  class="detail-value type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >200K/day</span
+                >
+              </div>
+              <div class="detail-row">
+                <span
+                  class="detail-label type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >Context</span
+                >
+                <span
+                  class="detail-value type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >8K</span
+                >
+              </div>
+              <div class="detail-row">
+                <span
+                  class="detail-label type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >Notes</span
+                >
+                <span
+                  class="detail-value type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >Unlimited</span
+                >
+              </div>
+            </div>
+            <div class="tier-features">
+              <div class="feature-item">
+                <span class="check">✓</span> Everything in Free
+              </div>
+              <div class="feature-item">
+                <span class="check">✓</span> Public sharing
+              </div>
+              <div class="feature-item">
+                <span class="check">✓</span> Export
+              </div>
+            </div>
+          </div>
+
+          <!-- Deep Think tier -->
+          <div
+            class="pricing-card"
+            data-component="pricing-card"
+            data-tier="deep-think"
+          >
+            <h3 class="tier-name">Deep Think</h3>
+            <div class="tier-price">
+              <span class="price-main">₹199</span
+              ><span class="type-caption" style="color: var(--ink-2)">/mo</span>
+              <p class="price-after type-caption">
+                First 3 months, then ₹249/mo
+              </p>
+            </div>
+            <div class="tier-detail">
+              <div class="detail-row">
+                <span
+                  class="detail-label type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >Daily tokens</span
+                >
+                <span
+                  class="detail-value type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >600K/day</span
+                >
+              </div>
+              <div class="detail-row">
+                <span
+                  class="detail-label type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >Context</span
+                >
+                <span
+                  class="detail-value type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >32K</span
+                >
+              </div>
+              <div class="detail-row">
+                <span
+                  class="detail-label type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >Notes</span
+                >
+                <span
+                  class="detail-value type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >Unlimited</span
+                >
+              </div>
+            </div>
+            <div class="tier-features">
+              <div class="feature-item">
+                <span class="check">✓</span> Everything in Think
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="pricing-guarantee type-caption">
+          No lock-in. Export anytime. Your notes, your data.
+        </p>
+        <p class="pricing-disclosure type-caption" style="color: var(--ink-3)">
+          First 3 months at ₹99/₹199, then ₹149/₹249 per month.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 7: FAQ ===== -->
+    <section class="lp-section" data-component="faq-section" data-section="7">
+      <div class="lp-container">
+        <div class="section-header" data-component="section-header">
+          <p class="eyebrow type-eyebrow">FAQ</p>
+          <h2 class="type-section">Every question you might have.</h2>
+        </div>
+
+        <div class="faq-list" data-component="faq-list">
+          <details
+            class="faq-item"
+            data-component="faq-item"
+            data-interaction="expand-collapse"
+            data-faq="1"
+          >
+            <summary>Will the AI actually find my stuff?</summary>
+            <div class="faq-answer type-body-sm">
+              Try it free before paying. The free tier includes full AI — 42K
+              tokens/day across chat and inline tools. If it can't find your
+              notes, you owe us nothing.
+            </div>
+          </details>
+
+          <details
+            class="faq-item"
+            data-component="faq-item"
+            data-interaction="expand-collapse"
+            data-faq="2"
+          >
+            <summary>Will the AI's edits sound like me?</summary>
+            <div class="faq-answer type-body-sm">
+              Improve Writing matches your voice from your own notes; Change
+              Tone lets you pick Professional, Casual, Excited, or Assertive.
+              You review every change before it's inserted — replace, insert, or
+              discard.
+            </div>
+          </details>
+
+          <details
+            class="faq-item"
+            data-component="faq-item"
+            data-interaction="expand-collapse"
+            data-faq="3"
+          >
+            <summary>Are my notes private? Where is my data?</summary>
+            <div class="faq-answer type-body-sm">
+              Your notes are private by default. Public sharing is opt-in per
+              note. No lock-in, export anytime — your notes, your data.
+            </div>
+          </details>
+
+          <details
+            class="faq-item"
+            data-component="faq-item"
+            data-interaction="expand-collapse"
+            data-faq="4"
+          >
+            <summary>What happens when I hit the daily cap?</summary>
+            <div class="faq-answer type-body-sm">
+              Nothing is lost. Auto-save keeps every conversation, and the meter
+              is qualitative — Plenty / Halfway / Low — so you always know where
+              you stand. Paid tiers raise the cap to 200K–600K tokens/day.
+            </div>
+          </details>
+
+          <details
+            class="faq-item"
+            data-component="faq-item"
+            data-interaction="expand-collapse"
+            data-faq="5"
+          >
+            <summary>Is ₹149/mo worth it?</summary>
+            <div class="faq-answer type-body-sm">
+              It's 5x cheaper than the next paid competitor, with AI included on
+              every tier. ₹99 for your first 3 months, cancel anytime, no
+              questions.
+            </div>
+          </details>
+
+          <details
+            class="faq-item"
+            data-component="faq-item"
+            data-interaction="expand-collapse"
+            data-faq="6"
+          >
+            <summary>What about my 1,000+ notes in Notion/Obsidian?</summary>
+            <div class="faq-answer type-body-sm">
+              Import in one click. Your system stays in your old tool if you
+              want it to — dolfyn just stops making you organize the new ones.
+            </div>
+          </details>
+
+          <details
+            class="faq-item"
+            data-component="faq-item"
+            data-interaction="expand-collapse"
+            data-faq="7"
+          >
+            <summary>Do I need to learn a system?</summary>
+            <div class="faq-answer type-body-sm">
+              No. There are no folders, tags, or object types. You already know
+              how to write — that's the entire point.
+            </div>
+          </details>
+
+          <details
+            class="faq-item"
+            data-component="faq-item"
+            data-interaction="expand-collapse"
+            data-faq="8"
+          >
+            <summary>How much can I write on the free tier?</summary>
+            <div class="faq-answer type-body-sm">
+              The free tier holds 10 notes with generous space in each — enough
+              for real, long-form thinking. If you outgrow it, Think gives you
+              unlimited notes and unlimited space per note.
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 8: Final CTA ===== -->
+    <section
+      class="lp-section final-cta-section"
+      data-component="final-cta-section"
+      data-section="8"
+    >
+      <div class="lp-container">
+        <h2 class="type-section">
+          Still writing alone — or organizing notes instead of thinking?
+        </h2>
+
+        <a
+          href="https://dolfyn-app.pages.dev?source=landing&medium=organic&campaign=hero_cta&content=primary"
+          class="btn btn-primary"
+          data-component="cta-button"
+          data-variant="primary"
+          data-interaction="navigate"
+          aria-label="Start thinking, not organizing — free forever"
+        >
+          Start thinking, not organizing — free forever
+        </a>
+
+        <p class="final-micro type-caption">
+          30-second signup · Free tier includes full AI · Cancel anytime
+        </p>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 9: Footer ===== -->
+    <footer
+      class="lp-section footer-section"
+      data-component="footer-section"
+      data-section="9"
+    >
+      <div class="lp-container">
+        <div class="footer-top">
+          <p class="footer-guarantee type-body-sm">
+            No lock-in. Export anytime. Your notes, your data.
+          </p>
+
+          <nav
+            class="footer-links"
+            data-component="footer-nav"
+            aria-label="Footer navigation"
+          >
+            <a href="#" data-focus-order="100">Privacy</a>
+            <a href="#" data-focus-order="101">Terms</a>
+            <a href="https://dolfyn-app.pages.dev" data-focus-order="102"
+              >App login</a
+            >
+            <a href="#" data-focus-order="103">Contact</a>
+          </nav>
+        </div>
+
+        <div class="footer-bottom">
+          <div
+            class="tricolor-badge"
+            data-component="tricolor-badge"
+            aria-label="Made with love from India"
+          >
+            <span class="tricolor-strip" aria-hidden="true">
+              <span class="saffron"></span>
+              <span class="white"></span>
+              <span class="green"></span>
+            </span>
+            <span class="label">Made with love from India</span>
+          </div>
+
+          <p class="type-caption" style="color: var(--ink-3)">
+            Refer 3 friends, get 3 months free
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- ===== Minimal JS: Intersection Observer fallback for reveal animations ===== -->
+    <script>
+      (function () {
+        var reducedMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+        if (reducedMotion) return;
+
+        var supportsViewTimeline = CSS.supports("animation-timeline: view()");
+        if (supportsViewTimeline) return;
+
+        var observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                entry.target.style.opacity = "1";
+                entry.target.style.transform = "translateY(0)";
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.1 },
+        );
+
+        document.querySelectorAll(".animate-reveal").forEach(function (el) {
+          el.style.opacity = "0";
+          el.style.transform = "translateY(24px)";
+          el.style.transition =
+            "opacity 400ms var(--ease-out, ease-out), transform 400ms var(--ease-out, ease-out)";
+          observer.observe(el);
+        });
+      })();
+    </script>
+  </body>
+</html>

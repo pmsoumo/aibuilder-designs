@@ -1,0 +1,2474 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>dolfyn — Export</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --surface: #fafaf7;
+        --surface-subtle: #f2f1ed;
+        --surface-raised: #ffffff;
+        --surface-overlay: rgba(15, 15, 14, 0.32);
+        --ink: #0f0f0e;
+        --ink-2: #3f3f3f;
+        --ink-3: #6b6b6b;
+        --ink-inverse: #fafaf7;
+        --border: #e5e5e1;
+        --border-strong: #c7c7c2;
+        --divider: #edede9;
+        --accent: #c2410c;
+        --accent-strong: #9a330a;
+        --accent-soft-bg: #fcefde;
+        --space-1: 4px;
+        --space-2: 8px;
+        --space-3: 12px;
+        --space-4: 16px;
+        --space-5: 24px;
+        --space-6: 32px;
+        --space-7: 48px;
+        --radius-sm: 6px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-xl: 16px;
+        --radius-full: 9999px;
+        --elevation-panel:
+          0 8px 24px -8px rgba(15, 15, 14, 0.12),
+          0 2px 4px -2px rgba(15, 15, 14, 0.06);
+        --elevation-modal: 0 24px 48px -12px rgba(15, 15, 14, 0.18);
+        --z-base: 0;
+        --z-sticky: 100;
+        --z-overlay: 800;
+        --z-panel: 900;
+        --z-modal: 1000;
+        --z-toast: 1100;
+        --error: #b91c1c;
+        --warning: #b45309;
+        --elevation-toast: 0 8px 16px -4px rgba(15, 15, 14, 0.2);
+        --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        --duration-fast: 150ms;
+        --duration-base: 250ms;
+        --meta-bg: #ecebe5;
+        --meta-ink: #2a2a28;
+        --meta-ink-2: #6e6e68;
+        --meta-border: #d8d7d1;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--meta-bg);
+        color: var(--meta-ink);
+        font-family: "Inter", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .mockup-nav {
+        position: sticky;
+        top: 0;
+        z-index: 1100;
+        background: var(--meta-bg);
+        border-bottom: 1px solid var(--meta-border);
+        padding: var(--space-3) var(--space-5);
+        display: flex;
+        align-items: center;
+        gap: var(--space-5);
+        flex-wrap: wrap;
+      }
+      .mockup-title {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink);
+      }
+      .mockup-subtitle {
+        font-size: 12px;
+        color: var(--meta-ink-2);
+      }
+
+      .state {
+        padding: var(--space-7) var(--space-5) var(--space-6);
+        max-width: 1400px;
+        margin: 0 auto;
+        border-top: 1px solid var(--meta-border);
+      }
+      .state:first-of-type {
+        border-top: none;
+      }
+      .state-header {
+        margin-bottom: var(--space-5);
+        max-width: 720px;
+      }
+      .state-tag {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink-2);
+        margin-bottom: var(--space-2);
+      }
+      .state-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--meta-ink);
+        margin: 0 0 var(--space-2);
+        letter-spacing: -0.01em;
+      }
+      .state-desc {
+        font-size: 14px;
+        color: var(--meta-ink-2);
+        line-height: 1.5;
+        margin: 0;
+      }
+
+      .viewports {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-5);
+        align-items: flex-start;
+      }
+      .viewport {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        flex-shrink: 0;
+      }
+      .device-label {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink-2);
+        padding-left: var(--space-1);
+      }
+      .device-frame {
+        background: var(--meta-ink);
+        border-radius: 28px;
+        padding: 8px;
+        box-shadow: 0 2px 8px -2px rgba(15, 15, 14, 0.12);
+      }
+      .device-frame--desktop {
+        width: 1440px;
+        height: 900px;
+        border-radius: 12px;
+        padding: 8px;
+        position: relative;
+        overflow: hidden;
+      }
+      .screen {
+        position: relative;
+        width: 375px;
+        height: 720px;
+        background: var(--surface);
+        border-radius: 22px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .screen--desktop {
+        width: 100%;
+        height: 100%;
+        background: var(--surface);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .app {
+        position: relative;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+      .app-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-3) var(--space-4);
+        flex-shrink: 0;
+      }
+      .wordmark {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-weight: 600;
+        font-size: 20px;
+        letter-spacing: -0.01em;
+        color: var(--ink);
+        line-height: 1;
+      }
+      .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-full);
+        background: var(--surface-subtle);
+        color: var(--ink-2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
+        font-size: 13px;
+        flex-shrink: 0;
+      }
+      .avatar--tier {
+        position: relative;
+      }
+      .avatar--tier::after {
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        right: -1px;
+        width: 10px;
+        height: 10px;
+        border-radius: var(--radius-full);
+        background: var(--accent);
+        border: 2px solid var(--surface);
+      }
+
+      .note-editor {
+        flex: 1;
+        padding: var(--space-5) var(--space-4) 124px;
+        overflow-y: auto;
+        scrollbar-width: none;
+      }
+      .note-editor::-webkit-scrollbar {
+        display: none;
+      }
+      .note-body {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--ink);
+        max-width: 480px;
+      }
+      .note-title {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 1.3;
+        color: var(--ink);
+        margin: 0 0 var(--space-5);
+      }
+      .note-paragraph {
+        margin: 0 0 var(--space-3);
+      }
+      .note-paragraph:last-child {
+        margin-bottom: 0;
+      }
+
+      .cursor {
+        display: inline-block;
+        width: 2px;
+        height: 1.1em;
+        background: var(--ink);
+        vertical-align: text-bottom;
+        margin-left: 1px;
+        animation: blink 1s steps(2) infinite;
+      }
+      @keyframes blink {
+        0%,
+        50% {
+          opacity: 1;
+        }
+        50.01%,
+        100% {
+          opacity: 0;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .cursor {
+          animation: none;
+          opacity: 1;
+        }
+      }
+
+      .ai-bar {
+        height: 56px;
+        padding: 0 var(--space-4);
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 14px;
+        line-height: 1.5;
+        flex-shrink: 0;
+      }
+      .ai-bar--passive {
+        background: var(--surface-subtle);
+        color: var(--ink-2);
+      }
+      .ai-bar-sparkle {
+        flex-shrink: 0;
+        color: var(--accent);
+      }
+
+      .bottom-nav {
+        height: 56px;
+        background: var(--surface-raised);
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: stretch;
+        justify-content: space-around;
+        padding: 0 var(--space-2);
+        flex-shrink: 0;
+      }
+      .tab {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--ink-3);
+        position: relative;
+        text-decoration: none;
+      }
+      .tab svg {
+        display: block;
+      }
+      .tab--active {
+        color: var(--ink-2);
+      }
+      .tab--active svg {
+        color: var(--ink);
+      }
+      .tab--active::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 32px;
+        height: 3px;
+        background: var(--accent);
+        border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      }
+
+      /* ============================================
+       EXPORT MODAL — §4.7 pattern
+       ============================================ */
+      .modal-backdrop {
+        position: absolute;
+        inset: 0;
+        background: var(--surface-overlay);
+        z-index: var(--z-modal);
+      }
+      .export-modal {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: min(343px, calc(100% - 32px));
+        background: var(--surface-raised);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--elevation-modal);
+        z-index: calc(var(--z-modal) + 1);
+        overflow: hidden;
+      }
+
+      .modal-header {
+        padding: var(--space-5) var(--space-5) var(--space-3);
+      }
+      .modal-title {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 1.3;
+        color: var(--ink);
+        margin: 0;
+      }
+      .modal-body {
+        padding: 0 var(--space-5) var(--space-4);
+      }
+      .modal-body p {
+        font-size: 14px;
+        color: var(--ink-2);
+        margin: 0 0 var(--space-4);
+        line-height: 1.5;
+      }
+
+      .export-option {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        padding: var(--space-3) var(--space-4);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        margin-bottom: var(--space-2);
+        cursor: pointer;
+        transition:
+          border-color var(--duration-fast) var(--ease-out),
+          background var(--duration-fast) var(--ease-out);
+      }
+
+      .export-option:hover {
+        border-color: var(--border-strong);
+      }
+      .export-option:active {
+        background: var(--surface-subtle);
+      }
+      .export-option--selected {
+        border-color: var(--accent);
+        background: var(--accent-soft-bg);
+      }
+
+      .export-option-icon {
+        width: 20px;
+        height: 20px;
+        color: var(--ink-3);
+        flex-shrink: 0;
+      }
+
+      .export-option--selected .export-option-icon {
+        color: var(--accent-strong);
+      }
+
+      .export-option-text {
+        flex: 1;
+      }
+
+      .export-option-name {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--ink);
+        margin: 0;
+      }
+
+      .export-option-desc {
+        font-size: 12px;
+        color: var(--ink-3);
+        margin: 0;
+      }
+
+      .export-option-check {
+        width: 18px;
+        height: 18px;
+        border-radius: var(--radius-full);
+        border: 2px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition:
+          border-color var(--duration-fast) var(--ease-out),
+          background var(--duration-fast) var(--ease-out);
+      }
+
+      .export-option--selected .export-option-check {
+        border-color: var(--accent);
+        background: var(--accent);
+      }
+
+      .modal-actions {
+        padding: var(--space-4) var(--space-5) var(--space-5);
+      }
+      .modal-cta {
+        display: block;
+        width: 100%;
+        height: 44px;
+        border: none;
+        border-radius: var(--radius-md);
+        background: var(--ink);
+        color: var(--ink-inverse);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        margin-bottom: var(--space-3);
+      }
+      .modal-cta:active {
+        opacity: 0.85;
+      }
+      .modal-secondary {
+        display: block;
+        width: 100%;
+        height: 36px;
+        border: none;
+        background: transparent;
+        color: var(--ink-3);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        text-align: center;
+      }
+
+      /* ============================================
+       NOTE ACTIONS MENU
+       ============================================ */
+      .note-actions-trigger {
+        background: transparent;
+        border: none;
+        color: var(--ink-2);
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-md);
+      }
+      .note-actions-trigger:active {
+        background: var(--surface-subtle);
+      }
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+      }
+
+      .note-actions-menu {
+        position: absolute;
+        top: 48px;
+        right: var(--space-4);
+        width: 240px;
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--elevation-panel);
+        z-index: var(--z-panel);
+        overflow: hidden;
+      }
+      .menu-item {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        padding: var(--space-3) var(--space-4);
+        font-size: 14px;
+        color: var(--ink);
+        cursor: pointer;
+      }
+      .menu-item:hover {
+        background: var(--surface-subtle);
+      }
+      .menu-item-icon {
+        width: 18px;
+        height: 18px;
+        color: var(--ink-3);
+      }
+
+      .menu-item-desc {
+        font-size: 12px;
+        color: var(--ink-3);
+        margin-left: auto;
+      }
+
+      .menu-divider {
+        height: 1px;
+        background: var(--divider);
+        margin: 0;
+      }
+
+      /* ============================================
+       TOAST
+       ============================================ */
+      .toast {
+        position: absolute;
+        top: var(--space-4);
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-3) var(--space-4);
+        max-width: calc(100% - 32px);
+        background: var(--ink);
+        color: var(--ink-inverse);
+        border-radius: var(--radius-md);
+        font-size: 14px;
+        font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        box-shadow: var(--elevation-toast);
+        z-index: var(--z-toast);
+        white-space: nowrap;
+      }
+
+      /* ============================================
+       LOADING STATE
+       ============================================ */
+      .loading-spinner {
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--border);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .loading-spinner {
+          animation: none;
+          border-color: var(--accent);
+        }
+      }
+
+      .export-loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-3);
+        padding: var(--space-6) var(--space-5);
+        text-align: center;
+      }
+      .export-loading-text {
+        font-size: 14px;
+        color: var(--ink-2);
+      }
+
+      /* ============================================
+       ERROR STATE
+       ============================================ */
+      .export-error {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-3);
+        padding: var(--space-6) var(--space-5);
+        text-align: center;
+      }
+      .export-error-icon {
+        width: 24px;
+        height: 24px;
+        color: var(--error);
+      }
+      .export-error-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--ink);
+        margin: 0;
+      }
+      .export-error-msg {
+        font-size: 14px;
+        color: var(--ink-2);
+        margin: 0;
+        line-height: 1.5;
+      }
+      .export-error-retry {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 36px;
+        padding: 0 var(--space-4);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        background: transparent;
+        color: var(--ink);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        margin-top: var(--space-2);
+      }
+      .export-error-retry:active {
+        background: var(--surface-subtle);
+      }
+
+      /* ============================================
+       BLOCKED STATE
+       ============================================ */
+      .export-blocked {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-3);
+        padding: var(--space-6) var(--space-5);
+        text-align: center;
+      }
+      .export-blocked-icon {
+        width: 24px;
+        height: 24px;
+        color: var(--warning);
+      }
+      .export-blocked-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--ink);
+        margin: 0;
+      }
+      .export-blocked-msg {
+        font-size: 14px;
+        color: var(--ink-2);
+        margin: 0;
+        line-height: 1.5;
+      }
+
+      /* ============================================
+       STATE TABS
+       ============================================ */
+      .state-tabs {
+        display: flex;
+        gap: var(--space-1);
+        margin-left: auto;
+        flex-wrap: wrap;
+      }
+      .state-tab {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--meta-ink-2);
+        text-decoration: none;
+        padding: var(--space-1) var(--space-2);
+        border-radius: var(--radius-sm);
+        border: 1px solid transparent;
+        white-space: nowrap;
+      }
+      .state-tab:hover {
+        background: rgba(15, 15, 14, 0.05);
+        color: var(--meta-ink);
+      }
+      #state-d:target ~ .mockup-nav .state-tab[href="#state-d"],
+      #state-a:target ~ .mockup-nav .state-tab[href="#state-a"],
+      #state-b:target ~ .mockup-nav .state-tab[href="#state-b"],
+      #state-c:target ~ .mockup-nav .state-tab[href="#state-c"],
+      #state-e:target ~ .mockup-nav .state-tab[href="#state-e"],
+      #state-f:target ~ .mockup-nav .state-tab[href="#state-f"],
+      #state-g:target ~ .mockup-nav .state-tab[href="#state-g"] {
+        background: var(--meta-ink);
+        color: var(--ink-inverse);
+      }
+
+      @media (max-width: 900px) {
+        .device-frame--desktop {
+          display: none;
+        }
+      }
+      @media (max-width: 480px) {
+        .state {
+          padding: var(--space-5) var(--space-3);
+        }
+        .mockup-nav {
+          padding: var(--space-3);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="mockup-nav">
+      <div>
+        <div class="mockup-title">dolfyn / Export</div>
+        <div class="mockup-subtitle">
+          Phase 6 · Req 18 · Think-tier feature · 7 states
+        </div>
+      </div>
+      <nav class="state-tabs" aria-label="State selector">
+        <a href="#state-d" class="state-tab">D · menu trigger</a>
+        <a href="#state-a" class="state-tab">A · note actions</a>
+        <a href="#state-b" class="state-tab">B · format selection</a>
+        <a href="#state-c" class="state-tab">C · export complete</a>
+        <a href="#state-e" class="state-tab">E · loading</a>
+        <a href="#state-f" class="state-tab">F · error</a>
+        <a href="#state-g" class="state-tab">G · blocked</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- ===================== STATE D: Menu trigger ===================== -->
+      <section class="state" id="state-d">
+        <div class="state-header">
+          <span class="state-tag">State D</span>
+          <h2 class="state-title">Menu trigger</h2>
+          <p class="state-desc">
+            Sender view. The "..." trigger is visible in the app header. Tapping
+            it opens the note actions menu with Export and Share note options.
+          </p>
+        </div>
+        <div class="viewports">
+          <!-- Mobile -->
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen" data-state="D">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="header-actions">
+                      <button
+                        type="button"
+                        class="note-actions-trigger"
+                        aria-label="Note actions"
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <circle cx="12" cy="5" r="1" />
+                          <circle cx="12" cy="12" r="1" />
+                          <circle cx="12" cy="19" r="1" />
+                        </svg>
+                      </button>
+                      <div
+                        class="avatar avatar--tier"
+                        aria-label="Profile, Think tier"
+                      >
+                        SC
+                      </div>
+                    </div>
+                  </header>
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">
+                        What makes a great first-time user experience?
+                      </div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        A great first-time experience doesn't explain.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop" data-state="D">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="header-actions">
+                    <button
+                      type="button"
+                      class="note-actions-trigger"
+                      aria-label="Note actions"
+                    >
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="5" r="1" />
+                        <circle cx="12" cy="12" r="1" />
+                        <circle cx="12" cy="19" r="1" />
+                      </svg>
+                    </button>
+                    <div
+                      class="avatar avatar--tier"
+                      aria-label="Profile, Think tier"
+                    >
+                      SC
+                    </div>
+                  </div>
+                </header>
+                <div
+                  class="note-editor"
+                  style="max-width: 540px; margin: 0 auto"
+                >
+                  <div class="note-body">
+                    <div class="note-title">
+                      What makes a great first-time user experience?
+                    </div>
+                    <p class="note-paragraph" style="margin-bottom: 0">
+                      A great first-time experience doesn't explain.<span
+                        class="cursor"
+                      ></span>
+                    </p>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== STATE A: Note actions menu ===================== -->
+      <section class="state" id="state-a">
+        <div class="state-header">
+          <span class="state-tag">State A</span>
+          <h2 class="state-title">Note actions menu</h2>
+          <p class="state-desc">
+            Sender view. Note actions menu is open. "Export" option is visible.
+            Tapping it opens the format selection sheet.
+          </p>
+        </div>
+        <div class="viewports">
+          <!-- Mobile -->
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen" data-state="A">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="header-actions">
+                      <button
+                        type="button"
+                        class="note-actions-trigger"
+                        aria-label="Note actions"
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <circle cx="12" cy="5" r="1" />
+                          <circle cx="12" cy="12" r="1" />
+                          <circle cx="12" cy="19" r="1" />
+                        </svg>
+                      </button>
+                      <div
+                        class="avatar avatar--tier"
+                        aria-label="Profile, Think tier"
+                      >
+                        SC
+                      </div>
+                    </div>
+                  </header>
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">
+                        What makes a great first-time user experience?
+                      </div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        A great first-time experience doesn't explain.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <!-- Note actions menu -->
+                <div
+                  class="note-actions-menu"
+                  role="menu"
+                  aria-label="Note actions"
+                >
+                  <div class="menu-item" role="menuitem" tabindex="0">
+                    <svg
+                      class="menu-item-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                    >
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Export
+                  </div>
+                  <div class="menu-divider"></div>
+                  <div class="menu-item" role="menuitem" tabindex="0">
+                    <svg
+                      class="menu-item-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                    >
+                      <circle cx="18" cy="5" r="3" />
+                      <circle cx="6" cy="12" r="3" />
+                      <circle cx="18" cy="19" r="3" />
+                      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                    </svg>
+                    Share note
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop" data-state="A">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="header-actions">
+                    <button
+                      type="button"
+                      class="note-actions-trigger"
+                      aria-label="Note actions"
+                    >
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="5" r="1" />
+                        <circle cx="12" cy="12" r="1" />
+                        <circle cx="12" cy="19" r="1" />
+                      </svg>
+                    </button>
+                    <div
+                      class="avatar avatar--tier"
+                      aria-label="Profile, Think tier"
+                    >
+                      SC
+                    </div>
+                  </div>
+                </header>
+                <div
+                  class="note-editor"
+                  style="max-width: 540px; margin: 0 auto"
+                >
+                  <div class="note-body">
+                    <div class="note-title">
+                      What makes a great first-time user experience?
+                    </div>
+                    <p class="note-paragraph" style="margin-bottom: 0">
+                      A great first-time experience doesn't explain.<span
+                        class="cursor"
+                      ></span>
+                    </p>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <!-- Note actions menu -->
+                <div
+                  class="note-actions-menu"
+                  role="menu"
+                  aria-label="Note actions"
+                >
+                  <div class="menu-item" role="menuitem" tabindex="0">
+                    <svg
+                      class="menu-item-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                    >
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Export
+                  </div>
+                  <div class="menu-divider"></div>
+                  <div class="menu-item" role="menuitem" tabindex="0">
+                    <svg
+                      class="menu-item-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                    >
+                      <circle cx="18" cy="5" r="3" />
+                      <circle cx="6" cy="12" r="3" />
+                      <circle cx="18" cy="19" r="3" />
+                      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                    </svg>
+                    Share note
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== STATE B: Format selection ===================== -->
+      <section class="state" id="state-b">
+        <div class="state-header">
+          <span class="state-tag">State B</span>
+          <h2 class="state-title">Format selection</h2>
+          <p class="state-desc">
+            Format selection. User picks Markdown or Plain text. Export button
+            enables after selection.
+          </p>
+        </div>
+        <div class="viewports">
+          <!-- Mobile -->
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen" data-state="B">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div
+                      class="avatar avatar--tier"
+                      aria-label="Profile, Think tier"
+                    >
+                      SC
+                    </div>
+                  </header>
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">
+                        What makes a great first-time user experience?
+                      </div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        A great first-time experience doesn't explain.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <!-- Export modal — format selection -->
+                <div class="modal-backdrop"></div>
+                <div
+                  class="export-modal"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label="Export note"
+                >
+                  <div class="modal-header">
+                    <h2 class="modal-title">Export note</h2>
+                  </div>
+                  <div class="modal-body">
+                    <p>Export this note as a Markdown or plain text file.</p>
+                    <div
+                      class="export-option"
+                      role="radio"
+                      aria-checked="false"
+                      tabindex="0"
+                    >
+                      <svg
+                        class="export-option-icon"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                      >
+                        <path
+                          d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                        />
+                        <path d="M14 2v6h6" />
+                      </svg>
+                      <div class="export-option-text">
+                        <p class="export-option-name">Markdown (.md)</p>
+                        <p class="export-option-desc">Preserves formatting</p>
+                      </div>
+                      <div class="export-option-check"></div>
+                    </div>
+                    <div
+                      class="export-option"
+                      role="radio"
+                      aria-checked="false"
+                      tabindex="0"
+                    >
+                      <svg
+                        class="export-option-icon"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                      >
+                        <path
+                          d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                        />
+                        <path d="M14 2v6h6" />
+                      </svg>
+                      <div class="export-option-text">
+                        <p class="export-option-name">Plain text (.txt)</p>
+                        <p class="export-option-desc">Plain text, no markup</p>
+                      </div>
+                      <div class="export-option-check"></div>
+                    </div>
+                  </div>
+                  <div class="modal-actions">
+                    <button type="button" class="modal-cta" disabled>
+                      Export
+                    </button>
+                    <button type="button" class="modal-secondary">
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop" data-state="B">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div
+                    class="avatar avatar--tier"
+                    aria-label="Profile, Think tier"
+                  >
+                    SC
+                  </div>
+                </header>
+                <div
+                  class="note-editor"
+                  style="max-width: 540px; margin: 0 auto"
+                >
+                  <div class="note-body">
+                    <div class="note-title">
+                      What makes a great first-time user experience?
+                    </div>
+                    <p class="note-paragraph" style="margin-bottom: 0">
+                      A great first-time experience doesn't explain.
+                    </p>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <div class="modal-backdrop"></div>
+                <div
+                  class="export-modal"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label="Export note"
+                >
+                  <div class="modal-header">
+                    <h2 class="modal-title">Export note</h2>
+                  </div>
+                  <div class="modal-body">
+                    <p>Export this note as a Markdown or plain text file.</p>
+                    <div
+                      class="export-option"
+                      role="radio"
+                      aria-checked="false"
+                      tabindex="0"
+                    >
+                      <svg
+                        class="export-option-icon"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                      >
+                        <path
+                          d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                        />
+                        <path d="M14 2v6h6" />
+                      </svg>
+                      <div class="export-option-text">
+                        <p class="export-option-name">Markdown (.md)</p>
+                        <p class="export-option-desc">Preserves formatting</p>
+                      </div>
+                      <div class="export-option-check"></div>
+                    </div>
+                    <div
+                      class="export-option"
+                      role="radio"
+                      aria-checked="false"
+                      tabindex="0"
+                    >
+                      <svg
+                        class="export-option-icon"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                      >
+                        <path
+                          d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                        />
+                        <path d="M14 2v6h6" />
+                      </svg>
+                      <div class="export-option-text">
+                        <p class="export-option-name">Plain text (.txt)</p>
+                        <p class="export-option-desc">Plain text, no markup</p>
+                      </div>
+                      <div class="export-option-check"></div>
+                    </div>
+                  </div>
+                  <div class="modal-actions">
+                    <button type="button" class="modal-cta" disabled>
+                      Export
+                    </button>
+                    <button type="button" class="modal-secondary">
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== STATE C: Export complete ===================== -->
+      <section class="state" id="state-c">
+        <div class="state-header">
+          <span class="state-tag">State C</span>
+          <h2 class="state-title">Export complete</h2>
+          <p class="state-desc">
+            Export complete. File downloaded. Toast confirms filename.
+          </p>
+        </div>
+        <div class="viewports">
+          <!-- Mobile -->
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen" data-state="C">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div
+                      class="avatar avatar--tier"
+                      aria-label="Profile, Think tier"
+                    >
+                      SC
+                    </div>
+                  </header>
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">
+                        What makes a great first-time user experience?
+                      </div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        A great first-time experience doesn't explain.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <!-- Toast confirmation -->
+                <div class="toast">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M20 6 9 17l-5-5" />
+                  </svg>
+                  Exported as Onboarding thoughts.md
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop" data-state="C">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div
+                    class="avatar avatar--tier"
+                    aria-label="Profile, Think tier"
+                  >
+                    SC
+                  </div>
+                </header>
+                <div
+                  class="note-editor"
+                  style="max-width: 540px; margin: 0 auto"
+                >
+                  <div class="note-body">
+                    <div class="note-title">
+                      What makes a great first-time user experience?
+                    </div>
+                    <p class="note-paragraph" style="margin-bottom: 0">
+                      A great first-time experience doesn't explain.<span
+                        class="cursor"
+                      ></span>
+                    </p>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <div class="toast">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M20 6 9 17l-5-5" />
+                  </svg>
+                  Exported as Onboarding thoughts.md
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== STATE E: Loading ===================== -->
+      <section class="state" id="state-e">
+        <div class="state-header">
+          <span class="state-tag">State E</span>
+          <h2 class="state-title">Export loading</h2>
+          <p class="state-desc">
+            Loading state during file generation. Spinner shown in the modal
+            while the export is being processed. Req 18: "Show a loading
+            indicator during generation."
+          </p>
+        </div>
+        <div class="viewports">
+          <!-- Mobile -->
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen" data-state="E">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div
+                      class="avatar avatar--tier"
+                      aria-label="Profile, Think tier"
+                    >
+                      SC
+                    </div>
+                  </header>
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">
+                        What makes a great first-time user experience?
+                      </div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        A great first-time experience doesn't explain.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <!-- Export modal — loading -->
+                <div class="modal-backdrop"></div>
+                <div
+                  class="export-modal"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label="Exporting note"
+                >
+                  <div class="export-loading">
+                    <div class="loading-spinner"></div>
+                    <p class="export-loading-text">Generating export…</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop" data-state="E">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div
+                    class="avatar avatar--tier"
+                    aria-label="Profile, Think tier"
+                  >
+                    SC
+                  </div>
+                </header>
+                <div
+                  class="note-editor"
+                  style="max-width: 540px; margin: 0 auto"
+                >
+                  <div class="note-body">
+                    <div class="note-title">
+                      What makes a great first-time user experience?
+                    </div>
+                    <p class="note-paragraph" style="margin-bottom: 0">
+                      A great first-time experience doesn't explain.
+                    </p>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <div class="modal-backdrop"></div>
+                <div
+                  class="export-modal"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label="Exporting note"
+                >
+                  <div class="export-loading">
+                    <div class="loading-spinner"></div>
+                    <p class="export-loading-text">Generating export…</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== STATE F: Error ===================== -->
+      <section class="state" id="state-f">
+        <div class="state-header">
+          <span class="state-tag">State F</span>
+          <h2 class="state-title">Export error</h2>
+          <p class="state-desc">
+            Export generation failed. Req 18: "Show: 'Export failed. Please try
+            again.' The format selection sheet remains open — the user can retry
+            or cancel." Shown here with retry action.
+          </p>
+        </div>
+        <div class="viewports">
+          <!-- Mobile -->
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen" data-state="F">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div
+                      class="avatar avatar--tier"
+                      aria-label="Profile, Think tier"
+                    >
+                      SC
+                    </div>
+                  </header>
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">
+                        What makes a great first-time user experience?
+                      </div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        A great first-time experience doesn't explain.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <!-- Export modal — error -->
+                <div class="modal-backdrop"></div>
+                <div
+                  class="export-modal"
+                  role="alertdialog"
+                  aria-modal="true"
+                  aria-label="Export failed"
+                >
+                  <div class="export-error">
+                    <svg
+                      class="export-error-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="8" x2="12" y2="12" />
+                      <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    <p class="export-error-title">Export failed</p>
+                    <p class="export-error-msg">
+                      Something went wrong while generating your export. Please
+                      try again.
+                    </p>
+                    <button type="button" class="export-error-retry">
+                      Try again
+                    </button>
+                  </div>
+                  <div class="modal-actions">
+                    <button type="button" class="modal-secondary">
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop" data-state="F">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div
+                    class="avatar avatar--tier"
+                    aria-label="Profile, Think tier"
+                  >
+                    SC
+                  </div>
+                </header>
+                <div
+                  class="note-editor"
+                  style="max-width: 540px; margin: 0 auto"
+                >
+                  <div class="note-body">
+                    <div class="note-title">
+                      What makes a great first-time user experience?
+                    </div>
+                    <p class="note-paragraph" style="margin-bottom: 0">
+                      A great first-time experience doesn't explain.
+                    </p>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <div class="modal-backdrop"></div>
+                <div
+                  class="export-modal"
+                  role="alertdialog"
+                  aria-modal="true"
+                  aria-label="Export failed"
+                >
+                  <div class="export-error">
+                    <svg
+                      class="export-error-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="8" x2="12" y2="12" />
+                      <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    <p class="export-error-title">Export failed</p>
+                    <p class="export-error-msg">
+                      Something went wrong while generating your export. Please
+                      try again.
+                    </p>
+                    <button type="button" class="export-error-retry">
+                      Try again
+                    </button>
+                  </div>
+                  <div class="modal-actions">
+                    <button type="button" class="modal-secondary">
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== STATE G: Browser blocked ===================== -->
+      <section class="state" id="state-g">
+        <div class="state-header">
+          <span class="state-tag">State G</span>
+          <h2 class="state-title">Browser blocked download</h2>
+          <p class="state-desc">
+            Browser blocked the download. Req 18: "Show: 'Download blocked by
+            your browser. Please allow downloads and try again.' The user can
+            retry."
+          </p>
+        </div>
+        <div class="viewports">
+          <!-- Mobile -->
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen" data-state="G">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div
+                      class="avatar avatar--tier"
+                      aria-label="Profile, Think tier"
+                    >
+                      SC
+                    </div>
+                  </header>
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">
+                        What makes a great first-time user experience?
+                      </div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        A great first-time experience doesn't explain.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <!-- Export modal — browser blocked -->
+                <div class="modal-backdrop"></div>
+                <div
+                  class="export-modal"
+                  role="alertdialog"
+                  aria-modal="true"
+                  aria-label="Download blocked"
+                >
+                  <div class="export-blocked">
+                    <svg
+                      class="export-blocked-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    <p class="export-blocked-title">Download blocked</p>
+                    <p class="export-blocked-msg">
+                      Your browser blocked the download. Please allow downloads
+                      for this site and try again.
+                    </p>
+                  </div>
+                  <div class="modal-actions">
+                    <button type="button" class="modal-cta">Try again</button>
+                    <button type="button" class="modal-secondary">
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop" data-state="G">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div
+                    class="avatar avatar--tier"
+                    aria-label="Profile, Think tier"
+                  >
+                    SC
+                  </div>
+                </header>
+                <div
+                  class="note-editor"
+                  style="max-width: 540px; margin: 0 auto"
+                >
+                  <div class="note-body">
+                    <div class="note-title">
+                      What makes a great first-time user experience?
+                    </div>
+                    <p class="note-paragraph" style="margin-bottom: 0">
+                      A great first-time experience doesn't explain.
+                    </p>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <div class="modal-backdrop"></div>
+                <div
+                  class="export-modal"
+                  role="alertdialog"
+                  aria-modal="true"
+                  aria-label="Download blocked"
+                >
+                  <div class="export-blocked">
+                    <svg
+                      class="export-blocked-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    <p class="export-blocked-title">Download blocked</p>
+                    <p class="export-blocked-msg">
+                      Your browser blocked the download. Please allow downloads
+                      for this site and try again.
+                    </p>
+                  </div>
+                  <div class="modal-actions">
+                    <button type="button" class="modal-cta">Try again</button>
+                    <button type="button" class="modal-secondary">
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

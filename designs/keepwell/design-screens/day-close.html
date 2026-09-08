@@ -1,0 +1,523 @@
+<!-- COMPONENT INVENTORY: app-shell, sidebar-nav, bottom-nav, day-row, status-tag, mark-control, button-primary, button-secondary, section-header, empty-state, stat-tile -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KeepWell — Close the day</title>
+    <link rel="stylesheet" href="../tokens.css" />
+    <link rel="stylesheet" href="../screens.css" />
+  </head>
+  <body>
+    <div class="board">
+      <h1>Close the day — the screen the whole product depends on</h1>
+      <p class="lede">
+        This tap is the data asset. Every claim KeepWell makes — the no-show
+        rate, the win-back queue, the reminded-versus-not comparison — comes
+        from here, so the screen shows exactly what it is about to flag before
+        it flags it. Anything left unmarked at rollover is auto-flagged as a
+        no-show rather than silently dropped, and she can correct any day
+        afterwards.
+      </p>
+
+      <h2 class="group">Desktop — end of the shift</h2>
+      <p class="groupnote">
+        Rows the system already knows are separated from rows that need her
+        answer, so she only resolves what the queue couldn't see.
+      </p>
+
+      <div class="vp-desktop">
+        <div
+          class="kw-shell"
+          data-component="app-shell"
+          data-variant="desktop"
+          data-responsive="1200"
+        >
+          <nav
+            class="kw-sidebar"
+            data-component="sidebar-nav"
+            aria-label="Main"
+          >
+            <div class="kw-sidebar-head">
+              <div class="kw-brand">KeepWell</div>
+              <button
+                class="kw-navtoggle"
+                data-component="nav-toggle"
+                data-interaction="toggle-sidebar"
+                aria-label="Collapse navigation"
+                aria-expanded="true"
+              >
+                &#8249;
+              </button>
+            </div>
+            <a class="kw-navitem" href="#"
+              ><span>Today</span><span class="kw-count">14</span></a
+            >
+            <a class="kw-navitem" href="#"
+              ><span>Reminders</span><span class="kw-count empty">0</span></a
+            >
+            <a class="kw-navitem" href="#"
+              ><span>Patients</span><span class="kw-count empty">0</span></a
+            >
+            <a class="kw-navitem" href="#" aria-current="page"
+              ><span>Close day</span><span class="kw-count">2</span></a
+            >
+            <div class="kw-sidebar-foot">
+              Dr Anjali Rao<br />Rao Clinic, Pune
+            </div>
+          </nav>
+
+          <div class="kw-main">
+            <div class="kw-head">
+              <div>
+                <div class="kicker">Saturday, 6 September</div>
+                <div class="title">Who came today?</div>
+              </div>
+              <div class="kw-head-actions">
+                <button
+                  class="kw-btn kw-btn--primary"
+                  data-component="button-primary"
+                  data-primary-action="true"
+                  data-interaction="close-day"
+                >
+                  Close the day
+                </button>
+              </div>
+            </div>
+
+            <div class="kw-stats">
+              <div class="kw-stat" data-component="stat-tile">
+                <div class="value">14</div>
+                <div class="label">Booked</div>
+              </div>
+              <div class="kw-stat" data-component="stat-tile">
+                <div class="value">12</div>
+                <div class="label">Came</div>
+              </div>
+              <div class="kw-stat" data-component="stat-tile">
+                <div class="value alert">2</div>
+                <div class="label">Still unanswered</div>
+              </div>
+            </div>
+
+            <div class="kw-explain">
+              3 already marked from the queue. 2 left to confirm. Anything you
+              leave blank becomes a no-show when the day closes.
+            </div>
+
+            <div class="kw-scroll">
+              <div
+                class="kw-section kw-section--alert"
+                data-component="section-header"
+                data-variant="alert"
+              >
+                <span>Needs your answer</span><span>2</span>
+              </div>
+              <div
+                class="kw-row"
+                data-component="day-row"
+                data-variant="default"
+              >
+                <span class="time">14:00</span>
+                <span
+                  ><span class="name">Prakash Iyer</span
+                  ><span class="sub">Never marked arrived</span></span
+                >
+                <span></span>
+                <span class="kw-mark" data-component="mark-control">
+                  <button
+                    data-value="came"
+                    aria-pressed="false"
+                    aria-label="Prakash Iyer came"
+                    data-interaction="mark-came"
+                  >
+                    Came
+                  </button>
+                  <button
+                    data-value="missed"
+                    aria-pressed="false"
+                    aria-label="Prakash Iyer did not come"
+                    data-interaction="mark-missed"
+                  >
+                    Didn't
+                  </button>
+                </span>
+              </div>
+              <div
+                class="kw-row"
+                data-component="day-row"
+                data-variant="default"
+              >
+                <span class="time">16:30</span>
+                <span
+                  ><span class="name">Lakshmi Menon</span
+                  ><span class="sub">Never marked arrived</span></span
+                >
+                <span></span>
+                <span class="kw-mark" data-component="mark-control">
+                  <button
+                    data-value="came"
+                    aria-pressed="false"
+                    aria-label="Lakshmi Menon came"
+                    data-interaction="mark-came"
+                  >
+                    Came
+                  </button>
+                  <button
+                    data-value="missed"
+                    aria-pressed="true"
+                    aria-label="Lakshmi Menon did not come"
+                    data-interaction="mark-missed"
+                  >
+                    Didn't
+                  </button>
+                </span>
+              </div>
+
+              <div class="kw-section" data-component="section-header">
+                <span>Already known</span><span>3</span>
+              </div>
+              <div
+                class="kw-row"
+                data-component="day-row"
+                data-variant="default"
+              >
+                <span class="time">09:00</span>
+                <span
+                  ><span class="name">Sunita Rao</span
+                  ><span class="sub">Seen at 9:32 AM</span></span
+                >
+                <span
+                  class="kw-tag kw-tag--in"
+                  data-component="status-tag"
+                  data-variant="in"
+                  >Came</span
+                >
+                <button
+                  class="kw-btn kw-btn--link"
+                  data-component="button-secondary"
+                  data-interaction="change-mark"
+                >
+                  Change
+                </button>
+              </div>
+              <div
+                class="kw-row"
+                data-component="day-row"
+                data-variant="default"
+              >
+                <span class="time">09:30</span>
+                <span
+                  ><span class="name">Imran Qureshi</span
+                  ><span class="sub">Seen at 10:04 AM</span></span
+                >
+                <span
+                  class="kw-tag kw-tag--in"
+                  data-component="status-tag"
+                  data-variant="in"
+                  >Came</span
+                >
+                <button
+                  class="kw-btn kw-btn--link"
+                  data-component="button-secondary"
+                  data-interaction="change-mark"
+                >
+                  Change
+                </button>
+              </div>
+              <div
+                class="kw-row"
+                data-component="day-row"
+                data-variant="default"
+              >
+                <span class="time">10:30</span>
+                <span
+                  ><span class="name">Arjun Bhatt</span
+                  ><span class="sub"
+                    >Cancelled by patient at 9:15 AM</span
+                  ></span
+                >
+                <span
+                  class="kw-tag kw-tag--missed"
+                  data-component="status-tag"
+                  data-variant="missed"
+                  >Cancelled</span
+                >
+                <button
+                  class="kw-btn kw-btn--link"
+                  data-component="button-secondary"
+                  data-interaction="change-mark"
+                >
+                  Change
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="group">Phone</h2>
+      <p class="groupnote">
+        Two taps per row, both ≥44px and equal width so the pair reads as one
+        control. All three states rendered.
+      </p>
+
+      <div class="states vp-phone">
+        <section class="state">
+          <h3>Default — marking the day</h3>
+          <p class="note">
+            Only the rows the system couldn't resolve need her. Everything else
+            is shown as already known, with a way to change it.
+          </p>
+          <div
+            class="kw-shell"
+            data-component="app-shell"
+            data-variant="phone"
+            data-responsive="375"
+          >
+            <div class="kw-topbar">
+              <div class="kicker">Saturday, 6 September</div>
+              <div class="title">Who came today?</div>
+            </div>
+            <div class="kw-scroll">
+              <div class="kw-explain">
+                3 already marked from the queue. 2 left to confirm.
+              </div>
+              <div
+                class="kw-section kw-section--alert"
+                data-component="section-header"
+                data-variant="alert"
+              >
+                <span>Needs your answer</span><span>2</span>
+              </div>
+              <div
+                class="kw-row"
+                data-component="day-row"
+                data-variant="default"
+              >
+                <span class="time">14:00</span>
+                <span
+                  ><span class="name">Prakash Iyer</span
+                  ><span class="sub">Never marked arrived</span></span
+                >
+                <span class="kw-mark" data-component="mark-control">
+                  <button
+                    data-value="came"
+                    aria-pressed="false"
+                    aria-label="Prakash Iyer came"
+                    data-interaction="mark-came"
+                    data-focus-order="1"
+                  >
+                    Came
+                  </button>
+                  <button
+                    data-value="missed"
+                    aria-pressed="false"
+                    aria-label="Prakash Iyer did not come"
+                    data-interaction="mark-missed"
+                    data-focus-order="2"
+                  >
+                    Didn't
+                  </button>
+                </span>
+              </div>
+              <div
+                class="kw-row"
+                data-component="day-row"
+                data-variant="default"
+              >
+                <span class="time">16:30</span>
+                <span
+                  ><span class="name">Lakshmi Menon</span
+                  ><span class="sub">Never marked arrived</span></span
+                >
+                <span class="kw-mark" data-component="mark-control">
+                  <button
+                    data-value="came"
+                    aria-pressed="false"
+                    aria-label="Lakshmi Menon came"
+                    data-interaction="mark-came"
+                  >
+                    Came
+                  </button>
+                  <button
+                    data-value="missed"
+                    aria-pressed="true"
+                    aria-label="Lakshmi Menon did not come"
+                    data-interaction="mark-missed"
+                  >
+                    Didn't
+                  </button>
+                </span>
+              </div>
+              <div class="kw-section" data-component="section-header">
+                <span>Already known</span><span>3</span>
+              </div>
+              <div
+                class="kw-row"
+                data-component="day-row"
+                data-variant="default"
+              >
+                <span class="time">09:00</span>
+                <span
+                  ><span class="name">Sunita Rao</span
+                  ><span class="sub">Seen at 9:32 AM</span></span
+                >
+                <span
+                  class="kw-tag kw-tag--in"
+                  data-component="status-tag"
+                  data-variant="in"
+                  >Came</span
+                >
+              </div>
+              <div
+                class="kw-row"
+                data-component="day-row"
+                data-variant="default"
+              >
+                <span class="time">10:30</span>
+                <span
+                  ><span class="name">Arjun Bhatt</span
+                  ><span class="sub">Cancelled by patient</span></span
+                >
+                <span
+                  class="kw-tag kw-tag--missed"
+                  data-component="status-tag"
+                  data-variant="missed"
+                  >Cancelled</span
+                >
+              </div>
+            </div>
+            <div class="kw-actionbar">
+              <button
+                class="kw-btn kw-btn--primary kw-btn--tall kw-btn--block"
+                data-component="button-primary"
+                data-primary-action="true"
+                data-interaction="close-day"
+                data-focus-order="3"
+              >
+                Close the day
+              </button>
+            </div>
+            <nav
+              class="kw-bottomnav"
+              data-component="bottom-nav"
+              aria-label="Main"
+            >
+              <a href="#">Today</a>
+              <a href="#">Reminders</a>
+              <a href="#">Patients</a>
+              <a href="#" aria-current="page"
+                >Close day<span class="kw-badge">2</span></a
+              >
+            </nav>
+          </div>
+        </section>
+
+        <section class="state">
+          <h3>Closed — names it, then hands her the next action</h3>
+          <p class="note">
+            The one consequential action here turns a blank into a no-show, so
+            the result names the people rather than reporting a count. Ends by
+            opening the win-back queue, not by ending the flow.
+          </p>
+          <div
+            class="kw-shell"
+            data-component="app-shell"
+            data-variant="phone"
+            data-state="confirmed"
+          >
+            <div class="kw-topbar">
+              <div class="kicker">Saturday, 6 September</div>
+              <div class="title">Day closed</div>
+            </div>
+            <div class="kw-scroll">
+              <div
+                class="kw-empty"
+                data-component="empty-state"
+                data-variant="nothing-due"
+              >
+                <div class="figure">2 didn't come</div>
+                <p>
+                  Lakshmi Menon and Prakash Iyer are now in the win-back list.
+                  12 of 14 turned up — that's 86%, up from 79% last week.
+                </p>
+                <button
+                  class="kw-btn kw-btn--primary kw-btn--tall kw-btn--block"
+                  data-component="button-primary"
+                  data-primary-action="true"
+                  data-interaction="go-rebook"
+                >
+                  Win them back
+                </button>
+                <p style="margin-top: var(--kw-space-4)">
+                  Marked something wrong? Any day can be corrected from
+                  Patients.
+                </p>
+              </div>
+            </div>
+            <nav
+              class="kw-bottomnav"
+              data-component="bottom-nav"
+              aria-label="Main"
+            >
+              <a href="#">Today</a>
+              <a href="#">Reminders</a>
+              <a href="#">Patients</a>
+              <a href="#" aria-current="page">Close day</a>
+            </nav>
+          </div>
+        </section>
+
+        <section class="state">
+          <h3>Nothing to close</h3>
+          <p class="note">
+            Distinct from a finished day: nothing was booked. No dead end —
+            offers tomorrow's reminder run.
+          </p>
+          <div
+            class="kw-shell"
+            data-component="app-shell"
+            data-variant="phone"
+            data-condition="day.appointments === 0"
+          >
+            <div class="kw-topbar">
+              <div class="kicker">Sunday, 7 September</div>
+              <div class="title">Nothing booked today</div>
+            </div>
+            <div class="kw-scroll">
+              <div
+                class="kw-empty"
+                data-component="empty-state"
+                data-variant="nothing-due"
+              >
+                <h3>No appointments to mark</h3>
+                <p>
+                  Closing the day is how KeepWell learns who turned up. There's
+                  nothing to close today.
+                </p>
+                <button
+                  class="kw-btn kw-btn--secondary kw-btn--tall kw-btn--block"
+                  data-component="button-secondary"
+                  data-interaction="go-reminders"
+                >
+                  See tomorrow's reminders
+                </button>
+              </div>
+            </div>
+            <nav
+              class="kw-bottomnav"
+              data-component="bottom-nav"
+              aria-label="Main"
+            >
+              <a href="#">Today</a>
+              <a href="#">Reminders</a>
+              <a href="#">Patients</a>
+              <a href="#" aria-current="page">Close day</a>
+            </nav>
+          </div>
+        </section>
+      </div>
+    </div>
+  </body>
+</html>

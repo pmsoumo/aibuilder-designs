@@ -1,0 +1,1297 @@
+/* KeepWell shared screen styles — Stage 1 (round 2)
+   Styling is by class only. Never style by [data-component] — those attributes are the
+   component registry's anchors and the consistency checker reads them as markup, not CSS.
+
+   Responsive contract: in the real app the phone layout applies below
+   --kw-desktop-breakpoint (900px) and the desktop layout above it. In these mockups both
+   are rendered on the same page, so the switch is carried by .vp-phone / .vp-desktop
+   wrappers instead of a media query. Markup is identical either way.
+*/
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #ececeb;
+  color: var(--kw-ink);
+  font: var(--kw-weight-regular) var(--kw-text-md)/1.5 var(--kw-font);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------------------------------------------------------- mockup board */
+.board {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: var(--kw-space-8) var(--kw-space-6) var(--kw-space-12);
+}
+.board > h1 {
+  font-size: var(--kw-text-2xl);
+  letter-spacing: var(--kw-tracking-tight);
+  margin: 0 0 var(--kw-space-2);
+}
+.board > .lede {
+  color: var(--kw-ink-soft);
+  max-width: 70ch;
+  margin: 0 0 var(--kw-space-8);
+}
+.board h2.group {
+  font-size: var(--kw-text-xl);
+  letter-spacing: var(--kw-tracking-tight);
+  margin: var(--kw-space-8) 0 var(--kw-space-1);
+}
+.board p.groupnote {
+  color: var(--kw-ink-soft);
+  margin: 0 0 var(--kw-space-5);
+  max-width: 70ch;
+}
+.states {
+  display: grid;
+  gap: var(--kw-space-6);
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  align-items: start;
+}
+.state > h3 {
+  font-size: var(--kw-text-md);
+  font-weight: var(--kw-weight-bold);
+  margin: 0 0 var(--kw-space-1);
+}
+.state > .note {
+  font-size: var(--kw-text-base);
+  color: var(--kw-ink-soft);
+  margin: 0 0 var(--kw-space-3);
+}
+
+/* ---------------------------------------------------------- shell */
+.kw-shell {
+  background: var(--kw-surface);
+  border: 1px solid #dedfdc;
+  border-radius: var(--kw-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--kw-shadow-raised);
+  font-variant-numeric: tabular-nums;
+}
+.vp-phone .kw-shell {
+  width: 375px;
+  max-width: 100%;
+  margin: 0 auto;
+  height: 680px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+.vp-desktop .kw-shell {
+  width: 100%;
+  height: 640px;
+  display: grid;
+  grid-template-columns: var(--kw-sidebar-w) 1fr;
+}
+.vp-desktop .kw-shell.has-panel {
+  grid-template-columns: var(--kw-sidebar-w) 1fr var(--kw-panel-w);
+}
+.vp-desktop .kw-shell.no-sidebar {
+  grid-template-columns: 1fr;
+}
+
+.kw-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+.kw-scroll {
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ---------------------------------------------------------- top bar (phone) */
+.kw-topbar {
+  padding: var(--kw-space-3) var(--kw-space-4);
+  border-bottom: 1px solid var(--kw-line);
+}
+.kw-topbar .kicker {
+  font-size: var(--kw-text-sm);
+  color: var(--kw-ink-soft);
+}
+.kw-topbar .title {
+  font-size: var(--kw-text-lg);
+  font-weight: var(--kw-weight-bold);
+  letter-spacing: var(--kw-tracking-tight);
+}
+.kw-topbar .title .alert {
+  color: var(--kw-alert);
+}
+.kw-topbar.with-back {
+  display: flex;
+  align-items: center;
+  gap: var(--kw-space-3);
+}
+.kw-back {
+  background: none;
+  border: 0;
+  padding: 0;
+  min-height: var(--kw-tap-min);
+  cursor: pointer;
+  font: var(--kw-weight-bold) var(--kw-text-md) var(--kw-font);
+  color: var(--kw-accent);
+}
+
+/* ---------------------------------------------------------- head (desktop) */
+.kw-head {
+  padding: var(--kw-space-5) var(--kw-space-6) var(--kw-space-4);
+  border-bottom: 1px solid var(--kw-line);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--kw-space-4);
+}
+.kw-head .kicker {
+  font-size: var(--kw-text-base);
+  color: var(--kw-ink-soft);
+}
+.kw-head .title {
+  font-size: var(--kw-text-xl);
+  font-weight: var(--kw-weight-bold);
+  letter-spacing: var(--kw-tracking-tight);
+}
+.kw-head-actions {
+  display: flex;
+  gap: var(--kw-space-2);
+}
+
+/* ---------------------------------------------------------- sidebar (desktop) */
+.kw-sidebar {
+  background: var(--kw-surface-sunk);
+  border-right: 1px solid var(--kw-line);
+  padding: var(--kw-space-5) var(--kw-space-3);
+  display: flex;
+  flex-direction: column;
+}
+.kw-sidebar-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--kw-space-2);
+  padding: 0 var(--kw-space-1) var(--kw-space-5) var(--kw-space-3);
+}
+.kw-brand {
+  font-size: var(--kw-text-md);
+  font-weight: var(--kw-weight-bold);
+  letter-spacing: var(--kw-tracking-tight);
+  color: var(--kw-accent);
+  white-space: nowrap;
+}
+
+/* Collapse control: visible but quiet. Faint until the sidebar is hovered or the control
+   is focused, so it never competes with navigation for attention. */
+.kw-navtoggle {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: var(--kw-radius-sm);
+  background: none;
+  color: var(--kw-ink-faint);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font: var(--kw-weight-bold) var(--kw-text-md) var(--kw-font);
+  line-height: 1;
+  opacity: 0.55;
+  transition:
+    opacity var(--kw-motion-fast) var(--kw-ease),
+    background var(--kw-motion-fast) var(--kw-ease);
+}
+.kw-sidebar:hover .kw-navtoggle,
+.kw-navtoggle:focus-visible {
+  opacity: 1;
+}
+.kw-navtoggle:hover {
+  background: var(--kw-surface);
+  color: var(--kw-ink-soft);
+}
+
+.kw-navitem {
+  display: grid;
+  grid-template-columns: 18px 1fr var(--kw-nav-count-size);
+  align-items: center;
+  gap: var(--kw-space-2);
+  padding: var(--kw-space-2) var(--kw-space-3);
+  border-radius: var(--kw-radius-sm);
+  min-height: var(--kw-tap-min);
+  font-size: var(--kw-text-base);
+  color: var(--kw-ink-soft);
+  text-decoration: none;
+}
+
+/* Icons are bound by position — the four destinations are fixed and ordered, so no markup
+   attribute is needed and the icon can never drift from its label. */
+.kw-navitem::before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  background: currentColor;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  opacity: 0.85;
+}
+.kw-navitem:nth-of-type(1)::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'%3E%3Crect x='3' y='5' width='18' height='16' rx='2'/%3E%3Cpath d='M3 10h18M8 3v4M16 3v4'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'%3E%3Crect x='3' y='5' width='18' height='16' rx='2'/%3E%3Cpath d='M3 10h18M8 3v4M16 3v4'/%3E%3C/svg%3E");
+}
+.kw-navitem:nth-of-type(2)::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12a8 8 0 1 1-3.2-6.4'/%3E%3Cpath d='M21 4v5h-5'/%3E%3Cpath d='M12 8v4l3 2'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12a8 8 0 1 1-3.2-6.4'/%3E%3Cpath d='M21 4v5h-5'/%3E%3Cpath d='M12 8v4l3 2'/%3E%3C/svg%3E");
+}
+.kw-navitem:nth-of-type(3)::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8' r='3.5'/%3E%3Cpath d='M5 20a7 7 0 0 1 14 0'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8' r='3.5'/%3E%3Cpath d='M5 20a7 7 0 0 1 14 0'/%3E%3C/svg%3E");
+}
+.kw-navitem:nth-of-type(4)::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='m8.5 12.5 2.5 2.5 4.5-5'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='m8.5 12.5 2.5 2.5 4.5-5'/%3E%3C/svg%3E");
+}
+
+/* Collapsed rail: icons only, labels hidden, counts become a dot on the icon's corner. */
+.vp-desktop .kw-shell.nav-collapsed {
+  grid-template-columns: 64px 1fr;
+}
+.vp-desktop .kw-shell.nav-collapsed.has-panel {
+  grid-template-columns: 64px 1fr var(--kw-panel-w);
+}
+.nav-collapsed .kw-sidebar {
+  padding-left: var(--kw-space-2);
+  padding-right: var(--kw-space-2);
+}
+.nav-collapsed .kw-sidebar-head {
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+.nav-collapsed .kw-brand,
+.nav-collapsed .kw-sidebar-foot {
+  display: none;
+}
+.nav-collapsed .kw-navitem {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  position: relative;
+  padding: var(--kw-space-2);
+}
+.nav-collapsed .kw-navitem > span:not(.kw-count) {
+  display: none;
+}
+.nav-collapsed .kw-navitem .kw-count {
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  width: 16px;
+  height: 16px;
+  font-size: 10px;
+}
+.kw-navitem[aria-current="page"] {
+  background: var(--kw-surface);
+  color: var(--kw-ink);
+  font-weight: var(--kw-weight-bold);
+  box-shadow: var(--kw-shadow-raised);
+}
+.kw-sidebar-foot {
+  margin-top: auto;
+  padding: var(--kw-space-3);
+  font-size: var(--kw-text-sm);
+  color: var(--kw-ink-soft);
+}
+
+/* Count sits in its own grid cell — never inline in the label, so a label never
+   shifts when a number appears or disappears. */
+.kw-count {
+  font-size: var(--kw-text-xs);
+  font-weight: 700;
+  color: var(--kw-accent-ink);
+  background: var(--kw-alert);
+  border-radius: var(--kw-radius-pill);
+  width: var(--kw-nav-count-size);
+  height: var(--kw-nav-count-size);
+  display: grid;
+  place-items: center;
+  justify-self: end;
+}
+.kw-navitem[aria-current="page"] .kw-count {
+  background: var(--kw-accent);
+}
+.kw-count.empty {
+  visibility: hidden;
+}
+
+/* ---------------------------------------------------------- bottom nav (phone) */
+.kw-bottomnav {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--kw-line);
+  background: var(--kw-surface);
+  z-index: var(--kw-z-bottom-nav);
+}
+.kw-bottomnav a {
+  position: relative;
+  min-height: var(--kw-tap-min);
+  display: grid;
+  place-items: center;
+  font-size: var(--kw-text-sm);
+  color: var(--kw-ink-soft);
+  text-decoration: none;
+  padding: var(--kw-space-5) var(--kw-space-1) var(--kw-space-3);
+}
+.kw-bottomnav a[aria-current="page"] {
+  color: var(--kw-accent);
+  font-weight: var(--kw-weight-bold);
+}
+/* Badge anchors to the cell's top-right corner, never to the label's centre — a label of
+   any length ("Today", "Close day") sits on its own line below it and can never collide.
+   The cell's top padding reserves the badge's lane. */
+.kw-bottomnav .kw-badge {
+  position: absolute;
+  top: 5px;
+  right: 6px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: var(--kw-radius-pill);
+  background: var(--kw-alert);
+  color: var(--kw-accent-ink);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+}
+
+/* ---------------------------------------------------------- buttons
+   Shared minimum width: label length never changes button rhythm. */
+.kw-btn {
+  display: inline-grid;
+  place-items: center;
+  text-align: center;
+  min-height: var(--kw-tap-min);
+  min-width: var(--kw-control-min-w);
+  padding: 0 var(--kw-space-4);
+  border-radius: var(--kw-radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  font: var(--kw-weight-bold) var(--kw-text-base) var(--kw-font);
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+.kw-btn--primary {
+  background: var(--kw-accent);
+  color: var(--kw-accent-ink);
+}
+.kw-btn--primary:active {
+  background: var(--kw-accent-deep);
+}
+.kw-btn--secondary {
+  background: var(--kw-surface);
+  color: var(--kw-ink);
+  border-color: var(--kw-line);
+}
+.kw-btn--quiet {
+  background: var(--kw-surface);
+  color: var(--kw-ink-soft);
+  border-color: var(--kw-line);
+}
+.kw-btn--compact {
+  min-width: var(--kw-control-min-w-compact);
+  min-height: var(--kw-tap-min);
+  padding: 0 var(--kw-space-3);
+}
+.kw-btn--tall {
+  min-height: var(--kw-tap-primary);
+  font-size: var(--kw-text-md);
+}
+.kw-btn--block {
+  width: 100%;
+}
+.kw-btn--link {
+  min-width: 0;
+  min-height: var(--kw-tap-min);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--kw-accent);
+  font-size: var(--kw-text-base);
+}
+
+/* Equal-basis action bar: every button gets the same track, so widths match exactly. */
+.kw-actionbar {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: var(--kw-space-2);
+  padding: var(--kw-space-3) var(--kw-space-4);
+  background: var(--kw-surface-sunk);
+  border-top: 1px solid var(--kw-line);
+}
+.kw-actionbar .kw-btn {
+  width: 100%;
+}
+
+/* ---------------------------------------------------------- rows */
+.kw-row {
+  display: grid;
+  grid-template-columns: 58px 1fr auto;
+  gap: var(--kw-space-3);
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--kw-line);
+  padding: var(--kw-space-3) var(--kw-space-4);
+  min-height: 58px;
+  font: inherit;
+  color: inherit;
+}
+.kw-row--missed {
+  background: var(--kw-alert-wash);
+}
+.kw-row--in {
+  background: var(--kw-accent-wash);
+}
+.kw-row .time {
+  font-size: var(--kw-text-base);
+  font-weight: var(--kw-weight-bold);
+}
+.kw-row .name {
+  font-size: var(--kw-text-md);
+  display: block;
+}
+.kw-row .sub {
+  font-size: var(--kw-text-base);
+  color: var(--kw-ink-soft);
+  display: block;
+}
+.kw-row .sub.alert {
+  color: var(--kw-alert);
+}
+
+/* queue rows are token-led, not time-led — a separate component, not a variant */
+.kw-qrow {
+  display: grid;
+  grid-template-columns: 38px 1fr auto;
+  gap: var(--kw-space-3);
+  align-items: center;
+  border-bottom: 1px solid var(--kw-line);
+  padding: var(--kw-space-3) var(--kw-space-4);
+  min-height: 58px;
+}
+.kw-qrow--in {
+  background: var(--kw-accent-wash);
+}
+.kw-qrow .token {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--kw-radius-md);
+  background: var(--kw-surface-sunk);
+  display: grid;
+  place-items: center;
+  font-size: var(--kw-text-base);
+  font-weight: var(--kw-weight-bold);
+}
+.kw-qrow--in .token {
+  background: var(--kw-accent);
+  color: var(--kw-accent-ink);
+}
+.kw-qrow .name {
+  font-size: var(--kw-text-md);
+  display: block;
+}
+.kw-qrow .sub {
+  font-size: var(--kw-text-base);
+  color: var(--kw-ink-soft);
+  display: block;
+}
+.kw-qrow .sub.alert {
+  color: var(--kw-alert);
+}
+
+/* desktop table variant of the same row */
+/* Desktop table geometry.
+   The patient column takes the slack and the status + action sit on the row's right edge,
+   so a row spans the full width with a single gap rather than clustering left and leaving
+   a dead margin. Both trailing tracks are `auto`: they size to their content, so a wide
+   control (the came/didn't pair, 176px) can never overflow the row and drag a horizontal
+   scrollbar under the table, and an absent status collapses to nothing instead of leaving
+   a second hole mid-row. */
+.kw-tablehead {
+  display: grid;
+  grid-template-columns: 82px minmax(200px, 1fr) auto auto;
+  gap: var(--kw-space-4);
+  align-items: center;
+  padding: 0 var(--kw-space-6);
+  height: 38px;
+  font-size: var(--kw-text-sm);
+  font-weight: var(--kw-weight-bold);
+  color: var(--kw-ink-soft);
+  background: var(--kw-surface-sunk);
+  border-bottom: 1px solid var(--kw-line);
+}
+.kw-tablehead > :nth-child(3) {
+  justify-self: end;
+}
+.vp-desktop .kw-row {
+  grid-template-columns: 82px minmax(200px, 1fr) auto auto;
+  gap: var(--kw-space-4);
+  padding: 0 var(--kw-space-6);
+  min-height: 58px;
+}
+.vp-desktop .kw-qrow {
+  grid-template-columns: 44px minmax(200px, 1fr) auto auto;
+  gap: var(--kw-space-4);
+  padding: 0 var(--kw-space-6);
+}
+.vp-desktop .kw-row > .kw-tag,
+.vp-desktop .kw-qrow > .kw-tag {
+  justify-self: end;
+}
+.vp-desktop .kw-row > .kw-mark {
+  justify-self: end;
+}
+
+/* ---------------------------------------------------------- tags */
+.kw-tag {
+  display: inline-grid;
+  place-items: center;
+  justify-self: start;
+  white-space: nowrap;
+  font-size: var(--kw-text-xs);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  padding: var(--kw-space-1) var(--kw-space-3);
+  border-radius: var(--kw-radius-pill);
+  background: var(--kw-surface-sunk);
+  color: var(--kw-ink-soft);
+}
+.kw-tag--in,
+.kw-tag--sent {
+  background: var(--kw-accent-wash);
+  color: var(--kw-accent-deep);
+}
+.kw-tag--waiting {
+  background: var(--kw-surface-sunk);
+  color: var(--kw-ink);
+}
+.kw-tag--missed {
+  background: var(--kw-alert-wash);
+  color: var(--kw-alert);
+}
+
+/* ---------------------------------------------------------- section header */
+.kw-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: var(--kw-space-5) var(--kw-space-4) var(--kw-space-2);
+  font-size: var(--kw-text-base);
+  font-weight: var(--kw-weight-bold);
+  color: var(--kw-ink-soft);
+}
+.kw-section--alert {
+  color: var(--kw-alert);
+}
+.vp-desktop .kw-section {
+  padding-left: var(--kw-space-6);
+  padding-right: var(--kw-space-6);
+}
+
+/* ---------------------------------------------------------- stats (desktop) */
+.kw-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-bottom: 1px solid var(--kw-line);
+}
+.kw-stat {
+  padding: var(--kw-space-4) var(--kw-space-6);
+  border-right: 1px solid var(--kw-line);
+}
+.kw-stat:last-child {
+  border-right: 0;
+}
+.kw-stat .value {
+  font-size: var(--kw-text-xl);
+  font-weight: var(--kw-weight-bold);
+  letter-spacing: var(--kw-tracking-tight);
+}
+.kw-stat .value.alert {
+  color: var(--kw-alert);
+}
+.kw-stat .label {
+  font-size: var(--kw-text-sm);
+  color: var(--kw-ink-soft);
+}
+
+/* ---------------------------------------------------------- send card + panel */
+.kw-panel {
+  border-left: 1px solid var(--kw-line);
+  background: var(--kw-surface-sunk);
+  padding: var(--kw-space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--kw-space-3);
+  overflow-y: auto;
+}
+.kw-panel h4 {
+  margin: 0;
+  font-size: var(--kw-text-sm);
+  font-weight: var(--kw-weight-bold);
+  color: var(--kw-ink-soft);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.kw-card {
+  background: var(--kw-surface);
+  border: 1px solid var(--kw-line);
+  border-radius: var(--kw-radius-lg);
+  padding: var(--kw-space-4);
+}
+.kw-card--rebook {
+  border-color: var(--kw-alert);
+}
+.vp-phone .kw-card {
+  margin: var(--kw-space-3) var(--kw-space-4);
+}
+.kw-card .who {
+  font-size: var(--kw-text-lg);
+  font-weight: var(--kw-weight-bold);
+  letter-spacing: var(--kw-tracking-tight);
+}
+.kw-card .when {
+  font-size: var(--kw-text-base);
+  color: var(--kw-ink-soft);
+  margin-top: 2px;
+}
+.kw-card .message {
+  margin-top: var(--kw-space-3);
+  padding: var(--kw-space-3);
+  background: var(--kw-surface-sunk);
+  border-radius: var(--kw-radius-md);
+  font-size: var(--kw-text-base);
+  line-height: 1.55;
+  color: var(--kw-ink);
+}
+/* Skip takes a fixed track, the primary takes the rest — equal tracks starve a long
+   primary label in a 300px panel and clip it. The primary's minimum width is released
+   here because the track already guarantees it more room than the shared minimum. */
+.kw-card-actions {
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  gap: var(--kw-space-2);
+  margin-top: var(--kw-space-4);
+}
+.kw-card-actions .kw-btn {
+  width: 100%;
+  min-width: 0;
+  padding: 0 var(--kw-space-3);
+}
+
+.kw-progress .count {
+  font-size: var(--kw-text-base);
+  color: var(--kw-ink-soft);
+}
+.kw-progress .track {
+  height: 5px;
+  background: var(--kw-line);
+  border-radius: var(--kw-radius-pill);
+  overflow: hidden;
+  margin-top: var(--kw-space-1);
+}
+.kw-progress .fill {
+  display: block;
+  height: 100%;
+  background: var(--kw-accent);
+  transition: width var(--kw-motion-base) var(--kw-ease);
+}
+.vp-phone .kw-progress {
+  padding: var(--kw-space-3) var(--kw-space-4) 0;
+}
+
+.kw-upnext {
+  font-size: var(--kw-text-base);
+  color: var(--kw-ink-soft);
+}
+.vp-phone .kw-upnext {
+  padding: 0 var(--kw-space-4) var(--kw-space-4);
+}
+
+/* ---------------------------------------------------------- sent list */
+.kw-sentrow {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: var(--kw-space-3);
+  align-items: center;
+  padding: var(--kw-space-3) var(--kw-space-4);
+  border-bottom: 1px solid var(--kw-line);
+  min-height: 52px;
+}
+.kw-sentrow .name {
+  font-size: var(--kw-text-md);
+}
+
+/* ---------------------------------------------------------- mark control */
+.kw-mark {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: var(--kw-space-2);
+}
+/* On a phone the came/didn't pair and the patient name cannot share one line without
+   the name wrapping mid-column. The control drops to its own full-width line instead. */
+.vp-phone .kw-row:has(.kw-mark) {
+  grid-template-columns: 58px 1fr;
+  row-gap: var(--kw-space-3);
+  padding-top: var(--kw-space-4);
+  padding-bottom: var(--kw-space-4);
+}
+.vp-phone .kw-row:has(.kw-mark) .kw-mark {
+  grid-column: 1 / -1;
+}
+.kw-mark button {
+  min-width: var(--kw-control-min-w-compact);
+  min-height: var(--kw-tap-min);
+  border-radius: var(--kw-radius-sm);
+  border: 1px solid var(--kw-line);
+  background: var(--kw-surface);
+  font: var(--kw-weight-bold) var(--kw-text-base) var(--kw-font);
+  color: var(--kw-ink-soft);
+  cursor: pointer;
+}
+.kw-mark button[aria-pressed="true"][data-value="came"] {
+  background: var(--kw-accent);
+  border-color: var(--kw-accent);
+  color: var(--kw-accent-ink);
+}
+.kw-mark button[aria-pressed="true"][data-value="missed"] {
+  background: var(--kw-alert);
+  border-color: var(--kw-alert);
+  color: var(--kw-accent-ink);
+}
+
+/* ---------------------------------------------------------- forms */
+.kw-field {
+  margin-bottom: var(--kw-space-4);
+}
+.kw-field > label {
+  display: block;
+  font-size: var(--kw-text-base);
+  font-weight: var(--kw-weight-bold);
+  color: var(--kw-ink-soft);
+  margin-bottom: var(--kw-space-1);
+}
+.kw-input {
+  width: 100%;
+  min-height: var(--kw-tap-primary);
+  border: 1px solid var(--kw-line);
+  border-radius: var(--kw-radius-md);
+  padding: 0 var(--kw-space-3);
+  font: var(--kw-weight-regular) var(--kw-text-md) var(--kw-font);
+  color: var(--kw-ink);
+  background: var(--kw-surface);
+}
+.kw-input:focus-visible {
+  outline: 2px solid var(--kw-accent);
+  outline-offset: 1px;
+  border-color: var(--kw-accent);
+}
+.kw-input--error {
+  border-color: var(--kw-alert);
+}
+.kw-input::placeholder {
+  color: var(--kw-ink-faint);
+}
+.kw-hint {
+  font-size: var(--kw-text-base);
+  color: var(--kw-ink-soft);
+  margin-top: var(--kw-space-1);
+}
+.kw-formbody {
+  padding: var(--kw-space-4);
+  overflow-y: auto;
+}
+/* Desktop pairs the fields into two columns rather than running one 560px column down a
+   1200px pane: the whole form then fits without scrolling, which matters because this is
+   typed while a patient waits. Single column stays on phone. */
+.vp-desktop .kw-formbody {
+  padding: var(--kw-space-6);
+  max-width: 960px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(260px, 1fr));
+  column-gap: var(--kw-space-8);
+  row-gap: var(--kw-space-5);
+  align-content: start;
+}
+.vp-desktop .kw-formbody > .kw-field {
+  margin-bottom: 0;
+}
+.vp-desktop .kw-formbody > .kw-explain {
+  grid-column: 1 / -1;
+  padding: var(--kw-space-3) var(--kw-space-4);
+  border-radius: var(--kw-radius-md);
+}
+
+.kw-match {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--kw-space-3);
+  align-items: center;
+  margin-top: var(--kw-space-2);
+  padding: var(--kw-space-3);
+  background: var(--kw-accent-wash);
+  border-radius: var(--kw-radius-md);
+}
+.kw-match .name {
+  font-size: var(--kw-text-md);
+  font-weight: var(--kw-weight-bold);
+}
+.kw-match .sub {
+  display: block;
+  font-size: var(--kw-text-base);
+  font-weight: var(--kw-weight-regular);
+  color: var(--kw-ink-soft);
+}
+
+.kw-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kw-space-2);
+}
+.kw-chip {
+  min-height: var(--kw-tap-min);
+  min-width: 76px;
+  padding: 0 var(--kw-space-4);
+  border-radius: var(--kw-radius-pill);
+  border: 1px solid var(--kw-line);
+  background: var(--kw-surface);
+  font: var(--kw-weight-regular) var(--kw-text-base) var(--kw-font);
+  cursor: pointer;
+}
+.kw-chip[aria-pressed="true"] {
+  background: var(--kw-accent);
+  border-color: var(--kw-accent);
+  color: var(--kw-accent-ink);
+  font-weight: var(--kw-weight-bold);
+}
+
+/* ---------------------------------------------------------- states */
+.kw-empty {
+  padding: var(--kw-space-8) var(--kw-space-4);
+}
+.vp-desktop .kw-empty {
+  padding: var(--kw-space-12) var(--kw-space-6);
+  max-width: 520px;
+}
+.kw-empty h3 {
+  font-size: var(--kw-text-lg);
+  margin: 0 0 var(--kw-space-2);
+  letter-spacing: var(--kw-tracking-tight);
+}
+.kw-empty .figure {
+  font-size: var(--kw-text-2xl);
+  font-weight: var(--kw-weight-bold);
+  letter-spacing: var(--kw-tracking-tight);
+  margin-bottom: var(--kw-space-2);
+}
+.kw-empty p {
+  font-size: var(--kw-text-md);
+  color: var(--kw-ink-soft);
+  margin: 0 0 var(--kw-space-4);
+  max-width: 46ch;
+}
+
+.kw-skeleton {
+  display: grid;
+  grid-template-columns: 58px 1fr;
+  gap: var(--kw-space-3);
+  align-items: center;
+  padding: var(--kw-space-3) var(--kw-space-4);
+  border-bottom: 1px solid var(--kw-line);
+  min-height: 58px;
+}
+.kw-bone {
+  height: 12px;
+  border-radius: var(--kw-radius-sm);
+  background: var(--kw-surface-sunk);
+}
+.kw-bone--short {
+  width: 40%;
+}
+.kw-bone--title {
+  height: 15px;
+  width: 62%;
+  margin-bottom: 6px;
+}
+
+.kw-error {
+  padding: var(--kw-space-6) var(--kw-space-4);
+}
+.kw-error p {
+  color: var(--kw-alert);
+  font-size: var(--kw-text-md);
+  margin: 0 0 var(--kw-space-3);
+}
+
+.kw-explain {
+  padding: var(--kw-space-3) var(--kw-space-4);
+  font-size: var(--kw-text-base);
+  color: var(--kw-ink-soft);
+  background: var(--kw-surface-sunk);
+}
+.vp-desktop .kw-explain {
+  padding-left: var(--kw-space-6);
+  padding-right: var(--kw-space-6);
+}
+
+/* ============================================================ v3 — the record
+   Added 2026-09-07 with the visit composer, patient detail and Today-with-queue.
+   Same rules apply: style by class, tokens only, both breakpoints. */
+
+/* ---------------------------------------------------------- pending check-in
+   A self-check-in has no token until the doctor accepts it. The leading cell keeps the
+   token's exact footprint so accepting a row does not shift the column. */
+.kw-qrow--pending {
+  background: var(--kw-surface);
+}
+.kw-qrow--pending .token {
+  background: none;
+  border: 1px dashed var(--kw-line);
+  color: var(--kw-ink-faint);
+  font-weight: var(--kw-weight-regular);
+}
+
+/* ---------------------------------------------------------- list rail (split shell) */
+.vp-desktop .kw-shell.has-list {
+  grid-template-columns: var(--kw-sidebar-w) var(--kw-list-w) 1fr;
+}
+.vp-desktop .kw-shell.has-list.nav-collapsed {
+  grid-template-columns: 64px var(--kw-list-w) 1fr;
+}
+.kw-list {
+  border-right: 1px solid var(--kw-line);
+  background: var(--kw-surface);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+.kw-list-head {
+  padding: var(--kw-space-3) var(--kw-space-4);
+  border-bottom: 1px solid var(--kw-line);
+}
+.kw-listrow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--kw-space-2);
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--kw-line);
+  padding: var(--kw-space-3) var(--kw-space-4);
+  min-height: 58px;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.kw-listrow[aria-current="true"] {
+  background: var(--kw-accent-wash);
+}
+.kw-listrow .name {
+  font-size: var(--kw-text-md);
+  display: block;
+}
+.kw-listrow .sub {
+  font-size: var(--kw-text-base);
+  color: var(--kw-ink-soft);
+  display: block;
+}
+.kw-listrow .ago {
+  font-size: var(--kw-text-sm);
+  color: var(--kw-ink-faint);
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------- patient header */
+.kw-phead {
+  padding: var(--kw-space-5) var(--kw-space-4) var(--kw-space-4);
+  border-bottom: 1px solid var(--kw-line);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--kw-space-3);
+  align-items: start;
+}
+.vp-desktop .kw-phead {
+  padding: var(--kw-space-5) var(--kw-space-6) var(--kw-space-4);
+}
+.kw-phead .who {
+  font-size: var(--kw-text-xl);
+  font-weight: var(--kw-weight-bold);
+  letter-spacing: var(--kw-tracking-tight);
+  display: block;
+}
+.kw-phead .meta {
+  font-size: var(--kw-text-base);
+  color: var(--kw-ink-soft);
+  display: block;
+  margin-top: 2px;
+}
+.kw-phead .kw-tag {
+  margin-top: var(--kw-space-2);
+}
+
+/* ---------------------------------------------------------- vitals strip
+   The delta is the point. A lone number is something paper already gave them. */
+.kw-vstrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kw-space-5);
+  padding: var(--kw-space-4);
+  background: var(--kw-surface-sunk);
+  border-bottom: 1px solid var(--kw-line);
+}
+.vp-desktop .kw-vstrip {
+  padding: var(--kw-space-4) var(--kw-space-6);
+}
+.kw-vstrip .reading {
+  min-width: 88px;
+}
+.kw-vstrip .label {
+  font-size: var(--kw-text-sm);
+  color: var(--kw-ink-soft);
+  display: block;
+}
+.kw-vstrip .value {
+  font-size: var(--kw-text-lg);
+  font-weight: var(--kw-weight-bold);
+  letter-spacing: var(--kw-tracking-tight);
+  display: block;
+}
+.kw-vstrip .delta {
+  font-size: var(--kw-text-sm);
+  color: var(--kw-ink-soft);
+  display: block;
+}
+.kw-vstrip .delta.alert {
+  color: var(--kw-alert);
+}
+
+/* ---------------------------------------------------------- visit row */
+.kw-vrow {
+  display: grid;
+  grid-template-columns: 76px 1fr auto;
+  gap: var(--kw-space-3);
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--kw-line);
+  padding: var(--kw-space-3) var(--kw-space-4);
+  min-height: 58px;
+  font: inherit;
+  color: inherit;
+}
+.vp-desktop .kw-vrow {
+  grid-template-columns: 92px minmax(200px, 1fr) auto;
+  gap: var(--kw-space-4);
+  padding: var(--kw-space-3) var(--kw-space-6);
+}
+.kw-vrow--upcoming {
+  background: var(--kw-accent-wash);
+}
+.kw-vrow .date {
+  font-size: var(--kw-text-base);
+  font-weight: var(--kw-weight-bold);
+}
+.kw-vrow .what {
+  font-size: var(--kw-text-md);
+  display: block;
+}
+.kw-vrow .sub {
+  font-size: var(--kw-text-base);
+  color: var(--kw-ink-soft);
+  display: block;
+}
+
+/* ---------------------------------------------------------- composer */
+.kw-composer {
+  padding: var(--kw-space-4);
+  overflow-y: auto;
+}
+.vp-desktop .kw-composer {
+  padding: var(--kw-space-5) var(--kw-space-6) var(--kw-space-8);
+  max-width: 860px;
+}
+.kw-csection {
+  padding: var(--kw-space-4) 0;
+  border-bottom: 1px solid var(--kw-line);
+}
+.kw-csection:last-of-type {
+  border-bottom: 0;
+}
+.kw-csection > h4 {
+  margin: 0 0 var(--kw-space-2);
+  font-size: var(--kw-text-base);
+  font-weight: var(--kw-weight-bold);
+  color: var(--kw-ink-soft);
+}
+.kw-csection > .hint {
+  font-size: var(--kw-text-base);
+  color: var(--kw-ink-faint);
+  margin: 0 0 var(--kw-space-3);
+}
+
+.kw-textarea {
+  width: 100%;
+  min-height: 76px;
+  border: 1px solid var(--kw-line);
+  border-radius: var(--kw-radius-md);
+  padding: var(--kw-space-3);
+  font: var(--kw-weight-regular) var(--kw-text-md)/1.5 var(--kw-font);
+  color: var(--kw-ink);
+  background: var(--kw-surface);
+  resize: vertical;
+}
+.kw-textarea:focus-visible {
+  outline: 2px solid var(--kw-accent);
+  outline-offset: 1px;
+  border-color: var(--kw-accent);
+}
+.kw-textarea::placeholder {
+  color: var(--kw-ink-faint);
+}
+
+/* Vitals: digits only. The unit is printed in the field, never typed. */
+.kw-vitals {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--kw-space-3);
+}
+.vp-desktop .kw-vitals {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.kw-vital > label {
+  display: block;
+  font-size: var(--kw-text-sm);
+  color: var(--kw-ink-soft);
+  margin-bottom: var(--kw-space-1);
+}
+.kw-vital .well {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: var(--kw-space-1);
+  border: 1px solid var(--kw-line);
+  border-radius: var(--kw-radius-md);
+  padding-right: var(--kw-space-3);
+  background: var(--kw-surface);
+}
+.kw-vital .well:focus-within {
+  outline: 2px solid var(--kw-accent);
+  outline-offset: 1px;
+  border-color: var(--kw-accent);
+}
+.kw-vital input {
+  min-height: var(--kw-tap-primary);
+  border: 0;
+  background: none;
+  padding: 0 var(--kw-space-3);
+  font: var(--kw-weight-regular) var(--kw-text-md) var(--kw-font);
+  color: var(--kw-ink);
+  min-width: 0;
+}
+.kw-vital input:focus-visible {
+  outline: none;
+}
+.kw-vital .unit {
+  font-size: var(--kw-text-sm);
+  color: var(--kw-ink-faint);
+  white-space: nowrap;
+}
+
+/* Rx rows: five fields on one desktop line, stacked sensibly on a phone. */
+.kw-rxrow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--kw-space-2);
+  padding: var(--kw-space-3) 0;
+  border-bottom: 1px solid var(--kw-line);
+}
+.vp-desktop .kw-rxrow {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr) 36px;
+  align-items: center;
+  gap: var(--kw-space-2);
+}
+.kw-rxrow .drug,
+.kw-rxrow .instruction {
+  grid-column: 1 / -1;
+}
+.vp-desktop .kw-rxrow .drug,
+.vp-desktop .kw-rxrow .instruction {
+  grid-column: auto;
+}
+.kw-rxrow .kw-input {
+  min-height: var(--kw-tap-min);
+  font-size: var(--kw-text-base);
+}
+.kw-rxdrop {
+  min-width: 0;
+  width: 36px;
+  height: var(--kw-tap-min);
+  border: 0;
+  background: none;
+  color: var(--kw-ink-faint);
+  cursor: pointer;
+  border-radius: var(--kw-radius-sm);
+  font-size: var(--kw-text-lg);
+  justify-self: end;
+}
+.kw-rxdrop:hover {
+  background: var(--kw-surface-sunk);
+  color: var(--kw-alert);
+}
+.kw-rxadd {
+  margin-top: var(--kw-space-3);
+}
+
+/* Favourites: learned from this clinic's own history, never an authored drug list. */
+.kw-favs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kw-space-2);
+  margin-bottom: var(--kw-space-3);
+}
+.kw-fav {
+  min-height: var(--kw-tap-min);
+  padding: 0 var(--kw-space-3);
+  border-radius: var(--kw-radius-pill);
+  border: 1px solid var(--kw-line);
+  background: var(--kw-surface-sunk);
+  font: var(--kw-weight-regular) var(--kw-text-base) var(--kw-font);
+  color: var(--kw-ink);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.kw-fav:hover {
+  border-color: var(--kw-accent);
+}
+.kw-fav .times {
+  color: var(--kw-ink-faint);
+  font-size: var(--kw-text-sm);
+  margin-left: var(--kw-space-1);
+}

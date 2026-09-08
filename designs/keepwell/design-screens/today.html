@@ -1,0 +1,556 @@
+<!-- COMPONENT INVENTORY: app-shell, sidebar-nav, bottom-nav, queue-row, day-row, status-tag, section-header, stat-tile, button-primary, button-secondary, empty-state, skeleton-row -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KeepWell — Today</title>
+    <link rel="stylesheet" href="../tokens.css" />
+    <link rel="stylesheet" href="../screens.css" />
+  </head>
+  <body>
+    <div class="board">
+      <h1>Today — the day and the waiting room on one screen</h1>
+      <p class="lede">
+        The queue used to be its own destination, labelled "Patients", which is
+        why a booked patient could never be found there. It is folded in here
+        instead: a solo doctor does not context-switch between "my day" and "my
+        waiting room" — they are the same thing, looked at in the same glance.
+        The order top to bottom is the order attention is owed: someone waiting
+        to be admitted, someone in the room, someone waiting, someone due later.
+      </p>
+
+      <h2 class="group">Desktop — a mid-morning clinic</h2>
+      <p class="groupnote">
+        Two patients checked themselves in from the door QR. They hold no token
+        and no place in the queue until the doctor accepts them —
+        <strong>nothing a stranger types enters the record on its own</strong>.
+        Accepting issues the token, so the leading cell keeps the token's exact
+        footprint and the column never shifts. Call next is the one primary
+        action on the screen.
+      </p>
+
+      <div class="vp-desktop">
+        <div
+          class="kw-shell"
+          data-component="app-shell"
+          data-variant="desktop"
+          data-responsive="1200"
+        >
+          <nav class="kw-sidebar" data-component="sidebar-nav" aria-label="Main">
+            <div class="kw-sidebar-head">
+              <div class="kw-brand">KeepWell</div>
+              <button
+                class="kw-navtoggle"
+                data-component="nav-toggle"
+                data-interaction="toggle-sidebar"
+                aria-label="Collapse navigation"
+                aria-expanded="true"
+              >
+                &#8249;
+              </button>
+            </div>
+            <a class="kw-navitem" href="#" aria-current="page"
+              ><span>Today</span><span class="kw-count">11</span></a
+            >
+            <a class="kw-navitem" href="#"
+              ><span>Send</span><span class="kw-count">6</span></a
+            >
+            <a class="kw-navitem" href="#"
+              ><span>Patients</span><span class="kw-count empty">0</span></a
+            >
+            <a class="kw-navitem" href="#"
+              ><span>Close day</span><span class="kw-count empty">0</span></a
+            >
+            <div class="kw-sidebar-foot">Dr Anjali Rao<br />Rao Clinic, Pune</div>
+          </nav>
+
+          <div class="kw-main">
+            <div class="kw-head">
+              <div>
+                <div class="kicker">Monday, 7 September · 11:20 AM</div>
+                <div class="title">Today</div>
+              </div>
+              <div class="kw-head-actions">
+                <button
+                  class="kw-btn kw-btn--secondary"
+                  data-component="button-secondary"
+                  data-interaction="add-walk-in"
+                >
+                  Add walk-in
+                </button>
+                <button
+                  class="kw-btn kw-btn--primary"
+                  data-component="button-primary"
+                  data-primary-action="true"
+                  data-interaction="call-next"
+                >
+                  Call next
+                </button>
+              </div>
+            </div>
+
+            <div class="kw-stats">
+              <div class="kw-stat" data-component="stat-tile">
+                <div class="value">5</div>
+                <div class="label">In the clinic</div>
+              </div>
+              <div class="kw-stat" data-component="stat-tile">
+                <div class="value alert">26 min</div>
+                <div class="label">Longest wait</div>
+              </div>
+              <div class="kw-stat" data-component="stat-tile">
+                <div class="value">7</div>
+                <div class="label">Walk-ins today</div>
+              </div>
+            </div>
+
+            <div class="kw-scroll">
+              <div class="kw-section kw-section--alert" data-component="section-header" data-variant="alert">
+                <span>Checked in at the door</span>
+                <span>2</span>
+              </div>
+
+              <div
+                class="kw-qrow kw-qrow--pending"
+                data-component="queue-row"
+                data-variant="pending"
+              >
+                <span class="token">&middot;</span>
+                <span>
+                  <span class="name">Imran Shaikh</span>
+                  <span class="sub">99700 18234 · checked in 11:14 · new</span>
+                </span>
+                <span class="kw-tag" data-component="status-tag">Waiting to be let in</span>
+                <button
+                  class="kw-btn kw-btn--primary kw-btn--compact"
+                  data-component="button-primary"
+                  data-interaction="accept-check-in"
+                >
+                  Accept
+                </button>
+              </div>
+
+              <div
+                class="kw-qrow kw-qrow--pending"
+                data-component="queue-row"
+                data-variant="pending"
+              >
+                <span class="token">&middot;</span>
+                <span>
+                  <span class="name">Meera Kulkarni</span>
+                  <span class="sub">98501 77310 · checked in 11:18 · seen 4 times</span>
+                </span>
+                <span class="kw-tag" data-component="status-tag">Waiting to be let in</span>
+                <button
+                  class="kw-btn kw-btn--primary kw-btn--compact"
+                  data-component="button-primary"
+                  data-interaction="accept-check-in"
+                >
+                  Accept
+                </button>
+              </div>
+
+              <div class="kw-section" data-component="section-header">
+                <span>With the doctor</span>
+                <span>1</span>
+              </div>
+
+              <div class="kw-qrow kw-qrow--in" data-component="queue-row" data-variant="in">
+                <span class="token">T4</span>
+                <span>
+                  <span class="name">Sunita Deshmukh</span>
+                  <span class="sub">In the room since 11:12</span>
+                </span>
+                <span class="kw-tag kw-tag--in" data-component="status-tag">In</span>
+                <button
+                  class="kw-btn kw-btn--secondary kw-btn--compact"
+                  data-component="button-secondary"
+                  data-interaction="open-visit"
+                >
+                  Open visit
+                </button>
+              </div>
+
+              <div class="kw-section" data-component="section-header">
+                <span>Waiting</span>
+                <span>3</span>
+              </div>
+
+              <div class="kw-qrow" data-component="queue-row">
+                <span class="token">T5</span>
+                <span>
+                  <span class="name">Ramesh Pawar</span>
+                  <span class="sub alert">Waiting 26 min · walk-in</span>
+                </span>
+                <span class="kw-tag kw-tag--waiting" data-component="status-tag">Waiting</span>
+                <button
+                  class="kw-btn kw-btn--secondary kw-btn--compact"
+                  data-component="button-secondary"
+                  data-interaction="call-in"
+                >
+                  Call in
+                </button>
+              </div>
+
+              <div class="kw-qrow" data-component="queue-row">
+                <span class="token">T6</span>
+                <span>
+                  <span class="name">Fatima Sayyed</span>
+                  <span class="sub">Waiting 12 min</span>
+                </span>
+                <span class="kw-tag kw-tag--waiting" data-component="status-tag">Waiting</span>
+                <button
+                  class="kw-btn kw-btn--secondary kw-btn--compact"
+                  data-component="button-secondary"
+                  data-interaction="call-in"
+                >
+                  Call in
+                </button>
+              </div>
+
+              <div class="kw-qrow" data-component="queue-row">
+                <span class="token">T7</span>
+                <span>
+                  <span class="name">Arjun Bhosale</span>
+                  <span class="sub">Waiting 4 min · walk-in</span>
+                </span>
+                <span class="kw-tag kw-tag--waiting" data-component="status-tag">Waiting</span>
+                <button
+                  class="kw-btn kw-btn--secondary kw-btn--compact"
+                  data-component="button-secondary"
+                  data-interaction="call-in"
+                >
+                  Call in
+                </button>
+              </div>
+
+              <div class="kw-section" data-component="section-header">
+                <span>Booked later today</span>
+                <span>3</span>
+              </div>
+
+              <div class="kw-tablehead">
+                <span>Time</span><span>Patient</span><span>Status</span><span></span>
+              </div>
+
+              <div class="kw-row" data-component="day-row">
+                <span class="time">12:00</span>
+                <span>
+                  <span class="name">Nilesh Jadhav</span>
+                  <span class="sub">Reminder sent yesterday</span>
+                </span>
+                <span class="kw-tag kw-tag--sent" data-component="status-tag">Reminded</span>
+                <button
+                  class="kw-btn kw-btn--secondary kw-btn--compact"
+                  data-component="button-secondary"
+                  data-interaction="mark-arrived"
+                >
+                  Arrived
+                </button>
+              </div>
+
+              <div class="kw-row kw-row--unsent" data-component="day-row" data-variant="unsent">
+                <span class="time">16:30</span>
+                <span>
+                  <span class="name">Kavita More</span>
+                  <span class="sub">Follow-up · recall not sent</span>
+                </span>
+                <span class="kw-tag" data-component="status-tag">Not sent</span>
+                <button
+                  class="kw-btn kw-btn--secondary kw-btn--compact"
+                  data-component="button-secondary"
+                  data-interaction="mark-arrived"
+                >
+                  Arrived
+                </button>
+              </div>
+
+              <div class="kw-row" data-component="day-row">
+                <span class="time">17:00</span>
+                <span>
+                  <span class="name">Sadiya Khan</span>
+                  <span class="sub">Reminder sent yesterday</span>
+                </span>
+                <span class="kw-tag kw-tag--sent" data-component="status-tag">Reminded</span>
+                <button
+                  class="kw-btn kw-btn--secondary kw-btn--compact"
+                  data-component="button-secondary"
+                  data-interaction="mark-arrived"
+                >
+                  Arrived
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="group">Desktop — before the clinic opens</h2>
+      <p class="groupnote">
+        The empty state carries the QR, because the first thing a clinic needs on
+        day one is the thing that fills the queue without the doctor touching it.
+        One next action, and the reason to take it stated in a line.
+      </p>
+
+      <div class="vp-desktop">
+        <div
+          class="kw-shell"
+          data-component="app-shell"
+          data-variant="desktop"
+          data-state="empty"
+        >
+          <nav class="kw-sidebar" data-component="sidebar-nav" aria-label="Main">
+            <div class="kw-sidebar-head">
+              <div class="kw-brand">KeepWell</div>
+              <button
+                class="kw-navtoggle"
+                data-component="nav-toggle"
+                data-interaction="toggle-sidebar"
+                aria-label="Collapse navigation"
+                aria-expanded="true"
+              >
+                &#8249;
+              </button>
+            </div>
+            <a class="kw-navitem" href="#" aria-current="page"
+              ><span>Today</span><span class="kw-count empty">0</span></a
+            >
+            <a class="kw-navitem" href="#"
+              ><span>Send</span><span class="kw-count empty">0</span></a
+            >
+            <a class="kw-navitem" href="#"
+              ><span>Patients</span><span class="kw-count empty">0</span></a
+            >
+            <a class="kw-navitem" href="#"
+              ><span>Close day</span><span class="kw-count empty">0</span></a
+            >
+            <div class="kw-sidebar-foot">Dr Anjali Rao<br />Rao Clinic, Pune</div>
+          </nav>
+
+          <div class="kw-main">
+            <div class="kw-head">
+              <div>
+                <div class="kicker">Monday, 7 September · 8:50 AM</div>
+                <div class="title">Today</div>
+              </div>
+              <div class="kw-head-actions">
+                <button
+                  class="kw-btn kw-btn--secondary"
+                  data-component="button-secondary"
+                  data-interaction="add-walk-in"
+                >
+                  Add walk-in
+                </button>
+                <button
+                  class="kw-btn kw-btn--primary"
+                  data-component="button-primary"
+                  data-primary-action="true"
+                  data-interaction="print-qr"
+                >
+                  Print the door QR
+                </button>
+              </div>
+            </div>
+
+            <div class="kw-empty" data-component="empty-state" data-variant="first-run">
+              <h3>Nobody has arrived yet</h3>
+              <p>
+                Patients who scan the QR at your door land here with their name
+                and number already typed. You accept them, and they get a token.
+                Anyone who doesn't scan, you add in one tap.
+              </p>
+              <button
+                class="kw-btn kw-btn--secondary"
+                data-component="button-secondary"
+                data-interaction="add-walk-in"
+              >
+                Add the first walk-in
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="group">Phone — the same day in the hand</h2>
+      <p class="groupnote">
+        Identical markup at 375px. Accept and Call in stay ≥44px; the primary
+        action moves into the thumb-zone action bar. The loading state renders
+        the shell and the sections immediately and resolves only the rows.
+      </p>
+
+      <div class="states">
+        <div class="state">
+          <h3>Mid-morning</h3>
+          <p class="note">
+            Pending check-ins sit above everything, because they are the only
+            rows that are waiting on the doctor to act.
+          </p>
+          <div class="vp-phone">
+            <div
+              class="kw-shell"
+              data-component="app-shell"
+              data-variant="phone"
+              data-responsive="375"
+            >
+              <div class="kw-topbar">
+                <div class="kicker">Monday, 7 September · 11:20 AM</div>
+                <div class="title">Today</div>
+              </div>
+              <div class="kw-scroll">
+                <div class="kw-section kw-section--alert" data-component="section-header" data-variant="alert">
+                  <span>Checked in at the door</span>
+                  <span>2</span>
+                </div>
+                <div
+                  class="kw-qrow kw-qrow--pending"
+                  data-component="queue-row"
+                  data-variant="pending"
+                >
+                  <span class="token">&middot;</span>
+                  <span>
+                    <span class="name">Imran Shaikh</span>
+                    <span class="sub">11:14 · new</span>
+                  </span>
+                  <button
+                    class="kw-btn kw-btn--primary kw-btn--compact"
+                    data-component="button-primary"
+                    data-interaction="accept-check-in"
+                  >
+                    Accept
+                  </button>
+                </div>
+                <div
+                  class="kw-qrow kw-qrow--pending"
+                  data-component="queue-row"
+                  data-variant="pending"
+                >
+                  <span class="token">&middot;</span>
+                  <span>
+                    <span class="name">Meera Kulkarni</span>
+                    <span class="sub">11:18 · seen 4 times</span>
+                  </span>
+                  <button
+                    class="kw-btn kw-btn--primary kw-btn--compact"
+                    data-component="button-primary"
+                    data-interaction="accept-check-in"
+                  >
+                    Accept
+                  </button>
+                </div>
+
+                <div class="kw-section" data-component="section-header">
+                  <span>With the doctor</span>
+                  <span>1</span>
+                </div>
+                <div class="kw-qrow kw-qrow--in" data-component="queue-row" data-variant="in">
+                  <span class="token">T4</span>
+                  <span>
+                    <span class="name">Sunita Deshmukh</span>
+                    <span class="sub">Since 11:12</span>
+                  </span>
+                  <span class="kw-tag kw-tag--in" data-component="status-tag">In</span>
+                </div>
+
+                <div class="kw-section" data-component="section-header">
+                  <span>Waiting</span>
+                  <span>3</span>
+                </div>
+                <div class="kw-qrow" data-component="queue-row">
+                  <span class="token">T5</span>
+                  <span>
+                    <span class="name">Ramesh Pawar</span>
+                    <span class="sub alert">Waiting 26 min</span>
+                  </span>
+                  <span class="kw-tag kw-tag--waiting" data-component="status-tag">Waiting</span>
+                </div>
+                <div class="kw-qrow" data-component="queue-row">
+                  <span class="token">T6</span>
+                  <span>
+                    <span class="name">Fatima Sayyed</span>
+                    <span class="sub">Waiting 12 min</span>
+                  </span>
+                  <span class="kw-tag kw-tag--waiting" data-component="status-tag">Waiting</span>
+                </div>
+              </div>
+              <div class="kw-actionbar">
+                <button
+                  class="kw-btn kw-btn--primary kw-btn--tall kw-btn--block"
+                  data-component="button-primary"
+                  data-primary-action="true"
+                  data-interaction="call-next"
+                >
+                  Call next — T5
+                </button>
+              </div>
+              <nav class="kw-bottomnav" data-component="bottom-nav" aria-label="Main">
+                <a href="#" aria-current="page">Today<span class="kw-badge">11</span></a>
+                <a href="#">Send<span class="kw-badge">6</span></a>
+                <a href="#">Patients</a>
+                <a href="#">Close day</a>
+              </nav>
+            </div>
+          </div>
+        </div>
+
+        <div class="state">
+          <h3>Loading</h3>
+          <p class="note">
+            App shell, header, sections and nav render immediately. Only rows
+            resolve — never a centred spinner over an empty screen.
+          </p>
+          <div class="vp-phone">
+            <div
+              class="kw-shell"
+              data-component="app-shell"
+              data-variant="phone"
+              data-state="loading"
+            >
+              <div class="kw-topbar">
+                <div class="kicker">Monday, 7 September · 11:20 AM</div>
+                <div class="title">Today</div>
+              </div>
+              <div class="kw-scroll">
+                <div class="kw-section" data-component="section-header">
+                  <span>With the doctor</span>
+                  <span></span>
+                </div>
+                <div class="kw-skeleton" data-component="skeleton-row">
+                  <span class="kw-bone"></span>
+                  <span>
+                    <span class="kw-bone kw-bone--title"></span>
+                    <span class="kw-bone kw-bone--short"></span>
+                  </span>
+                </div>
+                <div class="kw-section" data-component="section-header">
+                  <span>Waiting</span>
+                  <span></span>
+                </div>
+                <div class="kw-skeleton" data-component="skeleton-row">
+                  <span class="kw-bone"></span>
+                  <span>
+                    <span class="kw-bone kw-bone--title"></span>
+                    <span class="kw-bone kw-bone--short"></span>
+                  </span>
+                </div>
+                <div class="kw-skeleton" data-component="skeleton-row">
+                  <span class="kw-bone"></span>
+                  <span>
+                    <span class="kw-bone kw-bone--title"></span>
+                    <span class="kw-bone kw-bone--short"></span>
+                  </span>
+                </div>
+              </div>
+              <nav class="kw-bottomnav" data-component="bottom-nav" aria-label="Main">
+                <a href="#" aria-current="page">Today</a>
+                <a href="#">Send</a>
+                <a href="#">Patients</a>
+                <a href="#">Close day</a>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

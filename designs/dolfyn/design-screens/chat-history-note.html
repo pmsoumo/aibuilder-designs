@@ -1,0 +1,2199 @@
+<!-- COMPONENT INVENTORY: app-shell, app-header, wordmark, avatar, bottom-nav, tab, note-actions, note-actions-menu, note-title, ai-conversation-header, band-provenance, readonly-cue, chat-transcript, chat-turn, turn-role, turn-wordmark, turn-content, user-bubble, citation-chip, notes-panel, notes-drawer-item, ai-generated-label, ai-feedback -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>dolfyn — Chat-History Note (Read-Only Chat View)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --surface: #fafaf7;
+        --surface-subtle: #f2f1ed;
+        --surface-raised: #ffffff;
+        --surface-overlay: rgba(15, 15, 14, 0.32);
+        --ink: #0f0f0e;
+        --ink-2: #3f3f3f;
+        --ink-3: #6b6b6b;
+        --ink-inverse: #fafaf7;
+        --border: #e5e5e1;
+        --border-strong: #c7c7c2;
+        --divider: #edede9;
+        --accent: #c2410c;
+        --accent-strong: #9a330a;
+        --accent-soft-bg: #fcefde;
+        --accent-tint: #f7f2ec;
+        --success: #15803d;
+        --error: #b91c1c;
+        --space-1: 4px;
+        --space-2: 8px;
+        --space-3: 12px;
+        --space-4: 16px;
+        --space-5: 24px;
+        --space-6: 32px;
+        --space-7: 48px;
+        --radius-sm: 6px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-xl: 16px;
+        --radius-full: 9999px;
+        --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        --ease-in: cubic-bezier(0.4, 0, 1, 1);
+        --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+        --duration-fast: 150ms;
+        --duration-base: 250ms;
+        --duration-slow: 350ms;
+        --elevation-panel:
+          0 8px 24px -8px rgba(15, 15, 14, 0.12),
+          0 2px 4px -2px rgba(15, 15, 14, 0.06);
+        --elevation-toast: 0 4px 12px -2px rgba(15, 15, 14, 0.08);
+        --z-base: 0;
+        --z-sticky: 100;
+        --z-overlay: 800;
+        --z-panel: 900;
+        --z-modal: 1000;
+        --z-toast: 1100;
+        --meta-bg: #ecebe5;
+        --meta-ink: #2a2a28;
+        --meta-ink-2: #6e6e68;
+        --meta-border: #d8d7d1;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        background: var(--meta-bg);
+        color: var(--meta-ink);
+        font-family: "Inter", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* Mockup meta */
+      .mockup-nav {
+        position: sticky;
+        top: 0;
+        z-index: 1100;
+        background: var(--meta-bg);
+        border-bottom: 1px solid var(--meta-border);
+        padding: var(--space-3) var(--space-5);
+        display: flex;
+        align-items: center;
+        gap: var(--space-5);
+        flex-wrap: wrap;
+      }
+      .mockup-title {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink);
+      }
+      .mockup-subtitle {
+        font-size: 12px;
+        color: var(--meta-ink-2);
+      }
+      .state-tabs {
+        display: flex;
+        gap: var(--space-1);
+        margin-left: auto;
+        flex-wrap: wrap;
+      }
+      .state-tab {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--meta-ink-2);
+        text-decoration: none;
+        padding: var(--space-1) var(--space-2);
+        border-radius: var(--radius-sm);
+        border: 1px solid transparent;
+        transition:
+          background var(--duration-fast) var(--ease-out),
+          color var(--duration-fast) var(--ease-out);
+        white-space: nowrap;
+      }
+      .state-tab:hover {
+        background: rgba(15, 15, 14, 0.05);
+        color: var(--meta-ink);
+      }
+      #state-a:target ~ .mockup-nav .state-tab[href="#state-a"],
+      #state-b:target ~ .mockup-nav .state-tab[href="#state-b"],
+      #state-c:target ~ .mockup-nav .state-tab[href="#state-c"],
+      #state-d:target ~ .mockup-nav .state-tab[href="#state-d"] {
+        background: var(--meta-ink);
+        color: var(--ink-inverse);
+      }
+
+      .state {
+        padding: var(--space-7) var(--space-5) var(--space-6);
+        max-width: 1400px;
+        margin: 0 auto;
+        border-top: 1px solid var(--meta-border);
+      }
+      .state:first-of-type {
+        border-top: none;
+      }
+      .state:target {
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: var(--radius-lg);
+      }
+      .state-header {
+        margin-bottom: var(--space-5);
+        max-width: 720px;
+      }
+      .state-tag {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink-2);
+        margin-bottom: var(--space-2);
+      }
+      .state-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--meta-ink);
+        margin: 0 0 var(--space-2);
+        letter-spacing: -0.01em;
+      }
+      .state-desc {
+        font-size: 14px;
+        color: var(--meta-ink-2);
+        line-height: 1.5;
+        margin: 0;
+      }
+      .viewports {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-5);
+        align-items: flex-start;
+      }
+      .viewport {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        flex-shrink: 0;
+      }
+      .device-label {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink-2);
+        padding-left: var(--space-1);
+      }
+      .device-frame {
+        background: var(--meta-ink);
+        border-radius: 28px;
+        padding: 8px;
+        box-shadow: 0 2px 8px -2px rgba(15, 15, 14, 0.12);
+        width: fit-content;
+        max-width: 100%;
+      }
+      .device-frame--desktop {
+        width: 1440px;
+        height: 900px;
+        border-radius: 12px;
+        padding: 8px;
+        position: relative;
+        overflow: hidden;
+      }
+      .screen {
+        position: relative;
+        width: 375px;
+        height: 720px;
+        background: var(--surface);
+        border-radius: 22px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .screen--desktop-canvas {
+        width: 100%;
+        height: 100%;
+        background: var(--surface);
+        border-radius: 4px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+      .screen--desktop-canvas .app-header {
+        flex-shrink: 0;
+      }
+      .screen--desktop-canvas .bottom-nav {
+        flex-shrink: 0;
+      }
+
+      /* App shell */
+      .app {
+        position: relative;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+      .app-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-3) var(--space-4);
+        flex-shrink: 0;
+      }
+      .wordmark {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-weight: 600;
+        font-size: 20px;
+        letter-spacing: -0.01em;
+        color: var(--ink);
+        line-height: 1;
+      }
+      .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-full);
+        background: var(--surface-subtle);
+        color: var(--ink-2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
+        font-size: 13px;
+        flex-shrink: 0;
+      }
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+      }
+      .avatar--tier {
+        position: relative;
+      }
+      .avatar--tier::after {
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        right: -1px;
+        width: 10px;
+        height: 10px;
+        border-radius: var(--radius-full);
+        background: var(--accent);
+        border: 2px solid var(--surface);
+      }
+
+      /* ============================================
+       READ-ONLY CHAT VIEW (Req 22)
+       ============================================ */
+      .ro-view {
+        flex: 1;
+        overflow-y: auto;
+        scrollbar-width: none;
+        display: flex;
+        flex-direction: column;
+      }
+      .ro-view::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Position-0 band — provenance + read-only cue (AC-5) */
+      .ai-conversation-header {
+        position: sticky;
+        top: 0;
+        z-index: var(--z-base);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-2);
+        height: 40px;
+        padding: var(--space-2) var(--space-4);
+        background: var(--accent-tint);
+        border-bottom: 1px solid var(--divider);
+        pointer-events: none;
+        user-select: none;
+        flex-shrink: 0;
+      }
+      .ai-conversation-header .band-left {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        min-width: 0;
+      }
+      .ai-conversation-header .sparkle {
+        width: 14px;
+        height: 14px;
+        color: var(--accent);
+        flex-shrink: 0;
+      }
+      .ai-conversation-header .label {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--ink-3);
+        letter-spacing: 0.01em;
+        white-space: nowrap;
+      }
+      .readonly-cue {
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+        flex-shrink: 0;
+      }
+      .readonly-cue .cue-icon {
+        width: 12px;
+        height: 12px;
+        color: var(--ink-3);
+      }
+      .readonly-cue .cue-text {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--ink-3);
+        letter-spacing: 0.01em;
+        white-space: nowrap;
+      }
+
+      /* Reading column */
+      .ro-column {
+        font-family: "Source Serif 4", Georgia, serif;
+        max-width: 480px;
+        width: 100%;
+        padding: 0 var(--space-4) 124px;
+        margin: 0 auto;
+      }
+      .screen--desktop-canvas .ro-column {
+        max-width: 720px;
+      }
+
+      /* Title — static text, no rename affordance (AC-3) */
+      .ro-title {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 1.3;
+        color: var(--ink);
+        margin: var(--space-5) 0 var(--space-5);
+        letter-spacing: -0.01em;
+      }
+
+      /* ============================================
+       Chat transcript — AI left, user right (AC-2)
+       ============================================ */
+      .chat-transcript {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-5);
+      }
+      .chat-turn {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+      }
+      .chat-turn--ai {
+        align-items: flex-start;
+      }
+      .chat-turn--user {
+        align-items: flex-end;
+      }
+
+      /* Role marker — sans chrome above serif content */
+      .turn-role {
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        color: var(--ink-3);
+        user-select: none;
+      }
+      .turn-role .turn-wordmark {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-weight: 600;
+        font-size: 12px;
+        letter-spacing: -0.01em;
+        line-height: 1.4;
+        color: var(--accent);
+      }
+      .turn-role--user {
+        flex-direction: row-reverse;
+      }
+
+      /* Turn bodies — user gets the quiet fill, AI gets the canvas */
+      .turn-body {
+        max-width: 85%;
+      }
+      .turn-body--ai {
+        width: auto;
+        color: var(--ink);
+      }
+      .turn-body--user {
+        background: var(--surface-subtle);
+        border-radius: var(--radius-lg) var(--radius-lg) var(--radius-sm)
+          var(--radius-lg);
+        padding: var(--space-3) var(--space-4);
+        color: var(--ink);
+      }
+      .turn-body p {
+        margin: 0 0 var(--space-3);
+      }
+      .turn-body p:last-child {
+        margin-bottom: 0;
+      }
+      .turn-body strong {
+        font-weight: 600;
+      }
+      .turn-body ul,
+      .turn-body ol {
+        margin: 0 0 var(--space-3) var(--space-4);
+        padding: 0;
+      }
+      .turn-body li {
+        margin-bottom: var(--space-1);
+      }
+      .turn-body li:last-child {
+        margin-bottom: 0;
+      }
+
+      /* AI-generated disclosure label — §4.19 (WS-4) */
+      .ai-generated-label {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-1);
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        color: var(--ink-3);
+        margin: var(--space-1) 0 var(--space-2);
+        cursor: default;
+      }
+      .ai-generated-label svg {
+        width: 14px;
+        height: 14px;
+        color: var(--accent);
+        flex-shrink: 0;
+      }
+
+      /* AI feedback affordance — §4.18 (WS-4) */
+      .ai-feedback {
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+        margin-top: var(--space-2);
+      }
+      .ai-feedback-btn {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: none;
+        border-radius: var(--radius-md);
+        color: var(--ink-3);
+        cursor: pointer;
+        transition:
+          background var(--duration-fast) var(--ease-out),
+          color var(--duration-fast) var(--ease-out);
+      }
+      .ai-feedback-btn svg {
+        width: 18px;
+        height: 18px;
+        stroke-width: 1.5;
+      }
+      .ai-feedback-btn:active {
+        background: var(--surface-subtle);
+      }
+      .ai-feedback-btn--selected {
+        color: var(--accent-strong);
+      }
+      .turn-body blockquote {
+        margin: 0 0 var(--space-3);
+        padding-left: var(--space-3);
+        border-left: 1px solid var(--border-strong);
+        color: var(--ink-2);
+      }
+      .turn-body blockquote p {
+        margin: 0;
+      }
+
+      /* Citation chip — §4.5, survives inline in AI turns (AC-11) */
+      .citation-chip {
+        display: inline-flex;
+        align-items: center;
+        height: 28px;
+        padding: 0 var(--space-2);
+        margin: 0 2px;
+        background: var(--surface-subtle);
+        border-radius: var(--radius-md);
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 14px;
+        line-height: 1.4;
+        color: var(--ink-2);
+        white-space: nowrap;
+        max-width: 220px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        vertical-align: baseline;
+        position: relative;
+        top: 2px;
+        cursor: pointer;
+        transition: background var(--duration-fast) var(--ease-out);
+      }
+      .citation-chip:active {
+        background: var(--border-strong);
+      }
+      .citation-chip--deleted {
+        opacity: 0.5;
+        text-decoration: line-through;
+        cursor: default;
+      }
+
+      /* Note-level actions — Export / Share / Delete only (AC-9) */
+      .note-actions {
+        position: relative;
+      }
+      .note-actions-btn {
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: none;
+        border-radius: var(--radius-md);
+        color: var(--ink-3);
+        cursor: pointer;
+      }
+      .note-actions-btn:active {
+        background: var(--surface-subtle);
+      }
+      .note-actions-menu {
+        position: absolute;
+        top: calc(100% + var(--space-1));
+        right: 0;
+        width: 200px;
+        background: var(--surface-raised);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--elevation-panel);
+        padding: var(--space-1);
+        z-index: var(--z-panel);
+        display: none;
+      }
+      .note-actions-menu.is-open {
+        display: block;
+      }
+      .menu-item {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        width: 100%;
+        padding: var(--space-3) var(--space-3);
+        background: none;
+        border: none;
+        border-radius: var(--radius-md);
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--ink-2);
+        cursor: pointer;
+        text-align: left;
+        min-height: 44px;
+      }
+      .menu-item svg {
+        flex-shrink: 0;
+        color: var(--ink-3);
+      }
+      .menu-item:active {
+        background: var(--surface-subtle);
+      }
+      .menu-item--danger {
+        color: var(--error);
+      }
+      .menu-item--danger svg {
+        color: var(--error);
+      }
+      .menu-divider {
+        height: 1px;
+        background: var(--divider);
+        margin: var(--space-1) 0;
+      }
+
+      /* Bottom nav — §4.12 */
+      .bottom-nav {
+        height: 56px;
+        background: var(--surface-raised);
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: stretch;
+        justify-content: space-around;
+        padding: 0 var(--space-2);
+        flex-shrink: 0;
+      }
+      .tab {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--ink-3);
+        position: relative;
+        text-decoration: none;
+      }
+      .tab svg {
+        display: block;
+      }
+      .tab--active {
+        color: var(--ink-2);
+      }
+      .tab--active svg {
+        color: var(--ink);
+      }
+      .tab--active::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 32px;
+        height: 3px;
+        background: var(--accent);
+        border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      }
+
+      /* Desktop — notes panel + editor */
+      .desktop-content-row {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+      }
+      .notes-panel {
+        position: relative;
+        width: 320px;
+        flex-shrink: 0;
+        border-right: 1px solid var(--border);
+        background: var(--surface-raised);
+        display: flex;
+        flex-direction: column;
+      }
+      .notes-panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-4);
+        border-bottom: 1px solid var(--divider);
+      }
+      .notes-panel-title {
+        font-size: 13px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        margin: 0;
+      }
+      .notes-panel-list {
+        flex: 1;
+        overflow-y: auto;
+      }
+      .notes-drawer-item {
+        padding: var(--space-3) var(--space-4);
+        border-bottom: 1px solid var(--divider);
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+      }
+      .notes-drawer-item:active {
+        background: var(--surface-subtle);
+      }
+      .notes-drawer-item-title {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 15px;
+        line-height: 1.4;
+        color: var(--ink);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+      }
+      .notes-drawer-item-snippet {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 13px;
+        line-height: 1.4;
+        color: var(--ink-3);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+      }
+      .notes-drawer-item-meta {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        color: var(--ink-3);
+      }
+      .notes-drawer-item--active {
+        background: var(--surface-subtle);
+      }
+      .notes-drawer-item--active .notes-drawer-item-title {
+        font-weight: 600;
+      }
+      .notes-drawer-item--from-chat .notes-drawer-item-meta {
+        color: var(--accent-strong);
+      }
+      .notes-list-divider {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-2) var(--space-4);
+        background: var(--surface-subtle);
+      }
+      .notes-list-divider-line {
+        flex: 1;
+        height: 1px;
+        background: var(--divider);
+      }
+      .notes-list-divider-label {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        white-space: nowrap;
+      }
+      @media (max-width: 900px) {
+        .device-frame--desktop {
+          display: none;
+        }
+      }
+      @media (max-width: 480px) {
+        .state {
+          padding: var(--space-5) var(--space-3);
+        }
+        .mockup-nav {
+          padding: var(--space-3);
+        }
+        .state-tabs {
+          width: 100%;
+          margin-left: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="mockup-nav">
+      <div>
+        <div class="mockup-title">dolfyn / Chat-History Note (auto-save)</div>
+        <div class="mockup-subtitle">Req 21 · Workstream A · 4 states</div>
+      </div>
+      <nav class="state-tabs" aria-label="State selector">
+        <a href="#state-a" class="state-tab">A · multi-turn note</a>
+        <a href="#state-b" class="state-tab">B · single turn</a>
+        <a href="#state-c" class="state-tab">C · desktop split</a>
+        <a href="#state-d" class="state-tab">D · long convo</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- ============================================
+         STATE A — Mobile: multi-turn read-only chat view (PRIMARY)
+         ============================================ -->
+      <section id="state-a" class="state">
+        <div class="state-header">
+          <span class="state-tag">Primary · 375px</span>
+          <h2 class="state-title">
+            State A — Auto-saved chat-history note, read-only chat view
+          </h2>
+          <p class="state-desc">
+            The note created on the first exchange and live-updated thereafter.
+            The AI conversation band sits at position 0 (sticky, non-editable,
+            per Req 14) with provenance left (sparkle + "AI conversation") and
+            read-only cue right (lock + "Read-only"). Below it, the title is the
+            first user message as static text — not a body heading (AC-3). The
+            body is a chat transcript: AI turns left on the canvas, user turns
+            right in the quiet --surface-subtle fill. Role markers above every
+            turn: the "dolfyn" wordmark on the left (lowercase serif 600 in
+            --accent), "You" on the right. Citations survive inline inside the
+            AI turns and stay tappable (AC-11). No formatting toolbar, no AI
+            presence bar, no cursor (nothing on this note can be edited or
+            mutated — AC-1/AC-6/AC-12). Tap the ⋯ button to open the note-level
+            menu — Export / Share / Delete only, no edit actions (AC-9).
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div
+                class="screen"
+                data-component="app-shell"
+                data-state="readonly-chat-multiturn"
+                data-condition="note.source === 'auto-save'"
+              >
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="header-actions">
+                      <div
+                        class="note-actions"
+                        data-component="note-actions"
+                        data-focus-order="1"
+                      >
+                        <button
+                          class="note-actions-btn"
+                          data-component="note-actions-btn"
+                          aria-label="Note actions"
+                          aria-expanded="true"
+                          aria-haspopup="menu"
+                          onclick="
+                            this.parentElement
+                              .querySelector('.note-actions-menu')
+                              .classList.toggle('is-open');
+                            this.setAttribute(
+                              'aria-expanded',
+                              this.parentElement
+                                .querySelector('.note-actions-menu')
+                                .classList.contains('is-open'),
+                            );
+                          "
+                        >
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                          >
+                            <circle cx="12" cy="5" r="1" />
+                            <circle cx="12" cy="12" r="1" />
+                            <circle cx="12" cy="19" r="1" />
+                          </svg>
+                        </button>
+                        <div
+                          class="note-actions-menu is-open"
+                          data-component="note-actions-menu"
+                          role="menu"
+                          aria-label="Note actions"
+                          data-condition="menu.open"
+                        >
+                          <button
+                            class="menu-item"
+                            role="menuitem"
+                            data-focus-order="2"
+                          >
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.5"
+                            >
+                              <path
+                                d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                              />
+                              <path d="M7 10l5 5 5-5" />
+                              <path d="M12 15V3" />
+                            </svg>
+                            Export
+                          </button>
+                          <button
+                            class="menu-item"
+                            role="menuitem"
+                            data-focus-order="3"
+                          >
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.5"
+                            >
+                              <circle cx="18" cy="5" r="3" />
+                              <circle cx="6" cy="12" r="3" />
+                              <circle cx="18" cy="19" r="3" />
+                              <path
+                                d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"
+                              />
+                            </svg>
+                            Share
+                          </button>
+                          <div class="menu-divider"></div>
+                          <button
+                            class="menu-item menu-item--danger"
+                            role="menuitem"
+                            data-focus-order="4"
+                          >
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.5"
+                            >
+                              <path d="M3 6h18" />
+                              <path
+                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"
+                              />
+                              <path
+                                d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                              />
+                              <path d="M10 11v6M14 11v6" />
+                            </svg>
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                      <div class="avatar" aria-label="Profile">SC</div>
+                    </div>
+                  </header>
+                  <div class="ro-view">
+                    <!-- Position-0 band: provenance + read-only cue -->
+                    <div
+                      class="ai-conversation-header"
+                      data-component="ai-conversation-header"
+                      data-state="readonly"
+                      data-interaction="none"
+                    >
+                      <div class="band-left">
+                        <svg
+                          class="sparkle"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                          />
+                        </svg>
+                        <span class="label">AI conversation</span>
+                      </div>
+                      <div
+                        class="readonly-cue"
+                        data-component="readonly-cue"
+                        role="note"
+                        aria-label="Read-only: this is a saved conversation and cannot be edited"
+                      >
+                        <svg
+                          class="cue-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          aria-hidden="true"
+                        >
+                          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                          <rect x="5" y="11" width="14" height="9" rx="2" />
+                        </svg>
+                        <span class="cue-text">Read-only</span>
+                      </div>
+                    </div>
+                    <div class="ro-column">
+                      <!-- Title — static, no rename affordance (AC-3) -->
+                      <h1
+                        class="ro-title"
+                        data-component="note-title"
+                        data-variant="readonly"
+                        data-requires="title"
+                      >
+                        What patterns do you see across my notes about
+                        first-time UX?
+                      </h1>
+
+                      <div
+                        class="chat-transcript"
+                        data-component="chat-transcript"
+                        data-variant="readonly"
+                      >
+                        <!-- Turn 1 · User -->
+                        <section
+                          class="chat-turn chat-turn--user"
+                          data-component="chat-turn"
+                          data-variant="user"
+                          data-focus-order="5"
+                        >
+                          <div
+                            class="turn-role turn-role--user"
+                            aria-hidden="true"
+                          >
+                            <span>You</span>
+                          </div>
+                          <div class="turn-body turn-body--user">
+                            <p>
+                              What patterns do you see across my notes about
+                              first-time UX?
+                            </p>
+                          </div>
+                        </section>
+
+                        <!-- Turn 1 · AI -->
+                        <section
+                          class="chat-turn chat-turn--ai"
+                          data-component="chat-turn"
+                          data-variant="ai"
+                          data-focus-order="6"
+                        >
+                          <div
+                            class="turn-role turn-role--ai"
+                            aria-hidden="true"
+                          >
+                            <span class="turn-wordmark">dolfyn</span>
+                          </div>
+                          <div class="turn-body turn-body--ai">
+                            <div class="ai-generated-label">
+                              <svg
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                                aria-hidden="true"
+                              >
+                                <path
+                                  d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                                />
+                              </svg>
+                              AI-generated
+                            </div>
+                            <p>
+                              You keep circling back to one idea:
+                              <strong
+                                >don't explain the product, let the user do the
+                                thing.</strong
+                              >
+                              Your "write-first" note from last week said the
+                              same thing — "open the notebook, don't describe
+                              it."
+                            </p>
+                            <p>
+                              This connects to your onboarding thinking too. You
+                              noted that the empty canvas IS the onboarding
+                              <span
+                                class="citation-chip"
+                                role="button"
+                                tabindex="0"
+                                >What makes a great first-time...</span
+                              >
+                              and that the first note saved is the investment
+                              moment
+                              <span
+                                class="citation-chip"
+                                role="button"
+                                tabindex="0"
+                                >Activation problem today</span
+                              >.
+                            </p>
+                            <p>Where the pattern shows up:</p>
+                            <ul>
+                              <li>Onboarding notes — canvas before copy</li>
+                              <li>Landing decisions — act before explain</li>
+                              <li>
+                                Your note on note-taking — show, don't tell
+                              </li>
+                            </ul>
+                            <p>
+                              The pattern:
+                              <strong>show, don't tell.</strong> Every surface
+                              should let the user act, not read instructions.
+                            </p>
+                            <div
+                              class="ai-feedback"
+                              aria-label="Rate this answer"
+                            >
+                              <button
+                                type="button"
+                                class="ai-feedback-btn"
+                                aria-label="Mark as helpful"
+                                aria-pressed="false"
+                              >
+                                <svg
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                >
+                                  <path d="M7 10v12" />
+                                  <path
+                                    d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"
+                                  />
+                                </svg>
+                              </button>
+                              <button
+                                type="button"
+                                class="ai-feedback-btn"
+                                aria-label="Mark as not helpful"
+                                aria-pressed="false"
+                              >
+                                <svg
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                >
+                                  <path d="M17 14V2" />
+                                  <path
+                                    d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"
+                                  />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                        </section>
+
+                        <!-- Turn 2 · User -->
+                        <section
+                          class="chat-turn chat-turn--user"
+                          data-component="chat-turn"
+                          data-variant="user"
+                          data-focus-order="7"
+                        >
+                          <div
+                            class="turn-role turn-role--user"
+                            aria-hidden="true"
+                          >
+                            <span>You</span>
+                          </div>
+                          <div class="turn-body turn-body--user">
+                            <p>So what's the one thing to remember?</p>
+                          </div>
+                        </section>
+
+                        <!-- Turn 2 · AI -->
+                        <section
+                          class="chat-turn chat-turn--ai"
+                          data-component="chat-turn"
+                          data-variant="ai"
+                          data-focus-order="8"
+                        >
+                          <div
+                            class="turn-role turn-role--ai"
+                            aria-hidden="true"
+                          >
+                            <span class="turn-wordmark">dolfyn</span>
+                          </div>
+                          <div class="turn-body turn-body--ai">
+                            <div class="ai-generated-label">
+                              <svg
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                                aria-hidden="true"
+                              >
+                                <path
+                                  d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                                />
+                              </svg>
+                              AI-generated
+                            </div>
+
+                            <p>
+                              <strong>Show, don't tell.</strong> It shows up in
+                              your onboarding notes, your landing decisions, and
+                              the note you wrote about note-taking itself — it's
+                              the lens. Keep it front of mind and it'll filter
+                              every design call.
+                            </p>
+
+                            <div
+                              class="ai-feedback"
+                              aria-label="Rate this answer"
+                            >
+                              <button
+                                type="button"
+                                class="ai-feedback-btn"
+                                aria-label="Mark as helpful"
+                                aria-pressed="false"
+                              >
+                                <svg
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                >
+                                  <path d="M7 10v12" />
+                                  <path
+                                    d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"
+                                  />
+                                </svg>
+                              </button>
+                              <button
+                                type="button"
+                                class="ai-feedback-btn"
+                                aria-label="Mark as not helpful"
+                                aria-pressed="false"
+                              >
+                                <svg
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                >
+                                  <path d="M17 14V2" />
+                                  <path
+                                    d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"
+                                  />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                        </section>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- No AI presence bar: read-only notes offer no inline AI (AC-6) -->
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE B — Mobile: single-turn read-only chat view (AC-9)
+         ============================================ -->
+      <section id="state-b" class="state">
+        <div class="state-header">
+          <span class="state-tag">Edge · 375px</span>
+          <h2 class="state-title">
+            State B — Single-turn conversation, read-only
+          </h2>
+          <p class="state-desc">
+            Exactly one completed exchange. The note renders as a 2-block chat
+            transcript — You + AI — the same format as multi-turn (format never
+            switches on turn count). Even at minimum length it reads as a
+            complete note: each block carries its role marker, so there's no
+            empty feeling. The band, title, and single turn hold together as a
+            clean artifact.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div
+                class="screen"
+                data-component="app-shell"
+                data-state="readonly-chat-single-turn"
+                data-condition="note.source === 'auto-save' && exchanges === 1"
+              >
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="header-actions">
+                      <div class="note-actions" data-component="note-actions">
+                        <button
+                          class="note-actions-btn"
+                          aria-label="Note actions"
+                          aria-expanded="false"
+                          aria-haspopup="menu"
+                        >
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                          >
+                            <circle cx="12" cy="5" r="1" />
+                            <circle cx="12" cy="12" r="1" />
+                            <circle cx="12" cy="19" r="1" />
+                          </svg>
+                        </button>
+                      </div>
+                      <div class="avatar" aria-label="Profile">SC</div>
+                    </div>
+                  </header>
+                  <div class="ro-view">
+                    <div
+                      class="ai-conversation-header"
+                      data-component="ai-conversation-header"
+                      data-state="readonly"
+                    >
+                      <div class="band-left">
+                        <svg
+                          class="sparkle"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                          />
+                        </svg>
+                        <span class="label">AI conversation</span>
+                      </div>
+                      <div
+                        class="readonly-cue"
+                        data-component="readonly-cue"
+                        role="note"
+                        aria-label="Read-only: this is a saved conversation and cannot be edited"
+                      >
+                        <svg
+                          class="cue-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                          <rect x="5" y="11" width="14" height="9" rx="2" />
+                        </svg>
+                        <span class="cue-text">Read-only</span>
+                      </div>
+                    </div>
+                    <div class="ro-column">
+                      <h1
+                        class="ro-title"
+                        data-component="note-title"
+                        data-variant="readonly"
+                      >
+                        Is "show, don't tell" the right lens for onboarding?
+                      </h1>
+                      <div
+                        class="chat-transcript"
+                        data-component="chat-transcript"
+                        data-variant="readonly"
+                      >
+                        <section
+                          class="chat-turn chat-turn--user"
+                          data-component="chat-turn"
+                          data-variant="user"
+                        >
+                          <div
+                            class="turn-role turn-role--user"
+                            aria-hidden="true"
+                          >
+                            <span>You</span>
+                          </div>
+                          <div class="turn-body turn-body--user">
+                            <p>
+                              Is "show, don't tell" the right lens for
+                              onboarding?
+                            </p>
+                          </div>
+                        </section>
+                        <section
+                          class="chat-turn chat-turn--ai"
+                          data-component="chat-turn"
+                          data-variant="ai"
+                        >
+                          <div
+                            class="turn-role turn-role--ai"
+                            aria-hidden="true"
+                          >
+                            <span class="turn-wordmark">dolfyn</span>
+                          </div>
+                          <div class="turn-body turn-body--ai">
+                            <div class="ai-generated-label">
+                              <svg
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                                aria-hidden="true"
+                              >
+                                <path
+                                  d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                                />
+                              </svg>
+                              AI-generated
+                            </div>
+
+                            <p>
+                              Yes — it's the thread through your notes. Every
+                              surface should let the user do the thing, not read
+                              instructions. The empty canvas <em>is</em>
+                              the onboarding.
+                            </p>
+
+                            <div
+                              class="ai-feedback"
+                              aria-label="Rate this answer"
+                            >
+                              <button
+                                type="button"
+                                class="ai-feedback-btn"
+                                aria-label="Mark as helpful"
+                                aria-pressed="false"
+                              >
+                                <svg
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                >
+                                  <path d="M7 10v12" />
+                                  <path
+                                    d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"
+                                  />
+                                </svg>
+                              </button>
+                              <button
+                                type="button"
+                                class="ai-feedback-btn"
+                                aria-label="Mark as not helpful"
+                                aria-pressed="false"
+                              >
+                                <svg
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                >
+                                  <path d="M17 14V2" />
+                                  <path
+                                    d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"
+                                  />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                        </section>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE C — Desktop split: list presence + read-only chat view
+         ============================================ -->
+      <section id="state-c" class="state">
+        <div class="state-header">
+          <span class="state-tag">Desktop · ≥1024px</span>
+          <h2 class="state-title">
+            State C — Desktop split: live note in list + read-only chat view
+          </h2>
+          <p class="state-desc">
+            Three-panel desktop. The auto-saved note sits at the top of the
+            notes panel under the "AI Conversations" divider with the "+ Saved
+            from chat" label (grouping/labels unchanged, AC-17). Snippet is the
+            first AI response, not the opening prompt — the prompt already
+            appears as the title, so the row shows the answer essence instead of
+            a duplicate. The editor shows the band with provenance left and
+            read-only cue right, the static first-prompt title, and the chat
+            transcript. No formatting toolbar, no AI presence bar.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div
+                class="screen screen--desktop-canvas"
+                data-component="app-shell"
+                data-state="desktop-chat-history-note"
+              >
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="header-actions">
+                    <div
+                      class="avatar avatar--tier"
+                      aria-label="Profile, Think tier"
+                    >
+                      SC
+                    </div>
+                  </div>
+                </header>
+                <div class="desktop-content-row">
+                  <!-- Left: Notes panel -->
+                  <aside class="notes-panel">
+                    <div class="notes-panel-header">
+                      <h2 class="notes-panel-title">Notes</h2>
+                    </div>
+                    <div class="notes-panel-list">
+                      <!-- Regular notes -->
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Great first-time experience definition</span
+                        >
+                        <span class="notes-drawer-item-meta"
+                          >Today at 1:02 PM</span
+                        >
+                      </div>
+                      <!-- AI Conversations section -->
+                      <div class="notes-list-divider">
+                        <div class="notes-list-divider-line"></div>
+                        <span class="notes-list-divider-label"
+                          >AI Conversations</span
+                        >
+                        <div class="notes-list-divider-line"></div>
+                      </div>
+                      <!-- Live auto-save note — top of the section -->
+                      <div
+                        class="notes-drawer-item notes-drawer-item--from-chat notes-drawer-item--active"
+                      >
+                        <span class="notes-drawer-item-title"
+                          >What patterns do you see across my notes about
+                          first-time UX?</span
+                        >
+                        <span class="notes-drawer-item-snippet"
+                          >You keep circling back to one idea: don't explain the
+                          product, let the user do the thing…</span
+                        >
+                        <span class="notes-drawer-item-meta"
+                          >Today at 1:14 PM</span
+                        >
+                      </div>
+                      <div
+                        class="notes-drawer-item notes-drawer-item--from-chat"
+                      >
+                        <span class="notes-drawer-item-title"
+                          >Pricing model discussion</span
+                        >
+                        <span class="notes-drawer-item-snippet"
+                          >The intro-pricing wedge is the right call for a solo
+                          tool…</span
+                        >
+                        <span class="notes-drawer-item-meta">Yesterday</span>
+                      </div>
+                    </div>
+                  </aside>
+                  <!-- Center: read-only chat view -->
+                  <div
+                    style="
+                      flex: 1;
+                      min-width: 0;
+                      display: flex;
+                      flex-direction: column;
+                      overflow: hidden;
+                    "
+                  >
+                    <div class="ro-view">
+                      <div
+                        class="ai-conversation-header"
+                        data-component="ai-conversation-header"
+                        data-state="readonly"
+                      >
+                        <div class="band-left">
+                          <svg
+                            class="sparkle"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            aria-hidden="true"
+                          >
+                            <path
+                              d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                            />
+                          </svg>
+                          <span class="label">AI conversation</span>
+                        </div>
+                        <div
+                          class="readonly-cue"
+                          data-component="readonly-cue"
+                          role="note"
+                          aria-label="Read-only: this is a saved conversation and cannot be edited"
+                        >
+                          <svg
+                            class="cue-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                          >
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                            <rect x="5" y="11" width="14" height="9" rx="2" />
+                          </svg>
+                          <span class="cue-text">Read-only</span>
+                        </div>
+                      </div>
+                      <div class="ro-column">
+                        <h1
+                          class="ro-title"
+                          data-component="note-title"
+                          data-variant="readonly"
+                        >
+                          What patterns do you see across my notes about
+                          first-time UX?
+                        </h1>
+                        <div
+                          class="chat-transcript"
+                          data-component="chat-transcript"
+                          data-variant="readonly"
+                        >
+                          <section
+                            class="chat-turn chat-turn--user"
+                            data-component="chat-turn"
+                            data-variant="user"
+                          >
+                            <div
+                              class="turn-role turn-role--user"
+                              aria-hidden="true"
+                            >
+                              <span>You</span>
+                            </div>
+                            <div class="turn-body turn-body--user">
+                              <p>
+                                What patterns do you see across my notes about
+                                first-time UX?
+                              </p>
+                            </div>
+                          </section>
+                          <section
+                            class="chat-turn chat-turn--ai"
+                            data-component="chat-turn"
+                            data-variant="ai"
+                          >
+                            <div
+                              class="turn-role turn-role--ai"
+                              aria-hidden="true"
+                            >
+                              <span class="turn-wordmark">dolfyn</span>
+                            </div>
+                            <div class="turn-body turn-body--ai">
+                              <div class="ai-generated-label">
+                                <svg
+                                  viewBox="0 0 24 24"
+                                  fill="currentColor"
+                                  aria-hidden="true"
+                                >
+                                  <path
+                                    d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                                  />
+                                </svg>
+                                AI-generated
+                              </div>
+
+                              <p>
+                                You keep circling back to one idea:
+                                <strong
+                                  >don't explain the product, let the user do
+                                  the thing.</strong
+                                >
+                                Your "write-first" note said the same thing —
+                                "open the notebook, don't describe it."
+                              </p>
+                              <p>
+                                The empty canvas IS the onboarding
+                                <span
+                                  class="citation-chip"
+                                  role="button"
+                                  tabindex="0"
+                                  >What makes a great first-time...</span
+                                >
+                                and the first note saved is the investment
+                                moment
+                                <span
+                                  class="citation-chip"
+                                  role="button"
+                                  tabindex="0"
+                                  >Activation problem today</span
+                                >.
+                              </p>
+
+                              <div
+                                class="ai-feedback"
+                                aria-label="Rate this answer"
+                              >
+                                <button
+                                  type="button"
+                                  class="ai-feedback-btn"
+                                  aria-label="Mark as helpful"
+                                  aria-pressed="false"
+                                >
+                                  <svg
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                  >
+                                    <path d="M7 10v12" />
+                                    <path
+                                      d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"
+                                    />
+                                  </svg>
+                                </button>
+                                <button
+                                  type="button"
+                                  class="ai-feedback-btn"
+                                  aria-label="Mark as not helpful"
+                                  aria-pressed="false"
+                                >
+                                  <svg
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                  >
+                                    <path d="M17 14V2" />
+                                    <path
+                                      d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"
+                                    />
+                                  </svg>
+                                </button>
+                              </div>
+                            </div>
+                          </section>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE D — Mobile: long conversation, consistent rhythm
+         ============================================ -->
+      <section id="state-d" class="state">
+        <div class="state-header">
+          <span class="state-tag">Edge · 375px</span>
+          <h2 class="state-title">
+            State D — Long conversation (50+ exchanges)
+          </h2>
+          <p class="state-desc">
+            At extreme length the format stays constant — every turn is role
+            marker + serif body with a fixed 24px gap. No folding, no collapse,
+            no chrome-per-turn. Accept lower polish at extreme length (per Req
+            21, carried from Req 14); the vertical rhythm does the work.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px — excerpt, not full scroll</div>
+            <div class="device-frame">
+              <div
+                class="screen"
+                data-component="app-shell"
+                data-state="readonly-chat-long"
+              >
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="header-actions">
+                      <div class="note-actions" data-component="note-actions">
+                        <button
+                          class="note-actions-btn"
+                          aria-label="Note actions"
+                          aria-expanded="false"
+                          aria-haspopup="menu"
+                        >
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                          >
+                            <circle cx="12" cy="5" r="1" />
+                            <circle cx="12" cy="12" r="1" />
+                            <circle cx="12" cy="19" r="1" />
+                          </svg>
+                        </button>
+                      </div>
+                      <div class="avatar" aria-label="Profile">SC</div>
+                    </div>
+                  </header>
+                  <div class="ro-view">
+                    <div
+                      class="ai-conversation-header"
+                      data-component="ai-conversation-header"
+                      data-state="readonly"
+                    >
+                      <div class="band-left">
+                        <svg
+                          class="sparkle"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                          />
+                        </svg>
+                        <span class="label">AI conversation</span>
+                      </div>
+                      <div
+                        class="readonly-cue"
+                        data-component="readonly-cue"
+                        role="note"
+                        aria-label="Read-only: this is a saved conversation and cannot be edited"
+                      >
+                        <svg
+                          class="cue-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                          <rect x="5" y="11" width="14" height="9" rx="2" />
+                        </svg>
+                        <span class="cue-text">Read-only</span>
+                      </div>
+                    </div>
+                    <div class="ro-column">
+                      <h1
+                        class="ro-title"
+                        data-component="note-title"
+                        data-variant="readonly"
+                      >
+                        Draft the 90-day growth plan with me
+                      </h1>
+                      <div
+                        class="chat-transcript"
+                        data-component="chat-transcript"
+                        data-variant="readonly"
+                      >
+                        <section
+                          class="chat-turn chat-turn--user"
+                          data-component="chat-turn"
+                          data-variant="user"
+                        >
+                          <div
+                            class="turn-role turn-role--user"
+                            aria-hidden="true"
+                          >
+                            <span>You</span>
+                          </div>
+                          <div class="turn-body turn-body--user">
+                            <p>Draft the 90-day growth plan with me.</p>
+                          </div>
+                        </section>
+                        <section
+                          class="chat-turn chat-turn--ai"
+                          data-component="chat-turn"
+                          data-variant="ai"
+                        >
+                          <div
+                            class="turn-role turn-role--ai"
+                            aria-hidden="true"
+                          >
+                            <span class="turn-wordmark">dolfyn</span>
+                          </div>
+                          <div class="turn-body turn-body--ai">
+                            <div class="ai-generated-label">
+                              <svg
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                                aria-hidden="true"
+                              >
+                                <path
+                                  d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                                />
+                              </svg>
+                              AI-generated
+                            </div>
+
+                            <p>
+                              Here's a starting framework for your 90-day plan.
+                              We'll break it into three phases: foundation,
+                              activation, and scale.
+                            </p>
+                            <p>
+                              <strong>Days 1–30: Foundation.</strong> Nail the
+                              onboarding flow. Get 10 beta users through the
+                              full loop — signup → first note → second session.
+                              Measure day-1 and day-7 retention.
+                            </p>
+
+                            <div
+                              class="ai-feedback"
+                              aria-label="Rate this answer"
+                            >
+                              <button
+                                type="button"
+                                class="ai-feedback-btn"
+                                aria-label="Mark as helpful"
+                                aria-pressed="false"
+                              >
+                                <svg
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                >
+                                  <path d="M7 10v12" />
+                                  <path
+                                    d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"
+                                  />
+                                </svg>
+                              </button>
+                              <button
+                                type="button"
+                                class="ai-feedback-btn"
+                                aria-label="Mark as not helpful"
+                                aria-pressed="false"
+                              >
+                                <svg
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                >
+                                  <path d="M17 14V2" />
+                                  <path
+                                    d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"
+                                  />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                        </section>
+                        <section
+                          class="chat-turn chat-turn--user"
+                          data-component="chat-turn"
+                          data-variant="user"
+                        >
+                          <div
+                            class="turn-role turn-role--user"
+                            aria-hidden="true"
+                          >
+                            <span>You</span>
+                          </div>
+                          <div class="turn-body turn-body--user">
+                            <p>What's the biggest risk in the first 30 days?</p>
+                          </div>
+                        </section>
+                        <section
+                          class="chat-turn chat-turn--ai"
+                          data-component="chat-turn"
+                          data-variant="ai"
+                        >
+                          <div
+                            class="turn-role turn-role--ai"
+                            aria-hidden="true"
+                          >
+                            <span class="turn-wordmark">dolfyn</span>
+                          </div>
+                          <div class="turn-body turn-body--ai">
+                            <div class="ai-generated-label">
+                              <svg
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                                aria-hidden="true"
+                              >
+                                <path
+                                  d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                                />
+                              </svg>
+                              AI-generated
+                            </div>
+
+                            <p>
+                              Activation drop-off. Users who don't save a note
+                              within the first session almost never come back.
+                              The fix: make the first interaction feel
+                              effortless — one sentence, one save, one moment of
+                              "oh, that's useful."
+                            </p>
+
+                            <div
+                              class="ai-feedback"
+                              aria-label="Rate this answer"
+                            >
+                              <button
+                                type="button"
+                                class="ai-feedback-btn"
+                                aria-label="Mark as helpful"
+                                aria-pressed="false"
+                              >
+                                <svg
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                >
+                                  <path d="M7 10v12" />
+                                  <path
+                                    d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"
+                                  />
+                                </svg>
+                              </button>
+                              <button
+                                type="button"
+                                class="ai-feedback-btn"
+                                aria-label="Mark as not helpful"
+                                aria-pressed="false"
+                              >
+                                <svg
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                >
+                                  <path d="M17 14V2" />
+                                  <path
+                                    d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"
+                                  />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                        </section>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

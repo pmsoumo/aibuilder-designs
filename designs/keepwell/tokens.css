@@ -1,0 +1,95 @@
+/* KeepWell design tokens — Stage 1 (round 2, Forest)
+   POV: a receptionist at 9:40am, three people waiting, phone ringing, paper register.
+   Adjectives: fast, legible, forgiving.
+   Core loop: enter appointment -> send reminder -> mark who came -> recover who didn't.
+
+   Palette: Forest #14432E, chosen 2026-09-06. Deep enough that green reads as ink rather
+   than as "medical" — it carries actions and identity while everything else stays
+   near-monochrome. Deliberately not the mint/teal that health-tech templates default to.
+   Warm-neutral greys, white ground; warmth lives in the greys, never in the page background.
+*/
+
+:root {
+  /* ---- Color ---- */
+  --kw-ink: #15171a; /* primary text — 16.4:1 on surface */
+  --kw-ink-soft: #5c6169; /* secondary text — 6.1:1 on surface */
+  --kw-ink-faint: #8b9099; /* tertiary only — never body copy */
+  --kw-surface: #ffffff;
+  --kw-surface-sunk: #f6f7f5; /* bars, wells, sidebars — never the page ground */
+  --kw-line: #e4e5e3;
+
+  --kw-accent: #14432e; /* Forest — primary actions, 11.9:1 on surface */
+  --kw-accent-deep: #0e3021; /* pressed, and ink on accent-wash */
+  --kw-accent-ink: #ffffff;
+  --kw-accent-wash: #e8efe9;
+
+  --kw-alert: #9a3412; /* needs action — 6.3:1 on surface */
+  --kw-alert-wash: #fbeadf;
+  --kw-ok: #14432e; /* confirmed states reuse the accent — one green, not two */
+  --kw-ok-wash: #e8efe9;
+
+  /* ---- Type ---- */
+  --kw-font:
+    system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif;
+  --kw-text-xs: 11px;
+  --kw-text-sm: 12px;
+  --kw-text-base: 14px;
+  --kw-text-md: 15px;
+  --kw-text-lg: 18px;
+  --kw-text-xl: 22px;
+  --kw-text-2xl: 28px;
+  --kw-weight-regular: 400;
+  --kw-weight-bold: 650;
+  --kw-tracking-tight: -0.022em;
+
+  /* ---- Spacing ---- */
+  --kw-space-1: 4px;
+  --kw-space-2: 8px;
+  --kw-space-3: 12px;
+  --kw-space-4: 16px;
+  --kw-space-5: 20px;
+  --kw-space-6: 24px;
+  --kw-space-8: 32px;
+  --kw-space-12: 48px;
+
+  /* ---- Radius ---- */
+  --kw-radius-sm: 7px;
+  --kw-radius-md: 10px;
+  --kw-radius-lg: 14px;
+  --kw-radius-pill: 999px;
+
+  --kw-shadow-raised: 0 1px 2px rgba(21, 23, 26, 0.06);
+
+  /* ---- Touch + control sizing ----
+     Buttons carry a shared minimum width so a one-word and a three-word label
+     hold the same rhythm. Width never derives from label length. */
+  --kw-tap-min: 44px;
+  --kw-tap-primary: 48px;
+  --kw-control-min-w: 116px;
+  --kw-control-min-w-compact: 84px;
+  --kw-nav-count-size: 20px;
+
+  /* ---- Layout ---- */
+  --kw-sidebar-w: 216px;
+  --kw-panel-w: 324px; /* fits "Open WhatsApp" beside a fixed Skip track without clipping */
+  --kw-list-w: 300px; /* directory rail: a full Indian name plus a "3 wks" stamp, no truncation */
+  --kw-desktop-breakpoint: 900px; /* below this, phone layout with bottom nav */
+
+  /* ---- Z-index scale ---- */
+  --kw-z-sticky: 100;
+  --kw-z-bottom-nav: 200;
+  --kw-z-modal-backdrop: 300;
+  --kw-z-modal: 400;
+  --kw-z-toast: 500;
+
+  --kw-motion-fast: 120ms;
+  --kw-motion-base: 200ms;
+  --kw-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --kw-motion-fast: 0ms;
+    --kw-motion-base: 0ms;
+  }
+}

@@ -1,0 +1,1588 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>dolfyn — Token Cap Hit</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --surface: #fafaf7;
+        --surface-subtle: #f2f1ed;
+        --surface-raised: #ffffff;
+        --surface-overlay: rgba(15, 15, 14, 0.32);
+        --ink: #0f0f0e;
+        --ink-2: #3f3f3f;
+        --ink-3: #6b6b6b;
+        --ink-inverse: #fafaf7;
+        --border: #e5e5e1;
+        --border-strong: #c7c7c2;
+        --divider: #edede9;
+        --accent: #c2410c;
+        --accent-strong: #9a330a;
+        --accent-soft-bg: #fcefde;
+        --warning: #b45309;
+        --cap-hit: #7c2d12;
+        --space-1: 4px;
+        --space-2: 8px;
+        --space-3: 12px;
+        --space-4: 16px;
+        --space-5: 24px;
+        --space-6: 32px;
+        --space-7: 48px;
+        --radius-sm: 6px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-xl: 16px;
+        --radius-full: 9999px;
+        --elevation-panel:
+          0 8px 24px -8px rgba(15, 15, 14, 0.12),
+          0 2px 4px -2px rgba(15, 15, 14, 0.06);
+        --z-base: 0;
+        --z-sticky: 100;
+        --z-overlay: 800;
+        --z-panel: 900;
+        --z-modal: 1000;
+        --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        --duration-fast: 150ms;
+        --duration-base: 250ms;
+        --duration-slow: 350ms;
+        --meta-bg: #ecebe5;
+        --meta-ink: #2a2a28;
+        --meta-ink-2: #6e6e68;
+        --meta-border: #d8d7d1;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--meta-bg);
+        color: var(--meta-ink);
+        font-family: "Inter", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .mockup-nav {
+        position: sticky;
+        top: 0;
+        z-index: 1100;
+        background: var(--meta-bg);
+        border-bottom: 1px solid var(--meta-border);
+        padding: var(--space-3) var(--space-5);
+        display: flex;
+        align-items: center;
+        gap: var(--space-5);
+        flex-wrap: wrap;
+      }
+      .mockup-title {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink);
+      }
+      .mockup-subtitle {
+        font-size: 12px;
+        color: var(--meta-ink-2);
+      }
+      .state-tabs {
+        display: flex;
+        gap: var(--space-1);
+        margin-left: auto;
+        flex-wrap: wrap;
+      }
+      .state-tab {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--meta-ink-2);
+        text-decoration: none;
+        padding: var(--space-1) var(--space-2);
+        border-radius: var(--radius-sm);
+        border: 1px solid transparent;
+        transition:
+          background var(--duration-fast) var(--ease-out),
+          color var(--duration-fast) var(--ease-out);
+        white-space: nowrap;
+      }
+      .state-tab:hover {
+        background: rgba(15, 15, 14, 0.05);
+        color: var(--meta-ink);
+      }
+      #state-a:target ~ .mockup-nav .state-tab[href="#state-a"],
+      #state-b:target ~ .mockup-nav .state-tab[href="#state-b"],
+      #state-c:target ~ .mockup-nav .state-tab[href="#state-c"] {
+        background: var(--meta-ink);
+        color: var(--ink-inverse);
+      }
+
+      .state {
+        padding: var(--space-7) var(--space-5) var(--space-6);
+        max-width: 1400px;
+        margin: 0 auto;
+        border-top: 1px solid var(--meta-border);
+      }
+      .state:first-of-type {
+        border-top: none;
+      }
+      .state:target {
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: var(--radius-lg);
+      }
+      .state-header {
+        margin-bottom: var(--space-5);
+        max-width: 720px;
+      }
+      .state-tag {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink-2);
+        margin-bottom: var(--space-2);
+      }
+      .state-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--meta-ink);
+        margin: 0 0 var(--space-2);
+        letter-spacing: -0.01em;
+      }
+      .state-desc {
+        font-size: 14px;
+        color: var(--meta-ink-2);
+        line-height: 1.5;
+        margin: 0;
+      }
+
+      .viewports {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-5);
+        align-items: flex-start;
+      }
+      .viewport {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        flex-shrink: 0;
+      }
+      .device-label {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink-2);
+        padding-left: var(--space-1);
+      }
+      .device-frame {
+        background: var(--meta-ink);
+        border-radius: 28px;
+        padding: 8px;
+        box-shadow: 0 2px 8px -2px rgba(15, 15, 14, 0.12);
+      }
+      .screen {
+        position: relative;
+        width: 375px;
+        height: 720px;
+        background: var(--surface);
+        border-radius: 22px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .app {
+        position: relative;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+      .app-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-3) var(--space-4);
+        flex-shrink: 0;
+      }
+      .wordmark {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-weight: 600;
+        font-size: 20px;
+        letter-spacing: -0.01em;
+        color: var(--ink);
+        line-height: 1;
+      }
+      .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-full);
+        background: var(--surface-subtle);
+        color: var(--ink-2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
+        font-size: 13px;
+        flex-shrink: 0;
+      }
+
+      .note-editor {
+        flex: 1;
+        padding: var(--space-5) var(--space-4) 124px;
+        overflow-y: auto;
+        scrollbar-width: none;
+      }
+      .note-editor::-webkit-scrollbar {
+        display: none;
+      }
+      .note-body {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--ink);
+        max-width: 480px;
+      }
+      .note-title {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 1.3;
+        color: var(--ink);
+        margin: 0 0 var(--space-5);
+      }
+      .note-paragraph {
+        margin: 0 0 var(--space-3);
+      }
+      .note-paragraph:last-child {
+        margin-bottom: 0;
+      }
+
+      .cursor {
+        display: inline-block;
+        width: 2px;
+        height: 1.1em;
+        background: var(--ink);
+        vertical-align: text-bottom;
+        margin-left: 1px;
+        animation: blink 1s steps(2) infinite;
+      }
+      @keyframes blink {
+        0%,
+        50% {
+          opacity: 1;
+        }
+        50.01%,
+        100% {
+          opacity: 0;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .cursor {
+          animation: none;
+          opacity: 1;
+        }
+      }
+
+      .ai-bar {
+        height: 56px;
+        padding: 0 var(--space-4);
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 14px;
+        line-height: 1.5;
+        flex-shrink: 0;
+      }
+      .ai-bar--passive {
+        background: var(--surface-subtle);
+        color: var(--ink-2);
+      }
+      .ai-bar--disabled {
+        background: var(--surface-subtle);
+        color: var(--ink-3);
+        opacity: 0.6;
+        pointer-events: none;
+      }
+      .ai-bar--disabled .ai-bar-sparkle {
+        color: var(--ink-3);
+      }
+      .ai-bar-sparkle {
+        flex-shrink: 0;
+        color: var(--accent);
+      }
+
+      .bottom-nav {
+        height: 56px;
+        background: var(--surface-raised);
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: stretch;
+        justify-content: space-around;
+        padding: 0 var(--space-2);
+        flex-shrink: 0;
+      }
+      .tab {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--ink-3);
+        position: relative;
+        text-decoration: none;
+      }
+      .tab svg {
+        display: block;
+      }
+      .tab--active {
+        color: var(--ink-2);
+      }
+      .tab--active svg {
+        color: var(--ink);
+      }
+      .tab--active::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 32px;
+        height: 3px;
+        background: var(--accent);
+        border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      }
+
+      .sparkle-18 {
+        width: 18px;
+        height: 18px;
+      }
+
+      /* ============================================
+       INLINE AI PANEL — §4.4
+       ============================================ */
+      .panel-backdrop {
+        position: absolute;
+        inset: 0;
+        background: var(--surface-overlay);
+        z-index: var(--z-overlay);
+      }
+      .inline-ai-panel {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 80%;
+        background: var(--surface-raised);
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        box-shadow: var(--elevation-panel);
+        z-index: var(--z-panel);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .panel-header {
+        height: 48px;
+        flex-shrink: 0;
+        padding: 0 var(--space-4);
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        border-bottom: 1px solid var(--divider);
+        background: var(--surface-raised);
+      }
+      .panel-sparkle {
+        color: var(--accent);
+        flex-shrink: 0;
+      }
+      .panel-title {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--ink-2);
+      }
+      .panel-response {
+        flex: 7;
+        padding: var(--space-4) var(--space-5) var(--space-5);
+        overflow-y: auto;
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--ink);
+      }
+      .panel-response p {
+        margin: 0 0 var(--space-3);
+      }
+      .panel-context {
+        flex: 3;
+        border-top: 1px solid var(--divider);
+        padding: var(--space-4);
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--ink-2);
+        background: var(--surface);
+      }
+      .panel-context-label {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        margin: 0 0 var(--space-2);
+      }
+      .panel-context p {
+        margin: 0;
+      }
+      .panel-actions {
+        flex-shrink: 0;
+        display: flex;
+        gap: var(--space-2);
+        padding: var(--space-3) var(--space-4);
+        border-top: 1px solid var(--divider);
+        background: var(--surface-raised);
+      }
+
+      .btn {
+        flex: 1;
+        height: 44px;
+        border: none;
+        border-radius: var(--radius-md);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .btn--ghost {
+        background: transparent;
+        color: var(--ink-2);
+      }
+      .btn--primary {
+        background: var(--ink);
+        color: var(--ink-inverse);
+      }
+      .btn--primary:disabled {
+        background: var(--border);
+        color: var(--ink-3);
+        cursor: not-allowed;
+      }
+      .btn:active {
+        opacity: 0.85;
+      }
+
+      /* Cap hit message */
+      .cap-hit-message {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: var(--space-5);
+        gap: var(--space-3);
+      }
+
+      .cap-hit-icon {
+        width: 24px;
+        height: 24px;
+        color: var(--cap-hit);
+      }
+
+      .cap-hit-text {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--ink-2);
+        margin: 0;
+        max-width: 260px;
+      }
+
+      .cap-hit-reset {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--ink-3);
+        margin: 0;
+      }
+
+      /* Chat cap hit */
+      .chat-view {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .chat-thread {
+        flex: 1;
+        overflow-y: auto;
+        padding: var(--space-5) var(--space-4);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+        scrollbar-width: none;
+      }
+      .chat-thread::-webkit-scrollbar {
+        display: none;
+      }
+      .chat-msg {
+        max-width: 85%;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+      }
+      .chat-msg--user {
+        align-self: flex-end;
+      }
+      .chat-msg--ai {
+        align-self: flex-start;
+      }
+      .chat-bubble {
+        padding: var(--space-3) var(--space-4);
+        border-radius: var(--radius-lg);
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 15px;
+        line-height: 1.6;
+      }
+      .chat-bubble--user {
+        background: var(--ink);
+        color: var(--ink-inverse);
+        border-bottom-right-radius: var(--radius-sm);
+      }
+      .chat-bubble--ai {
+        background: var(--surface-subtle);
+        color: var(--ink);
+        border-bottom-left-radius: var(--radius-sm);
+      }
+      .chat-bubble p {
+        margin: 0 0 var(--space-2);
+      }
+      .chat-bubble p:last-child {
+        margin-bottom: 0;
+      }
+
+      .chat-input-bar {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-3) var(--space-4);
+        border-top: 1px solid var(--divider);
+        background: var(--surface-raised);
+      }
+      .chat-input {
+        flex: 1;
+        height: 44px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: 0 var(--space-4);
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 15px;
+        color: var(--ink);
+        background: var(--surface);
+        outline: none;
+      }
+      .chat-input::placeholder {
+        color: var(--ink-3);
+      }
+      .chat-input:disabled {
+        background: var(--surface-subtle);
+        color: var(--ink-3);
+        cursor: not-allowed;
+      }
+      .chat-send {
+        width: 44px;
+        height: 44px;
+        border: none;
+        border-radius: var(--radius-md);
+        background: var(--ink);
+        color: var(--ink-inverse);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+      .chat-send:disabled {
+        background: var(--border);
+        color: var(--ink-3);
+        cursor: not-allowed;
+      }
+
+      .chat-stat-line {
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        color: var(--ink-3);
+        text-align: center;
+        padding: var(--space-1) 0;
+        flex-shrink: 0;
+      }
+
+      /* Cap hit in chat */
+      .chat-cap-hit {
+        align-self: center;
+        padding: var(--space-4);
+        background: var(--surface-subtle);
+        border-radius: var(--radius-lg);
+        text-align: center;
+        max-width: 300px;
+      }
+
+      .chat-cap-hit-text {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--ink-2);
+        margin: 0 0 var(--space-2);
+      }
+
+      .chat-cap-hit-reset {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--ink-3);
+        margin: 0;
+      }
+
+      /* Desktop frame */
+      .device-frame--desktop {
+        width: 1440px;
+        height: 900px;
+        border-radius: 12px;
+        padding: 8px;
+        position: relative;
+        overflow: hidden;
+      }
+      .screen--desktop {
+        width: 100%;
+        height: 100%;
+        background: var(--surface);
+        display: flex;
+        flex-direction: column;
+      }
+      .avatar--tier {
+        position: relative;
+      }
+      .avatar--tier::after {
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        right: -1px;
+        width: 10px;
+        height: 10px;
+        border-radius: var(--radius-full);
+        background: var(--accent);
+        border: 2px solid var(--surface);
+      }
+      .desktop-content-row {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+      }
+      .inline-ai-panel--desktop {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 420px;
+        background: var(--surface-raised);
+        border-left: 1px solid var(--border);
+        box-shadow: -8px 0 24px -12px rgba(15, 15, 14, 0.18);
+        z-index: 50;
+        display: flex;
+        flex-direction: column;
+      }
+      .inline-ai-panel--desktop .panel-backdrop {
+        display: none;
+      }
+      .panel-close {
+        margin-left: auto;
+        background: transparent;
+        border: none;
+        color: var(--ink-2);
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-md);
+      }
+
+      @media (max-width: 480px) {
+        .state {
+          padding: var(--space-5) var(--space-3);
+        }
+        .mockup-nav {
+          padding: var(--space-3);
+        }
+        .state-tabs {
+          width: 100%;
+          margin-left: 0;
+        }
+      }
+      @media (max-width: 900px) {
+        .device-frame--desktop {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="mockup-nav">
+      <div>
+        <div class="mockup-title">dolfyn / Token Cap Hit</div>
+        <div class="mockup-subtitle">Phase 4 · Req 07 · 3 states</div>
+      </div>
+      <nav class="state-tabs" aria-label="State selector">
+        <a href="#state-a" class="state-tab">A · inline AI cap hit</a>
+        <a href="#state-b" class="state-tab">B · chat cap hit</a>
+        <a href="#state-c" class="state-tab">C · disabled AI bar</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- STATE A — Inline AI cap hit -->
+      <section id="state-a" class="state">
+        <div class="state-header">
+          <span class="state-tag">Cap hit</span>
+          <h2 class="state-title">State A — inline AI cap hit</h2>
+          <p class="state-desc">
+            User tapped a chip or <code>//</code> but the daily token limit is
+            reached. The panel opens with the cap-hit message instead of chips
+            or a response: "Done for today — back tomorrow." No action bar. The
+            usage meter donut (§4.16) shows a full ring in
+            <code>--cap-hit</code>. The message is matter-of-fact, not alarming.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px — panel cap hit</div>
+            <div class="device-frame">
+              <div class="screen" data-state="A">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar" aria-label="Profile">SC</div>
+                  </header>
+                  <div class="note-editor" style="padding-bottom: 124px">
+                    <div class="note-body">
+                      <div class="note-title">
+                        What makes a great first-time user experience?
+                      </div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        A great first-time experience doesn't explain.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle sparkle-18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <!-- Inline AI panel — cap hit -->
+                <div class="panel-backdrop"></div>
+                <div class="inline-ai-panel" role="dialog" aria-modal="true">
+                  <div class="panel-header">
+                    <svg
+                      class="panel-sparkle sparkle-18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                    <span class="panel-title">Thinking partner</span>
+                  </div>
+                  <div class="cap-hit-message">
+                    <svg
+                      class="cap-hit-icon"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                    <p class="cap-hit-text">Done for today — back tomorrow.</p>
+                    <p class="cap-hit-reset">Resets at midnight UTC.</p>
+                  </div>
+                  <div class="panel-actions">
+                    <button type="button" class="btn btn--ghost" disabled>
+                      Dismiss
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Usage meter donut — full ring in --cap-hit -->
+                <div
+                  style="
+                    position: absolute;
+                    right: 16px;
+                    bottom: 128px;
+                    width: 32px;
+                    height: 32px;
+                    z-index: 100;
+                  "
+                >
+                  <svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 32 32"
+                    style="transform: rotate(-90deg)"
+                  >
+                    <circle
+                      cx="16"
+                      cy="16"
+                      r="14"
+                      fill="none"
+                      stroke="var(--border)"
+                      stroke-width="1"
+                    />
+                    <circle
+                      cx="16"
+                      cy="16"
+                      r="14"
+                      fill="none"
+                      stroke="var(--cap-hit)"
+                      stroke-width="4"
+                      stroke-linecap="round"
+                      stroke-dasharray="87.96"
+                      stroke-dashoffset="0"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop viewport -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop" data-state="A">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div
+                    class="avatar avatar--tier"
+                    aria-label="Profile, Think tier"
+                  >
+                    SC
+                  </div>
+                </header>
+                <div class="desktop-content-row">
+                  <div class="note-editor" style="flex: 1">
+                    <div
+                      class="note-body"
+                      style="max-width: 540px; margin: 0 auto"
+                    >
+                      <div class="note-title">
+                        What makes a great first-time user experience?
+                      </div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        A great first-time experience doesn't explain.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                  <!-- Desktop side panel — cap hit -->
+                  <aside
+                    class="inline-ai-panel--desktop"
+                    role="dialog"
+                    aria-modal="false"
+                  >
+                    <div class="panel-header">
+                      <svg
+                        class="panel-sparkle sparkle-18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        />
+                      </svg>
+                      <span class="panel-title">Thinking partner</span>
+                      <button
+                        class="panel-close"
+                        type="button"
+                        aria-label="Close panel"
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path d="M18 6 6 18" />
+                          <path d="m6 6 12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div class="cap-hit-message">
+                      <svg
+                        class="cap-hit-icon"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        />
+                      </svg>
+                      <p class="cap-hit-text">
+                        Done for today — back tomorrow.
+                      </p>
+                      <p class="cap-hit-reset">Resets at midnight UTC.</p>
+                    </div>
+                    <div class="panel-actions">
+                      <button type="button" class="btn btn--ghost" disabled>
+                        Dismiss
+                      </button>
+                    </div>
+                  </aside>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle sparkle-18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+                <!-- Usage meter donut (desktop) -->
+                <div
+                  style="
+                    position: absolute;
+                    right: 24px;
+                    bottom: 132px;
+                    width: 32px;
+                    height: 32px;
+                    z-index: 100;
+                  "
+                >
+                  <svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 32 32"
+                    style="transform: rotate(-90deg)"
+                  >
+                    <circle
+                      cx="16"
+                      cy="16"
+                      r="14"
+                      fill="none"
+                      stroke="var(--border)"
+                      stroke-width="1"
+                    />
+                    <circle
+                      cx="16"
+                      cy="16"
+                      r="14"
+                      fill="none"
+                      stroke="var(--cap-hit)"
+                      stroke-width="4"
+                      stroke-linecap="round"
+                      stroke-dasharray="87.96"
+                      stroke-dashoffset="0"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATE B — Chat cap hit -->
+      <section id="state-b" class="state">
+        <div class="state-header">
+          <span class="state-tag">Cap hit</span>
+          <h2 class="state-title">State B — chat cap hit</h2>
+          <p class="state-desc">
+            User typed a message in chat but the daily token limit is reached.
+            The input bar is disabled (greyed out). A centered message appears
+            in the chat thread: "Done for today — back tomorrow." with reset
+            time. The usage meter donut shows a full ring in
+            <code>--cap-hit</code>. The user can still scroll and read past
+            messages.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px — chat cap hit</div>
+            <div class="device-frame">
+              <div class="screen" data-state="B">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar" aria-label="Profile">SC</div>
+                  </header>
+                  <div class="chat-view">
+                    <div class="chat-thread">
+                      <div class="chat-msg chat-msg--user">
+                        <div class="chat-bubble chat-bubble--user">
+                          <p>
+                            What patterns do you see across my notes about
+                            first-time UX?
+                          </p>
+                        </div>
+                      </div>
+                      <div class="chat-msg chat-msg--ai">
+                        <div class="chat-bubble chat-bubble--ai">
+                          <p>
+                            You keep circling back to one idea: don't explain
+                            the product, let the user do the thing.
+                          </p>
+                        </div>
+                      </div>
+                      <div class="chat-msg chat-msg--user">
+                        <div class="chat-bubble chat-bubble--user">
+                          <p>So what should I call it?</p>
+                        </div>
+                      </div>
+                      <div class="chat-msg chat-msg--ai">
+                        <div class="chat-bubble chat-bubble--ai">
+                          <p>
+                            "Show, don't teach." Short enough to remember,
+                            specific enough to use.
+                          </p>
+                        </div>
+                      </div>
+                      <!-- Cap hit message in chat -->
+                      <div class="chat-cap-hit">
+                        <p class="chat-cap-hit-text">
+                          Done for today — back tomorrow.
+                        </p>
+                        <p class="chat-cap-hit-reset">
+                          Resets at midnight UTC.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="chat-input-bar">
+                      <input
+                        type="text"
+                        class="chat-input"
+                        placeholder="Done for today — back tomorrow"
+                        disabled
+                        aria-label="Chat message input"
+                      />
+                      <button
+                        type="button"
+                        class="chat-send"
+                        disabled
+                        aria-label="Send message"
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M12 19V5" />
+                          <path d="m5 12 7-7 7 7" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div class="chat-stat-line">
+                      47 conversations · last active 2h ago
+                    </div>
+                  </div>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <!-- Usage meter donut -->
+                <div
+                  style="
+                    position: absolute;
+                    right: 16px;
+                    bottom: 170px;
+                    width: 32px;
+                    height: 32px;
+                    z-index: 100;
+                  "
+                >
+                  <svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 32 32"
+                    style="transform: rotate(-90deg)"
+                  >
+                    <circle
+                      cx="16"
+                      cy="16"
+                      r="14"
+                      fill="none"
+                      stroke="var(--border)"
+                      stroke-width="1"
+                    />
+                    <circle
+                      cx="16"
+                      cy="16"
+                      r="14"
+                      fill="none"
+                      stroke="var(--cap-hit)"
+                      stroke-width="4"
+                      stroke-linecap="round"
+                      stroke-dasharray="87.96"
+                      stroke-dashoffset="0"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop viewport -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop" data-state="B">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div
+                    class="avatar avatar--tier"
+                    aria-label="Profile, Think tier"
+                  >
+                    SC
+                  </div>
+                </header>
+                <div class="desktop-content-row">
+                  <div class="note-editor" style="flex: 1">
+                    <div
+                      class="note-body"
+                      style="max-width: 540px; margin: 0 auto"
+                    >
+                      <div class="note-title">
+                        What makes a great first-time user experience?
+                      </div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        A great first-time experience doesn't explain.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                  <!-- Desktop chat panel — cap hit -->
+                  <aside
+                    class="chat-view"
+                    style="
+                      width: 500px;
+                      flex-shrink: 0;
+                      border-left: 1px solid var(--border);
+                      background: var(--surface);
+                    "
+                  >
+                    <div class="chat-thread">
+                      <div class="chat-msg chat-msg--user">
+                        <div class="chat-bubble chat-bubble--user">
+                          <p>
+                            What patterns do you see across my notes about
+                            first-time UX?
+                          </p>
+                        </div>
+                      </div>
+                      <div class="chat-msg chat-msg--ai">
+                        <div class="chat-bubble chat-bubble--ai">
+                          <p>
+                            You keep circling back to one idea: don't explain
+                            the product, let the user do the thing.
+                          </p>
+                        </div>
+                      </div>
+                      <div class="chat-msg chat-msg--user">
+                        <div class="chat-bubble chat-bubble--user">
+                          <p>So what should I call it?</p>
+                        </div>
+                      </div>
+                      <div class="chat-msg chat-msg--ai">
+                        <div class="chat-bubble chat-bubble--ai">
+                          <p>
+                            "Show, don't teach." Short enough to remember,
+                            specific enough to use.
+                          </p>
+                        </div>
+                      </div>
+                      <div class="chat-cap-hit">
+                        <p class="chat-cap-hit-text">
+                          Done for today — back tomorrow.
+                        </p>
+                        <p class="chat-cap-hit-reset">
+                          Resets at midnight UTC.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="chat-input-bar">
+                      <input
+                        type="text"
+                        class="chat-input"
+                        placeholder="Done for today — back tomorrow"
+                        disabled
+                        aria-label="Chat message input"
+                      />
+                      <button
+                        type="button"
+                        class="chat-send"
+                        disabled
+                        aria-label="Send message"
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M12 19V5" />
+                          <path d="m5 12 7-7 7 7" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div class="chat-stat-line">
+                      47 conversations · last active 2h ago
+                    </div>
+                  </aside>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+                <!-- Usage meter donut (desktop) -->
+                <div
+                  style="
+                    position: absolute;
+                    right: 24px;
+                    bottom: 180px;
+                    width: 32px;
+                    height: 32px;
+                    z-index: 100;
+                  "
+                >
+                  <svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 32 32"
+                    style="transform: rotate(-90deg)"
+                  >
+                    <circle
+                      cx="16"
+                      cy="16"
+                      r="14"
+                      fill="none"
+                      stroke="var(--border)"
+                      stroke-width="1"
+                    />
+                    <circle
+                      cx="16"
+                      cy="16"
+                      r="14"
+                      fill="none"
+                      stroke="var(--cap-hit)"
+                      stroke-width="4"
+                      stroke-linecap="round"
+                      stroke-dasharray="87.96"
+                      stroke-dashoffset="0"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATE C — Disabled AI bar (cap hit, note view) -->
+      <section id="state-c" class="state">
+        <div class="state-header">
+          <span class="state-tag">Cap hit</span>
+          <h2 class="state-title">State C — disabled AI bar</h2>
+          <p class="state-desc">
+            When the daily limit is reached, the AI presence bar reflects the
+            disabled state — muted sparkle, muted text, no interaction. The user
+            sees the bar but understands AI is unavailable today. This is the
+            note view (not the chat/panel view shown in states A and B). Per Req
+            07: "all AI features gracefully stop responding."
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px — note view, bar disabled</div>
+            <div class="device-frame">
+              <div class="screen" data-state="C">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar" aria-label="Profile">SC</div>
+                  </header>
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">Pricing strategy thoughts</div>
+                      <p class="note-paragraph">
+                        The ₹149 price point is the sweet spot — affordable
+                        enough for impulse, premium enough to signal value.
+                        Introductory ₹99 creates the hook.
+                      </p>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        Key question: does the auto-save loop push free users to
+                        the cap fast enough?<span class="cursor"></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <!-- Disabled AI bar — muted, non-interactive -->
+                <div class="ai-bar ai-bar--disabled">
+                  <svg
+                    class="ai-bar-sparkle sparkle-18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>Done for today — back tomorrow</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+                <!-- Usage meter — full ring in --cap-hit -->
+                <div
+                  style="
+                    position: absolute;
+                    right: 16px;
+                    bottom: 128px;
+                    width: 32px;
+                    height: 32px;
+                    z-index: 100;
+                  "
+                >
+                  <svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 32 32"
+                    style="transform: rotate(-90deg)"
+                  >
+                    <circle
+                      cx="16"
+                      cy="16"
+                      r="14"
+                      fill="none"
+                      stroke="var(--border)"
+                      stroke-width="1"
+                    />
+                    <circle
+                      cx="16"
+                      cy="16"
+                      r="14"
+                      fill="none"
+                      stroke="var(--cap-hit)"
+                      stroke-width="4"
+                      stroke-linecap="round"
+                      stroke-dasharray="87.96"
+                      stroke-dashoffset="0"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

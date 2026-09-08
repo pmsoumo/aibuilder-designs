@@ -1,0 +1,644 @@
+<!-- COMPONENT INVENTORY: app-shell, sidebar-nav, input-text, chip-select, patient-match, button-primary, button-secondary, inline-error -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KeepWell — New appointment</title>
+    <link rel="stylesheet" href="../tokens.css" />
+    <link rel="stylesheet" href="../screens.css" />
+  </head>
+  <body>
+    <div class="board">
+      <h1>New appointment — typed while someone waits</h1>
+      <p class="lede">
+        The highest-friction moment in the product: she is on the phone or
+        facing a patient, and every extra field is a reason to go back to paper.
+        Phone number first, because it is the only field the product genuinely
+        needs — and typing a known number surfaces the existing patient instead
+        of silently creating a duplicate. Day and time are chips, not pickers; a
+        date picker is three taps for "today".
+      </p>
+
+      <h2 class="group">Desktop — entered at the desk</h2>
+      <p class="groupnote">
+        Two columns on desktop — phone beside name, day beside time — so the
+        whole form fits without scrolling. It is typed while a patient waits,
+        and a scroll on a four-field form is wasted motion. Phone stays
+        single-column.
+      </p>
+
+      <div class="vp-desktop">
+        <div
+          class="kw-shell"
+          data-component="app-shell"
+          data-variant="desktop"
+          data-responsive="1200"
+        >
+          <nav
+            class="kw-sidebar"
+            data-component="sidebar-nav"
+            aria-label="Main"
+          >
+            <div class="kw-sidebar-head">
+              <div class="kw-brand">KeepWell</div>
+              <button
+                class="kw-navtoggle"
+                data-component="nav-toggle"
+                data-interaction="toggle-sidebar"
+                aria-label="Collapse navigation"
+                aria-expanded="true"
+              >
+                &#8249;
+              </button>
+            </div>
+            <a class="kw-navitem" href="#" aria-current="page"
+              ><span>Today</span><span class="kw-count">14</span></a
+            >
+            <a class="kw-navitem" href="#"
+              ><span>Reminders</span><span class="kw-count">3</span></a
+            >
+            <a class="kw-navitem" href="#"
+              ><span>Patients</span><span class="kw-count empty">0</span></a
+            >
+            <a class="kw-navitem" href="#"
+              ><span>Close day</span><span class="kw-count empty">0</span></a
+            >
+            <div class="kw-sidebar-foot">
+              Dr Anjali Rao<br />Rao Clinic, Pune
+            </div>
+          </nav>
+
+          <div class="kw-main">
+            <div class="kw-head">
+              <div>
+                <div class="kicker">Today · Saturday, 6 September</div>
+                <div class="title">New appointment</div>
+              </div>
+              <div class="kw-head-actions">
+                <button
+                  class="kw-btn kw-btn--secondary"
+                  data-component="button-secondary"
+                  data-interaction="cancel"
+                >
+                  Cancel
+                </button>
+                <button
+                  class="kw-btn kw-btn--primary"
+                  data-component="button-primary"
+                  data-primary-action="true"
+                  data-interaction="save-appointment"
+                >
+                  Book 10:30
+                </button>
+              </div>
+            </div>
+
+            <div class="kw-formbody">
+              <div class="kw-field">
+                <label for="d-phone">Phone number</label>
+                <input
+                  class="kw-input"
+                  data-component="input-text"
+                  data-validate="required|phone-in"
+                  id="d-phone"
+                  type="tel"
+                  inputmode="numeric"
+                  value="98211 40233"
+                />
+                <div class="kw-hint">Needed to send the reminder.</div>
+                <div class="kw-match" data-component="patient-match">
+                  <span class="name"
+                    >Sunita Rao<span class="sub"
+                      >Last seen 12 August · 4 visits · 1 no-show</span
+                    ></span
+                  >
+                  <button
+                    class="kw-btn kw-btn--primary kw-btn--compact"
+                    data-component="button-primary"
+                    data-interaction="use-existing-patient"
+                  >
+                    Use
+                  </button>
+                </div>
+              </div>
+
+              <div class="kw-field">
+                <label for="d-name">Name</label>
+                <input
+                  class="kw-input"
+                  data-component="input-text"
+                  id="d-name"
+                  type="text"
+                  value="Sunita Rao"
+                />
+              </div>
+
+              <div class="kw-field">
+                <label for="d-day">When</label>
+                <div
+                  class="kw-chips"
+                  data-component="chip-select"
+                  role="group"
+                  aria-label="Day"
+                >
+                  <button
+                    class="kw-chip"
+                    aria-pressed="true"
+                    data-interaction="pick-day"
+                  >
+                    Today
+                  </button>
+                  <button
+                    class="kw-chip"
+                    aria-pressed="false"
+                    data-interaction="pick-day"
+                  >
+                    Tomorrow
+                  </button>
+                  <button
+                    class="kw-chip"
+                    aria-pressed="false"
+                    data-interaction="pick-day"
+                  >
+                    Pick date
+                  </button>
+                </div>
+              </div>
+
+              <div class="kw-field">
+                <label for="d-time">Time</label>
+                <div
+                  class="kw-chips"
+                  data-component="chip-select"
+                  role="group"
+                  aria-label="Time"
+                >
+                  <button
+                    class="kw-chip"
+                    aria-pressed="false"
+                    data-interaction="pick-time"
+                  >
+                    10:00
+                  </button>
+                  <button
+                    class="kw-chip"
+                    aria-pressed="true"
+                    data-interaction="pick-time"
+                  >
+                    10:30
+                  </button>
+                  <button
+                    class="kw-chip"
+                    aria-pressed="false"
+                    data-interaction="pick-time"
+                  >
+                    11:00
+                  </button>
+                  <button
+                    class="kw-chip"
+                    aria-pressed="false"
+                    data-interaction="pick-time"
+                  >
+                    11:30
+                  </button>
+                  <button
+                    class="kw-chip"
+                    aria-pressed="false"
+                    data-interaction="pick-time"
+                  >
+                    Other
+                  </button>
+                </div>
+                <div class="kw-hint">
+                  Free slots from the doctor's usual hours. 10:00 is taken.
+                </div>
+              </div>
+
+              <div class="kw-explain">
+                A confirmation is prepared for you to send on WhatsApp. The
+                reminder appears in tomorrow's run.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="group">Phone</h2>
+      <p class="groupnote">
+        Same three fields, same chips, actions pinned in the thumb zone. All
+        three states rendered.
+      </p>
+
+      <div class="states vp-phone">
+        <section class="state">
+          <h3>Default — existing patient matched on phone</h3>
+          <p class="note">
+            The duplicate-prevention rule made visible rather than enforced
+            silently. Her recent history is shown because it changes how the
+            receptionist talks to her.
+          </p>
+          <div
+            class="kw-shell"
+            data-component="app-shell"
+            data-variant="phone"
+            data-responsive="375"
+          >
+            <div class="kw-topbar with-back">
+              <button
+                class="kw-back"
+                data-interaction="back"
+                aria-label="Back to today"
+              >
+                ← Today
+              </button>
+              <span class="title">New appointment</span>
+            </div>
+            <div class="kw-formbody">
+              <div class="kw-field">
+                <label for="p-phone">Phone number</label>
+                <input
+                  class="kw-input"
+                  data-component="input-text"
+                  data-validate="required|phone-in"
+                  id="p-phone"
+                  type="tel"
+                  inputmode="numeric"
+                  value="98211 40233"
+                  data-focus-order="1"
+                />
+                <div class="kw-hint">Needed to send the reminder.</div>
+                <div class="kw-match" data-component="patient-match">
+                  <span class="name"
+                    >Sunita Rao<span class="sub"
+                      >Last seen 12 August · 4 visits</span
+                    ></span
+                  >
+                  <button
+                    class="kw-btn kw-btn--primary kw-btn--compact"
+                    data-component="button-primary"
+                    data-interaction="use-existing-patient"
+                    data-focus-order="2"
+                  >
+                    Use
+                  </button>
+                </div>
+              </div>
+              <div class="kw-field">
+                <label for="p-name">Name</label>
+                <input
+                  class="kw-input"
+                  data-component="input-text"
+                  id="p-name"
+                  type="text"
+                  value="Sunita Rao"
+                  data-focus-order="3"
+                />
+              </div>
+              <div class="kw-field">
+                <label for="p-day">When</label>
+                <div
+                  class="kw-chips"
+                  data-component="chip-select"
+                  role="group"
+                  aria-label="Day"
+                >
+                  <button
+                    class="kw-chip"
+                    aria-pressed="true"
+                    data-interaction="pick-day"
+                  >
+                    Today
+                  </button>
+                  <button
+                    class="kw-chip"
+                    aria-pressed="false"
+                    data-interaction="pick-day"
+                  >
+                    Tomorrow
+                  </button>
+                  <button
+                    class="kw-chip"
+                    aria-pressed="false"
+                    data-interaction="pick-day"
+                  >
+                    Pick date
+                  </button>
+                </div>
+              </div>
+              <div class="kw-field">
+                <label for="p-time">Time</label>
+                <div
+                  class="kw-chips"
+                  data-component="chip-select"
+                  role="group"
+                  aria-label="Time"
+                >
+                  <button
+                    class="kw-chip"
+                    aria-pressed="false"
+                    data-interaction="pick-time"
+                  >
+                    10:00
+                  </button>
+                  <button
+                    class="kw-chip"
+                    aria-pressed="true"
+                    data-interaction="pick-time"
+                  >
+                    10:30
+                  </button>
+                  <button
+                    class="kw-chip"
+                    aria-pressed="false"
+                    data-interaction="pick-time"
+                  >
+                    11:00
+                  </button>
+                  <button
+                    class="kw-chip"
+                    aria-pressed="false"
+                    data-interaction="pick-time"
+                  >
+                    Other
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="kw-actionbar">
+              <button
+                class="kw-btn kw-btn--secondary kw-btn--tall"
+                data-component="button-secondary"
+                data-interaction="cancel"
+              >
+                Cancel
+              </button>
+              <button
+                class="kw-btn kw-btn--primary kw-btn--tall"
+                data-component="button-primary"
+                data-primary-action="true"
+                data-interaction="save-appointment"
+                data-focus-order="4"
+              >
+                Book 10:30
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section class="state">
+          <h3>New patient, no match</h3>
+          <p class="note">
+            Nothing found on that number, so the form says a patient will be
+            created. Name becomes required only at this point — progressive, not
+            upfront.
+          </p>
+          <div
+            class="kw-shell"
+            data-component="app-shell"
+            data-variant="phone"
+            data-condition="patient.match === null"
+          >
+            <div class="kw-topbar with-back">
+              <button
+                class="kw-back"
+                data-interaction="back"
+                aria-label="Back to today"
+              >
+                ← Today
+              </button>
+              <span class="title">New appointment</span>
+            </div>
+            <div class="kw-formbody">
+              <div class="kw-field">
+                <label for="n-phone">Phone number</label>
+                <input
+                  class="kw-input"
+                  data-component="input-text"
+                  data-validate="required|phone-in"
+                  id="n-phone"
+                  type="tel"
+                  inputmode="numeric"
+                  value="99871 20544"
+                />
+                <div class="kw-hint">
+                  New number — this will create a new patient.
+                </div>
+              </div>
+              <div class="kw-field">
+                <label for="n-name">Name</label>
+                <input
+                  class="kw-input"
+                  data-component="input-text"
+                  data-validate="required"
+                  id="n-name"
+                  type="text"
+                  placeholder="Patient's name"
+                />
+              </div>
+              <div class="kw-field">
+                <label for="n-day">When</label>
+                <div
+                  class="kw-chips"
+                  data-component="chip-select"
+                  role="group"
+                  aria-label="Day"
+                >
+                  <button
+                    class="kw-chip"
+                    aria-pressed="false"
+                    data-interaction="pick-day"
+                  >
+                    Today
+                  </button>
+                  <button
+                    class="kw-chip"
+                    aria-pressed="true"
+                    data-interaction="pick-day"
+                  >
+                    Tomorrow
+                  </button>
+                  <button
+                    class="kw-chip"
+                    aria-pressed="false"
+                    data-interaction="pick-day"
+                  >
+                    Pick date
+                  </button>
+                </div>
+              </div>
+              <div class="kw-field">
+                <label for="n-time">Time</label>
+                <div
+                  class="kw-chips"
+                  data-component="chip-select"
+                  role="group"
+                  aria-label="Time"
+                >
+                  <button
+                    class="kw-chip"
+                    aria-pressed="true"
+                    data-interaction="pick-time"
+                  >
+                    09:00
+                  </button>
+                  <button
+                    class="kw-chip"
+                    aria-pressed="false"
+                    data-interaction="pick-time"
+                  >
+                    09:30
+                  </button>
+                  <button
+                    class="kw-chip"
+                    aria-pressed="false"
+                    data-interaction="pick-time"
+                  >
+                    10:00
+                  </button>
+                  <button
+                    class="kw-chip"
+                    aria-pressed="false"
+                    data-interaction="pick-time"
+                  >
+                    Other
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="kw-actionbar">
+              <button
+                class="kw-btn kw-btn--secondary kw-btn--tall"
+                data-component="button-secondary"
+                data-interaction="cancel"
+              >
+                Cancel
+              </button>
+              <button
+                class="kw-btn kw-btn--primary kw-btn--tall"
+                data-component="button-primary"
+                data-primary-action="true"
+                data-interaction="save-appointment"
+              >
+                Book 9:00
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section class="state">
+          <h3>Error — no phone number</h3>
+          <p class="note">
+            Inline, next to the field, stating the consequence rather than "this
+            field is required". She can still proceed — blocking her sends her
+            back to paper, and a patient without a phone is a real case.
+          </p>
+          <div
+            class="kw-shell"
+            data-component="app-shell"
+            data-variant="phone"
+            data-state="error"
+          >
+            <div class="kw-topbar with-back">
+              <button
+                class="kw-back"
+                data-interaction="back"
+                aria-label="Back to today"
+              >
+                ← Today
+              </button>
+              <span class="title">New appointment</span>
+            </div>
+            <div class="kw-formbody">
+              <div class="kw-field">
+                <label for="e-phone">Phone number</label>
+                <input
+                  class="kw-input kw-input--error"
+                  data-component="input-text"
+                  data-state="error"
+                  data-validate="required|phone-in"
+                  id="e-phone"
+                  type="tel"
+                  inputmode="numeric"
+                  placeholder="10-digit mobile"
+                  aria-describedby="e-phone-err"
+                />
+                <div
+                  class="kw-error"
+                  data-component="inline-error"
+                  id="e-phone-err"
+                  role="alert"
+                  style="padding: var(--kw-space-2) 0 0"
+                >
+                  <p style="margin: 0; font-size: var(--kw-text-base)">
+                    No number means no reminder for this patient. Add one, or
+                    book without it.
+                  </p>
+                </div>
+              </div>
+              <div class="kw-field">
+                <label for="e-name">Name</label>
+                <input
+                  class="kw-input"
+                  data-component="input-text"
+                  data-validate="required"
+                  id="e-name"
+                  type="text"
+                  value="Lakshmi Menon"
+                />
+              </div>
+              <div class="kw-field">
+                <label for="e-time">Time</label>
+                <div
+                  class="kw-chips"
+                  data-component="chip-select"
+                  role="group"
+                  aria-label="Time"
+                >
+                  <button
+                    class="kw-chip"
+                    aria-pressed="true"
+                    data-interaction="pick-time"
+                  >
+                    16:30
+                  </button>
+                  <button
+                    class="kw-chip"
+                    aria-pressed="false"
+                    data-interaction="pick-time"
+                  >
+                    17:00
+                  </button>
+                  <button
+                    class="kw-chip"
+                    aria-pressed="false"
+                    data-interaction="pick-time"
+                  >
+                    Other
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="kw-actionbar">
+              <button
+                class="kw-btn kw-btn--secondary kw-btn--tall"
+                data-component="button-secondary"
+                data-interaction="save-without-phone"
+              >
+                Book anyway
+              </button>
+              <button
+                class="kw-btn kw-btn--primary kw-btn--tall"
+                data-component="button-primary"
+                data-primary-action="true"
+                data-interaction="add-phone"
+              >
+                Add number
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </body>
+</html>

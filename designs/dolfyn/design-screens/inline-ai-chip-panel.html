@@ -1,0 +1,3953 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>dolfyn — Inline AI Chip Panel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ============================================
+       Design System Tokens — dolfyn
+       Source: designs/dolfyn/design-system.md
+       ============================================ */
+      :root {
+        --surface: #fafaf7;
+        --surface-subtle: #f2f1ed;
+        --surface-raised: #ffffff;
+        --surface-overlay: rgba(15, 15, 14, 0.32);
+        --ink: #0f0f0e;
+        --ink-2: #3f3f3f;
+        --ink-3: #6b6b6b;
+        --ink-inverse: #fafaf7;
+        --border: #e5e5e1;
+        --border-strong: #c7c7c2;
+        --divider: #edede9;
+        --accent: #c2410c;
+        --accent-strong: #9a330a;
+        --accent-soft-bg: #fcefde;
+        --accent-tint: #f7f2ec;
+        --space-1: 4px;
+        --space-2: 8px;
+        --space-3: 12px;
+        --space-4: 16px;
+        --space-5: 24px;
+        --space-6: 32px;
+        --space-7: 48px;
+        --radius-sm: 6px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-xl: 16px;
+        --radius-full: 9999px;
+        --elevation-panel:
+          0 8px 24px -8px rgba(15, 15, 14, 0.12),
+          0 2px 4px -2px rgba(15, 15, 14, 0.06);
+        --elevation-modal: 0 24px 48px -12px rgba(15, 15, 14, 0.18);
+        --elevation-toast: 0 4px 12px -2px rgba(15, 15, 14, 0.08);
+        --z-base: 0;
+        --z-sticky: 100;
+        --z-overlay: 800;
+        --z-panel: 900;
+        --z-modal: 1000;
+        --z-toast: 1100;
+        --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        --ease-in: cubic-bezier(0.4, 0, 1, 1);
+        --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+        --ease-fast: linear;
+        --duration-fast: 150ms;
+        --duration-base: 250ms;
+        --duration-slow: 350ms;
+        --duration-sparkle-pulse: 1.5s;
+        --duration-sparkle-spin: 1s;
+        --type-display: 28px;
+        --type-title: 20px;
+        --type-body: 16px;
+        --type-body-sm: 14px;
+        --type-caption: 12px;
+        --type-label: 14px;
+        --type-counter: 11px;
+        --meta-bg: #ecebe5;
+        --meta-ink: #2a2a28;
+        --meta-ink-2: #6e6e68;
+        --meta-border: #d8d7d1;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--meta-bg);
+        color: var(--meta-ink);
+        font-family:
+          "Inter",
+          system-ui,
+          -apple-system,
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* ============================================
+       Mockup meta-header
+       ============================================ */
+      .mockup-nav {
+        position: sticky;
+        top: 0;
+        z-index: var(--z-toast);
+        background: var(--meta-bg);
+        border-bottom: 1px solid var(--meta-border);
+        padding: var(--space-3) var(--space-5);
+        display: flex;
+        align-items: center;
+        gap: var(--space-5);
+        flex-wrap: wrap;
+      }
+
+      .mockup-title {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink);
+      }
+
+      .mockup-subtitle {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 12px;
+        color: var(--meta-ink-2);
+      }
+
+      .state-tabs {
+        display: flex;
+        gap: var(--space-1);
+        margin-left: auto;
+        flex-wrap: wrap;
+      }
+
+      .state-tab {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--meta-ink-2);
+        text-decoration: none;
+        padding: var(--space-1) var(--space-2);
+        border-radius: var(--radius-sm);
+        border: 1px solid transparent;
+        transition:
+          background var(--duration-fast) var(--ease-out),
+          color var(--duration-fast) var(--ease-out);
+        white-space: nowrap;
+      }
+
+      .state-tab:hover {
+        background: rgba(15, 15, 14, 0.05);
+        color: var(--meta-ink);
+      }
+
+      #state-a:target ~ .mockup-nav .state-tab[href="#state-a"],
+      #state-b:target ~ .mockup-nav .state-tab[href="#state-b"],
+      #state-c:target ~ .mockup-nav .state-tab[href="#state-c"],
+      #state-d:target ~ .mockup-nav .state-tab[href="#state-d"],
+      #state-e:target ~ .mockup-nav .state-tab[href="#state-e"],
+      #state-f:target ~ .mockup-nav .state-tab[href="#state-f"],
+      #state-g:target ~ .mockup-nav .state-tab[href="#state-g"],
+      #state-h:target ~ .mockup-nav .state-tab[href="#state-h"] {
+        background: var(--meta-ink);
+        color: var(--ink-inverse);
+      }
+
+      /* ============================================
+       State section wrapper
+       ============================================ */
+      .state {
+        padding: var(--space-7) var(--space-5) var(--space-6);
+        max-width: 1400px;
+        margin: 0 auto;
+        border-top: 1px solid var(--meta-border);
+      }
+      .state:first-of-type {
+        border-top: none;
+      }
+      .state:target {
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: var(--radius-lg);
+      }
+
+      .state-deader {
+        margin-bottom: var(--space-5);
+        max-width: 720px;
+      }
+
+      .state-tag {
+        display: inline-block;
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink-2);
+        margin-bottom: var(--space-2);
+      }
+
+      .state-title {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--meta-ink);
+        margin: 0 0 var(--space-2);
+        letter-spacing: -0.01em;
+      }
+
+      .state-desc {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 14px;
+        color: var(--meta-ink-2);
+        line-height: 1.5;
+        margin: 0;
+      }
+
+      .viewports {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-5);
+        align-items: flex-start;
+      }
+
+      .viewport {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        flex-shrink: 0;
+      }
+
+      .device-label {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink-2);
+        padding-left: var(--space-1);
+      }
+
+      .device-frame {
+        background: var(--meta-ink);
+        border-radius: 28px;
+        padding: 8px;
+        box-shadow: 0 2px 8px -2px rgba(15, 15, 14, 0.12);
+      }
+
+      .device-frame--desktop {
+        width: 1440px;
+        height: 900px;
+        border-radius: 12px;
+        padding: 8px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .screen {
+        position: relative;
+        width: 375px;
+        height: 720px;
+        background: var(--surface);
+        border-radius: 22px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .screen--desktop {
+        width: 100%;
+        height: 100%;
+        background: var(--surface);
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ============================================
+       APP SHELL
+       ============================================ */
+      .app {
+        position: relative;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+
+      .app-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-3) var(--space-4);
+        flex-shrink: 0;
+      }
+
+      .wordmark {
+        font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+        font-weight: 600;
+        font-size: 20px;
+        letter-spacing: -0.01em;
+        color: var(--ink);
+        line-height: 1;
+      }
+
+      .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-full);
+        background: var(--surface-subtle);
+        color: var(--ink-2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Inter", system-ui, sans-serif;
+        font-weight: 500;
+        font-size: 13px;
+        flex-shrink: 0;
+      }
+
+      .avatar--tier {
+        position: relative;
+      }
+      .avatar--tier::after {
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        right: -1px;
+        width: 10px;
+        height: 10px;
+        border-radius: var(--radius-full);
+        border: 2px solid var(--surface);
+      }
+      .avatar--think::after {
+        background: var(--accent);
+      }
+
+      .note-editor {
+        flex: 1;
+        padding: var(--space-5) var(--space-4) 124px;
+        min-height: 100%;
+        overflow-y: auto;
+        scrollbar-width: none;
+      }
+      .note-editor::-webkit-scrollbar {
+        display: none;
+      }
+
+      .note-body {
+        font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 1.6;
+        color: var(--ink);
+        max-width: 480px;
+      }
+
+      .note-title {
+        font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 1.3;
+        color: var(--ink);
+        border: none;
+        outline: none;
+        background: transparent;
+        width: 100%;
+        padding: 0;
+        margin: 0 0 var(--space-5);
+      }
+
+      .note-paragraph {
+        margin: 0 0 var(--space-3);
+      }
+      .note-paragraph:last-child {
+        margin-bottom: 0;
+      }
+
+      /* Cursor */
+      .cursor {
+        display: inline-block;
+        width: 2px;
+        height: 1.1em;
+        background: var(--ink);
+        vertical-align: text-bottom;
+        margin-left: 1px;
+        animation: blink 1s steps(2) infinite;
+      }
+
+      @keyframes blink {
+        0%,
+        50% {
+          opacity: 1;
+        }
+        50.01%,
+        100% {
+          opacity: 0;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .cursor {
+          animation: none;
+          opacity: 1;
+        }
+      }
+
+      /* `//` inline AI trigger */
+      .slash-trigger {
+        color: var(--accent);
+        font-weight: 600;
+      }
+      .cursor-sparkle {
+        display: inline-block;
+        vertical-align: text-bottom;
+        color: var(--accent);
+        margin-left: 4px;
+        transform: translateY(1px);
+      }
+
+      /* ============================================
+       AI PRESENCE BAR
+       ============================================ */
+      .ai-bar {
+        height: 56px;
+        padding: 0 var(--space-4);
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+        font-size: 14px;
+        line-height: 1.5;
+        flex-shrink: 0;
+      }
+
+      .ai-bar--passive {
+        background: var(--surface-subtle);
+        color: var(--ink-2);
+      }
+      .ai-bar--active {
+        background: var(--accent-soft-bg);
+        color: var(--accent-strong);
+      }
+
+      .ai-bar-sparkle {
+        flex-shrink: 0;
+        color: var(--accent);
+      }
+      .ai-bar--active .ai-bar-sparkle {
+        animation: pulse var(--duration-sparkle-pulse) var(--ease-in-out)
+          infinite alternate;
+      }
+
+      @keyframes pulse {
+        0% {
+          opacity: 0.6;
+          transform: scale(1);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1.08);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .ai-bar--active .ai-bar-sparkle {
+          animation: none;
+          opacity: 1;
+        }
+      }
+
+      /* ============================================
+       BOTTOM NAV
+       ============================================ */
+      .bottom-nav {
+        height: 56px;
+        background: var(--surface-raised);
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: stretch;
+        justify-content: space-around;
+        padding: 0 var(--space-2);
+        flex-shrink: 0;
+      }
+
+      .tab {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        color: var(--ink-3);
+        position: relative;
+        text-decoration: none;
+      }
+
+      .tab svg {
+        display: block;
+      }
+      .tab--active {
+        color: var(--ink-2);
+      }
+      .tab--active svg {
+        color: var(--ink);
+      }
+
+      .tab--active::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 32px;
+        height: 3px;
+        background: var(--accent);
+        border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      }
+
+      /* ============================================
+       CONTENT COLUMN (desktop)
+       ============================================ */
+      .content-col {
+        max-width: 480px;
+        width: 100%;
+        margin: 0 auto;
+      }
+      .app--wide .app-header {
+        width: 100%;
+      }
+      .ai-bar .content-col,
+      .bottom-nav .content-col {
+        max-width: none;
+      }
+
+      /* ============================================
+       SPARKLE UTILITY
+       ============================================ */
+      .sparkle-14 {
+        width: 14px;
+        height: 14px;
+      }
+      .sparkle-18 {
+        width: 18px;
+        height: 18px;
+      }
+      .sparkle-24 {
+        width: 24px;
+        height: 24px;
+      }
+
+      /* ============================================
+       INLINE AI PANEL — MOBILE (§4.4)
+       ============================================ */
+      .panel-backdrop {
+        position: absolute;
+        inset: 0;
+        background: var(--surface-overlay);
+        z-index: var(--z-overlay);
+      }
+
+      .inline-ai-panel {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 80%;
+        background: var(--surface-raised);
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        box-shadow: var(--elevation-panel);
+        z-index: var(--z-panel);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      /* Panel header */
+      .panel-header {
+        height: 48px;
+        flex-shrink: 0;
+        padding: 0 var(--space-4);
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        border-bottom: 1px solid var(--divider);
+        background: var(--surface-raised);
+      }
+
+      .panel-sparkle {
+        color: var(--accent);
+        flex-shrink: 0;
+      }
+
+      .panel-title {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.3;
+        color: var(--ink-2);
+        letter-spacing: 0;
+      }
+
+      /* Panel response area */
+      .panel-response {
+        flex: 7;
+        padding: var(--space-4) var(--space-5) var(--space-5);
+        overflow-y: auto;
+        font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--ink);
+        scrollbar-width: thin;
+      }
+      .panel-response::-webkit-scrollbar {
+        width: 4px;
+      }
+      .panel-response::-webkit-scrollbar-thumb {
+        background: var(--border-strong);
+        border-radius: var(--radius-full);
+      }
+      .panel-response p {
+        margin: 0 0 var(--space-3);
+      }
+      .panel-response p:last-child {
+        margin-bottom: 0;
+      }
+
+      /* Panel context strip */
+      .panel-context {
+        flex: 3;
+        border-top: 1px solid var(--divider);
+        padding: var(--space-4);
+        overflow-y: auto;
+        font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--ink-2);
+        background: var(--surface);
+      }
+
+      .panel-context-label {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        margin: 0 0 var(--space-2);
+      }
+
+      .panel-context p {
+        margin: 0 0 var(--space-2);
+      }
+
+      /* Panel actions */
+      .panel-actions {
+        flex-shrink: 0;
+        display: flex;
+        gap: var(--space-2);
+        padding: var(--space-3) var(--space-4);
+        border-top: 1px solid var(--divider);
+        background: var(--surface-raised);
+      }
+
+      .btn {
+        flex: 1;
+        height: 44px;
+        border: none;
+        border-radius: var(--radius-md);
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 0;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          opacity var(--duration-fast) var(--ease-out),
+          background var(--duration-fast) var(--ease-out);
+      }
+
+      .btn--ghost {
+        background: transparent;
+        color: var(--ink-2);
+      }
+      .btn--primary {
+        background: var(--ink);
+        color: var(--ink-inverse);
+      }
+      .btn--primary:disabled {
+        background: var(--border);
+        color: var(--ink-3);
+        cursor: not-allowed;
+      }
+      .btn:active {
+        opacity: 0.85;
+      }
+      .btn--ai {
+        background: var(--accent);
+        color: var(--ink-inverse);
+      }
+
+      /* ============================================
+       CHIP PANEL STATE — §4.4a
+       ============================================ */
+      .chip-panel {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: var(--space-4) var(--space-5);
+        overflow-y: auto;
+      }
+
+      .chip-state-label {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        margin-bottom: var(--space-3);
+      }
+
+      .chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-2);
+        margin-bottom: var(--space-3);
+      }
+
+      .chip {
+        height: 44px;
+        padding: 0 var(--space-3);
+        background: var(--surface-subtle);
+        border: none;
+        border-radius: var(--radius-md);
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--ink);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        transition:
+          background var(--duration-fast) var(--ease-out),
+          color var(--duration-fast) var(--ease-out);
+        white-space: nowrap;
+      }
+
+      .chip:active {
+        background: var(--border);
+      }
+
+      .chip--active {
+        background: var(--accent-soft-bg);
+        color: var(--accent-strong);
+      }
+
+      .chip-icon {
+        width: 18px;
+        height: 18px;
+        color: var(--accent);
+        flex-shrink: 0;
+      }
+
+      .chip--active .chip-icon {
+        color: var(--accent-strong);
+      }
+
+      .more-row {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        color: var(--ink-3);
+        cursor: pointer;
+        padding: var(--space-2) 0;
+        border: none;
+        background: none;
+        text-align: left;
+        transition: color var(--duration-fast) var(--ease-out);
+      }
+
+      .more-row:hover {
+        color: var(--ink-2);
+      }
+      .more-row:active {
+        color: var(--ink);
+      }
+
+      /* Secondary chip rows */
+      .secondary-chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-2);
+        padding-top: var(--space-3);
+        border-top: 1px solid var(--divider);
+        margin-bottom: var(--space-3);
+      }
+
+      .chip--secondary {
+        height: 36px;
+        padding: 0 var(--space-3);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--ink);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+        transition: background var(--duration-fast) var(--ease-out);
+      }
+
+      .chip--secondary:active {
+        background: var(--surface-subtle);
+      }
+      .chip--secondary--active {
+        background: var(--accent-soft-bg);
+        color: var(--accent-strong);
+        border-color: var(--accent);
+      }
+
+      /* Loading state — sparkle-spin */
+      .loading-state {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .sparkle-spin {
+        width: 18px;
+        height: 18px;
+        color: var(--accent);
+        animation: spin var(--duration-sparkle-spin) linear infinite;
+      }
+
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .sparkle-spin {
+          animation: none;
+        }
+      }
+
+      /* ============================================
+       "MORE" BOTTOM SHEET — §4.4a
+       ============================================ */
+      .bottom-sheet {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 80%;
+        background: var(--surface-raised);
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        box-shadow: var(--elevation-panel);
+        z-index: var(--z-panel);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .sheet-drag-handle {
+        width: 36px;
+        height: 4px;
+        background: var(--border-strong);
+        border-radius: var(--radius-full);
+        margin: var(--space-2) auto 0;
+        flex-shrink: 0;
+      }
+
+      .sheet-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-3) var(--space-4);
+        border-bottom: 1px solid var(--divider);
+        flex-shrink: 0;
+      }
+
+      .sheet-title {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--ink);
+        margin: 0;
+      }
+
+      .sheet-close {
+        width: 32px;
+        height: 32px;
+        border: none;
+        background: transparent;
+        color: var(--ink-2);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-md);
+      }
+
+      .sheet-close:active {
+        background: var(--surface-subtle);
+      }
+
+      .sheet-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: var(--space-4);
+      }
+
+      .sheet-section {
+        margin-bottom: var(--space-5);
+      }
+
+      .sheet-section:last-child {
+        margin-bottom: 0;
+      }
+
+      .sheet-section-label {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        margin-bottom: var(--space-2);
+      }
+
+      .sheet-chip-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+      }
+
+      .sheet-chip {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        padding: var(--space-3) var(--space-4);
+        border: none;
+        background: transparent;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        text-align: left;
+        transition: background var(--duration-fast) var(--ease-out);
+        width: 100%;
+      }
+
+      .sheet-chip:active {
+        background: var(--surface-subtle);
+      }
+
+      .sheet-chip-icon {
+        width: 20px;
+        height: 20px;
+        color: var(--accent);
+        flex-shrink: 0;
+      }
+
+      .sheet-chip-text {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--ink);
+        flex: 1;
+      }
+
+      .sheet-chip-desc {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 12px;
+        color: var(--ink-3);
+      }
+
+      /* ============================================
+       DESKTOP MODAL — "More" sheet centered §4.4a
+       ============================================ */
+      .bottom-sheet--desktop {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 480px;
+        height: 600px;
+        background: var(--surface-raised);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--elevation-modal);
+        z-index: var(--z-modal);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .bottom-sheet--desktop .sheet-drag-handle {
+        display: none;
+      }
+
+      /* ============================================
+       DESKTOP PANEL — floating panel §4.4
+       ============================================ */
+      .inline-ai-panel--desktop {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 420px;
+        background: var(--surface-raised);
+        border-left: 1px solid var(--border);
+        box-shadow: -8px 0 24px -12px rgba(15, 15, 14, 0.18);
+        z-index: 50;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .inline-ai-panel--desktop .panel-backdrop {
+        display: none;
+      }
+
+      .inline-ai-panel--desktop .panel-close {
+        margin-left: auto;
+        background: transparent;
+        border: none;
+        color: var(--ink-2);
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-md);
+      }
+
+      .inline-ai-panel--desktop .panel-close:active {
+        background: var(--surface-subtle);
+      }
+
+      /* ============================================
+       DESKTOP CONTENT ROW
+       ============================================ */
+      .desktop-content-row {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .desktop-content-row .note-editor {
+        flex: 1;
+        min-width: 0;
+      }
+      .desktop-content-row .note-editor .note-body {
+        max-width: 540px;
+        margin: 0 auto;
+      }
+
+      /* ============================================
+       Responsive — mockup meta only
+       ============================================ */
+      @media (max-width: 900px) {
+        .device-frame--desktop {
+          display: none;
+        }
+      }
+      @media (max-width: 480px) {
+        .state {
+          padding: var(--space-5) var(--space-3);
+        }
+        .mockup-nav {
+          padding: var(--space-3);
+        }
+        .state-tabs {
+          width: 100%;
+          margin-left: 0;
+        }
+      }
+
+      /* Multi-note redirect CTA */
+      .redirect-cta {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-3);
+        padding: var(--space-5) var(--space-4);
+        text-align: center;
+        background: var(--accent-tint);
+        border-radius: var(--radius-lg);
+        margin: var(--space-3) var(--space-4);
+      }
+      .redirect-cta-icon {
+        color: var(--accent);
+      }
+      .redirect-cta-text {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--ink);
+        margin: 0;
+      }
+      .redirect-cta-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        height: 36px;
+        padding: 0 var(--space-4);
+        border: none;
+        border-radius: var(--radius-md);
+        background: var(--accent);
+        color: var(--ink-inverse);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+      }
+      .redirect-cta-btn:active {
+        opacity: 0.85;
+      }
+
+      /* AI feedback affordance — §4.18 (WS-4) */
+      .ai-feedback {
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+        margin-top: var(--space-3);
+      }
+      .ai-feedback-btn {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: none;
+        border-radius: var(--radius-md);
+        color: var(--ink-3);
+        cursor: pointer;
+        transition:
+          background var(--duration-fast) var(--ease-out),
+          color var(--duration-fast) var(--ease-out);
+      }
+      .ai-feedback-btn svg {
+        width: 18px;
+        height: 18px;
+        stroke-width: 1.5;
+      }
+      .ai-feedback-btn:active {
+        background: var(--surface-subtle);
+      }
+      .ai-feedback-btn--selected {
+        color: var(--accent-strong);
+      }
+
+      /* AI-limitations footer note — §4.20 (WS-4) */
+      .panel-limitations-note {
+        flex-shrink: 0;
+        padding: var(--space-2) var(--space-4);
+        border-top: 1px solid var(--divider);
+        background: var(--surface-raised);
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        color: var(--ink-3);
+      }
+
+      /* Long-note replace guard notice — §4.21 (WS-3) */
+      .replace-guard {
+        flex-shrink: 0;
+        margin: var(--space-3) var(--space-4);
+        padding: var(--space-3);
+        background: var(--surface-subtle);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        display: flex;
+        gap: var(--space-2);
+        align-items: flex-start;
+      }
+      .replace-guard-icon {
+        width: 16px;
+        height: 16px;
+        color: var(--ink-3);
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+      .replace-guard-title {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--ink);
+        margin: 0 0 var(--space-1);
+      }
+      .replace-guard-body {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--ink-2);
+        margin: 0 0 var(--space-2);
+      }
+      .replace-guard-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+      }
+      .replace-guard-primary {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--accent-strong);
+        background: none;
+        border: none;
+        padding: 0;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+      }
+      .replace-guard-dismiss {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--ink-3);
+        background: none;
+        border: none;
+        padding: 0;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Mockup meta-header -->
+    <header class="mockup-nav">
+      <div>
+        <div class="mockup-title">dolfyn / Inline AI Chip Panel</div>
+        <div class="mockup-subtitle">
+          Phase 2 · Entry state for all 14 inline AI features · 8 states
+        </div>
+      </div>
+      <nav class="state-tabs" aria-label="State selector">
+        <a href="#state-a" class="state-tab">A · empty note</a>
+        <a href="#state-b" class="state-tab">B · fragment</a>
+        <a href="#state-c" class="state-tab">C · building</a>
+        <a href="#state-d" class="state-tab">D · more sheet</a>
+        <a href="#state-e" class="state-tab">E · change length</a>
+        <a href="#state-f" class="state-tab">F · change tone</a>
+        <a href="#state-g" class="state-tab">G · loading</a>
+        <a href="#state-h" class="state-tab">H · redirect CTA</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- ============================================
+         STATE A — Empty note chips
+         ============================================ -->
+      <section id="state-a" class="state">
+        <div class="state-deader">
+          <span class="state-tag">Chip panel — empty note</span>
+          <h2 class="state-title">State A — empty note (0 chars)</h2>
+          <p class="state-desc">
+            User triggered <code>//</code> on an empty note. The chip panel
+            shows 4 state-relevant actions: Brainstorm, Fix Grammar, Improve
+            Writing, Summarize. "More actions →" row below. Mobile: bottom
+            sheet, 80% viewport. Desktop: side panel.
+          </p>
+        </div>
+
+        <div class="viewports">
+          <!-- Mobile -->
+          <div class="viewport">
+            <div class="device-label">375px (iPhone SE)</div>
+            <div class="device-frame">
+              <div class="screen" data-state="A">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar" aria-label="Profile">SC</div>
+                  </header>
+                  <div
+                    class="note-editor"
+                    data-state="A"
+                    style="padding-bottom: 124px"
+                  >
+                    <div class="note-body">
+                      <span class="cursor" aria-hidden="true"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive" role="button" tabindex="0">
+                  <svg
+                    class="ai-bar-sparkle sparkle-18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <!-- Chip panel (mobile) -->
+                <div class="panel-backdrop"></div>
+                <div
+                  class="inline-ai-panel"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label="Inline AI actions"
+                >
+                  <div class="panel-header">
+                    <svg
+                      class="panel-sparkle sparkle-18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                    <span class="panel-title">Thinking partner</span>
+                  </div>
+                  <div class="chip-panel">
+                    <div class="chip-state-label">Empty note</div>
+                    <div class="chip-row">
+                      <button type="button" class="chip">
+                        <svg
+                          class="chip-icon"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path
+                            d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                          />
+                        </svg>
+                        Brainstorm
+                      </button>
+                      <button type="button" class="chip">
+                        <svg
+                          class="chip-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"
+                        >
+                          <path
+                            d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                          />
+                          <path
+                            d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                          />
+                        </svg>
+                        Fix Grammar
+                      </button>
+                      <button type="button" class="chip">
+                        <svg
+                          class="chip-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"
+                        >
+                          <path d="M12 20h9" />
+                          <path
+                            d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
+                          />
+                        </svg>
+                        Improve Writing
+                      </button>
+                      <button type="button" class="chip">
+                        <svg
+                          class="chip-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"
+                        >
+                          <path
+                            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                          />
+                          <path d="M14 2v6h6" />
+                        </svg>
+                        Summarize
+                      </button>
+                    </div>
+                    <button type="button" class="more-row">
+                      More actions →
+                    </button>
+                  </div>
+                  <div class="panel-actions">
+                    <button type="button" class="btn btn--ghost">
+                      Dismiss
+                    </button>
+                  </div>
+                  <div class="panel-limitations-note">
+                    AI may not always be accurate — always verify.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop" data-state="A">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div
+                    class="avatar avatar--tier avatar--think"
+                    aria-label="Profile, on Think tier"
+                  >
+                    SC
+                  </div>
+                </header>
+                <div class="desktop-content-row">
+                  <div class="note-editor" data-state="A">
+                    <div class="note-body">
+                      <span class="cursor" aria-hidden="true"></span>
+                    </div>
+                  </div>
+                  <!-- Chip panel (desktop — side panel) -->
+                  <aside
+                    class="inline-ai-panel--desktop"
+                    role="dialog"
+                    aria-modal="false"
+                    aria-label="Inline AI actions"
+                  >
+                    <div class="panel-header">
+                      <svg
+                        class="panel-sparkle sparkle-18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        />
+                      </svg>
+                      <span class="panel-title">Thinking partner</span>
+                      <button
+                        class="panel-close"
+                        type="button"
+                        aria-label="Close panel"
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path d="M18 6 6 18" />
+                          <path d="m6 6 12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div class="chip-panel">
+                      <div class="chip-state-label">Empty note</div>
+                      <div class="chip-row">
+                        <button type="button" class="chip">
+                          <svg
+                            class="chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                          >
+                            <path
+                              d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                            />
+                          </svg>
+                          Brainstorm
+                        </button>
+                        <button type="button" class="chip">
+                          <svg
+                            class="chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                          >
+                            <path
+                              d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                            />
+                            <path
+                              d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                            />
+                          </svg>
+                          Fix Grammar
+                        </button>
+                        <button type="button" class="chip">
+                          <svg
+                            class="chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                          >
+                            <path d="M12 20h9" />
+                            <path
+                              d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
+                            />
+                          </svg>
+                          Improve Writing
+                        </button>
+                        <button type="button" class="chip">
+                          <svg
+                            class="chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                          >
+                            <path
+                              d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                            />
+                            <path d="M14 2v6h6" />
+                          </svg>
+                          Summarize
+                        </button>
+                      </div>
+                      <button type="button" class="more-row">
+                        More actions →
+                      </button>
+                    </div>
+                    <div class="panel-actions">
+                      <button type="button" class="btn btn--ghost">
+                        Dismiss
+                      </button>
+                    </div>
+                    <div class="panel-limitations-note">
+                      AI may not always be accurate — always verify.
+                    </div>
+                  </aside>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE B — Fragment chips
+         ============================================ -->
+      <section id="state-b" class="state">
+        <div class="state-deader">
+          <span class="state-tag">Chip panel — fragment</span>
+          <h2 class="state-title">State B — fragment (1–50 chars)</h2>
+          <p class="state-desc">
+            User has typed a short fragment. The chip panel adapts: Fix Grammar,
+            Improve Writing, Change Length, Change Tone. No Brainstorm (content
+            exists) — instead, text transformation features surface.
+          </p>
+        </div>
+
+        <div class="viewports">
+          <!-- Mobile -->
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen" data-state="B">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar" aria-label="Profile">SC</div>
+                  </header>
+                  <div
+                    class="note-editor"
+                    data-state="B"
+                    style="padding-bottom: 124px"
+                  >
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        First impressions matter more than features.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle sparkle-18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <div class="panel-backdrop"></div>
+                <div class="inline-ai-panel" role="dialog" aria-modal="true">
+                  <div class="panel-header">
+                    <svg
+                      class="panel-sparkle sparkle-18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                    <span class="panel-title">Thinking partner</span>
+                  </div>
+                  <div class="chip-panel">
+                    <div class="chip-state-label">Fragment</div>
+                    <div class="chip-row">
+                      <button type="button" class="chip">
+                        <svg
+                          class="chip-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"
+                        >
+                          <path
+                            d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                          />
+                          <path
+                            d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                          />
+                        </svg>
+                        Fix Grammar
+                      </button>
+                      <button type="button" class="chip">
+                        <svg
+                          class="chip-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"
+                        >
+                          <path d="M12 20h9" />
+                          <path
+                            d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
+                          />
+                        </svg>
+                        Improve Writing
+                      </button>
+                      <button type="button" class="chip">
+                        <svg
+                          class="chip-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"
+                        >
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                          <polyline points="7 10 12 15 17 10" />
+                          <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                        Change Length
+                      </button>
+                      <button type="button" class="chip">
+                        <svg
+                          class="chip-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"
+                        >
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+                          <line x1="9" y1="9" x2="9.01" y2="9" />
+                          <line x1="15" y1="9" x2="15.01" y2="9" />
+                        </svg>
+                        Change Tone
+                      </button>
+                    </div>
+                    <button type="button" class="more-row">
+                      More actions →
+                    </button>
+                  </div>
+                  <div class="panel-actions">
+                    <button type="button" class="btn btn--ghost">
+                      Dismiss
+                    </button>
+                  </div>
+                  <div class="panel-limitations-note">
+                    AI may not always be accurate — always verify.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop" data-state="B">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="avatar avatar--tier avatar--think">SC</div>
+                </header>
+                <div class="desktop-content-row">
+                  <div class="note-editor" data-state="B">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        First impressions matter more than features.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                  <aside class="inline-ai-panel--desktop" role="dialog">
+                    <div class="panel-header">
+                      <svg
+                        class="panel-sparkle sparkle-18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        />
+                      </svg>
+                      <span class="panel-title">Thinking partner</span>
+                      <button
+                        class="panel-close"
+                        type="button"
+                        aria-label="Close"
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path d="M18 6 6 18" />
+                          <path d="m6 6 12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div class="chip-panel">
+                      <div class="chip-state-label">Fragment</div>
+                      <div class="chip-row">
+                        <button type="button" class="chip">
+                          <svg
+                            class="chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                          >
+                            <path
+                              d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                            />
+                            <path
+                              d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                            /></svg
+                          >Fix Grammar
+                        </button>
+                        <button type="button" class="chip">
+                          <svg
+                            class="chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                          >
+                            <path d="M12 20h9" />
+                            <path
+                              d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
+                            /></svg
+                          >Improve Writing
+                        </button>
+                        <button type="button" class="chip">
+                          <svg
+                            class="chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                          >
+                            <path
+                              d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                            />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" /></svg
+                          >Change Length
+                        </button>
+                        <button type="button" class="chip">
+                          <svg
+                            class="chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                          >
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+                            <line x1="9" y1="9" x2="9.01" y2="9" />
+                            <line x1="15" y1="9" x2="15.01" y2="9" /></svg
+                          >Change Tone
+                        </button>
+                      </div>
+                      <button type="button" class="more-row">
+                        More actions →
+                      </button>
+                    </div>
+                    <div class="panel-actions">
+                      <button type="button" class="btn btn--ghost">
+                        Dismiss
+                      </button>
+                    </div>
+                    <div class="panel-limitations-note">
+                      AI may not always be accurate — always verify.
+                    </div>
+                  </aside>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE C — Building / Drafted chips
+         ============================================ -->
+      <section id="state-c" class="state">
+        <div class="state-deader">
+          <span class="state-tag">Chip panel — building</span>
+          <h2 class="state-title">State C — building / drafted (500+ chars)</h2>
+          <p class="state-desc">
+            Note has substantial content. The chip panel surfaces reasoning
+            features: Critique, Back My Claim. These surface when there's enough
+            content to reason over.
+          </p>
+        </div>
+
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen" data-state="C">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar" aria-label="Profile">SC</div>
+                  </header>
+                  <div
+                    class="note-editor"
+                    data-state="C"
+                    style="padding-bottom: 124px"
+                  >
+                    <div class="note-body">
+                      <div class="note-title">
+                        What makes a great first-time user experience?
+                      </div>
+                      <p class="note-paragraph">
+                        What makes a great first-time user experience? I've been
+                        thinking about this all week, mostly in the context of
+                        dolfyn but the question is bigger than that.
+                      </p>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        A great first-time experience doesn't explain. It
+                        doesn't onboard. It just lets the user do the thing they
+                        came to do, and shows them a glimpse of why it was worth
+                        coming.<span class="cursor"></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--active">
+                  <svg
+                    class="ai-bar-sparkle sparkle-18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>Want help with this?</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <div class="panel-backdrop"></div>
+                <div class="inline-ai-panel" role="dialog" aria-modal="true">
+                  <div class="panel-header">
+                    <svg
+                      class="panel-sparkle sparkle-18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                    <span class="panel-title">Thinking partner</span>
+                  </div>
+                  <div class="chip-panel">
+                    <div class="chip-state-label">Building</div>
+                    <div class="chip-row">
+                      <button type="button" class="chip">
+                        <svg
+                          class="chip-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"
+                        >
+                          <path
+                            d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                          />
+                        </svg>
+                        Critique
+                      </button>
+                      <button
+                        type="button"
+                        class="chip"
+                        data-feature="back-my-claim"
+                        aria-label="Search for evidence that backs or corrects the claims in this note."
+                        title="Search for evidence that backs or corrects the claims in this note."
+                      >
+                        <svg
+                          class="chip-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"
+                        >
+                          <circle cx="11" cy="11" r="8" />
+                          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                        Back My Claim
+                      </button>
+                    </div>
+                    <button type="button" class="more-row">
+                      More actions →
+                    </button>
+                  </div>
+                  <div class="panel-actions">
+                    <button type="button" class="btn btn--ghost">
+                      Dismiss
+                    </button>
+                  </div>
+                  <div class="panel-limitations-note">
+                    AI may not always be accurate — always verify.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop" data-state="C">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="avatar avatar--tier avatar--think">SC</div>
+                </header>
+                <div class="desktop-content-row">
+                  <div class="note-editor" data-state="C">
+                    <div class="note-body">
+                      <div class="note-title">
+                        What makes a great first-time user experience?
+                      </div>
+                      <p class="note-paragraph">
+                        What makes a great first-time user experience? I've been
+                        thinking about this all week, mostly in the context of
+                        dolfyn but the question is bigger than that.
+                      </p>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        A great first-time experience doesn't explain.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                  <aside class="inline-ai-panel--desktop" role="dialog">
+                    <div class="panel-header">
+                      <svg
+                        class="panel-sparkle sparkle-18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        />
+                      </svg>
+                      <span class="panel-title">Thinking partner</span>
+                      <button
+                        class="panel-close"
+                        type="button"
+                        aria-label="Close"
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path d="M18 6 6 18" />
+                          <path d="m6 6 12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div class="chip-panel">
+                      <div class="chip-state-label">Building</div>
+                      <div class="chip-row">
+                        <button type="button" class="chip">
+                          <svg
+                            class="chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                          >
+                            <path
+                              d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                            /></svg
+                          >Critique
+                        </button>
+                        <button
+                          type="button"
+                          class="chip"
+                          data-feature="back-my-claim"
+                          aria-label="Search for evidence that backs or corrects the claims in this note."
+                          title="Search for evidence that backs or corrects the claims in this note."
+                        >
+                          <svg
+                            class="chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                          >
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" /></svg
+                          >Back My Claim
+                        </button>
+                      </div>
+                      <button type="button" class="more-row">
+                        More actions →
+                      </button>
+                    </div>
+                    <div class="panel-actions">
+                      <button type="button" class="btn btn--ghost">
+                        Dismiss
+                      </button>
+                    </div>
+                    <div class="panel-limitations-note">
+                      AI may not always be accurate — always verify.
+                    </div>
+                  </aside>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE D — "More" bottom sheet
+         ============================================ -->
+      <section id="state-d" class="state">
+        <div class="state-deader">
+          <span class="state-tag">Bottom sheet — more actions</span>
+          <h2 class="state-title">
+            State D — More actions sheet (all 11 features)
+          </h2>
+          <p class="state-desc">
+            User tapped "More actions →" from any chip panel state. Full
+            catalogue of 11 inline AI features, organized by category:
+            Transform, Extract, Reason. Mobile: bottom sheet with drag handle,
+            80% viewport. Desktop: centered modal, 480×600.
+          </p>
+        </div>
+
+        <div class="viewports">
+          <!-- Mobile -->
+          <div class="viewport">
+            <div class="device-label">375px (iPhone SE)</div>
+            <div class="device-frame">
+              <div class="screen" data-state="D">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar" aria-label="Profile">SC</div>
+                  </header>
+                  <div
+                    class="note-editor"
+                    data-state="D"
+                    style="padding-bottom: 124px"
+                  >
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        First impressions matter more than features.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle sparkle-18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <div class="panel-backdrop"></div>
+                <div
+                  class="bottom-sheet"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label="More AI actions"
+                >
+                  <div class="sheet-drag-handle"></div>
+                  <div class="sheet-header">
+                    <h3 class="sheet-title">More actions</h3>
+                    <button
+                      type="button"
+                      class="sheet-close"
+                      aria-label="Close"
+                    >
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                      >
+                        <path d="M18 6 6 18" />
+                        <path d="m6 6 12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="sheet-body">
+                    <div class="sheet-section">
+                      <div class="sheet-section-label">Transform</div>
+                      <div class="sheet-chip-list">
+                        <button type="button" class="sheet-chip">
+                          <svg
+                            class="sheet-chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                          >
+                            <path
+                              d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                            />
+                            <path
+                              d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                            />
+                          </svg>
+                          <span class="sheet-chip-text">Fix Grammar</span>
+                          <span class="sheet-chip-desc"
+                            >Correct spelling &amp; grammar</span
+                          >
+                        </button>
+                        <button type="button" class="sheet-chip">
+                          <svg
+                            class="sheet-chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                          >
+                            <path d="M12 20h9" />
+                            <path
+                              d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
+                            />
+                          </svg>
+                          <span class="sheet-chip-text">Improve Writing</span>
+                          <span class="sheet-chip-desc"
+                            >Sharpen clarity &amp; flow</span
+                          >
+                        </button>
+                        <button type="button" class="sheet-chip">
+                          <svg
+                            class="sheet-chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                          >
+                            <path
+                              d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                            />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" />
+                          </svg>
+                          <span class="sheet-chip-text">Change Length</span>
+                          <span class="sheet-chip-desc"
+                            >Make longer or shorter</span
+                          >
+                        </button>
+                        <button type="button" class="sheet-chip">
+                          <svg
+                            class="sheet-chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                          >
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+                            <line x1="9" y1="9" x2="9.01" y2="9" />
+                            <line x1="15" y1="9" x2="15.01" y2="9" />
+                          </svg>
+                          <span class="sheet-chip-text">Change Tone</span>
+                          <span class="sheet-chip-desc"
+                            >Adjust voice &amp; register</span
+                          >
+                        </button>
+                      </div>
+                    </div>
+                    <div class="sheet-section">
+                      <div class="sheet-section-label">Extract</div>
+                      <div class="sheet-chip-list">
+                        <button type="button" class="sheet-chip">
+                          <svg
+                            class="sheet-chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                          >
+                            <path
+                              d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                            />
+                            <path d="M14 2v6h6" />
+                          </svg>
+                          <span class="sheet-chip-text">Summarize</span>
+                          <span class="sheet-chip-desc"
+                            >Condense to key points</span
+                          >
+                        </button>
+                        <button type="button" class="sheet-chip">
+                          <svg
+                            class="sheet-chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                          >
+                            <line x1="8" y1="6" x2="21" y2="6" />
+                            <line x1="8" y1="12" x2="21" y2="12" />
+                            <line x1="8" y1="18" x2="21" y2="18" />
+                            <line x1="3" y1="6" x2="3.01" y2="6" />
+                            <line x1="3" y1="12" x2="3.01" y2="12" />
+                            <line x1="3" y1="18" x2="3.01" y2="18" />
+                          </svg>
+                          <span class="sheet-chip-text">List Takeaways</span>
+                          <span class="sheet-chip-desc"
+                            >Extract main insights</span
+                          >
+                        </button>
+                        <button type="button" class="sheet-chip">
+                          <svg
+                            class="sheet-chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                          >
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                            <line x1="12" y1="17" x2="12.01" y2="17" />
+                          </svg>
+                          <span class="sheet-chip-text">Explain</span>
+                          <span class="sheet-chip-desc"
+                            >Break down complex ideas</span
+                          >
+                        </button>
+                      </div>
+                    </div>
+                    <div class="sheet-section">
+                      <div class="sheet-section-label">Reason</div>
+                      <div class="sheet-chip-list">
+                        <button type="button" class="sheet-chip">
+                          <svg
+                            class="sheet-chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                          >
+                            <path
+                              d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                            />
+                          </svg>
+                          <span class="sheet-chip-text">Critique</span>
+                          <span class="sheet-chip-desc"
+                            >Evaluate strengths &amp; gaps</span
+                          >
+                        </button>
+                        <button type="button" class="sheet-chip">
+                          <svg
+                            class="sheet-chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                          >
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                            <line x1="11" y1="8" x2="11" y2="14" />
+                            <line x1="8" y1="11" x2="14" y2="11" />
+                          </svg>
+                          <span class="sheet-chip-text">Back My Claim</span>
+                          <span class="sheet-chip-desc"
+                            >Backs or corrects claims in this noteing
+                            claims</span
+                          >
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop" data-state="D">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="avatar avatar--tier avatar--think">SC</div>
+                </header>
+                <div class="desktop-content-row">
+                  <div class="note-editor" data-state="D">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        First impressions matter more than features.
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="bottom-sheet--desktop"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="More AI actions"
+                  >
+                    <div class="sheet-header">
+                      <h3 class="sheet-title">More actions</h3>
+                      <button
+                        type="button"
+                        class="sheet-close"
+                        aria-label="Close"
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path d="M18 6 6 18" />
+                          <path d="m6 6 12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div class="sheet-body">
+                      <div class="sheet-section">
+                        <div class="sheet-section-label">Transform</div>
+                        <div class="sheet-chip-list">
+                          <button type="button" class="sheet-chip">
+                            <svg
+                              class="sheet-chip-icon"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.8"
+                            >
+                              <path
+                                d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                              />
+                              <path
+                                d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                              />
+                            </svg>
+                            <span class="sheet-chip-text">Fix Grammar</span>
+                            <span class="sheet-chip-desc"
+                              >Correct spelling &amp; grammar</span
+                            >
+                          </button>
+                          <button type="button" class="sheet-chip">
+                            <svg
+                              class="sheet-chip-icon"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.8"
+                            >
+                              <path d="M12 20h9" />
+                              <path
+                                d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
+                              />
+                            </svg>
+                            <span class="sheet-chip-text">Improve Writing</span>
+                            <span class="sheet-chip-desc"
+                              >Sharpen clarity &amp; flow</span
+                            >
+                          </button>
+                          <button type="button" class="sheet-chip">
+                            <svg
+                              class="sheet-chip-icon"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.8"
+                            >
+                              <path
+                                d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                              />
+                              <polyline points="7 10 12 15 17 10" />
+                              <line x1="12" y1="15" x2="12" y2="3" />
+                            </svg>
+                            <span class="sheet-chip-text">Change Length</span>
+                            <span class="sheet-chip-desc"
+                              >Make longer or shorter</span
+                            >
+                          </button>
+                          <button type="button" class="sheet-chip">
+                            <svg
+                              class="sheet-chip-icon"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.8"
+                            >
+                              <circle cx="12" cy="12" r="10" />
+                              <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+                              <line x1="9" y1="9" x2="9.01" y2="9" />
+                              <line x1="15" y1="9" x2="15.01" y2="9" />
+                            </svg>
+                            <span class="sheet-chip-text">Change Tone</span>
+                            <span class="sheet-chip-desc"
+                              >Adjust voice &amp; register</span
+                            >
+                          </button>
+                        </div>
+                      </div>
+                      <div class="sheet-section">
+                        <div class="sheet-section-label">Extract</div>
+                        <div class="sheet-chip-list">
+                          <button type="button" class="sheet-chip">
+                            <svg
+                              class="sheet-chip-icon"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.8"
+                            >
+                              <path
+                                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                              />
+                              <path d="M14 2v6h6" />
+                            </svg>
+                            <span class="sheet-chip-text">Summarize</span>
+                            <span class="sheet-chip-desc"
+                              >Condense to key points</span
+                            >
+                          </button>
+                          <button type="button" class="sheet-chip">
+                            <svg
+                              class="sheet-chip-icon"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.8"
+                            >
+                              <line x1="8" y1="6" x2="21" y2="6" />
+                              <line x1="8" y1="12" x2="21" y2="12" />
+                              <line x1="8" y1="18" x2="21" y2="18" />
+                              <line x1="3" y1="6" x2="3.01" y2="6" />
+                              <line x1="3" y1="12" x2="3.01" y2="12" />
+                              <line x1="3" y1="18" x2="3.01" y2="18" />
+                            </svg>
+                            <span class="sheet-chip-text">List Takeaways</span>
+                            <span class="sheet-chip-desc"
+                              >Extract main insights</span
+                            >
+                          </button>
+                          <button type="button" class="sheet-chip">
+                            <svg
+                              class="sheet-chip-icon"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.8"
+                            >
+                              <circle cx="12" cy="12" r="10" />
+                              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                              <line x1="12" y1="17" x2="12.01" y2="17" />
+                            </svg>
+                            <span class="sheet-chip-text">Explain</span>
+                            <span class="sheet-chip-desc"
+                              >Break down complex ideas</span
+                            >
+                          </button>
+                        </div>
+                      </div>
+                      <div class="sheet-section">
+                        <div class="sheet-section-label">Reason</div>
+                        <div class="sheet-chip-list">
+                          <button type="button" class="sheet-chip">
+                            <svg
+                              class="sheet-chip-icon"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.8"
+                            >
+                              <path
+                                d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                              />
+                            </svg>
+                            <span class="sheet-chip-text">Critique</span>
+                            <span class="sheet-chip-desc"
+                              >Evaluate strengths &amp; gaps</span
+                            >
+                          </button>
+                          <button type="button" class="sheet-chip">
+                            <svg
+                              class="sheet-chip-icon"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.8"
+                            >
+                              <circle cx="11" cy="11" r="8" />
+                              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                              <line x1="11" y1="8" x2="11" y2="14" />
+                              <line x1="8" y1="11" x2="14" y2="11" />
+                            </svg>
+                            <span class="sheet-chip-text">Back My Claim</span>
+                            <span class="sheet-chip-desc"
+                              >Locate supporting claims</span
+                            >
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE E — Secondary chip row: Change Length
+         ============================================ -->
+      <section id="state-e" class="state">
+        <div class="state-deader">
+          <span class="state-tag">Chip panel — change length</span>
+          <h2 class="state-title">State E — Change Length secondary row</h2>
+          <p class="state-desc">
+            User tapped "Change Length" from the Fragment chip panel. Primary
+            chips dim (opacity 0.6). A secondary row surfaces: Longer / Shorter.
+            Selection phase only — no action buttons yet.
+          </p>
+        </div>
+
+        <div class="viewports">
+          <!-- Mobile -->
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen" data-state="E">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar" aria-label="Profile">SC</div>
+                  </header>
+                  <div
+                    class="note-editor"
+                    data-state="E"
+                    style="padding-bottom: 124px"
+                  >
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        First impressions matter more than features.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle sparkle-18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <div class="panel-backdrop"></div>
+                <div class="inline-ai-panel" role="dialog" aria-modal="true">
+                  <div class="panel-header">
+                    <svg
+                      class="panel-sparkle sparkle-18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                    <span class="panel-title">Thinking partner</span>
+                  </div>
+                  <div class="chip-panel">
+                    <div class="chip-state-label">Fragment</div>
+                    <div class="chip-row" style="opacity: 0.6">
+                      <button type="button" class="chip">
+                        <svg
+                          class="chip-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"
+                        >
+                          <path
+                            d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                          />
+                          <path
+                            d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                          />
+                        </svg>
+                        Fix Grammar
+                      </button>
+                      <button type="button" class="chip">
+                        <svg
+                          class="chip-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"
+                        >
+                          <path d="M12 20h9" />
+                          <path
+                            d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
+                          />
+                        </svg>
+                        Improve Writing
+                      </button>
+                      <button type="button" class="chip chip--active">
+                        <svg
+                          class="chip-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"
+                        >
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                          <polyline points="7 10 12 15 17 10" />
+                          <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                        Change Length
+                      </button>
+                      <button type="button" class="chip">
+                        <svg
+                          class="chip-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"
+                        >
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+                          <line x1="9" y1="9" x2="9.01" y2="9" />
+                          <line x1="15" y1="9" x2="15.01" y2="9" />
+                        </svg>
+                        Change Tone
+                      </button>
+                    </div>
+                    <div class="secondary-chip-row">
+                      <button type="button" class="chip--secondary">
+                        Longer
+                      </button>
+                      <button type="button" class="chip--secondary">
+                        Shorter
+                      </button>
+                    </div>
+                    <button type="button" class="more-row">
+                      More actions →
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop" data-state="E">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="avatar avatar--tier avatar--think">SC</div>
+                </header>
+                <div class="desktop-content-row">
+                  <div class="note-editor" data-state="E">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        First impressions matter more than features.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                  <aside class="inline-ai-panel--desktop" role="dialog">
+                    <div class="panel-header">
+                      <svg
+                        class="panel-sparkle sparkle-18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        />
+                      </svg>
+                      <span class="panel-title">Thinking partner</span>
+                      <button
+                        class="panel-close"
+                        type="button"
+                        aria-label="Close"
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path d="M18 6 6 18" />
+                          <path d="m6 6 12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div class="chip-panel">
+                      <div class="chip-state-label">Fragment</div>
+                      <div class="chip-row" style="opacity: 0.6">
+                        <button type="button" class="chip">
+                          <svg
+                            class="chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                          >
+                            <path
+                              d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                            />
+                            <path
+                              d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                            /></svg
+                          >Fix Grammar
+                        </button>
+                        <button type="button" class="chip">
+                          <svg
+                            class="chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                          >
+                            <path d="M12 20h9" />
+                            <path
+                              d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
+                            /></svg
+                          >Improve Writing
+                        </button>
+                        <button type="button" class="chip chip--active">
+                          <svg
+                            class="chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                          >
+                            <path
+                              d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                            />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" /></svg
+                          >Change Length
+                        </button>
+                        <button type="button" class="chip">
+                          <svg
+                            class="chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                          >
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+                            <line x1="9" y1="9" x2="9.01" y2="9" />
+                            <line x1="15" y1="9" x2="15.01" y2="9" /></svg
+                          >Change Tone
+                        </button>
+                      </div>
+                      <div class="secondary-chip-row">
+                        <button type="button" class="chip--secondary">
+                          Longer
+                        </button>
+                        <button type="button" class="chip--secondary">
+                          Shorter
+                        </button>
+                      </div>
+                      <button type="button" class="more-row">
+                        More actions →
+                      </button>
+                    </div>
+                  </aside>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE F — Secondary chip row: Change Tone
+         ============================================ -->
+      <section id="state-f" class="state">
+        <div class="state-deader">
+          <span class="state-tag">Chip panel — change tone</span>
+          <h2 class="state-title">State F — Change Tone secondary row</h2>
+          <p class="state-desc">
+            User tapped "Change Tone" from the Fragment chip panel. Primary
+            chips dim. Secondary row surfaces: Professional / Casual / Excited /
+            Assertive. "Assertive" shown as selected. Selection phase only — no
+            action buttons.
+          </p>
+        </div>
+
+        <div class="viewports">
+          <!-- Mobile -->
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen" data-state="F">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar" aria-label="Profile">SC</div>
+                  </header>
+                  <div
+                    class="note-editor"
+                    data-state="F"
+                    style="padding-bottom: 124px"
+                  >
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        First impressions matter more than features.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle sparkle-18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <div class="panel-backdrop"></div>
+                <div class="inline-ai-panel" role="dialog" aria-modal="true">
+                  <div class="panel-header">
+                    <svg
+                      class="panel-sparkle sparkle-18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                    <span class="panel-title">Thinking partner</span>
+                  </div>
+                  <div class="chip-panel">
+                    <div class="chip-state-label">Fragment</div>
+                    <div class="chip-row" style="opacity: 0.6">
+                      <button type="button" class="chip">
+                        <svg
+                          class="chip-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"
+                        >
+                          <path
+                            d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                          />
+                          <path
+                            d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                          />
+                        </svg>
+                        Fix Grammar
+                      </button>
+                      <button type="button" class="chip">
+                        <svg
+                          class="chip-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"
+                        >
+                          <path d="M12 20h9" />
+                          <path
+                            d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
+                          />
+                        </svg>
+                        Improve Writing
+                      </button>
+                      <button type="button" class="chip">
+                        <svg
+                          class="chip-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"
+                        >
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                          <polyline points="7 10 12 15 17 10" />
+                          <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                        Change Length
+                      </button>
+                      <button type="button" class="chip chip--active">
+                        <svg
+                          class="chip-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"
+                        >
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+                          <line x1="9" y1="9" x2="9.01" y2="9" />
+                          <line x1="15" y1="9" x2="15.01" y2="9" />
+                        </svg>
+                        Change Tone
+                      </button>
+                    </div>
+                    <div class="secondary-chip-row">
+                      <button type="button" class="chip--secondary">
+                        Professional
+                      </button>
+                      <button type="button" class="chip--secondary">
+                        Casual
+                      </button>
+                      <button type="button" class="chip--secondary">
+                        Excited
+                      </button>
+                      <button
+                        type="button"
+                        class="chip--secondary chip--secondary--active"
+                      >
+                        Assertive
+                      </button>
+                    </div>
+                    <button type="button" class="more-row">
+                      More actions →
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop" data-state="F">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="avatar avatar--tier avatar--think">SC</div>
+                </header>
+                <div class="desktop-content-row">
+                  <div class="note-editor" data-state="F">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        First impressions matter more than features.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                  <aside class="inline-ai-panel--desktop" role="dialog">
+                    <div class="panel-header">
+                      <svg
+                        class="panel-sparkle sparkle-18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        />
+                      </svg>
+                      <span class="panel-title">Thinking partner</span>
+                      <button
+                        class="panel-close"
+                        type="button"
+                        aria-label="Close"
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path d="M18 6 6 18" />
+                          <path d="m6 6 12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div class="chip-panel">
+                      <div class="chip-state-label">Fragment</div>
+                      <div class="chip-row" style="opacity: 0.6">
+                        <button type="button" class="chip">
+                          <svg
+                            class="chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                          >
+                            <path
+                              d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                            />
+                            <path
+                              d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                            /></svg
+                          >Fix Grammar
+                        </button>
+                        <button type="button" class="chip">
+                          <svg
+                            class="chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                          >
+                            <path d="M12 20h9" />
+                            <path
+                              d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
+                            /></svg
+                          >Improve Writing
+                        </button>
+                        <button type="button" class="chip">
+                          <svg
+                            class="chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                          >
+                            <path
+                              d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                            />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" /></svg
+                          >Change Length
+                        </button>
+                        <button type="button" class="chip chip--active">
+                          <svg
+                            class="chip-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                          >
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+                            <line x1="9" y1="9" x2="9.01" y2="9" />
+                            <line x1="15" y1="9" x2="15.01" y2="9" /></svg
+                          >Change Tone
+                        </button>
+                      </div>
+                      <div class="secondary-chip-row">
+                        <button type="button" class="chip--secondary">
+                          Professional
+                        </button>
+                        <button type="button" class="chip--secondary">
+                          Casual
+                        </button>
+                        <button type="button" class="chip--secondary">
+                          Excited
+                        </button>
+                        <button
+                          type="button"
+                          class="chip--secondary chip--secondary--active"
+                        >
+                          Assertive
+                        </button>
+                      </div>
+                      <button type="button" class="more-row">
+                        More actions →
+                      </button>
+                    </div>
+                  </aside>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE G — Loading state (sparkle-spin)
+         ============================================ -->
+      <section id="state-g" class="state">
+        <div class="state-deader">
+          <span class="state-tag">Chip panel — loading</span>
+          <h2 class="state-title">State G — Loading / building</h2>
+          <p class="state-desc">
+            AI is processing the selected action. Chip row is replaced by a
+            rotating sparkle-spin indicator (18px, accent color) — same
+            footprint, no layout shift. Action bar shows disabled Dismiss and
+            Insert buttons.
+          </p>
+        </div>
+
+        <div class="viewports">
+          <!-- Mobile -->
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen" data-state="G">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar" aria-label="Profile">SC</div>
+                  </header>
+                  <div
+                    class="note-editor"
+                    data-state="G"
+                    style="padding-bottom: 124px"
+                  >
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        First impressions matter more than features.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--active">
+                  <svg
+                    class="ai-bar-sparkle sparkle-18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>Want help with this?</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <div class="panel-backdrop"></div>
+                <div class="inline-ai-panel" role="dialog" aria-modal="true">
+                  <div class="panel-header">
+                    <svg
+                      class="panel-sparkle sparkle-18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                    <span class="panel-title">Thinking partner</span>
+                  </div>
+                  <div class="chip-panel">
+                    <div class="chip-state-label">Building</div>
+                    <div class="loading-state">
+                      <svg
+                        class="sparkle-spin"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="panel-actions">
+                    <button type="button" class="btn btn--ghost" disabled>
+                      Dismiss
+                    </button>
+                    <button type="button" class="btn btn--primary" disabled>
+                      Insert
+                    </button>
+                  </div>
+                  <div class="panel-limitations-note">
+                    AI may not always be accurate — always verify.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop" data-state="G">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="avatar avatar--tier avatar--think">SC</div>
+                </header>
+                <div class="desktop-content-row">
+                  <div class="note-editor" data-state="G">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        First impressions matter more than features.
+                      </p>
+                    </div>
+                  </div>
+                  <aside class="inline-ai-panel--desktop" role="dialog">
+                    <div class="panel-header">
+                      <svg
+                        class="panel-sparkle sparkle-18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        />
+                      </svg>
+                      <span class="panel-title">Thinking partner</span>
+                      <button
+                        class="panel-close"
+                        type="button"
+                        aria-label="Close"
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path d="M18 6 6 18" />
+                          <path d="m6 6 12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div class="chip-panel">
+                      <div class="chip-state-label">Building</div>
+                      <div class="loading-state">
+                        <svg
+                          class="sparkle-spin"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path
+                            d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                    <div class="panel-actions">
+                      <button type="button" class="btn btn--ghost" disabled>
+                        Dismiss
+                      </button>
+                      <button type="button" class="btn btn--primary" disabled>
+                        Insert
+                      </button>
+                    </div>
+                    <div class="panel-limitations-note">
+                      AI may not always be accurate — always verify.
+                    </div>
+                  </aside>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE H — Multi-note redirect CTA
+         ============================================ -->
+      <section id="state-h" class="state">
+        <div class="state-header">
+          <span class="state-tag">Redirect</span>
+          <h2 class="state-title">State H — multi-note redirect CTA</h2>
+          <p class="state-desc">
+            When the AI determines the user's query can't be answered from the
+            current note alone, it returns a redirect suggestion instead of a
+            weak answer. The frontend shows a CTA — tapping it opens the Chat
+            tab with the query pre-filled. Per Req 08: "multi-note redirect:
+            when the AI determines the user's query can't be answered from the
+            current note alone."
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px — redirect CTA</div>
+            <div class="device-frame">
+              <div class="screen" data-state="H">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar" aria-label="Profile">SC</div>
+                  </header>
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">Pricing strategy thoughts</div>
+                      <p class="note-paragraph">
+                        The ₹149 price point feels right for the Indian market.
+                        Need to validate with user interviews.
+                      </p>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        Key question: does the auto-save loop push free users to
+                        the cap fast enough?
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle sparkle-18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <!-- Inline AI panel — redirect CTA -->
+                <div class="panel-backdrop"></div>
+                <aside
+                  class="inline-ai-panel"
+                  role="dialog"
+                  aria-label="Inline AI"
+                >
+                  <div class="panel-header">
+                    <svg
+                      class="panel-sparkle"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                    <span class="panel-title">Thinking partner</span>
+                  </div>
+                  <!-- Redirect CTA instead of results -->
+                  <div class="redirect-cta">
+                    <svg
+                      class="redirect-cta-icon"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="11" cy="11" r="8" />
+                      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                    <p class="redirect-cta-text">
+                      This question spans beyond this note. Take it to the full
+                      chat to search across all your notes.
+                    </p>
+                    <button type="button" class="redirect-cta-btn">
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                        />
+                      </svg>
+                      Open in Chat
+                    </button>
+                  </div>
+                  <div class="panel-actions">
+                    <button type="button" class="btn btn--ghost">
+                      Dismiss
+                    </button>
+                  </div>
+                  <div class="panel-limitations-note">
+                    AI may not always be accurate — always verify.
+                  </div>
+                </aside>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
