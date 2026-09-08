@@ -1,0 +1,1996 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>dolfyn — Usage Meter Icon (Donut) &amp; Help Sheet</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ============================================
+       Design System Tokens — dolfyn
+       Source: designs/dolfyn/design-system.md
+       ============================================ */
+      :root {
+        /* Surfaces */
+        --surface: #fafaf7;
+        --surface-subtle: #f2f1ed;
+        --surface-raised: #ffffff;
+        --surface-overlay: rgba(15, 15, 14, 0.32);
+
+        /* Ink */
+        --ink: #0f0f0e;
+        --ink-2: #3f3f3f;
+        --ink-3: #6b6b6b;
+        --ink-inverse: #fafaf7;
+
+        /* Borders */
+        --border: #e5e5e1;
+        --border-strong: #c7c7c2;
+        --divider: #edede9;
+
+        /* Accent (AI-exclusive) */
+        --accent: #c2410c;
+        --accent-strong: #9a330a;
+        --accent-soft-bg: #fcefde;
+
+        /* Semantic */
+        --success: #15803d;
+        --error: #b91c1c;
+        --warning: #b45309;
+        --cap-hit: #7c2d12;
+
+        /* Spacing */
+        --space-1: 4px;
+        --space-2: 8px;
+        --space-3: 12px;
+        --space-4: 16px;
+        --space-5: 24px;
+        --space-6: 32px;
+        --space-7: 48px;
+
+        /* Radius */
+        --radius-sm: 6px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-xl: 16px;
+        --radius-full: 9999px;
+
+        /* Elevation */
+        --elevation-panel:
+          0 8px 24px -8px rgba(15, 15, 14, 0.12),
+          0 2px 4px -2px rgba(15, 15, 14, 0.06);
+        --elevation-modal: 0 24px 48px -12px rgba(15, 15, 14, 0.18);
+        --elevation-toast: 0 4px 12px -2px rgba(15, 15, 14, 0.08);
+
+        /* z-index */
+        --z-base: 0;
+        --z-sticky: 100;
+        --z-overlay: 800;
+        --z-panel: 900;
+        --z-modal: 1000;
+        --z-toast: 1100;
+
+        /* Motion */
+        --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+        --ease-linear: linear;
+        --duration-fast: 150ms;
+        --duration-base: 250ms;
+        --duration-slow: 350ms;
+        --duration-sparkle-pulse: 1.5s;
+
+        /* Donut arc — runtime values (set by JS in production; static in mockup) */
+        --arc-length: 0;
+        --arc-color: var(--accent);
+
+        /* Mockup meta (not part of the design system) */
+        --meta-bg: #ecebe5;
+        --meta-ink: #2a2a28;
+        --meta-ink-2: #6e6e68;
+        --meta-border: #d8d7d1;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--meta-bg);
+        color: var(--meta-ink);
+        font-family:
+          "Inter",
+          system-ui,
+          -apple-system,
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* ============================================
+       Mockup meta-header
+       ============================================ */
+      .mockup-nav {
+        position: sticky;
+        top: 0;
+        z-index: var(--z-toast);
+        background: var(--meta-bg);
+        border-bottom: 1px solid var(--meta-border);
+        padding: var(--space-3) var(--space-5);
+        display: flex;
+        align-items: center;
+        gap: var(--space-5);
+        flex-wrap: wrap;
+      }
+
+      .mockup-title {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink);
+      }
+
+      .mockup-subtitle {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 12px;
+        color: var(--meta-ink-2);
+      }
+
+      .state-tabs {
+        display: flex;
+        gap: var(--space-1);
+        margin-left: auto;
+        flex-wrap: wrap;
+      }
+
+      .state-tab {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--meta-ink-2);
+        text-decoration: none;
+        padding: var(--space-1) var(--space-2);
+        border-radius: var(--radius-sm);
+        border: 1px solid transparent;
+        transition:
+          background var(--duration-fast) var(--ease-out),
+          color var(--duration-fast) var(--ease-out);
+        white-space: nowrap;
+      }
+
+      .state-tab:hover {
+        background: rgba(15, 15, 14, 0.05);
+        color: var(--meta-ink);
+      }
+
+      #state-a:target ~ .mockup-nav .state-tab[href="#state-a"],
+      #state-b:target ~ .mockup-nav .state-tab[href="#state-b"],
+      #state-c:target ~ .mockup-nav .state-tab[href="#state-c"],
+      #state-d:target ~ .mockup-nav .state-tab[href="#state-d"],
+      #state-e:target ~ .mockup-nav .state-tab[href="#state-e"],
+      #state-f:target ~ .mockup-nav .state-tab[href="#state-f"],
+      #state-g:target ~ .mockup-nav .state-tab[href="#state-g"] {
+        background: var(--meta-ink);
+        color: var(--ink-inverse);
+      }
+
+      /* ============================================
+       State section wrapper
+       ============================================ */
+      .state {
+        padding: var(--space-7) var(--space-5) var(--space-6);
+        max-width: 1400px;
+        margin: 0 auto;
+        border-top: 1px solid var(--meta-border);
+      }
+      .state:first-of-type {
+        border-top: none;
+      }
+
+      .state:target {
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: var(--radius-lg);
+      }
+
+      .state-header {
+        margin-bottom: var(--space-5);
+        max-width: 720px;
+      }
+
+      .state-tag {
+        display: inline-block;
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink-2);
+        margin-bottom: var(--space-2);
+      }
+
+      .state-title {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--meta-ink);
+        margin: 0 0 var(--space-2);
+        letter-spacing: -0.01em;
+      }
+
+      .state-desc {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 14px;
+        color: var(--meta-ink-2);
+        line-height: 1.5;
+        margin: 0;
+      }
+
+      .viewports {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-5);
+        align-items: flex-start;
+      }
+
+      .viewport {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        flex-shrink: 0;
+      }
+
+      .device-label {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink-2);
+        padding-left: var(--space-1);
+      }
+
+      .device-frame {
+        background: var(--meta-ink);
+        border-radius: 28px;
+        padding: 8px;
+        box-shadow: 0 2px 8px -2px rgba(15, 15, 14, 0.12);
+      }
+
+      .screen {
+        position: relative;
+        width: 375px;
+        height: 720px;
+        background: var(--surface);
+        border-radius: 22px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ============================================
+       APP SHELL (shared)
+       ============================================ */
+      .app {
+        position: relative;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+
+      .app-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-3) var(--space-4);
+        flex-shrink: 0;
+      }
+
+      .wordmark {
+        font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+        font-weight: 600;
+        font-size: 20px;
+        letter-spacing: -0.01em;
+        color: var(--ink);
+        line-height: 1;
+      }
+
+      .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-full);
+        background: var(--surface-subtle);
+        color: var(--ink-2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Inter", system-ui, sans-serif;
+        font-weight: 500;
+        font-size: 13px;
+        flex-shrink: 0;
+      }
+
+      .note-editor {
+        flex: 1;
+        padding: var(--space-5) var(--space-4) 124px;
+        min-height: 100%;
+        overflow-y: auto;
+        scrollbar-width: none;
+      }
+      .note-editor::-webkit-scrollbar {
+        display: none;
+      }
+
+      .note-body {
+        font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 1.6;
+        color: var(--ink);
+        max-width: 480px;
+      }
+
+      /* Note title — §4.10 */
+      .note-title {
+        font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 1.3;
+        color: var(--ink);
+        border: none;
+        outline: none;
+        background: transparent;
+        width: 100%;
+        padding: 0;
+        margin: 0 0 var(--space-5);
+        resize: none;
+        overflow: hidden;
+      }
+
+      .note-title::placeholder {
+        color: var(--ink-3);
+      }
+
+      .note-paragraph {
+        margin: 0 0 var(--space-3);
+      }
+
+      .note-paragraph:last-child {
+        margin-bottom: 0;
+      }
+
+      .cursor {
+        display: inline-block;
+        width: 2px;
+        height: 1.1em;
+        background: var(--ink);
+        vertical-align: text-bottom;
+        margin-left: 1px;
+        animation: blink 1s steps(2) infinite;
+      }
+
+      @keyframes blink {
+        0%,
+        50% {
+          opacity: 1;
+        }
+        50.01%,
+        100% {
+          opacity: 0;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .cursor {
+          animation: none;
+          opacity: 1;
+        }
+      }
+
+      /* ============================================
+       USAGE METER ICON (the donut) — §4.16
+       32px donut, fixed bottom-right, tap → help sheet,
+       hover (desktop) → tooltip with word state.
+       ============================================ */
+      .usage-meter-fab {
+        position: absolute;
+        right: 16px;
+        bottom: 124px;
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: var(--z-sticky);
+        transition:
+          transform var(--duration-fast) var(--ease-out),
+          opacity 250ms var(--ease-out);
+      }
+
+      .usage-meter-fab:active {
+        transform: scale(0.92);
+      }
+
+      .usage-meter-fab--hidden {
+        opacity: 0;
+        pointer-events: none;
+        transform: scale(0.9);
+      }
+
+      .usage-meter-donut {
+        display: block;
+        overflow: visible;
+      }
+
+      .usage-meter-track {
+        fill: none;
+        stroke: var(--border);
+        stroke-width: 4;
+      }
+
+      .usage-meter-arc {
+        fill: none;
+        stroke: var(--arc-color, var(--accent));
+        stroke-width: 4;
+        stroke-linecap: round;
+        stroke-dasharray: var(--arc-length, 0) 88;
+        transition:
+          stroke-dasharray 200ms var(--ease-fast),
+          stroke 200ms var(--ease-fast);
+      }
+
+      /* Reset animation — arc shrinks to 0 over 400ms */
+      .usage-meter-fab--resetting .usage-meter-arc {
+        transition:
+          stroke-dasharray 400ms var(--ease-out),
+          stroke 400ms var(--ease-out);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .usage-meter-arc {
+          transition: none;
+        }
+      }
+
+      /* Tooltip — shown on hover (desktop only) */
+      .usage-meter-tooltip {
+        position: absolute;
+        bottom: calc(100% + 4px);
+        right: 0;
+        background: var(--ink);
+        color: var(--ink-inverse);
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 1;
+        letter-spacing: 0;
+        padding: var(--space-1) var(--space-2);
+        border-radius: var(--radius-md);
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(4px);
+        transition:
+          opacity 200ms var(--ease-out),
+          transform 200ms var(--ease-out);
+      }
+
+      .usage-meter-tooltip::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        right: 14px;
+        width: 0;
+        height: 0;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-top: 4px solid var(--ink);
+      }
+
+      /* Show tooltip on hover (hover-capable devices only) */
+      @media (hover: hover) {
+        .usage-meter-fab:hover .usage-meter-tooltip {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ============================================
+       AI PRESENCE BAR (passive — to ground the shell)
+       ============================================ */
+      .ai-bar {
+        height: 56px;
+        padding: 0 var(--space-4);
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+        font-size: 14px;
+        line-height: 1.5;
+        flex-shrink: 0;
+        position: relative;
+      }
+
+      .ai-bar--passive {
+        background: var(--surface-subtle);
+        color: var(--ink-2);
+      }
+
+      .ai-bar-sparkle {
+        flex-shrink: 0;
+        color: var(--accent);
+      }
+
+      .sparkle-18 {
+        width: 18px;
+        height: 18px;
+      }
+
+      /* ============================================
+       BOTTOM NAV
+       ============================================ */
+      .bottom-nav {
+        height: 56px;
+        background: var(--surface-raised);
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: stretch;
+        justify-content: space-around;
+        padding: 0 var(--space-2);
+        flex-shrink: 0;
+      }
+
+      .tab {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        color: var(--ink-3);
+        position: relative;
+        text-decoration: none;
+      }
+
+      .tab svg {
+        display: block;
+      }
+
+      .tab--active {
+        color: var(--ink-2);
+      }
+      .tab--active svg {
+        color: var(--ink);
+      }
+
+      .tab--active::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 32px;
+        height: 3px;
+        background: var(--accent);
+        border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      }
+
+      /* ============================================
+       HELP BOTTOM SHEET — §4.17
+       Reuses §4.6 citation bottom sheet pattern.
+       ============================================ */
+      .help-backdrop {
+        position: absolute;
+        inset: 0;
+        background: var(--surface-overlay);
+        z-index: var(--z-overlay);
+      }
+
+      .help-sheet {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 50%;
+        background: var(--surface-raised);
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        box-shadow: var(--elevation-panel);
+        z-index: var(--z-panel);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .help-sheet-drag {
+        width: 36px;
+        height: 4px;
+        background: var(--border-strong);
+        border-radius: var(--radius-full);
+        margin: 8px auto 0;
+        flex-shrink: 0;
+      }
+
+      .help-sheet-title {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--ink);
+        padding: var(--space-4) var(--space-4) var(--space-2);
+        margin: 0;
+        letter-spacing: 0;
+      }
+
+      .help-sheet-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: var(--space-3) var(--space-4);
+        scrollbar-width: thin;
+      }
+      .help-sheet-body::-webkit-scrollbar {
+        width: 4px;
+      }
+      .help-sheet-body::-webkit-scrollbar-thumb {
+        background: var(--border-strong);
+        border-radius: var(--radius-full);
+      }
+
+      .help-section {
+        margin-bottom: var(--space-5);
+      }
+
+      .help-section:last-child {
+        margin-bottom: 0;
+      }
+
+      .help-section-label {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        margin: 0 0 2px;
+      }
+
+      .help-section-subtitle {
+        font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+        font-size: 14px;
+        line-height: 1.4;
+        color: var(--ink-3);
+        margin: 0 0 var(--space-2);
+      }
+
+      .help-section-features {
+        font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+        font-size: 14px;
+        line-height: 1.7;
+        color: var(--ink-2);
+        margin: 0;
+      }
+
+      .help-sheet-reset {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        color: var(--ink-3);
+        text-align: center;
+        padding: var(--space-3) var(--space-4) 0;
+        flex-shrink: 0;
+      }
+
+      .help-sheet-actions {
+        flex-shrink: 0;
+        padding: var(--space-3) var(--space-4) var(--space-4);
+        background: var(--surface-raised);
+      }
+
+      .help-got-it {
+        width: 100%;
+        height: 44px;
+        background: var(--ink);
+        color: var(--ink-inverse);
+        border: none;
+        border-radius: var(--radius-md);
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 0;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity var(--duration-fast) var(--ease-out);
+      }
+
+      .help-got-it:active {
+        opacity: 0.85;
+      }
+
+      /* ============================================
+       Desktop frame (1440px)
+       ============================================ */
+      .device-frame--desktop {
+        width: 1440px;
+        height: 900px;
+        background: var(--meta-ink);
+        border-radius: 12px;
+        padding: 8px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 2px 8px -2px rgba(15, 15, 14, 0.12);
+      }
+
+      .screen--desktop {
+        width: 100%;
+        height: 100%;
+        background: var(--surface);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+
+      .screen--desktop .app {
+        flex: 1;
+        min-height: 0;
+      }
+
+      /* Desktop layout (matches existing note-editor):
+       - Header, AI bar, and bottom nav are full-width (wordmark left,
+         avatar right; AI bar text left; tabs distributed across width)
+       - Note text is in a 540px column centered in the viewport.
+         The note-body uses `margin: 0 auto;` to center, matching the
+         existing note-editor's desktop state.
+    */
+      .screen--desktop .note-editor .note-body {
+        max-width: 540px;
+        margin: 0 auto;
+      }
+
+      /* Desktop donut — slightly more padding from edges */
+      .screen--desktop .usage-meter-fab {
+        right: 24px;
+        bottom: 132px;
+      }
+
+      /* ============================================
+       Responsive — mockup meta only
+       ============================================ */
+      @media (max-width: 900px) {
+        .device-frame--desktop {
+          display: none;
+        }
+      }
+      @media (max-width: 480px) {
+        .state {
+          padding: var(--space-5) var(--space-3);
+        }
+        .mockup-nav {
+          padding: var(--space-3);
+        }
+        .state-tabs {
+          width: 100%;
+          margin-left: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Mockup meta-header -->
+    <header class="mockup-nav">
+      <div>
+        <div class="mockup-title">
+          dolfyn / Usage Meter Icon (Donut) &amp; Help Sheet
+        </div>
+        <div class="mockup-subtitle">
+          Action Item #2 · Token-based daily usage meter · 2026-07-21 · Rev 2
+          (corner donut)
+        </div>
+      </div>
+      <nav class="state-tabs" aria-label="State selector">
+        <a href="#state-a" class="state-tab">A · hidden</a>
+        <a href="#state-b" class="state-tab">B · Plenty</a>
+        <a href="#state-c" class="state-tab">C · Halfway</a>
+        <a href="#state-d" class="state-tab">D · Low</a>
+        <a href="#state-e" class="state-tab">E · cap hit</a>
+        <a href="#state-f" class="state-tab">F · desktop</a>
+        <a href="#state-g" class="state-tab">G · help sheet</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- ============================================
+         STATE A — Hidden (zero usage, or paid tier below 60%)
+         No donut in the layout. Note editor fills full
+         space between header and AI presence bar.
+         ============================================ -->
+      <section id="state-a" class="state">
+        <div class="state-header">
+          <span class="state-tag">Zero state</span>
+          <h2 class="state-title">
+            State A — donut hidden (zero usage, or paid tier below 60%)
+          </h2>
+          <p class="state-desc">
+            The donut is fully removed from the layout. The note editor takes
+            the full space between the header and the AI presence bar. The donut
+            is hidden on: (1) session start before any AI interaction, (2) the
+            post-midnight reset before the first AI interaction of the new day,
+            (3) Think and Deep Think tiers while usage is below 60% of the daily
+            AI usage limit.
+          </p>
+        </div>
+
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px (iPhone SE)</div>
+            <div class="device-frame">
+              <div class="screen" data-state="A">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar" aria-label="Profile">SC</div>
+                  </header>
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">
+                        What makes a great AI experience?
+                      </div>
+                      <p class="note-paragraph">
+                        What makes a great AI experience? I've been thinking
+                        about this all week, mostly in the context of dolfyn but
+                        the question is bigger than that.
+                      </p>
+                      <p class="note-paragraph">
+                        The best AI doesn't explain itself. It doesn't say "I'm
+                        here to help." It just helps — quietly, in the flow,
+                        without making itself the subject.
+                      </p>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        A user mid-thought doesn't want a status bar. They want
+                        the next sentence.<span
+                          class="cursor"
+                          aria-hidden="true"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ai-bar ai-bar--passive"
+                  role="button"
+                  tabindex="0"
+                  aria-label="I'm here. Type // to ask me anything"
+                >
+                  <svg
+                    class="ai-bar-sparkle sparkle-18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active" aria-current="page">
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" />
+                    </svg>
+                    <span>Notes</span>
+                  </a>
+                  <a href="#" class="tab">
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      />
+                    </svg>
+                    <span>Chat</span>
+                  </a>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE B — Plenty (~25% fill)
+         Donut in bottom-right, small accent-coloured arc.
+         ============================================ -->
+      <section id="state-b" class="state">
+        <div class="state-header">
+          <span class="state-tag">Low usage</span>
+          <h2 class="state-title">State B — Plenty (~25% fill, accent arc)</h2>
+          <p class="state-desc">
+            The donut has appeared after the first AI interaction. A short arc
+            in <code>--accent</code> starts at 12 o'clock and sweeps clockwise.
+            The track is visible behind the arc as a thin
+            <code>--border</code> ring. The donut is in the bottom-right of the
+            content area, above the AI presence bar — ambient, in the thumb
+            zone, out of the writing canvas.
+          </p>
+        </div>
+
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen" data-state="B" style="height: 720px">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar">SC</div>
+                  </header>
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">
+                        What makes a great AI experience?
+                      </div>
+                      <p class="note-paragraph">
+                        What makes a great AI experience? I've been thinking
+                        about this all week, mostly in the context of dolfyn but
+                        the question is bigger than that.
+                      </p>
+                      <p class="note-paragraph">
+                        The best AI doesn't explain itself. It just helps —
+                        quietly, in the flow, without making itself the subject.
+                      </p>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        A user mid-thought doesn't want a status bar. They want
+                        the next sentence.<span class="cursor"></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="usage-meter-fab"
+                  role="button"
+                  tabindex="0"
+                  aria-label="AI Usage: Plenty. Tap to learn more."
+                >
+                  <div class="usage-meter-tooltip">AI Usage: Plenty</div>
+                  <svg
+                    class="usage-meter-donut"
+                    viewBox="0 0 32 32"
+                    width="32"
+                    height="32"
+                    aria-hidden="true"
+                  >
+                    <circle
+                      class="usage-meter-track"
+                      cx="16"
+                      cy="16"
+                      r="14"
+                    ></circle>
+                    <circle
+                      class="usage-meter-arc"
+                      cx="16"
+                      cy="16"
+                      r="14"
+                      transform="rotate(-90 16 16)"
+                      style="--arc-length: 22; --arc-color: var(--accent)"
+                    ></circle>
+                  </svg>
+                </div>
+
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle sparkle-18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active">
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" />
+                    </svg>
+                    <span>Notes</span>
+                  </a>
+                  <a href="#" class="tab">
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      />
+                    </svg>
+                    <span>Chat</span>
+                  </a>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE C — Halfway (~62.5% fill)
+         Arc in --accent, still in the warm range.
+         ============================================ -->
+      <section id="state-c" class="state">
+        <div class="state-header">
+          <span class="state-tag">Mid usage</span>
+          <h2 class="state-title">
+            State C — Halfway (~62.5% fill, accent arc)
+          </h2>
+          <p class="state-desc">
+            Arc extends past the 3 o'clock mark. Still in the warm-copper range
+            — the user is being notified that they're past the halfway point,
+            but the colour hasn't shifted. Awareness without scarcity. On hover
+            (desktop), the tooltip reads "AI Usage: Halfway."
+          </p>
+        </div>
+
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen" data-state="C" style="height: 720px">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar">SC</div>
+                  </header>
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">
+                        What makes a great AI experience?
+                      </div>
+                      <p class="note-paragraph">
+                        What makes a great AI experience? I've been thinking
+                        about this all week, mostly in the context of dolfyn but
+                        the question is bigger than that.
+                      </p>
+                      <p class="note-paragraph">
+                        The best AI doesn't explain itself. It just helps —
+                        quietly, in the flow, without making itself the subject.
+                      </p>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        A user mid-thought doesn't want a status bar. They want
+                        the next sentence.<span class="cursor"></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="usage-meter-fab"
+                  role="button"
+                  tabindex="0"
+                  aria-label="AI Usage: Halfway. Tap to learn more."
+                >
+                  <div class="usage-meter-tooltip">AI Usage: Halfway</div>
+                  <svg
+                    class="usage-meter-donut"
+                    viewBox="0 0 32 32"
+                    width="32"
+                    height="32"
+                    aria-hidden="true"
+                  >
+                    <circle
+                      class="usage-meter-track"
+                      cx="16"
+                      cy="16"
+                      r="14"
+                    ></circle>
+                    <circle
+                      class="usage-meter-arc"
+                      cx="16"
+                      cy="16"
+                      r="14"
+                      transform="rotate(-90 16 16)"
+                      style="--arc-length: 55; --arc-color: var(--accent)"
+                    ></circle>
+                  </svg>
+                </div>
+
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle sparkle-18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active">
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" />
+                    </svg>
+                    <span>Notes</span>
+                  </a>
+                  <a href="#" class="tab">
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      />
+                    </svg>
+                    <span>Chat</span>
+                  </a>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE D — Low (~87.5% fill)
+         Arc crosses into --warning.
+         ============================================ -->
+      <section id="state-d" class="state">
+        <div class="state-header">
+          <span class="state-tag">High usage</span>
+          <h2 class="state-title">State D — Low (~87.5% fill, warning arc)</h2>
+          <p class="state-desc">
+            Arc extends past the 9 o'clock mark. At 75%, the colour shifted from
+            <code>--accent</code> to <code>--warning</code> (amber). The visual
+            is the first signal that the meter is warming up. "Low" is not loss
+            framing — it's a productive-day acknowledgement. The user has been
+            using the AI a lot today. That's a good day.
+          </p>
+        </div>
+
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen" data-state="D" style="height: 720px">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar">SC</div>
+                  </header>
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">
+                        What makes a great AI experience?
+                      </div>
+                      <p class="note-paragraph">
+                        What makes a great AI experience? I've been thinking
+                        about this all week.
+                      </p>
+                      <p class="note-paragraph">
+                        The best AI doesn't explain itself. It just helps —
+                        quietly, in the flow, without making itself the subject.
+                      </p>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        A user mid-thought doesn't want a status bar.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="usage-meter-fab"
+                  role="button"
+                  tabindex="0"
+                  aria-label="AI Usage: Low. Tap to learn more."
+                >
+                  <div class="usage-meter-tooltip">AI Usage: Low</div>
+                  <svg
+                    class="usage-meter-donut"
+                    viewBox="0 0 32 32"
+                    width="32"
+                    height="32"
+                    aria-hidden="true"
+                  >
+                    <circle
+                      class="usage-meter-track"
+                      cx="16"
+                      cy="16"
+                      r="14"
+                    ></circle>
+                    <circle
+                      class="usage-meter-arc"
+                      cx="16"
+                      cy="16"
+                      r="14"
+                      transform="rotate(-90 16 16)"
+                      style="--arc-length: 77; --arc-color: var(--warning)"
+                    ></circle>
+                  </svg>
+                </div>
+
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle sparkle-18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active">
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" />
+                    </svg>
+                    <span>Notes</span>
+                  </a>
+                  <a href="#" class="tab">
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      />
+                    </svg>
+                    <span>Chat</span>
+                  </a>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE E — Cap hit (100% fill, --cap-hit)
+         Full ring in deep burnt sienna.
+         ============================================ -->
+      <section id="state-e" class="state">
+        <div class="state-header">
+          <span class="state-tag">Cap hit</span>
+          <h2 class="state-title">
+            State E — cap hit (100% fill, --cap-hit arc)
+          </h2>
+          <p class="state-desc">
+            Full ring in <code>--cap-hit</code> (deep burnt sienna — a settled
+            warm boundary, not an alarm). The colour is distinct from
+            <code>--error</code> (validation) and
+            <code>--warning</code> (mid-zone), so a quick glance reads
+            "boundary" not "error." On hover, the tooltip reads "Done for today
+            — back tomorrow." On tap, the help sheet opens. The upgrade modal
+            fires separately on the 3-day trigger.
+          </p>
+        </div>
+
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen" data-state="E" style="height: 720px">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar">SC</div>
+                  </header>
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">
+                        What makes a great AI experience?
+                      </div>
+                      <p class="note-paragraph">
+                        What makes a great AI experience? I've been thinking
+                        about this all week.
+                      </p>
+                      <p class="note-paragraph">
+                        The best AI doesn't explain itself. It just helps —
+                        quietly.
+                      </p>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        A user mid-thought doesn't want a status bar.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="usage-meter-fab"
+                  role="button"
+                  tabindex="0"
+                  aria-label="AI Usage: Done for today. Resets at midnight UTC."
+                >
+                  <div class="usage-meter-tooltip">
+                    AI Usage: Done for today — back tomorrow.
+                  </div>
+                  <svg
+                    class="usage-meter-donut"
+                    viewBox="0 0 32 32"
+                    width="32"
+                    height="32"
+                    aria-hidden="true"
+                  >
+                    <circle
+                      class="usage-meter-track"
+                      cx="16"
+                      cy="16"
+                      r="14"
+                    ></circle>
+                    <circle
+                      class="usage-meter-arc"
+                      cx="16"
+                      cy="16"
+                      r="14"
+                      transform="rotate(-90 16 16)"
+                      style="--arc-length: 88; --arc-color: var(--cap-hit)"
+                    ></circle>
+                  </svg>
+                </div>
+
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle sparkle-18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active">
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" />
+                    </svg>
+                    <span>Notes</span>
+                  </a>
+                  <a href="#" class="tab">
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      />
+                    </svg>
+                    <span>Chat</span>
+                  </a>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE F — Desktop 1440px with hover tooltip
+         Tooltip visible above the donut.
+         ============================================ -->
+      <section id="state-f" class="state">
+        <div class="state-header">
+          <span class="state-tag">Desktop hover</span>
+          <h2 class="state-title">State F — desktop 1440px, hover tooltip</h2>
+          <p class="state-desc">
+            On desktop, hovering the donut reveals a small dark tooltip above it
+            with the current word state. The tooltip is right-aligned with the
+            donut's right edge so it doesn't extend off the viewport. The arrow
+            points down at the icon. On mobile, no hover — tap opens the help
+            sheet directly.
+          </p>
+        </div>
+
+        <div class="viewports">
+          <div class="viewport" style="max-width: 100%">
+            <div class="device-label">1440px (desktop, hover state)</div>
+            <div class="device-frame--desktop">
+              <div class="screen--desktop" data-state="F" style="height: 884px">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div
+                    class="avatar avatar--tier"
+                    aria-label="Profile, Think tier"
+                    style="position: relative"
+                  >
+                    SC
+                  </div>
+                </header>
+                <div
+                  class="app"
+                  style="
+                    flex: 1;
+                    min-height: 0;
+                    display: flex;
+                    flex-direction: column;
+                  "
+                >
+                  <div class="note-editor" style="padding-bottom: 124px">
+                    <div class="note-body">
+                      <div class="note-title">
+                        What makes a great AI experience?
+                      </div>
+                      <p class="note-paragraph">
+                        What makes a great AI experience? I've been thinking
+                        about this all week, mostly in the context of dolfyn but
+                        the question is bigger than that.
+                      </p>
+                      <p class="note-paragraph">
+                        The best AI doesn't explain itself. It doesn't say "I'm
+                        here to help." It just helps — quietly, in the flow,
+                        without making itself the subject.
+                      </p>
+                      <p class="note-paragraph">
+                        A user mid-thought doesn't want a status bar. They want
+                        the next sentence.
+                      </p>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        A donut in the corner — small, ambient, opt-in — fits
+                        the paper-quiet register better than a full-width
+                        strip.<span class="cursor"></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="usage-meter-fab"
+                  role="button"
+                  tabindex="0"
+                  aria-label="AI Usage: Halfway. Tap to learn more."
+                  style="opacity: 1; transform: none"
+                >
+                  <div
+                    class="usage-meter-tooltip"
+                    style="opacity: 1; transform: translateY(0)"
+                  >
+                    AI Usage: Halfway
+                  </div>
+                  <svg
+                    class="usage-meter-donut"
+                    viewBox="0 0 32 32"
+                    width="32"
+                    height="32"
+                    aria-hidden="true"
+                  >
+                    <circle
+                      class="usage-meter-track"
+                      cx="16"
+                      cy="16"
+                      r="14"
+                    ></circle>
+                    <circle
+                      class="usage-meter-arc"
+                      cx="16"
+                      cy="16"
+                      r="14"
+                      transform="rotate(-90 16 16)"
+                      style="--arc-length: 55; --arc-color: var(--accent)"
+                    ></circle>
+                  </svg>
+                </div>
+
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle sparkle-18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active">
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" />
+                    </svg>
+                    <span>Notes</span>
+                  </a>
+                  <a href="#" class="tab">
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      />
+                    </svg>
+                    <span>Chat</span>
+                  </a>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE G — Help sheet open
+         Donut hidden while sheet covers the bottom half.
+         ============================================ -->
+      <section id="state-g" class="state">
+        <div class="state-header">
+          <span class="state-tag">Help sheet</span>
+          <h2 class="state-title">
+            State G — help bottom sheet (tap the donut)
+          </h2>
+          <p class="state-desc">
+            Tapping the donut opens a sliding bottom sheet. Three sections —
+            Light, Medium, Heavy — with the 14 features listed. No token
+            numbers. The "Resets at midnight" line answers the implicit "when
+            does it reset?" question. The donut hides while the sheet is open
+            (the sheet fulfils the donut's information role).
+          </p>
+        </div>
+
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen" data-state="G" style="height: 720px">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar">SC</div>
+                  </header>
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">
+                        What makes a great AI experience?
+                      </div>
+                      <p class="note-paragraph">
+                        What makes a great AI experience? I've been thinking
+                        about this all week.
+                      </p>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        The best AI doesn't explain itself.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="usage-meter-fab usage-meter-fab--hidden"
+                  aria-hidden="true"
+                >
+                  <svg
+                    class="usage-meter-donut"
+                    viewBox="0 0 32 32"
+                    width="32"
+                    height="32"
+                    aria-hidden="true"
+                  >
+                    <circle
+                      class="usage-meter-track"
+                      cx="16"
+                      cy="16"
+                      r="14"
+                    ></circle>
+                    <circle
+                      class="usage-meter-arc"
+                      cx="16"
+                      cy="16"
+                      r="14"
+                      transform="rotate(-90 16 16)"
+                      style="--arc-length: 22; --arc-color: var(--accent)"
+                    ></circle>
+                  </svg>
+                </div>
+
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle sparkle-18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active">
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" />
+                    </svg>
+                    <span>Notes</span>
+                  </a>
+                  <a href="#" class="tab">
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      />
+                    </svg>
+                    <span>Chat</span>
+                  </a>
+                </nav>
+
+                <div class="help-backdrop" aria-hidden="true"></div>
+                <div
+                  class="help-sheet"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-labelledby="help-sheet-title"
+                >
+                  <div class="help-sheet-drag" aria-hidden="true"></div>
+                  <h2 class="help-sheet-title" id="help-sheet-title">
+                    How AI Usage Works
+                  </h2>
+                  <div class="help-sheet-body">
+                    <div class="help-section">
+                      <p class="help-section-label">Light</p>
+                      <p class="help-section-subtitle">Smallest impact</p>
+                      <p class="help-section-features">
+                        Fix Grammar · Explain · Summarize · List Takeaways ·
+                        Change Tone
+                      </p>
+                    </div>
+                    <div class="help-section">
+                      <p class="help-section-label">Medium</p>
+                      <p class="help-section-subtitle">Moderate impact</p>
+                      <p class="help-section-features">
+                        Brainstorm · Improve Writing · Change Length
+                      </p>
+                    </div>
+                    <div class="help-section">
+                      <p class="help-section-label">Heavy</p>
+                      <p class="help-section-subtitle">Largest impact</p>
+                      <p class="help-section-features">
+                        Critique · Back My Claim · Chat
+                      </p>
+                    </div>
+                  </div>
+                  <div class="help-sheet-reset">Resets at midnight.</div>
+                  <div class="help-sheet-actions">
+                    <button class="help-got-it" type="button">Got it</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="viewport" style="max-width: 100%">
+            <div class="device-label">1440px (desktop, help sheet)</div>
+            <div class="device-frame--desktop">
+              <div class="screen--desktop" data-state="G" style="height: 884px">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div
+                    class="avatar avatar--tier"
+                    aria-label="Profile, Think tier"
+                    style="position: relative"
+                  >
+                    SC
+                  </div>
+                </header>
+                <div
+                  class="app"
+                  style="
+                    flex: 1;
+                    min-height: 0;
+                    display: flex;
+                    flex-direction: column;
+                  "
+                >
+                  <div class="note-editor" style="padding-bottom: 124px">
+                    <div class="note-body">
+                      <div class="note-title">
+                        What makes a great AI experience?
+                      </div>
+                      <p class="note-paragraph">
+                        What makes a great AI experience? I've been thinking
+                        about this all week, mostly in the context of dolfyn but
+                        the question is bigger than that.
+                      </p>
+                      <p class="note-paragraph">
+                        The best AI doesn't explain itself. It doesn't say "I'm
+                        here to help." It just helps — quietly, in the flow,
+                        without making itself the subject.
+                      </p>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        A donut in the corner — small, ambient, opt-in — fits
+                        the paper-quiet register better than a full-width
+                        strip.<span class="cursor"></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="usage-meter-fab usage-meter-fab--hidden"
+                  aria-hidden="true"
+                >
+                  <svg
+                    class="usage-meter-donut"
+                    viewBox="0 0 32 32"
+                    width="32"
+                    height="32"
+                    aria-hidden="true"
+                  >
+                    <circle
+                      class="usage-meter-track"
+                      cx="16"
+                      cy="16"
+                      r="14"
+                    ></circle>
+                    <circle
+                      class="usage-meter-arc"
+                      cx="16"
+                      cy="16"
+                      r="14"
+                      transform="rotate(-90 16 16)"
+                      style="--arc-length: 55; --arc-color: var(--accent)"
+                    ></circle>
+                  </svg>
+                </div>
+
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle sparkle-18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav">
+                  <a href="#" class="tab tab--active">
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" />
+                    </svg>
+                    <span>Notes</span>
+                  </a>
+                  <a href="#" class="tab">
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      />
+                    </svg>
+                    <span>Chat</span>
+                  </a>
+                </nav>
+
+                <div class="help-backdrop" aria-hidden="true"></div>
+                <div
+                  class="help-sheet"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-labelledby="help-sheet-title-desktop"
+                >
+                  <div class="help-sheet-drag" aria-hidden="true"></div>
+                  <h2 class="help-sheet-title" id="help-sheet-title-desktop">
+                    How AI Usage Works
+                  </h2>
+                  <div class="help-sheet-body">
+                    <div class="help-section">
+                      <p class="help-section-label">Light</p>
+                      <p class="help-section-subtitle">Smallest impact</p>
+                      <p class="help-section-features">
+                        Fix Grammar · Explain · Summarize · List Takeaways ·
+                        Change Tone
+                      </p>
+                    </div>
+                    <div class="help-section">
+                      <p class="help-section-label">Medium</p>
+                      <p class="help-section-subtitle">Moderate impact</p>
+                      <p class="help-section-features">
+                        Brainstorm · Improve Writing · Change Length
+                      </p>
+                    </div>
+                    <div class="help-section">
+                      <p class="help-section-label">Heavy</p>
+                      <p class="help-section-subtitle">Largest impact</p>
+                      <p class="help-section-features">
+                        Critique · Back My Claim · Chat
+                      </p>
+                    </div>
+                  </div>
+                  <div class="help-sheet-reset">Resets at midnight.</div>
+                  <div class="help-sheet-actions">
+                    <button class="help-got-it" type="button">Got it</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,1588 @@
+<!-- COMPONENT INVENTORY: hero-section, cta-button-primary, cta-button-secondary, problem-section, problem-card, grade-section, gif-placeholder, play-button-overlay, pricing-card, pricing-card-recommended, final-cta-section, footer-section, tricolor-badge, section-header -->
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>dolfyn — Zero-organization AI notes</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../tokens.css" />
+
+    <style>
+      /* ===== Landing page v2 extended type scale ===== */
+      :root {
+        --type-hero-size: 48px;
+        --type-hero-line: 1.15;
+        --type-hero-weight: 600;
+        --type-hero-tracking: -0.02em;
+
+        --type-section-size: 28px;
+        --type-section-line: 1.3;
+        --type-section-weight: 600;
+        --type-section-tracking: -0.01em;
+
+        --type-grade-size: 24px;
+        --type-grade-line: 1.3;
+        --type-grade-weight: 600;
+        --type-grade-tracking: -0.01em;
+
+        --type-subhead-size: 18px;
+        --type-subhead-line: 1.5;
+        --type-subhead-weight: 400;
+        --type-subhead-tracking: 0;
+
+        --type-eyebrow-size: 13px;
+        --type-eyebrow-line: 1.3;
+        --type-eyebrow-weight: 500;
+        --type-eyebrow-tracking: 0.06em;
+      }
+
+      /* ===== Reset & base ===== */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        -webkit-text-size-adjust: 100%;
+      }
+
+      body {
+        font-family: var(--font-serif);
+        background: var(--surface);
+        color: var(--ink);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        overflow-x: hidden;
+      }
+
+      /* ===== Layout container ===== */
+      .lp-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 var(--space-4);
+      }
+
+      @media (min-width: 768px) {
+        .lp-container {
+          padding: 0 var(--space-6);
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .lp-container {
+          padding: 0 var(--space-7);
+        }
+      }
+
+      /* ===== Section spacing ===== */
+      .lp-section {
+        padding: var(--space-7) 0;
+      }
+
+      @media (min-width: 768px) {
+        .lp-section {
+          padding: 80px 0;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .lp-section {
+          padding: 100px 0;
+        }
+      }
+
+      /* ===== Typography utilities ===== */
+      .type-hero {
+        font-family: var(--font-serif);
+        font-size: var(--type-hero-size);
+        line-height: var(--type-hero-line);
+        font-weight: var(--type-hero-weight);
+        letter-spacing: var(--type-hero-tracking);
+        color: var(--ink);
+      }
+
+      .type-section {
+        font-family: var(--font-serif);
+        font-size: var(--type-section-size);
+        line-height: var(--type-section-line);
+        font-weight: var(--type-section-weight);
+        letter-spacing: var(--type-section-tracking);
+        color: var(--ink);
+      }
+
+      .type-grade {
+        font-family: var(--font-serif);
+        font-size: var(--type-grade-size);
+        line-height: var(--type-grade-line);
+        font-weight: var(--type-grade-weight);
+        letter-spacing: var(--type-grade-tracking);
+        color: var(--ink);
+      }
+
+      .type-subhead {
+        font-family: var(--font-serif);
+        font-size: var(--type-subhead-size);
+        line-height: var(--type-subhead-line);
+        font-weight: var(--type-subhead-weight);
+        letter-spacing: var(--type-subhead-tracking);
+        color: var(--ink-2);
+      }
+
+      .type-eyebrow {
+        font-family: var(--font-sans);
+        font-size: var(--type-eyebrow-size);
+        line-height: var(--type-eyebrow-line);
+        font-weight: var(--type-eyebrow-weight);
+        letter-spacing: var(--type-eyebrow-tracking);
+        color: var(--ink-3);
+        text-transform: uppercase;
+      }
+
+      /* ===== Buttons ===== */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: var(--space-3) var(--space-5);
+        border-radius: var(--radius-md);
+        font-family: var(--font-sans);
+        font-size: var(--type-label-size);
+        font-weight: 500;
+        line-height: var(--type-label-line);
+        text-decoration: none;
+        cursor: pointer;
+        transition: opacity var(--duration-fast) var(--ease-out);
+        border: none;
+        white-space: nowrap;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .btn:active {
+        opacity: 0.85;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: var(--ink-inverse);
+      }
+
+      .btn-secondary {
+        background: transparent;
+        color: var(--ink);
+        border: 1px solid var(--border);
+      }
+
+      @media (min-width: 768px) {
+        .btn {
+          min-height: 44px;
+        }
+      }
+
+      /* ===== Tricolor badge ===== */
+      .tricolor-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+      }
+
+      .tricolor-strip {
+        display: inline-flex;
+        gap: 0;
+        height: 12px;
+        width: 18px;
+        border-radius: 1px;
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+
+      .tricolor-strip span {
+        width: 6px;
+        height: 12px;
+        display: block;
+      }
+      .tricolor-strip .saffron {
+        background: #ff9933;
+      }
+      .tricolor-strip .white {
+        background: #ffffff;
+      }
+      .tricolor-strip .green {
+        background: #138808;
+      }
+
+      .tricolor-badge .label {
+        font-family: var(--font-sans);
+        font-size: var(--type-caption-size);
+        font-weight: var(--type-caption-weight);
+        letter-spacing: var(--type-caption-tracking);
+        color: var(--ink-3);
+      }
+
+      /* ===== Section headers ===== */
+      .section-header {
+        text-align: center;
+        max-width: 640px;
+        margin: 0 auto var(--space-7);
+      }
+
+      .section-header .eyebrow {
+        margin-bottom: var(--space-3);
+      }
+      .section-header h2 {
+        margin-bottom: var(--space-4);
+      }
+      .section-header p {
+        color: var(--ink-2);
+      }
+
+      /* ===== Hero visual — ambient screenshot ===== */
+      .hero-visual {
+        position: relative;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+        background: var(--surface-raised);
+        overflow: hidden;
+        box-shadow: var(--elevation-panel);
+      }
+
+      .hero-visual .demo-frame {
+        padding: var(--space-5);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+        min-height: 320px;
+      }
+
+      .hero-visual .note-mock {
+        flex: 1;
+      }
+
+      .hero-visual .note-mock .mock-title {
+        font-family: var(--font-serif);
+        font-size: var(--type-title-size);
+        line-height: var(--type-title-line);
+        font-weight: var(--type-title-weight);
+        color: var(--ink);
+        margin-bottom: var(--space-4);
+      }
+
+      .hero-visual .note-mock .mock-text {
+        color: var(--ink-2);
+        margin-bottom: var(--space-5);
+      }
+
+      .hero-visual .note-mock .mock-sentence {
+        margin-bottom: var(--space-2);
+      }
+
+      /* ===== Problem section cards ===== */
+      .problem-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-5);
+        max-width: 960px;
+        margin: 0 auto;
+      }
+
+      @media (min-width: 768px) {
+        .problem-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      .problem-card {
+        text-align: center;
+        padding: var(--space-5);
+      }
+
+      .problem-card .problem-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--surface-subtle);
+        color: var(--ink-3);
+        font-family: var(--font-sans);
+        font-size: var(--type-label-size);
+        font-weight: 500;
+        margin-bottom: var(--space-4);
+      }
+
+      .problem-card h3 {
+        font-family: var(--font-serif);
+        font-size: var(--type-title-size);
+        line-height: var(--type-title-line);
+        font-weight: var(--type-title-weight);
+        color: var(--ink);
+      }
+
+      /* ===== Grade sections (Feature showcases) ===== */
+      .grade-row {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-6);
+        align-items: center;
+      }
+
+      @media (min-width: 768px) {
+        .grade-row {
+          flex-direction: row;
+          gap: var(--space-7);
+        }
+
+        .grade-row.reverse {
+          flex-direction: row-reverse;
+        }
+      }
+
+      .grade-text {
+        flex: 1;
+        max-width: 440px;
+      }
+
+      .grade-text h2 {
+        margin-bottom: var(--space-3);
+      }
+
+      .grade-text .grade-liner {
+        color: var(--ink-2);
+      }
+
+      .grade-visual {
+        flex: 1;
+        max-width: 420px;
+        width: 100%;
+      }
+
+      /* ===== GIF Placeholder ===== */
+      .gif-placeholder {
+        position: relative;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+        background: var(--surface-raised);
+        overflow: hidden;
+        box-shadow: var(--elevation-panel);
+        aspect-ratio: 16 / 10;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .gif-placeholder .gif-inner {
+        flex: 1;
+        padding: var(--space-4);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: var(--space-3);
+      }
+
+      /* GIF annotation label */
+      .gif-annotation {
+        font-family: var(--font-sans);
+        font-size: var(--type-caption-size);
+        font-weight: var(--type-caption-weight);
+        color: var(--ink-3);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        text-align: center;
+        padding: var(--space-2) var(--space-4);
+        border-top: 1px solid var(--divider);
+        background: var(--surface);
+      }
+
+      /* Play button overlay */
+      .play-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(15, 15, 14, 0.06);
+      }
+
+      .play-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: transform var(--duration-fast) var(--ease-out);
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .play-btn:active {
+        transform: scale(0.95);
+      }
+
+      .play-btn::after {
+        content: "";
+        display: block;
+        width: 0;
+        height: 0;
+        border-left: 12px solid var(--accent);
+        border-top: 7px solid transparent;
+        border-bottom: 7px solid transparent;
+        margin-left: 3px;
+      }
+
+      /* Subtle pulse animation for GIF placeholders */
+      @keyframes gif-pulse {
+        0%,
+        100% {
+          box-shadow: var(--elevation-panel);
+        }
+        50% {
+          box-shadow:
+            0 8px 32px -8px rgba(15, 15, 14, 0.16),
+            0 2px 8px -2px rgba(15, 15, 14, 0.08);
+        }
+      }
+
+      .gif-placeholder {
+        animation: gif-pulse 3s var(--ease-in-out) infinite;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .gif-placeholder {
+          animation: none;
+        }
+      }
+
+      /* GIF inner content — mockup of what the GIF would show */
+      .gif-mock {
+        width: 100%;
+        max-width: 300px;
+        background: var(--surface);
+        border-radius: var(--radius-md);
+        border: 1px solid var(--border);
+        padding: var(--space-4);
+        text-align: left;
+      }
+
+      .gif-mock .mock-label {
+        font-family: var(--font-sans);
+        font-size: var(--type-caption-size);
+        font-weight: var(--type-caption-weight);
+        color: var(--ink-3);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: var(--space-2);
+      }
+
+      .gif-mock .mock-line {
+        font-family: var(--font-serif);
+        font-size: var(--type-body-sm-size);
+        line-height: var(--type-body-sm-line);
+        color: var(--ink-2);
+        margin-bottom: var(--space-1);
+      }
+
+      .gif-mock .mock-line:last-child {
+        margin-bottom: 0;
+      }
+
+      .gif-mock .mock-line.ai {
+        color: var(--accent-strong);
+      }
+
+      .gif-mock .mock-line.citation {
+        display: inline-flex;
+        align-items: center;
+        height: 24px;
+        padding: 0 6px;
+        background: var(--surface-subtle);
+        border-radius: var(--radius-sm);
+        font-size: var(--type-caption-size);
+        color: var(--ink-2);
+        margin-top: var(--space-2);
+      }
+
+      .gif-mock .mock-sparkle {
+        color: var(--accent);
+        font-size: 14px;
+        margin-right: var(--space-1);
+      }
+
+      /* ===== Pricing ===== */
+      .pricing-grid {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+        max-width: 900px;
+        margin: 0 auto;
+      }
+
+      .pricing-card {
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+        background: var(--surface-raised);
+        padding: var(--space-5);
+        position: relative;
+      }
+
+      .pricing-card.recommended {
+        border-left: 3px solid var(--accent);
+      }
+
+      .pricing-card.recommended .recommended-badge {
+        display: inline-block;
+        font-family: var(--font-sans);
+        font-size: var(--type-caption-size);
+        font-weight: var(--type-caption-weight);
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: var(--space-2);
+      }
+
+      .pricing-card .tier-name {
+        font-family: var(--font-serif);
+        font-size: var(--type-title-size);
+        line-height: var(--type-title-line);
+        font-weight: var(--type-title-weight);
+        color: var(--ink);
+        margin-bottom: var(--space-1);
+      }
+
+      .pricing-card .tier-price {
+        margin-bottom: var(--space-4);
+      }
+
+      .pricing-card .tier-price .price-main {
+        font-family: var(--font-sans);
+        font-size: 32px;
+        font-weight: 600;
+        color: var(--ink);
+        line-height: 1.2;
+      }
+
+      .pricing-card .tier-price .price-free {
+        font-family: var(--font-sans);
+        font-size: 32px;
+        font-weight: 600;
+        color: var(--ink-2);
+        line-height: 1.2;
+      }
+
+      .pricing-card .tier-price .price-after {
+        color: var(--ink-3);
+        margin-top: var(--space-1);
+      }
+
+      .pricing-card .tier-detail {
+        padding-top: var(--space-4);
+        border-top: 1px solid var(--divider);
+      }
+
+      .pricing-card .tier-detail .detail-row {
+        display: flex;
+        justify-content: space-between;
+        padding: var(--space-1) 0;
+        color: var(--ink-2);
+      }
+
+      .pricing-card .tier-detail .detail-label {
+        color: var(--ink-3);
+      }
+
+      .pricing-card .tier-detail .detail-value {
+        color: var(--ink);
+        font-weight: 500;
+      }
+
+      .pricing-card .tier-features {
+        margin-top: var(--space-4);
+        padding-top: var(--space-4);
+        border-top: 1px solid var(--divider);
+      }
+
+      .pricing-card .tier-features .feature-item {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-1) 0;
+        color: var(--ink-2);
+        font-size: var(--type-body-sm-size);
+      }
+
+      .pricing-card .feature-item .check {
+        color: var(--success);
+        flex-shrink: 0;
+        font-weight: 600;
+      }
+
+      .pricing-guarantee {
+        text-align: center;
+        margin-top: var(--space-5);
+        color: var(--ink-3);
+      }
+
+      @media (min-width: 768px) {
+        .pricing-grid {
+          flex-direction: row;
+          align-items: stretch;
+        }
+
+        .pricing-card {
+          flex: 1;
+        }
+
+        .pricing-card.recommended {
+          border: 1px solid var(--border);
+          border-left: 3px solid var(--accent);
+        }
+      }
+
+      /* ===== Final CTA ===== */
+      .final-cta-section {
+        text-align: center;
+        padding: 80px 0;
+      }
+
+      .final-cta-section h2 {
+        max-width: 580px;
+        margin: 0 auto var(--space-5);
+      }
+
+      .final-cta-section .btn {
+        margin-bottom: var(--space-4);
+      }
+
+      .final-cta-section .final-micro {
+        color: var(--ink-3);
+      }
+
+      /* ===== Footer ===== */
+      .footer-section {
+        padding: var(--space-7) 0;
+        border-top: 1px solid var(--divider);
+      }
+
+      .footer-top {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-6);
+        margin-bottom: var(--space-6);
+      }
+
+      .footer-guarantee {
+        color: var(--ink-2);
+      }
+
+      .footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-3) var(--space-5);
+      }
+
+      .footer-links a {
+        font-family: var(--font-sans);
+        font-size: var(--type-caption-size);
+        font-weight: var(--type-caption-weight);
+        color: var(--ink-3);
+        text-decoration: none;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        transition: color var(--duration-fast) var(--ease-out);
+      }
+
+      .footer-links a:hover {
+        color: var(--ink-2);
+      }
+
+      .footer-bottom {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+        align-items: flex-start;
+      }
+
+      @media (min-width: 768px) {
+        .footer-top {
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: flex-start;
+        }
+
+        .footer-bottom {
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+        }
+      }
+
+      /* ===== Scroll-triggered animations ===== */
+      @supports (animation-timeline: view()) {
+        .animate-reveal {
+          animation: reveal-up linear both;
+          animation-timeline: view();
+          animation-range: entry 0% entry 100%;
+        }
+      }
+
+      @supports not (animation-timeline: view()) {
+        .animate-reveal {
+          opacity: 1;
+        }
+      }
+
+      @keyframes reveal-up {
+        from {
+          opacity: 0;
+          transform: translateY(24px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .hero-content {
+        animation: fade-in 500ms var(--ease-out) both;
+      }
+
+      .hero-visual-wrap {
+        animation: fade-in 600ms var(--ease-out) 200ms both;
+      }
+
+      /* ===== Reduced motion ===== */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
+
+        .animate-reveal {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      /* ===== Mobile refinements ===== */
+      @media (max-width: 374px) {
+        .type-hero {
+          font-size: 36px;
+        }
+        .hero-section {
+          padding-top: var(--space-6);
+        }
+      }
+
+      /* ===== Sparkle pulse for grade-2 icon ===== */
+      @keyframes sparkle-pulse {
+        0%,
+        100% {
+          opacity: 0.6;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.08);
+        }
+      }
+
+      .sparkle-pulse {
+        animation: sparkle-pulse var(--duration-sparkle-pulse)
+          var(--ease-in-out) infinite;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .sparkle-pulse {
+          animation: none;
+        }
+      }
+    </style>
+
+    <script
+      defer
+      data-domain="dolfyn.pages.dev"
+      src="https://plausible.io/js/script.js"
+    ></script>
+  </head>
+  <body>
+    <!-- ===== SECTION 1: Hero ===== -->
+    <section
+      class="lp-section hero-section"
+      data-component="hero-section"
+      data-section="1"
+    >
+      <div class="lp-container">
+        <div class="hero-content" data-focus-order="1">
+          <p class="hero-eyebrow type-eyebrow">Zero-organization AI notes</p>
+
+          <h1 class="hero-headline type-hero">
+            Tired of organizing notes before you can find them?
+          </h1>
+
+          <p class="hero-subheadline type-subhead">
+            One AI knows everything you've written — helping you write, edit,
+            retrieve, and connect.
+          </p>
+
+          <div class="hero-ctas">
+            <a
+              href="https://dolfyn-app.pages.dev?source=landing&medium=organic&campaign=hero_cta&content=primary"
+              class="btn btn-primary"
+              data-component="cta-button"
+              data-variant="primary"
+              data-interaction="navigate"
+              data-primary-action
+              data-focus-order="2"
+              aria-label="Start thinking, not organizing — free forever"
+              onclick="
+                typeof plausible !== 'undefined' &&
+                  plausible('CTA Click', {
+                    props: { location: 'hero_primary' },
+                  })
+              "
+            >
+              Start thinking, not organizing — free forever
+            </a>
+
+            <a
+              href="#grade-capture"
+              class="btn btn-secondary"
+              data-component="cta-button"
+              data-variant="secondary"
+              data-interaction="scroll"
+              data-focus-order="3"
+              aria-label="See how it works"
+            >
+              See how it works
+            </a>
+          </div>
+
+          <div class="hero-microcopy">
+            <span class="micro-line type-caption"
+              >Free tier includes full AI</span
+            >
+            <span
+              class="micro-line type-caption"
+              style="color: var(--ink-3); opacity: 0.5"
+              >·</span
+            >
+            <span class="micro-line type-caption">30-second signup</span>
+            <span
+              class="micro-line type-caption"
+              style="color: var(--ink-3); opacity: 0.5"
+              >·</span
+            >
+            <span class="micro-line type-caption">No credit card</span>
+          </div>
+        </div>
+
+        <!-- Hero visual: Ambient note editor screenshot -->
+        <div
+          class="hero-visual-wrap"
+          data-component="demo-placeholder"
+          data-animation="fade-in"
+          data-animation-duration="600ms"
+        >
+          <div class="hero-visual" data-responsive="stack-at-mobile">
+            <div class="demo-frame">
+              <div class="note-mock">
+                <div class="mock-title">Tokyo conference plan</div>
+                <div class="mock-text type-body-sm">
+                  <div class="mock-sentence">
+                    Flying out March 14, returning March 19. Need to book the
+                    Shibuya hotel before it sells out — last time I waited and
+                    ended up in Shinjuku.
+                  </div>
+                  <div
+                    class="mock-sentence"
+                    style="color: var(--ink-3); margin-top: var(--space-3)"
+                  >
+                    Day 1: Arrive Narita, train to hotel. Evening free — maybe
+                    explore Golden Gai.
+                  </div>
+                  <div class="mock-sentence" style="color: var(--ink-3)">
+                    Day 2: Conference talks. Want to catch the keynote on
+                    distributed teams.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 2: Problem ===== -->
+    <section
+      class="lp-section"
+      data-component="problem-section"
+      data-section="2"
+    >
+      <div class="lp-container">
+        <div class="section-header" data-component="section-header">
+          <h2 class="type-section">
+            Your notes should work for you, not the other way around.
+          </h2>
+        </div>
+
+        <div class="problem-grid">
+          <div
+            class="problem-card animate-reveal"
+            data-component="problem-card"
+            data-card="1"
+          >
+            <div class="problem-number">1</div>
+            <h3 class="type-title">You organize before you can find</h3>
+          </div>
+
+          <div
+            class="problem-card animate-reveal"
+            data-component="problem-card"
+            data-card="2"
+          >
+            <div class="problem-number">2</div>
+            <h3 class="type-title">AI features are paywalled elsewhere</h3>
+          </div>
+
+          <div
+            class="problem-card animate-reveal"
+            data-component="problem-card"
+            data-card="3"
+          >
+            <div class="problem-number">3</div>
+            <h3 class="type-title">Switching tools means starting over</h3>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 3: Grade 1 — Capture ===== -->
+    <section
+      class="lp-section"
+      id="grade-capture"
+      data-component="grade-section"
+      data-section="3"
+      data-grade="capture"
+    >
+      <div class="lp-container">
+        <div class="grade-row animate-reveal">
+          <div class="grade-text" data-focus-order="1">
+            <h2 class="type-grade">Just write.</h2>
+            <p class="grade-liner type-subhead">
+              No folders. No tags. No setup. Open the app and start thinking.
+            </p>
+          </div>
+          <div class="grade-visual">
+            <div
+              class="gif-placeholder"
+              data-component="gif-placeholder"
+              data-animation="pulse"
+              data-responsive="stack-at-mobile"
+            >
+              <!-- GIF: note being typed, no folder/tag prompt -->
+              <div class="gif-inner">
+                <div class="gif-mock">
+                  <div class="mock-line">
+                    We need to finalize the Q3 priorities...
+                  </div>
+                  <div class="mock-line">
+                    and this quarter, we are focusing on
+                  </div>
+                  <div class="mock-line">
+                    user activation.<span
+                      class="cursor"
+                      style="
+                        display: inline-block;
+                        width: 2px;
+                        height: 1em;
+                        background: var(--ink);
+                        vertical-align: text-bottom;
+                        animation: blink 1s steps(2) infinite;
+                      "
+                    ></span>
+                  </div>
+                </div>
+              </div>
+              <div class="gif-annotation">
+                GIF: note being typed, no folder/tag prompt
+              </div>
+              <div class="play-overlay" data-interaction="play">
+                <div
+                  class="play-btn"
+                  role="button"
+                  aria-label="Play demo"
+                  tabindex="0"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 4: Grade 2 — Think ===== -->
+    <section
+      class="lp-section"
+      data-component="grade-section"
+      data-section="4"
+      data-grade="think"
+    >
+      <div class="lp-container">
+        <div class="grade-row reverse animate-reveal">
+          <div class="grade-text" data-focus-order="1">
+            <h2 class="type-grade">The AI thinks with you.</h2>
+            <p class="grade-liner type-subhead">
+              Fix grammar, sharpen drafts, critique your thinking — right where
+              you're writing.
+            </p>
+          </div>
+          <div class="grade-visual">
+            <div
+              class="gif-placeholder"
+              data-component="gif-placeholder"
+              data-animation="pulse"
+              data-responsive="stack-at-mobile"
+            >
+              <!-- GIF: Fix Grammar correcting a passage, before/after diff -->
+              <div class="gif-inner">
+                <div class="gif-mock">
+                  <div class="mock-label">
+                    <span class="mock-sparkle">✦</span> Fix Grammar
+                  </div>
+                  <div
+                    class="mock-line"
+                    style="
+                      color: var(--ink-3);
+                      text-decoration: line-through;
+                      text-decoration-color: var(--accent);
+                    "
+                  >
+                    We need to finalize the Q3 priorities <strong>and</strong>
+                  </div>
+                  <div class="mock-line ai">
+                    We need to finalize the Q3 priorities.
+                    <strong>This</strong> quarter, we are focusing on user
+                    activation.
+                  </div>
+                </div>
+              </div>
+              <div class="gif-annotation">
+                GIF: Fix Grammar correcting a passage, before/after diff
+              </div>
+              <div class="play-overlay" data-interaction="play">
+                <div
+                  class="play-btn"
+                  role="button"
+                  aria-label="Play demo"
+                  tabindex="0"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 5: Grade 3 — Retrieve ===== -->
+    <section
+      class="lp-section"
+      data-component="grade-section"
+      data-section="5"
+      data-grade="retrieve"
+    >
+      <div class="lp-container">
+        <div class="grade-row animate-reveal">
+          <div class="grade-text" data-focus-order="1">
+            <h2 class="type-grade">Ask anything.</h2>
+            <p class="grade-liner type-subhead">
+              The AI reads across every note you've written and cites its
+              sources.
+            </p>
+          </div>
+          <div class="grade-visual">
+            <div
+              class="gif-placeholder"
+              data-component="gif-placeholder"
+              data-animation="pulse"
+              data-responsive="stack-at-mobile"
+            >
+              <!-- GIF: AI chat answering "What did I write about work-life balance?" with 2 cited notes -->
+              <div class="gif-inner">
+                <div class="gif-mock">
+                  <div class="mock-label">
+                    <span class="mock-sparkle">✦</span> AI Chat
+                  </div>
+                  <div class="mock-line" style="margin-bottom: var(--space-2)">
+                    What did I write about work-life balance?
+                  </div>
+                  <div
+                    class="mock-line"
+                    style="
+                      border-left: 2px solid var(--accent);
+                      padding-left: var(--space-2);
+                      margin-top: var(--space-2);
+                    "
+                  >
+                    You've written about this in two notes. In one, you
+                    mentioned that boundaries only work when they're
+                    non-negotiable...
+                  </div>
+                  <div
+                    style="
+                      margin-top: var(--space-2);
+                      display: flex;
+                      gap: var(--space-1);
+                      flex-wrap: wrap;
+                    "
+                  >
+                    <span class="mock-line citation"
+                      >Tokyo conference plan</span
+                    >
+                    <span class="mock-line citation">Weekly reflections</span>
+                  </div>
+                </div>
+              </div>
+              <div class="gif-annotation">
+                GIF: AI chat answering "What did I write about work-life
+                balance?" with 2 cited notes
+              </div>
+              <div class="play-overlay" data-interaction="play">
+                <div
+                  class="play-btn"
+                  role="button"
+                  aria-label="Play demo"
+                  tabindex="0"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 6: Grade 4 — Connect ===== -->
+    <section
+      class="lp-section"
+      data-component="grade-section"
+      data-section="6"
+      data-grade="connect"
+    >
+      <div class="lp-container">
+        <div class="grade-row reverse animate-reveal">
+          <div class="grade-text" data-focus-order="1">
+            <h2 class="type-grade">Your notes connect themselves.</h2>
+            <p class="grade-liner type-subhead">
+              The AI builds an invisible link graph and surfaces connections
+              when you ask.
+            </p>
+          </div>
+          <div class="grade-visual">
+            <div
+              class="gif-placeholder"
+              data-component="gif-placeholder"
+              data-animation="pulse"
+              data-responsive="stack-at-mobile"
+            >
+              <!-- GIF: Critique surfacing 4 reasoning dimensions with source chips -->
+              <div class="gif-inner">
+                <div class="gif-mock">
+                  <div class="mock-label">
+                    <span class="mock-sparkle">✦</span> Critique
+                  </div>
+                  <div class="mock-line" style="margin-bottom: var(--space-2)">
+                    Your thinking, challenged:
+                  </div>
+                  <div
+                    style="
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space-2);
+                    "
+                  >
+                    <span class="mock-line citation"
+                      >Hidden assumption: "users know what they want"</span
+                    >
+                    <span class="mock-line citation"
+                      >Cognitive bias: survivorship of products that
+                      worked</span
+                    >
+                    <span class="mock-line citation"
+                      >Blind spot: setup-heavy products</span
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="gif-annotation">
+                GIF: Critique surfacing 4 reasoning dimensions with source chips
+              </div>
+              <div class="play-overlay" data-interaction="play">
+                <div
+                  class="play-btn"
+                  role="button"
+                  aria-label="Play demo"
+                  tabindex="0"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 7: Pricing ===== -->
+    <section
+      class="lp-section"
+      data-component="pricing-section"
+      data-section="7"
+    >
+      <div class="lp-container">
+        <div class="section-header" data-component="section-header">
+          <p class="eyebrow type-eyebrow">Pricing</p>
+          <h2 class="type-section">AI notes, priced so anyone can use them.</h2>
+        </div>
+
+        <div class="pricing-grid">
+          <!-- Free tier -->
+          <div
+            class="pricing-card"
+            data-component="pricing-card"
+            data-tier="free"
+          >
+            <h3 class="tier-name">Free</h3>
+            <div class="tier-price">
+              <span class="price-free">Free</span>
+            </div>
+            <div class="tier-detail">
+              <div class="detail-row">
+                <span
+                  class="detail-label type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >Daily tokens</span
+                >
+                <span
+                  class="detail-value type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >42K/day</span
+                >
+              </div>
+              <div class="detail-row">
+                <span
+                  class="detail-label type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >Context</span
+                >
+                <span
+                  class="detail-value type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >4K</span
+                >
+              </div>
+              <div class="detail-row">
+                <span
+                  class="detail-label type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >Notes</span
+                >
+                <span
+                  class="detail-value type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >10 notes</span
+                >
+              </div>
+            </div>
+            <div class="tier-features">
+              <div class="feature-item">
+                <span class="check">✓</span> AI chat
+              </div>
+              <div class="feature-item">
+                <span class="check">✓</span> 14 inline AI features
+              </div>
+              <div class="feature-item">
+                <span class="check">✓</span> Auto-save conversations
+              </div>
+              <div class="feature-item">
+                <span class="check">✓</span> 10 notes, generous per-note space
+              </div>
+            </div>
+          </div>
+
+          <!-- Think tier (recommended) -->
+          <div
+            class="pricing-card recommended"
+            data-component="pricing-card"
+            data-tier="think"
+            data-variant="recommended"
+          >
+            <span class="recommended-badge">Recommended</span>
+            <h3 class="tier-name">Think</h3>
+            <div class="tier-price">
+              <span class="price-main">₹99</span
+              ><span class="type-caption" style="color: var(--ink-2)">/mo</span>
+              <p class="price-after type-caption">
+                First 3 months, then ₹149/mo
+              </p>
+            </div>
+            <div class="tier-detail">
+              <div class="detail-row">
+                <span
+                  class="detail-label type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >Daily tokens</span
+                >
+                <span
+                  class="detail-value type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >200K/day</span
+                >
+              </div>
+              <div class="detail-row">
+                <span
+                  class="detail-label type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >Context</span
+                >
+                <span
+                  class="detail-value type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >8K</span
+                >
+              </div>
+              <div class="detail-row">
+                <span
+                  class="detail-label type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >Notes</span
+                >
+                <span
+                  class="detail-value type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >Unlimited</span
+                >
+              </div>
+            </div>
+            <div class="tier-features">
+              <div class="feature-item">
+                <span class="check">✓</span> Everything in Free
+              </div>
+              <div class="feature-item">
+                <span class="check">✓</span> Public sharing
+              </div>
+              <div class="feature-item">
+                <span class="check">✓</span> Export
+              </div>
+            </div>
+          </div>
+
+          <!-- Deep Think tier -->
+          <div
+            class="pricing-card"
+            data-component="pricing-card"
+            data-tier="deep-think"
+          >
+            <h3 class="tier-name">Deep Think</h3>
+            <div class="tier-price">
+              <span class="price-main">₹199</span
+              ><span class="type-caption" style="color: var(--ink-2)">/mo</span>
+              <p class="price-after type-caption">
+                First 3 months, then ₹249/mo
+              </p>
+            </div>
+            <div class="tier-detail">
+              <div class="detail-row">
+                <span
+                  class="detail-label type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >Daily tokens</span
+                >
+                <span
+                  class="detail-value type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >600K/day</span
+                >
+              </div>
+              <div class="detail-row">
+                <span
+                  class="detail-label type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >Context</span
+                >
+                <span
+                  class="detail-value type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >32K</span
+                >
+              </div>
+              <div class="detail-row">
+                <span
+                  class="detail-label type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >Notes</span
+                >
+                <span
+                  class="detail-value type-caption"
+                  style="font-size: var(--type-body-sm-size)"
+                  >Unlimited</span
+                >
+              </div>
+            </div>
+            <div class="tier-features">
+              <div class="feature-item">
+                <span class="check">✓</span> Everything in Think
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="pricing-guarantee type-caption">
+          No lock-in. Export anytime.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 8: Final CTA ===== -->
+    <section
+      class="lp-section final-cta-section"
+      data-component="final-cta-section"
+      data-section="8"
+    >
+      <div class="lp-container">
+        <h2 class="type-section">
+          Still writing alone — or organizing notes instead of thinking?
+        </h2>
+
+        <a
+          href="https://dolfyn-app.pages.dev?source=landing&medium=organic&campaign=hero_cta&content=final"
+          class="btn btn-primary"
+          data-component="cta-button"
+          data-variant="primary"
+          data-interaction="navigate"
+          aria-label="Start thinking, not organizing — free forever"
+          onclick="
+            typeof plausible !== 'undefined' &&
+              plausible('CTA Click', { props: { location: 'final_cta' } })
+          "
+        >
+          Start thinking, not organizing — free forever
+        </a>
+
+        <p class="final-micro type-caption">
+          30-second signup · Free tier includes full AI · Cancel anytime
+        </p>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 9: Footer ===== -->
+    <footer
+      class="lp-section footer-section"
+      data-component="footer-section"
+      data-section="9"
+    >
+      <div class="lp-container">
+        <div class="footer-top">
+          <p class="footer-guarantee type-body-sm">
+            No lock-in. Export anytime. Your notes, your data.
+          </p>
+
+          <nav
+            class="footer-links"
+            data-component="footer-nav"
+            aria-label="Footer navigation"
+          >
+            <a href="#" data-focus-order="100">Privacy</a>
+            <a href="#" data-focus-order="101">Terms</a>
+            <a
+              href="https://dolfyn-app.pages.dev"
+              data-focus-order="102"
+              onclick="
+                typeof plausible !== 'undefined' &&
+                  plausible('CTA Click', {
+                    props: { location: 'footer_login' },
+                  })
+              "
+              >App log-in</a
+            >
+            <a href="#" data-focus-order="103">Contact</a>
+          </nav>
+        </div>
+
+        <div class="footer-bottom">
+          <div
+            class="tricolor-badge"
+            data-component="tricolor-badge"
+            aria-label="Made with love from India"
+          >
+            <span class="tricolor-strip" aria-hidden="true">
+              <span class="saffron"></span>
+              <span class="white"></span>
+              <span class="green"></span>
+            </span>
+            <span class="label">Made with love from India</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- ===== Minimal JS: Intersection Observer fallback for reveal animations ===== -->
+    <script>
+      (function () {
+        var reducedMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+        if (reducedMotion) return;
+
+        var supportsViewTimeline = CSS.supports("animation-timeline: view()");
+        if (supportsViewTimeline) return;
+
+        var observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                entry.target.style.opacity = "1";
+                entry.target.style.transform = "translateY(0)";
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.1 },
+        );
+
+        document.querySelectorAll(".animate-reveal").forEach(function (el) {
+          el.style.opacity = "0";
+          el.style.transform = "translateY(24px)";
+          el.style.transition =
+            "opacity 400ms var(--ease-out, ease-out), transform 400ms var(--ease-out, ease-out)";
+          observer.observe(el);
+        });
+      })();
+    </script>
+  </body>
+</html>

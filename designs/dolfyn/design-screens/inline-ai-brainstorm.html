@@ -1,0 +1,2590 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>dolfyn — Inline AI: Brainstorm</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --surface: #fafaf7;
+        --surface-subtle: #f2f1ed;
+        --surface-raised: #ffffff;
+        --surface-overlay: rgba(15, 15, 14, 0.32);
+        --ink: #0f0f0e;
+        --ink-2: #3f3f3f;
+        --ink-3: #6b6b6b;
+        --ink-inverse: #fafaf7;
+        --border: #e5e5e1;
+        --border-strong: #c7c7c2;
+        --divider: #edede9;
+        --accent: #c2410c;
+        --accent-strong: #9a330a;
+        --accent-soft-bg: #fcefde;
+        --accent-tint: #f7f2ec;
+        --space-1: 4px;
+        --space-2: 8px;
+        --space-3: 12px;
+        --space-4: 16px;
+        --space-5: 24px;
+        --space-6: 32px;
+        --space-7: 48px;
+        --radius-sm: 6px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-xl: 16px;
+        --radius-full: 9999px;
+        --elevation-panel:
+          0 8px 24px -8px rgba(15, 15, 14, 0.12),
+          0 2px 4px -2px rgba(15, 15, 14, 0.06);
+        --z-base: 0;
+        --z-sticky: 100;
+        --z-overlay: 800;
+        --z-panel: 900;
+        --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        --duration-fast: 150ms;
+        --duration-base: 250ms;
+        --duration-slow: 350ms;
+        --meta-bg: #ecebe5;
+        --meta-ink: #2a2a28;
+        --meta-ink-2: #6e6e68;
+        --meta-border: #d8d7d1;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--meta-bg);
+        color: var(--meta-ink);
+        font-family: "Inter", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .mockup-nav {
+        position: sticky;
+        top: 0;
+        z-index: 1100;
+        background: var(--meta-bg);
+        border-bottom: 1px solid var(--meta-border);
+        padding: var(--space-3) var(--space-5);
+        display: flex;
+        align-items: center;
+        gap: var(--space-5);
+        flex-wrap: wrap;
+      }
+      .mockup-title {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink);
+      }
+      .mockup-subtitle {
+        font-size: 12px;
+        color: var(--meta-ink-2);
+      }
+      .state-tabs {
+        display: flex;
+        gap: var(--space-1);
+        margin-left: auto;
+        flex-wrap: wrap;
+      }
+      .state-tab {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--meta-ink-2);
+        text-decoration: none;
+        padding: var(--space-1) var(--space-2);
+        border-radius: var(--radius-sm);
+        border: 1px solid transparent;
+        transition:
+          background var(--duration-fast) var(--ease-out),
+          color var(--duration-fast) var(--ease-out);
+        white-space: nowrap;
+      }
+      .state-tab:hover {
+        background: rgba(15, 15, 14, 0.05);
+        color: var(--meta-ink);
+      }
+      #state-a:target ~ .mockup-nav .state-tab[href="#state-a"],
+      #state-b:target ~ .mockup-nav .state-tab[href="#state-b"],
+      #state-c:target ~ .mockup-nav .state-tab[href="#state-c"],
+      #state-d:target ~ .mockup-nav .state-tab[href="#state-d"],
+      #state-e:target ~ .mockup-nav .state-tab[href="#state-e"],
+      #state-f:target ~ .mockup-nav .state-tab[href="#state-f"] {
+        background: var(--meta-ink);
+        color: var(--ink-inverse);
+      }
+
+      .state {
+        padding: var(--space-7) var(--space-5) var(--space-6);
+        max-width: 1400px;
+        margin: 0 auto;
+        border-top: 1px solid var(--meta-border);
+      }
+      .state:first-of-type {
+        border-top: none;
+      }
+      .state:target {
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: var(--radius-lg);
+      }
+      .state-header {
+        margin-bottom: var(--space-5);
+        max-width: 720px;
+      }
+      .state-tag {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink-2);
+        margin-bottom: var(--space-2);
+      }
+      .state-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--meta-ink);
+        margin: 0 0 var(--space-2);
+        letter-spacing: -0.01em;
+      }
+      .state-desc {
+        font-size: 14px;
+        color: var(--meta-ink-2);
+        line-height: 1.5;
+        margin: 0;
+      }
+
+      .viewports {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-5);
+        align-items: flex-start;
+      }
+      .viewport {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        flex-shrink: 0;
+      }
+      .device-label {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink-2);
+        padding-left: var(--space-1);
+      }
+      .device-frame {
+        background: var(--meta-ink);
+        border-radius: 28px;
+        padding: 8px;
+        box-shadow: 0 2px 8px -2px rgba(15, 15, 14, 0.12);
+      }
+      .screen {
+        position: relative;
+        width: 375px;
+        height: 720px;
+        background: var(--surface);
+        border-radius: 22px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .app {
+        position: relative;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+      .app-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-3) var(--space-4);
+        flex-shrink: 0;
+      }
+      .wordmark {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-weight: 600;
+        font-size: 20px;
+        letter-spacing: -0.01em;
+        color: var(--ink);
+        line-height: 1;
+      }
+      .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-full);
+        background: var(--surface-subtle);
+        color: var(--ink-2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
+        font-size: 13px;
+        flex-shrink: 0;
+      }
+
+      .note-editor {
+        flex: 1;
+        padding: var(--space-5) var(--space-4) 124px;
+        overflow-y: auto;
+        scrollbar-width: none;
+      }
+      .note-editor::-webkit-scrollbar {
+        display: none;
+      }
+      .note-body {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--ink);
+        max-width: 480px;
+      }
+      .note-title {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 1.3;
+        color: var(--ink);
+        margin: 0 0 var(--space-5);
+      }
+      .note-paragraph {
+        margin: 0 0 var(--space-3);
+      }
+      .note-paragraph:last-child {
+        margin-bottom: 0;
+      }
+
+      .cursor {
+        display: inline-block;
+        width: 2px;
+        height: 1.1em;
+        background: var(--ink);
+        vertical-align: text-bottom;
+        margin-left: 1px;
+        animation: blink 1s steps(2) infinite;
+      }
+      @keyframes blink {
+        0%,
+        50% {
+          opacity: 1;
+        }
+        50.01%,
+        100% {
+          opacity: 0;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .cursor {
+          animation: none;
+          opacity: 1;
+        }
+      }
+
+      .ai-bar {
+        height: 56px;
+        padding: 0 var(--space-4);
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 14px;
+        line-height: 1.5;
+        flex-shrink: 0;
+      }
+      .ai-bar--passive {
+        background: var(--surface-subtle);
+        color: var(--ink-2);
+      }
+      .ai-bar-sparkle {
+        flex-shrink: 0;
+        color: var(--accent);
+      }
+
+      .bottom-nav {
+        height: 56px;
+        background: var(--surface-raised);
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: stretch;
+        justify-content: space-around;
+        padding: 0 var(--space-2);
+        flex-shrink: 0;
+      }
+      .tab {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--ink-3);
+        position: relative;
+        text-decoration: none;
+      }
+      .tab svg {
+        display: block;
+      }
+      .tab--active {
+        color: var(--ink-2);
+      }
+      .tab--active svg {
+        color: var(--ink);
+      }
+      .tab--active::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 32px;
+        height: 3px;
+        background: var(--accent);
+        border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      }
+
+      /* ============================================
+       INLINE AI PANEL — §4.4
+       ============================================ */
+      .panel-backdrop {
+        position: absolute;
+        inset: 0;
+        background: var(--surface-overlay);
+        z-index: var(--z-overlay);
+      }
+      .inline-ai-panel {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 80%;
+        background: var(--surface-raised);
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        box-shadow: var(--elevation-panel);
+        z-index: var(--z-panel);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .panel-header {
+        height: 48px;
+        flex-shrink: 0;
+        padding: 0 var(--space-4);
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        border-bottom: 1px solid var(--divider);
+        background: var(--surface-raised);
+      }
+      .panel-sparkle {
+        color: var(--accent);
+        flex-shrink: 0;
+      }
+      .panel-title {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--ink-2);
+      }
+
+      .panel-response {
+        flex: 1;
+        padding: var(--space-4) var(--space-5) var(--space-5);
+        overflow-y: auto;
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--ink);
+        scrollbar-width: thin;
+      }
+      .panel-response::-webkit-scrollbar {
+        width: 4px;
+      }
+      .panel-response::-webkit-scrollbar-thumb {
+        background: var(--border-strong);
+        border-radius: var(--radius-full);
+      }
+      .panel-response p {
+        margin: 0 0 var(--space-3);
+      }
+      .panel-response p:last-child {
+        margin-bottom: 0;
+      }
+
+      /* Brainstorm suggestions */
+      .brainstorm-suggestion {
+        padding: var(--space-3) var(--space-4);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        margin-bottom: var(--space-2);
+        cursor: pointer;
+        transition:
+          border-color var(--duration-fast) var(--ease-out),
+          background var(--duration-fast) var(--ease-out);
+      }
+      .brainstorm-suggestion:hover {
+        border-color: var(--border-strong);
+      }
+      .brainstorm-suggestion:active {
+        background: var(--surface-subtle);
+      }
+      .brainstorm-suggestion--selected {
+        border-color: var(--accent);
+        background: var(--accent-soft-bg);
+      }
+
+      .brainstorm-suggestion-text {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 15px;
+        line-height: 1.5;
+        color: var(--ink);
+        margin: 0;
+      }
+
+      .brainstorm-suggestion-hint {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 12px;
+        color: var(--ink-3);
+        margin: var(--space-1) 0 0;
+      }
+
+      .panel-context {
+        border-top: 1px solid var(--divider);
+        padding: var(--space-4);
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--ink-2);
+        background: var(--surface);
+        flex-shrink: 0;
+        max-height: 30%;
+        overflow-y: auto;
+      }
+      .panel-context-label {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        margin: 0 0 var(--space-2);
+      }
+      .panel-context p {
+        margin: 0;
+      }
+
+      .panel-actions {
+        flex-shrink: 0;
+        display: flex;
+        gap: var(--space-2);
+        padding: var(--space-3) var(--space-4);
+        border-top: 1px solid var(--divider);
+        background: var(--surface-raised);
+      }
+      .btn {
+        flex: 1;
+        height: 44px;
+        border: none;
+        border-radius: var(--radius-md);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .btn--ghost {
+        background: transparent;
+        color: var(--ink-2);
+      }
+      .btn--primary {
+        background: var(--ink);
+        color: var(--ink-inverse);
+      }
+      .btn--primary:disabled {
+        background: var(--border);
+        color: var(--ink-3);
+        cursor: not-allowed;
+      }
+      .btn:active {
+        opacity: 0.85;
+      }
+
+      /* AI-generated content marker */
+      .ai-marked {
+        border-left: 3px solid var(--accent);
+        padding: 12px 16px;
+        background: var(--accent-tint);
+        border-radius: 0 6px 6px 0;
+        margin: 12px 0;
+      }
+
+      .sparkle-icon {
+        font-size: 14px;
+        vertical-align: middle;
+      }
+
+      /* ============================================
+       DESKTOP DEVICE FRAME
+       ============================================ */
+      .device-frame--desktop {
+        width: 1440px;
+        height: 900px;
+        border-radius: 12px;
+        padding: 8px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .screen--desktop {
+        width: 100%;
+        height: 100%;
+        background: var(--surface);
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ============================================
+       DESKTOP PANEL — floating side panel §4.4
+       ============================================ */
+      .inline-ai-panel--desktop {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 420px;
+        background: var(--surface-raised);
+        border-left: 1px solid var(--border);
+        box-shadow: -8px 0 24px -12px rgba(15, 15, 14, 0.18);
+        z-index: 50;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .inline-ai-panel--desktop .panel-close {
+        margin-left: auto;
+        background: transparent;
+        border: none;
+        color: var(--ink-2);
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-md);
+      }
+
+      .inline-ai-panel--desktop .panel-close:active {
+        background: var(--surface-subtle);
+      }
+
+      /* ============================================
+       DESKTOP CONTENT ROW
+       ============================================ */
+      .desktop-content-row {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .desktop-content-row .note-editor {
+        flex: 1;
+        min-width: 0;
+      }
+      .desktop-content-row .note-editor .note-body {
+        max-width: 540px;
+        margin: 0 auto;
+      }
+
+      .error-message {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 32px 20px;
+        gap: 12px;
+      }
+      .error-icon {
+        width: 24px;
+        height: 24px;
+        color: var(--ink-3);
+        opacity: 0.4;
+      }
+      .error-text {
+        font-size: 14px;
+        color: var(--ink-2);
+        margin: 0;
+      }
+      .error-retry {
+        height: 36px;
+        padding: 0 16px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--ink);
+        cursor: pointer;
+      }
+
+      @media (max-width: 900px) {
+        .device-frame--desktop {
+          display: none;
+        }
+      }
+      @media (max-width: 480px) {
+        .state {
+          padding: var(--space-5) var(--space-3);
+        }
+        .mockup-nav {
+          padding: var(--space-3);
+        }
+        .state-tabs {
+          width: 100%;
+          margin-left: 0;
+        }
+      }
+
+      /* AI feedback affordance — §4.18 (WS-4) */
+      .ai-feedback {
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+        margin-top: var(--space-3);
+      }
+      .ai-feedback-btn {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: none;
+        border-radius: var(--radius-md);
+        color: var(--ink-3);
+        cursor: pointer;
+        transition:
+          background var(--duration-fast) var(--ease-out),
+          color var(--duration-fast) var(--ease-out);
+      }
+      .ai-feedback-btn svg {
+        width: 18px;
+        height: 18px;
+        stroke-width: 1.5;
+      }
+      .ai-feedback-btn:active {
+        background: var(--surface-subtle);
+      }
+      .ai-feedback-btn--selected {
+        color: var(--accent-strong);
+      }
+
+      /* AI-limitations footer note — §4.20 (WS-4) */
+      .panel-limitations-note {
+        flex-shrink: 0;
+        padding: var(--space-2) var(--space-4);
+        border-top: 1px solid var(--divider);
+        background: var(--surface-raised);
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        color: var(--ink-3);
+      }
+
+      /* Long-note replace guard notice — §4.21 (WS-3) */
+      .replace-guard {
+        flex-shrink: 0;
+        margin: var(--space-3) var(--space-4);
+        padding: var(--space-3);
+        background: var(--surface-subtle);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        display: flex;
+        gap: var(--space-2);
+        align-items: flex-start;
+      }
+      .replace-guard-icon {
+        width: 16px;
+        height: 16px;
+        color: var(--ink-3);
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+      .replace-guard-title {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--ink);
+        margin: 0 0 var(--space-1);
+      }
+      .replace-guard-body {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--ink-2);
+        margin: 0 0 var(--space-2);
+      }
+      .replace-guard-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+      }
+      .replace-guard-primary {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--accent-strong);
+        background: none;
+        border: none;
+        padding: 0;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+      }
+      .replace-guard-dismiss {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--ink-3);
+        background: none;
+        border: none;
+        padding: 0;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="mockup-nav">
+      <div>
+        <div class="mockup-title">dolfyn / Inline AI: Brainstorm</div>
+        <div class="mockup-subtitle">Phase 2 cont · Req 09 · 6 states</div>
+      </div>
+      <nav class="state-tabs" aria-label="State selector">
+        <a href="#state-a" class="state-tab">A · empty note</a>
+        <a href="#state-b" class="state-tab">B · note with content</a>
+        <a href="#state-d" class="state-tab">D · selection</a>
+        <a href="#state-e" class="state-tab">E · after pick</a>
+        <a href="#state-c" class="state-tab">C · discard</a>
+        <a href="#state-f" class="state-tab">F · error</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- STATE A — Empty note: 3 topic starters -->
+      <section id="state-a" class="state">
+        <div class="state-header">
+          <span class="state-tag">Brainstorm</span>
+          <h2 class="state-title">State A — empty note (3 topic starters)</h2>
+          <p class="state-desc">
+            User triggered Brainstorm on an empty note. The panel shows 3
+            meaningfully different topic suggestions. Each suggestion is a
+            tappable card with the topic text and a hint ("Tap to insert").
+            Action bar: "Pick one" (primary, disabled until selection) /
+            "Discard all" (ghost).
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen" data-state="A">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar" aria-label="Profile">SC</div>
+                  </header>
+                  <div class="note-editor" style="padding-bottom: 124px">
+                    <div class="note-body"><span class="cursor"></span></div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <div class="panel-backdrop"></div>
+                <div class="inline-ai-panel" role="dialog" aria-modal="true">
+                  <div class="panel-header">
+                    <svg
+                      class="panel-sparkle"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                    <span class="panel-title">Brainstorm</span>
+                  </div>
+                  <div class="panel-response">
+                    <div
+                      class="brainstorm-suggestion"
+                      role="button"
+                      tabindex="0"
+                    >
+                      <p class="brainstorm-suggestion-text">
+                        The gap between "I have notes" and "I can find what I
+                        need" — why retrieval fails without organization
+                      </p>
+                      <p class="brainstorm-suggestion-hint">Tap to insert</p>
+                    </div>
+                    <div
+                      class="brainstorm-suggestion"
+                      role="button"
+                      tabindex="0"
+                    >
+                      <p class="brainstorm-suggestion-text">
+                        What your note-taking habit reveals about how you
+                        actually think — and why most tools fight it
+                      </p>
+                      <p class="brainstorm-suggestion-hint">Tap to insert</p>
+                    </div>
+                    <div
+                      class="brainstorm-suggestion"
+                      role="button"
+                      tabindex="0"
+                    >
+                      <p class="brainstorm-suggestion-text">
+                        The hidden cost of "I'll organize it later" — how
+                        deferred retrieval compounds into lost thoughts
+                      </p>
+                      <p class="brainstorm-suggestion-hint">Tap to insert</p>
+                    </div>
+
+                    <div class="ai-feedback" aria-label="Rate this answer">
+                      <button
+                        type="button"
+                        class="ai-feedback-btn"
+                        aria-label="Mark as helpful"
+                        aria-pressed="false"
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M7 10v12" />
+                          <path
+                            d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        type="button"
+                        class="ai-feedback-btn"
+                        aria-label="Mark as not helpful"
+                        aria-pressed="false"
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M17 14V2" />
+                          <path
+                            d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="panel-actions">
+                    <button type="button" class="btn btn--ghost">
+                      Discard all
+                    </button>
+                    <button type="button" class="btn btn--primary" disabled>
+                      Pick one
+                    </button>
+                  </div>
+                  <div class="panel-limitations-note">
+                    AI may not always be accurate — always verify.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop" data-state="A">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="avatar" aria-label="Profile">SC</div>
+                </header>
+                <div class="desktop-content-row">
+                  <div class="note-editor">
+                    <div class="note-body"><span class="cursor"></span></div>
+                  </div>
+                  <aside
+                    class="inline-ai-panel--desktop"
+                    role="dialog"
+                    aria-modal="false"
+                  >
+                    <div class="panel-header">
+                      <svg
+                        class="panel-sparkle"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        />
+                      </svg>
+                      <span class="panel-title">Brainstorm</span>
+                      <button
+                        class="panel-close"
+                        type="button"
+                        aria-label="Close panel"
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path d="M18 6 6 18" />
+                          <path d="m6 6 12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div class="panel-response">
+                      <div
+                        class="brainstorm-suggestion"
+                        role="button"
+                        tabindex="0"
+                      >
+                        <p class="brainstorm-suggestion-text">
+                          The gap between "I have notes" and "I can find what I
+                          need" — why retrieval fails without organization
+                        </p>
+                        <p class="brainstorm-suggestion-hint">Tap to insert</p>
+                      </div>
+                      <div
+                        class="brainstorm-suggestion"
+                        role="button"
+                        tabindex="0"
+                      >
+                        <p class="brainstorm-suggestion-text">
+                          What your note-taking habit reveals about how you
+                          actually think — and why most tools fight it
+                        </p>
+                        <p class="brainstorm-suggestion-hint">Tap to insert</p>
+                      </div>
+                      <div
+                        class="brainstorm-suggestion"
+                        role="button"
+                        tabindex="0"
+                      >
+                        <p class="brainstorm-suggestion-text">
+                          The hidden cost of "I'll organize it later" — how
+                          deferred retrieval compounds into lost thoughts
+                        </p>
+                        <p class="brainstorm-suggestion-hint">Tap to insert</p>
+                      </div>
+
+                      <div class="ai-feedback" aria-label="Rate this answer">
+                        <button
+                          type="button"
+                          class="ai-feedback-btn"
+                          aria-label="Mark as helpful"
+                          aria-pressed="false"
+                        >
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M7 10v12" />
+                            <path
+                              d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          type="button"
+                          class="ai-feedback-btn"
+                          aria-label="Mark as not helpful"
+                          aria-pressed="false"
+                        >
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M17 14V2" />
+                            <path
+                              d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="panel-actions">
+                      <button type="button" class="btn btn--ghost">
+                        Discard all
+                      </button>
+                      <button type="button" class="btn btn--primary" disabled>
+                        Pick one
+                      </button>
+                    </div>
+                    <div class="panel-limitations-note">
+                      AI may not always be accurate — always verify.
+                    </div>
+                  </aside>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATE B — Note with content: 3 continuations -->
+      <section id="state-b" class="state">
+        <div class="state-header">
+          <span class="state-tag">Brainstorm</span>
+          <h2 class="state-title">
+            State B — note with content (3 continuations)
+          </h2>
+          <p class="state-desc">
+            User triggered Brainstorm on a note with content. The panel shows 3
+            meaningfully different continuations — natural branches the user
+            might take. Each suggestion continues the existing thought in a
+            different direction. Action bar: "Pick one" / "Discard all".
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen" data-state="B">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar" aria-label="Profile">SC</div>
+                  </header>
+                  <div class="note-editor" style="padding-bottom: 124px">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        First impressions matter more than features.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <div class="panel-backdrop"></div>
+                <div class="inline-ai-panel" role="dialog" aria-modal="true">
+                  <div class="panel-header">
+                    <svg
+                      class="panel-sparkle"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                    <span class="panel-title">Brainstorm</span>
+                  </div>
+                  <div class="panel-response">
+                    <div
+                      class="brainstorm-suggestion"
+                      role="button"
+                      tabindex="0"
+                    >
+                      <p class="brainstorm-suggestion-text">
+                        The 60-second test: if a user can describe what they did
+                        in one sentence after a minute, the first-time
+                        experience worked. If they can't, it didn't.
+                      </p>
+                      <p class="brainstorm-suggestion-hint">Tap to insert</p>
+                    </div>
+                    <div
+                      class="brainstorm-suggestion"
+                      role="button"
+                      tabindex="0"
+                    >
+                      <p class="brainstorm-suggestion-text">
+                        Tutorial-itis is a product trying to teach before the
+                        user has felt anything worth remembering. The fix isn't
+                        better tutorials — it's earning the right to be taught.
+                      </p>
+                      <p class="brainstorm-suggestion-hint">Tap to insert</p>
+                    </div>
+                    <div
+                      class="brainstorm-suggestion"
+                      role="button"
+                      tabindex="0"
+                    >
+                      <p class="brainstorm-suggestion-text">
+                        The best first-time experiences feel like cheating — the
+                        user does the thing without realizing they learned
+                        anything. That's the goal.
+                      </p>
+                      <p class="brainstorm-suggestion-hint">Tap to insert</p>
+                    </div>
+
+                    <div class="ai-feedback" aria-label="Rate this answer">
+                      <button
+                        type="button"
+                        class="ai-feedback-btn"
+                        aria-label="Mark as helpful"
+                        aria-pressed="false"
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M7 10v12" />
+                          <path
+                            d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        type="button"
+                        class="ai-feedback-btn"
+                        aria-label="Mark as not helpful"
+                        aria-pressed="false"
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M17 14V2" />
+                          <path
+                            d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="panel-context">
+                    <div class="panel-context-label">Your note</div>
+                    <p>First impressions matter more than features.</p>
+                  </div>
+                  <div class="panel-actions">
+                    <button type="button" class="btn btn--ghost">
+                      Discard all
+                    </button>
+                    <button type="button" class="btn btn--primary" disabled>
+                      Pick one
+                    </button>
+                  </div>
+                  <div class="panel-limitations-note">
+                    AI may not always be accurate — always verify.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop" data-state="B">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="avatar" aria-label="Profile">SC</div>
+                </header>
+                <div class="desktop-content-row">
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        First impressions matter more than features.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                  <aside
+                    class="inline-ai-panel--desktop"
+                    role="dialog"
+                    aria-modal="false"
+                  >
+                    <div class="panel-header">
+                      <svg
+                        class="panel-sparkle"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        />
+                      </svg>
+                      <span class="panel-title">Brainstorm</span>
+                      <button
+                        class="panel-close"
+                        type="button"
+                        aria-label="Close panel"
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path d="M18 6 6 18" />
+                          <path d="m6 6 12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div class="panel-response">
+                      <div
+                        class="brainstorm-suggestion"
+                        role="button"
+                        tabindex="0"
+                      >
+                        <p class="brainstorm-suggestion-text">
+                          The 60-second test: if a user can describe what they
+                          did in one sentence after a minute, the first-time
+                          experience worked. If they can't, it didn't.
+                        </p>
+                        <p class="brainstorm-suggestion-hint">Tap to insert</p>
+                      </div>
+                      <div
+                        class="brainstorm-suggestion"
+                        role="button"
+                        tabindex="0"
+                      >
+                        <p class="brainstorm-suggestion-text">
+                          Tutorial-itis is a product trying to teach before the
+                          user has felt anything worth remembering. The fix
+                          isn't better tutorials — it's earning the right to be
+                          taught.
+                        </p>
+                        <p class="brainstorm-suggestion-hint">Tap to insert</p>
+                      </div>
+                      <div
+                        class="brainstorm-suggestion"
+                        role="button"
+                        tabindex="0"
+                      >
+                        <p class="brainstorm-suggestion-text">
+                          The best first-time experiences feel like cheating —
+                          the user does the thing without realizing they learned
+                          anything. That's the goal.
+                        </p>
+                        <p class="brainstorm-suggestion-hint">Tap to insert</p>
+                      </div>
+
+                      <div class="ai-feedback" aria-label="Rate this answer">
+                        <button
+                          type="button"
+                          class="ai-feedback-btn"
+                          aria-label="Mark as helpful"
+                          aria-pressed="false"
+                        >
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M7 10v12" />
+                            <path
+                              d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          type="button"
+                          class="ai-feedback-btn"
+                          aria-label="Mark as not helpful"
+                          aria-pressed="false"
+                        >
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M17 14V2" />
+                            <path
+                              d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="panel-context">
+                      <div class="panel-context-label">Your note</div>
+                      <p>First impressions matter more than features.</p>
+                    </div>
+                    <div class="panel-actions">
+                      <button type="button" class="btn btn--ghost">
+                        Discard all
+                      </button>
+                      <button type="button" class="btn btn--primary" disabled>
+                        Pick one
+                      </button>
+                    </div>
+                    <div class="panel-limitations-note">
+                      AI may not always be accurate — always verify.
+                    </div>
+                  </aside>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATE D — Selection state (first suggestion selected) -->
+      <section id="state-d" class="state">
+        <div class="state-header">
+          <span class="state-tag">Brainstorm</span>
+          <h2 class="state-title">State D — selection state</h2>
+          <p class="state-desc">
+            User tapped the first suggestion. It's now selected (accent border,
+            soft bg). "Pick one" is enabled. The user can tap a different
+            suggestion to change selection, or tap "Pick one" to insert.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen" data-state="D">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar" aria-label="Profile">SC</div>
+                  </header>
+                  <div class="note-editor" style="padding-bottom: 124px">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        First impressions matter more than features.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <div class="panel-backdrop"></div>
+                <div class="inline-ai-panel" role="dialog" aria-modal="true">
+                  <div class="panel-header">
+                    <svg
+                      class="panel-sparkle"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                    <span class="panel-title">Brainstorm</span>
+                  </div>
+                  <div class="panel-response">
+                    <div
+                      class="brainstorm-suggestion brainstorm-suggestion--selected"
+                      role="button"
+                      tabindex="0"
+                    >
+                      <p class="brainstorm-suggestion-text">
+                        The 60-second test: if a user can describe what they did
+                        in one sentence after a minute, the first-time
+                        experience worked. If they can't, it didn't.
+                      </p>
+                      <p class="brainstorm-suggestion-hint">Tap to insert</p>
+                    </div>
+                    <div
+                      class="brainstorm-suggestion"
+                      role="button"
+                      tabindex="0"
+                    >
+                      <p class="brainstorm-suggestion-text">
+                        Tutorial-itis is a product trying to teach before the
+                        user has felt anything worth remembering. The fix isn't
+                        better tutorials — it's earning the right to be taught.
+                      </p>
+                      <p class="brainstorm-suggestion-hint">Tap to insert</p>
+                    </div>
+                    <div
+                      class="brainstorm-suggestion"
+                      role="button"
+                      tabindex="0"
+                    >
+                      <p class="brainstorm-suggestion-text">
+                        The best first-time experiences feel like cheating — the
+                        user does the thing without realizing they learned
+                        anything. That's the goal.
+                      </p>
+                      <p class="brainstorm-suggestion-hint">Tap to insert</p>
+                    </div>
+
+                    <div class="ai-feedback" aria-label="Rate this answer">
+                      <button
+                        type="button"
+                        class="ai-feedback-btn"
+                        aria-label="Mark as helpful"
+                        aria-pressed="false"
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M7 10v12" />
+                          <path
+                            d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        type="button"
+                        class="ai-feedback-btn"
+                        aria-label="Mark as not helpful"
+                        aria-pressed="false"
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M17 14V2" />
+                          <path
+                            d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="panel-context">
+                    <div class="panel-context-label">Your note</div>
+                    <p>First impressions matter more than features.</p>
+                  </div>
+                  <div class="panel-actions">
+                    <button type="button" class="btn btn--ghost">
+                      Discard all
+                    </button>
+                    <button type="button" class="btn btn--primary">
+                      Pick one
+                    </button>
+                  </div>
+                  <div class="panel-limitations-note">
+                    AI may not always be accurate — always verify.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop" data-state="D">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="avatar" aria-label="Profile">SC</div>
+                </header>
+                <div class="desktop-content-row">
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        First impressions matter more than features.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                  <aside
+                    class="inline-ai-panel--desktop"
+                    role="dialog"
+                    aria-modal="false"
+                  >
+                    <div class="panel-header">
+                      <svg
+                        class="panel-sparkle"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        />
+                      </svg>
+                      <span class="panel-title">Brainstorm</span>
+                      <button
+                        class="panel-close"
+                        type="button"
+                        aria-label="Close panel"
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path d="M18 6 6 18" />
+                          <path d="m6 6 12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div class="panel-response">
+                      <div
+                        class="brainstorm-suggestion brainstorm-suggestion--selected"
+                        role="button"
+                        tabindex="0"
+                      >
+                        <p class="brainstorm-suggestion-text">
+                          The 60-second test: if a user can describe what they
+                          did in one sentence after a minute, the first-time
+                          experience worked. If they can't, it didn't.
+                        </p>
+                        <p class="brainstorm-suggestion-hint">Tap to insert</p>
+                      </div>
+                      <div
+                        class="brainstorm-suggestion"
+                        role="button"
+                        tabindex="0"
+                      >
+                        <p class="brainstorm-suggestion-text">
+                          Tutorial-itis is a product trying to teach before the
+                          user has felt anything worth remembering. The fix
+                          isn't better tutorials — it's earning the right to be
+                          taught.
+                        </p>
+                        <p class="brainstorm-suggestion-hint">Tap to insert</p>
+                      </div>
+                      <div
+                        class="brainstorm-suggestion"
+                        role="button"
+                        tabindex="0"
+                      >
+                        <p class="brainstorm-suggestion-text">
+                          The best first-time experiences feel like cheating —
+                          the user does the thing without realizing they learned
+                          anything. That's the goal.
+                        </p>
+                        <p class="brainstorm-suggestion-hint">Tap to insert</p>
+                      </div>
+
+                      <div class="ai-feedback" aria-label="Rate this answer">
+                        <button
+                          type="button"
+                          class="ai-feedback-btn"
+                          aria-label="Mark as helpful"
+                          aria-pressed="false"
+                        >
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M7 10v12" />
+                            <path
+                              d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          type="button"
+                          class="ai-feedback-btn"
+                          aria-label="Mark as not helpful"
+                          aria-pressed="false"
+                        >
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M17 14V2" />
+                            <path
+                              d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="panel-context">
+                      <div class="panel-context-label">Your note</div>
+                      <p>First impressions matter more than features.</p>
+                    </div>
+                    <div class="panel-actions">
+                      <button type="button" class="btn btn--ghost">
+                        Discard all
+                      </button>
+                      <button type="button" class="btn btn--primary">
+                        Pick one
+                      </button>
+                    </div>
+                    <div class="panel-limitations-note">
+                      AI may not always be accurate — always verify.
+                    </div>
+                  </aside>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATE E — After pick (note with inserted content) -->
+      <section id="state-e" class="state">
+        <div class="state-header">
+          <span class="state-tag">Brainstorm</span>
+          <h2 class="state-title">State E — after pick (inserted content)</h2>
+          <p class="state-desc">
+            User tapped "Pick one". The selected suggestion is inserted into the
+            note with AI visual markers (accent border, sparkle, tint). Panel is
+            closed. Cursor lands after the inserted content.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen" data-state="E">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar" aria-label="Profile">SC</div>
+                  </header>
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph">
+                        First impressions matter more than features.
+                      </p>
+                      <div class="ai-marked">
+                        <p class="note-paragraph" style="margin: 0">
+                          <span
+                            class="sparkle-icon"
+                            style="color: var(--accent); margin-right: 4px"
+                            >✦</span
+                          >
+                          The 60-second test: if a user can describe what they
+                          did in one sentence after a minute, the first-time
+                          experience worked. If they can't, it didn't.
+                        </p>
+                      </div>
+                      <p class="note-paragraph"><span class="cursor"></span></p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop" data-state="E">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="avatar" aria-label="Profile">SC</div>
+                </header>
+                <div class="desktop-content-row">
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph">
+                        First impressions matter more than features.
+                      </p>
+                      <div class="ai-marked">
+                        <p class="note-paragraph" style="margin: 0">
+                          <span
+                            class="sparkle-icon"
+                            style="color: var(--accent); margin-right: 4px"
+                            >✦</span
+                          >
+                          The 60-second test: if a user can describe what they
+                          did in one sentence after a minute, the first-time
+                          experience worked. If they can't, it didn't.
+                        </p>
+                      </div>
+                      <p class="note-paragraph"><span class="cursor"></span></p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATE C — Discard (return to note) -->
+      <section id="state-c" class="state">
+        <div class="state-header">
+          <span class="state-tag">Brainstorm</span>
+          <h2 class="state-title">State C — after discard (back to note)</h2>
+          <p class="state-desc">
+            User tapped "Discard all". The panel closes, returning to the note
+            editor. The note is unchanged — as if the brainstorm never happened.
+            This state shows the note editor in its default state with the AI
+            presence bar passive. The user can trigger Brainstorm again anytime.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen" data-state="C">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar" aria-label="Profile">SC</div>
+                  </header>
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        First impressions matter more than features.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop" data-state="C">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="avatar" aria-label="Profile">SC</div>
+                </header>
+                <div class="desktop-content-row">
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        First impressions matter more than features.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATE F — AI Error -->
+      <section id="state-f" class="state">
+        <div class="state-header">
+          <span class="state-tag">Brainstorm</span>
+          <h2 class="state-title">State F — AI error</h2>
+          <p class="state-desc">
+            AI failed to respond. Error message shown with a retry option. The
+            user can dismiss and try again, or retry immediately.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div class="screen" data-state="F">
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar" aria-label="Profile">SC</div>
+                  </header>
+                  <div class="note-editor" style="padding-bottom: 124px">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        First impressions matter more than features.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-bar ai-bar--passive">
+                  <svg
+                    class="ai-bar-sparkle"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                    />
+                  </svg>
+                  <span>I'm here. Type // to ask me anything</span>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+
+                <div class="panel-backdrop"></div>
+                <div class="inline-ai-panel" role="dialog" aria-modal="true">
+                  <div class="panel-header">
+                    <svg
+                      class="panel-sparkle"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                    <span class="panel-title">Brainstorm</span>
+                  </div>
+                  <div class="panel-response">
+                    <div class="error-message">
+                      <svg
+                        class="error-icon"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 8v4M12 16h.01" />
+                      </svg>
+                      <p class="error-text">Something went wrong. Try again.</p>
+                      <button type="button" class="error-retry">Retry</button>
+                    </div>
+
+                    <div class="ai-feedback" aria-label="Rate this answer">
+                      <button
+                        type="button"
+                        class="ai-feedback-btn"
+                        aria-label="Mark as helpful"
+                        aria-pressed="false"
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M7 10v12" />
+                          <path
+                            d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        type="button"
+                        class="ai-feedback-btn"
+                        aria-label="Mark as not helpful"
+                        aria-pressed="false"
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M17 14V2" />
+                          <path
+                            d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="panel-actions">
+                    <button type="button" class="btn btn--ghost">
+                      Dismiss
+                    </button>
+                  </div>
+                  <div class="panel-limitations-note">
+                    AI may not always be accurate — always verify.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div class="screen screen--desktop" data-state="F">
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="avatar" aria-label="Profile">SC</div>
+                </header>
+                <div class="desktop-content-row">
+                  <div class="note-editor">
+                    <div class="note-body">
+                      <div class="note-title">Onboarding thoughts</div>
+                      <p class="note-paragraph" style="margin-bottom: 0">
+                        First impressions matter more than features.<span
+                          class="cursor"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                  <aside
+                    class="inline-ai-panel--desktop"
+                    role="dialog"
+                    aria-modal="false"
+                  >
+                    <div class="panel-header">
+                      <svg
+                        class="panel-sparkle"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        />
+                      </svg>
+                      <span class="panel-title">Brainstorm</span>
+                      <button
+                        class="panel-close"
+                        type="button"
+                        aria-label="Close panel"
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path d="M18 6 6 18" />
+                          <path d="m6 6 12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div class="panel-response">
+                      <div class="error-message">
+                        <svg
+                          class="error-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M12 8v4M12 16h.01" />
+                        </svg>
+                        <p class="error-text">
+                          Something went wrong. Try again.
+                        </p>
+                        <button type="button" class="error-retry">Retry</button>
+                      </div>
+
+                      <div class="ai-feedback" aria-label="Rate this answer">
+                        <button
+                          type="button"
+                          class="ai-feedback-btn"
+                          aria-label="Mark as helpful"
+                          aria-pressed="false"
+                        >
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M7 10v12" />
+                            <path
+                              d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          type="button"
+                          class="ai-feedback-btn"
+                          aria-label="Mark as not helpful"
+                          aria-pressed="false"
+                        >
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M17 14V2" />
+                            <path
+                              d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="panel-actions">
+                      <button type="button" class="btn btn--ghost">
+                        Dismiss
+                      </button>
+                    </div>
+                    <div class="panel-limitations-note">
+                      AI may not always be accurate — always verify.
+                    </div>
+                  </aside>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

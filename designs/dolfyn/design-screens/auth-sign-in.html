@@ -1,0 +1,1023 @@
+<!-- COMPONENT INVENTORY: sign-in-screen, email-input, magic-link-button, error-message, loading-spinner, sparkle-icon, magic-link-sent -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>dolfyn — Continue with email</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --surface: #fafaf7;
+        --surface-subtle: #f2f1ed;
+        --surface-raised: #ffffff;
+        --surface-overlay: rgba(15, 15, 14, 0.32);
+        --ink: #0f0f0e;
+        --ink-2: #3f3f3f;
+        --ink-3: #6b6b6b;
+        --ink-inverse: #fafaf7;
+        --border: #e5e5e1;
+        --border-strong: #c7c7c2;
+        --divider: #edede9;
+        --accent: #c2410c;
+        --accent-strong: #9a330a;
+        --accent-soft-bg: #fcefde;
+        --accent-tint: #f7f2ec;
+        --success: #15803d;
+        --error: #b91c1c;
+        --space-1: 4px;
+        --space-2: 8px;
+        --space-3: 12px;
+        --space-4: 16px;
+        --space-5: 24px;
+        --space-6: 32px;
+        --space-7: 48px;
+        --radius-sm: 6px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-xl: 16px;
+        --radius-full: 9999px;
+        --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+        --duration-fast: 150ms;
+        --duration-base: 250ms;
+        --duration-slow: 350ms;
+        --elevation-toast: 0 4px 12px -2px rgba(15, 15, 14, 0.08);
+        --z-base: 0;
+        --z-sticky: 100;
+        --z-toast: 1100;
+        --meta-bg: #ecebe5;
+        --meta-ink: #2a2a28;
+        --meta-ink-2: #6e6e68;
+        --meta-border: #d8d7d1;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        background: var(--meta-bg);
+        color: var(--meta-ink);
+        font-family: "Inter", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* Mockup meta — hidden in production */
+      .mockup-nav {
+        position: sticky;
+        top: 0;
+        z-index: 1100;
+        background: var(--meta-bg);
+        border-bottom: 1px solid var(--meta-border);
+        padding: var(--space-3) var(--space-5);
+        display: flex;
+        align-items: center;
+        gap: var(--space-5);
+        flex-wrap: wrap;
+      }
+      .mockup-title {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink);
+      }
+      .mockup-subtitle {
+        font-size: 12px;
+        color: var(--meta-ink-2);
+      }
+      .state-tabs {
+        display: flex;
+        gap: var(--space-1);
+        margin-left: auto;
+        flex-wrap: wrap;
+      }
+      .state-tab {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--meta-ink-2);
+        text-decoration: none;
+        padding: var(--space-1) var(--space-2);
+        border-radius: var(--radius-sm);
+        border: 1px solid transparent;
+        transition:
+          background var(--duration-fast) var(--ease-out),
+          color var(--duration-fast) var(--ease-out);
+        white-space: nowrap;
+      }
+      .state-tab:hover {
+        background: rgba(15, 15, 14, 0.05);
+        color: var(--meta-ink);
+      }
+      #state-a:target ~ .mockup-nav .state-tab[href="#state-a"],
+      #state-b:target ~ .mockup-nav .state-tab[href="#state-b"],
+      #state-c:target ~ .mockup-nav .state-tab[href="#state-c"],
+      #state-d:target ~ .mockup-nav .state-tab[href="#state-d"],
+      #state-e:target ~ .mockup-nav .state-tab[href="#state-e"] {
+        background: var(--meta-ink);
+        color: var(--ink-inverse);
+      }
+
+      .state {
+        padding: var(--space-7) var(--space-5) var(--space-6);
+        max-width: 1400px;
+        margin: 0 auto;
+        border-top: 1px solid var(--meta-border);
+      }
+      .state:first-of-type {
+        border-top: none;
+      }
+      .state:target {
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: var(--radius-lg);
+      }
+      .state-header {
+        margin-bottom: var(--space-5);
+        max-width: 720px;
+      }
+      .state-tag {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink-2);
+        margin-bottom: var(--space-2);
+      }
+      .state-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--meta-ink);
+        margin: 0 0 var(--space-2);
+        letter-spacing: -0.01em;
+      }
+      .state-desc {
+        font-size: 14px;
+        color: var(--meta-ink-2);
+        line-height: 1.5;
+        margin: 0;
+      }
+
+      .viewports {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-5);
+        align-items: flex-start;
+      }
+      .viewport {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        flex-shrink: 0;
+      }
+      .device-label {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink-2);
+        padding-left: var(--space-1);
+      }
+      .device-frame {
+        background: var(--meta-ink);
+        border-radius: 28px;
+        padding: 8px;
+        box-shadow: 0 2px 8px -2px rgba(15, 15, 14, 0.12);
+      }
+      .device-frame--desktop {
+        width: 1440px;
+        height: 900px;
+        border-radius: 12px;
+        padding: 8px;
+        position: relative;
+        overflow: hidden;
+      }
+      .screen {
+        position: relative;
+        width: 375px;
+        height: 720px;
+        background: var(--surface);
+        border-radius: 22px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .screen--desktop {
+        width: 100%;
+        height: 100%;
+        background: var(--surface);
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ============================================
+       SIGN-IN SCREEN — the gateway
+       ============================================ */
+      .signin {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: var(--space-7) var(--space-5);
+        text-align: center;
+        min-height: 0;
+      }
+
+      /* Sparkle — brand hint, the only accent on this screen */
+      .signin-sparkle {
+        color: var(--accent);
+        margin-bottom: var(--space-5);
+      }
+      .signin-sparkle svg {
+        display: block;
+      }
+
+      /* Wordmark */
+      .signin-wordmark {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-weight: 600;
+        font-size: 32px;
+        letter-spacing: -0.02em;
+        color: var(--ink);
+        line-height: 1;
+        margin-bottom: var(--space-3);
+      }
+
+      /* Tagline — serif, the thinking space register */
+      .signin-tagline {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--ink-2);
+        max-width: 280px;
+        margin: 0 auto var(--space-7);
+      }
+
+      /* Email input field */
+      .email-input-wrapper {
+        width: 100%;
+        max-width: 300px;
+        margin-bottom: var(--space-3);
+      }
+      .email-input {
+        width: 100%;
+        height: 48px;
+        padding: 0 var(--space-4);
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 15px;
+        color: var(--ink);
+        outline: none;
+        transition:
+          border-color var(--duration-fast) var(--ease-out),
+          box-shadow var(--duration-fast) var(--ease-out);
+      }
+      .email-input::placeholder {
+        color: var(--ink-3);
+      }
+      .email-input:focus {
+        border-color: var(--border-strong);
+        box-shadow: 0 0 0 3px rgba(15, 15, 14, 0.06);
+      }
+      .email-input:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      /* Continue with email button — non-AI primary action (§2.2) */
+      .continue-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-3);
+        width: 100%;
+        max-width: 300px;
+        height: 48px;
+        background: var(--ink);
+        border: none;
+        border-radius: var(--radius-md);
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--ink-inverse);
+        cursor: pointer;
+        transition:
+          opacity var(--duration-fast) var(--ease-out),
+          transform var(--duration-fast) var(--ease-out);
+      }
+      .continue-btn:hover {
+        opacity: 0.9;
+      }
+      .continue-btn:active {
+        transform: scale(0.98);
+      }
+      .continue-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      /* Loading state on button */
+      .continue-btn--loading {
+        pointer-events: none;
+      }
+      .continue-btn--loading .continue-btn-label {
+        opacity: 0;
+      }
+      .continue-btn--loading .continue-btn-spinner {
+        position: absolute;
+      }
+      .continue-btn {
+        position: relative;
+      }
+      .continue-btn-spinner {
+        display: none;
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--ink-inverse);
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .continue-btn-spinner {
+          animation: none;
+          border-top-color: var(--ink-inverse);
+        }
+      }
+
+      .continue-btn-label {
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Magic link sent confirmation */
+      .magic-link-sent {
+        display: none;
+        width: 100%;
+        max-width: 300px;
+        text-align: center;
+      }
+      .magic-link-sent--visible {
+        display: block;
+      }
+      .magic-link-sent-icon {
+        color: var(--success);
+        margin-bottom: var(--space-3);
+      }
+      .magic-link-sent-title {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--ink);
+        margin-bottom: var(--space-2);
+      }
+      .magic-link-sent-email {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 14px;
+        color: var(--ink-2);
+        margin-bottom: var(--space-4);
+        word-break: break-all;
+      }
+      .magic-link-sent-instructions {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--ink-3);
+        margin-bottom: var(--space-5);
+      }
+      .magic-link-sent-resend {
+        background: transparent;
+        border: none;
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--ink-2);
+        cursor: pointer;
+        padding: var(--space-2) var(--space-3);
+        border-radius: var(--radius-md);
+        transition: background var(--duration-fast) var(--ease-out);
+      }
+      .magic-link-sent-resend:hover {
+        background: var(--surface-subtle);
+      }
+      .magic-link-sent-resend:active {
+        background: var(--border);
+      }
+
+      /* Error message */
+      .signin-error {
+        margin-top: var(--space-3);
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 13px;
+        color: var(--error);
+        max-width: 300px;
+        line-height: 1.4;
+      }
+      .signin-error:empty {
+        display: none;
+      }
+
+      /* Privacy note — subtle, below button */
+      .signin-privacy {
+        margin-top: var(--space-5);
+        font-size: 12px;
+        color: var(--ink-3);
+        max-width: 260px;
+        line-height: 1.4;
+      }
+
+      @media (max-width: 900px) {
+        .device-frame--desktop {
+          display: none;
+        }
+      }
+      @media (max-width: 480px) {
+        .state {
+          padding: var(--space-5) var(--space-3);
+        }
+        .mockup-nav {
+          padding: var(--space-3);
+        }
+        .state-tabs {
+          width: 100%;
+          margin-left: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="mockup-nav">
+      <div>
+        <div class="mockup-title">dolfyn / Continue with email</div>
+        <div class="mockup-subtitle">Req 01 · Auth gate · 5 states</div>
+      </div>
+      <nav class="state-tabs" aria-label="State selector">
+        <a href="#state-a" class="state-tab">A · idle</a>
+        <a href="#state-b" class="state-tab">B · loading</a>
+        <a href="#state-c" class="state-tab">C · magic link sent</a>
+        <a href="#state-d" class="state-tab">D · error</a>
+        <a href="#state-e" class="state-tab">E · offline</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- STATE A — Idle (default) -->
+      <section id="state-a" class="state">
+        <div class="state-header">
+          <span class="state-tag">State A</span>
+          <h2 class="state-title">Idle — email input</h2>
+          <p class="state-desc">
+            The first screen a user sees. dolfyn wordmark, a one-line value
+            proposition in serif, an email input field, and a "Continue with
+            email" button. The sparkle is the only accent — a hint at the AI
+            without explaining it. Zero friction, zero explanation needed. The
+            user's eye lands on the wordmark, reads the tagline, and finds the
+            input in the thumb zone. No Google dependency — any email works.
+          </p>
+        </div>
+        <div class="viewports">
+          <!-- Mobile -->
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div
+                class="screen"
+                data-component="sign-in-screen"
+                data-state="idle"
+              >
+                <div class="signin">
+                  <div class="signin-sparkle" aria-hidden="true">
+                    <svg
+                      width="28"
+                      height="28"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                  </div>
+                  <h1 class="signin-wordmark">dolfyn</h1>
+                  <p class="signin-tagline">
+                    Write freely. The AI remembers and connects.
+                  </p>
+                  <div class="email-input-wrapper">
+                    <input
+                      type="email"
+                      class="email-input"
+                      placeholder="Enter your email"
+                      autocomplete="email"
+                      data-component="email-input"
+                      data-focus-order="1"
+                      aria-label="Email address"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    class="continue-btn"
+                    data-component="continue-button"
+                    data-primary-action
+                    data-focus-order="2"
+                    aria-label="Continue with email"
+                  >
+                    <span class="continue-btn-label">Continue with email</span>
+                    <div class="continue-btn-spinner" aria-hidden="true"></div>
+                  </button>
+                  <p class="signin-privacy">
+                    We'll send you a magic link. No password needed. Session
+                    persists for 30 days.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div
+                class="screen screen--desktop"
+                data-component="sign-in-screen"
+                data-state="idle"
+              >
+                <div class="signin">
+                  <div class="signin-sparkle" aria-hidden="true">
+                    <svg
+                      width="32"
+                      height="32"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                  </div>
+                  <h1 class="signin-wordmark" style="font-size: 36px">
+                    dolfyn
+                  </h1>
+                  <p class="signin-tagline" style="font-size: 17px">
+                    Write freely. The AI remembers and connects.
+                  </p>
+                  <div class="email-input-wrapper" style="max-width: 320px">
+                    <input
+                      type="email"
+                      class="email-input"
+                      placeholder="Enter your email"
+                      autocomplete="email"
+                      data-component="email-input"
+                      data-focus-order="1"
+                      aria-label="Email address"
+                      style="height: 52px; font-size: 16px"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    class="continue-btn"
+                    data-component="continue-button"
+                    data-primary-action
+                    data-focus-order="2"
+                    aria-label="Continue with email"
+                    style="max-width: 320px; height: 52px; font-size: 16px"
+                  >
+                    <span class="continue-btn-label">Continue with email</span>
+                    <div class="continue-btn-spinner" aria-hidden="true"></div>
+                  </button>
+                  <p class="signin-privacy">
+                    We'll send you a magic link. No password needed. Session
+                    persists for 30 days.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATE B — Loading (sending magic link) -->
+      <section id="state-b" class="state">
+        <div class="state-header">
+          <span class="state-tag">State B</span>
+          <h2 class="state-title">Loading — sending magic link</h2>
+          <p class="state-desc">
+            The user has entered their email and tapped "Continue with email."
+            The button shows a spinner and the input is disabled. The magic link
+            is being sent to their email. Feedback is immediate and local to the
+            button — no full-screen loading, no skeleton. The rest of the screen
+            remains visible and stable.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div
+                class="screen"
+                data-component="sign-in-screen"
+                data-state="loading"
+              >
+                <div class="signin">
+                  <div class="signin-sparkle" aria-hidden="true">
+                    <svg
+                      width="28"
+                      height="28"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                  </div>
+                  <h1 class="signin-wordmark">dolfyn</h1>
+                  <p class="signin-tagline">
+                    Write freely. The AI remembers and connects.
+                  </p>
+                  <div class="email-input-wrapper">
+                    <input
+                      type="email"
+                      class="email-input"
+                      value="soumyadip@example.com"
+                      disabled
+                      data-component="email-input"
+                      data-state="disabled"
+                      aria-label="Email address"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    class="continue-btn continue-btn--loading"
+                    data-component="continue-button"
+                    data-state="loading"
+                    aria-label="Sending magic link..."
+                    aria-busy="true"
+                    disabled
+                  >
+                    <span class="continue-btn-label" style="opacity: 0"
+                      >Continue with email</span
+                    >
+                    <div
+                      class="continue-btn-spinner"
+                      aria-hidden="true"
+                      style="display: block; position: absolute"
+                    ></div>
+                  </button>
+                  <p class="signin-privacy">
+                    We'll send you a magic link. No password needed. Session
+                    persists for 30 days.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATE C — Magic link sent -->
+      <section id="state-c" class="state">
+        <div class="state-header">
+          <span class="state-tag">State C</span>
+          <h2 class="state-title">Magic link sent — check your email</h2>
+          <p class="state-desc">
+            The magic link has been sent successfully. The email input and
+            button are replaced by a confirmation message: a success icon, the
+            user's email address, instructions to check their inbox, and a
+            "Resend" link. The user stays in context — no navigation away. The
+            confirmation is clear and actionable: "Check your email, tap the
+            link, and you're in."
+          </p>
+        </div>
+        <div class="viewports">
+          <!-- Mobile -->
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div
+                class="screen"
+                data-component="sign-in-screen"
+                data-state="magic-link-sent"
+              >
+                <div class="signin">
+                  <div class="signin-sparkle" aria-hidden="true">
+                    <svg
+                      width="28"
+                      height="28"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                  </div>
+                  <h1 class="signin-wordmark">dolfyn</h1>
+                  <p class="signin-tagline">
+                    Write freely. The AI remembers and connects.
+                  </p>
+                  <div
+                    class="magic-link-sent magic-link-sent--visible"
+                    data-component="magic-link-sent"
+                    data-state="visible"
+                  >
+                    <div class="magic-link-sent-icon">
+                      <svg
+                        width="32"
+                        height="32"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                        <polyline points="22 4 12 14.01 9 11.01" />
+                      </svg>
+                    </div>
+                    <h2 class="magic-link-sent-title">Check your email</h2>
+                    <p class="magic-link-sent-email">soumyadip@example.com</p>
+                    <p class="magic-link-sent-instructions">
+                      We sent a magic link to your inbox. Tap the link to sign
+                      in — it works on this browser for 30 days.
+                    </p>
+                    <button
+                      type="button"
+                      class="magic-link-sent-resend"
+                      data-component="resend-button"
+                    >
+                      Resend email
+                    </button>
+                  </div>
+                  <p class="signin-privacy">
+                    We'll send you a magic link. No password needed. Session
+                    persists for 30 days.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop -->
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div
+                class="screen screen--desktop"
+                data-component="sign-in-screen"
+                data-state="magic-link-sent"
+              >
+                <div class="signin">
+                  <div class="signin-sparkle" aria-hidden="true">
+                    <svg
+                      width="32"
+                      height="32"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                  </div>
+                  <h1 class="signin-wordmark" style="font-size: 36px">
+                    dolfyn
+                  </h1>
+                  <p class="signin-tagline" style="font-size: 17px">
+                    Write freely. The AI remembers and connects.
+                  </p>
+                  <div
+                    class="magic-link-sent magic-link-sent--visible"
+                    data-component="magic-link-sent"
+                    data-state="visible"
+                    style="max-width: 320px"
+                  >
+                    <div class="magic-link-sent-icon">
+                      <svg
+                        width="36"
+                        height="36"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                        <polyline points="22 4 12 14.01 9 11.01" />
+                      </svg>
+                    </div>
+                    <h2 class="magic-link-sent-title" style="font-size: 20px">
+                      Check your email
+                    </h2>
+                    <p class="magic-link-sent-email" style="font-size: 15px">
+                      soumyadip@example.com
+                    </p>
+                    <p
+                      class="magic-link-sent-instructions"
+                      style="font-size: 15px"
+                    >
+                      We sent a magic link to your inbox. Tap the link to sign
+                      in — it works on this browser for 30 days.
+                    </p>
+                    <button
+                      type="button"
+                      class="magic-link-sent-resend"
+                      data-component="resend-button"
+                    >
+                      Resend email
+                    </button>
+                  </div>
+                  <p class="signin-privacy">
+                    We'll send you a magic link. No password needed. Session
+                    persists for 30 days.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATE D — Error (send failed) -->
+      <section id="state-d" class="state">
+        <div class="state-header">
+          <span class="state-tag">State D</span>
+          <h2 class="state-title">Error — magic link send failed</h2>
+          <p class="state-desc">
+            The magic link couldn't be sent (network error, email service down,
+            or invalid email). An inline error message appears below the button.
+            The button returns to its idle state so the user can retry
+            immediately. No modal, no toast — the error is contextual and local.
+            The message is plain language, not a code.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div
+                class="screen"
+                data-component="sign-in-screen"
+                data-state="error"
+              >
+                <div class="signin">
+                  <div class="signin-sparkle" aria-hidden="true">
+                    <svg
+                      width="28"
+                      height="28"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                  </div>
+                  <h1 class="signin-wordmark">dolfyn</h1>
+                  <p class="signin-tagline">
+                    Write freely. The AI remembers and connects.
+                  </p>
+                  <div class="email-input-wrapper">
+                    <input
+                      type="email"
+                      class="email-input"
+                      placeholder="Enter your email"
+                      autocomplete="email"
+                      data-component="email-input"
+                      data-focus-order="1"
+                      aria-label="Email address"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    class="continue-btn"
+                    data-component="continue-button"
+                    data-primary-action
+                    data-focus-order="2"
+                    aria-label="Continue with email"
+                  >
+                    <span class="continue-btn-label">Continue with email</span>
+                    <div class="continue-btn-spinner" aria-hidden="true"></div>
+                  </button>
+                  <div
+                    class="signin-error"
+                    role="alert"
+                    data-component="error-message"
+                    data-state="error"
+                  >
+                    Couldn't reach dolfyn. Check your connection and try again.
+                  </div>
+                  <p class="signin-privacy">
+                    We'll send you a magic link. No password needed. Session
+                    persists for 30 days.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATE E — Offline -->
+      <section id="state-e" class="state">
+        <div class="state-header">
+          <span class="state-tag">State E</span>
+          <h2 class="state-title">Offline — no connection</h2>
+          <p class="state-desc">
+            The user tries to send a magic link without internet. A single
+            inline message appears: "No internet connection. Please connect and
+            try again." No retry loop — one prompt, the user acts. The button
+            stays interactive so the user can tap again after reconnecting.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div
+                class="screen"
+                data-component="sign-in-screen"
+                data-state="offline"
+              >
+                <div class="signin">
+                  <div class="signin-sparkle" aria-hidden="true">
+                    <svg
+                      width="28"
+                      height="28"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                  </div>
+                  <h1 class="signin-wordmark">dolfyn</h1>
+                  <p class="signin-tagline">
+                    Write freely. The AI remembers and connects.
+                  </p>
+                  <div class="email-input-wrapper">
+                    <input
+                      type="email"
+                      class="email-input"
+                      placeholder="Enter your email"
+                      autocomplete="email"
+                      data-component="email-input"
+                      data-focus-order="1"
+                      aria-label="Email address"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    class="continue-btn"
+                    data-component="continue-button"
+                    data-primary-action
+                    data-focus-order="2"
+                    aria-label="Continue with email"
+                  >
+                    <span class="continue-btn-label">Continue with email</span>
+                    <div class="continue-btn-spinner" aria-hidden="true"></div>
+                  </button>
+                  <div
+                    class="signin-error"
+                    role="alert"
+                    data-component="error-message"
+                    data-state="offline"
+                  >
+                    No internet connection. Please connect and try again.
+                  </div>
+                  <p class="signin-privacy">
+                    We'll send you a magic link. No password needed. Session
+                    persists for 30 days.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

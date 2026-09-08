@@ -1,0 +1,1904 @@
+<!-- COMPONENT INVENTORY: app-shell, app-header, wordmark, avatar, bottom-nav, tab, chat-view, chat-thread, chat-msg, chat-bubble, chat-msg-meta, chat-input-bar, chat-input, chat-send, citation-chip, save-action, toast, ai-conversation-header, band-provenance, readonly-cue, chat-transcript, chat-turn, turn-role, turn-wordmark, turn-content, user-bubble, note-title, notes-panel, notes-drawer-item -->
+<!-- P2-1 note: conversation notes show no char-limit indicator by design — §4.22 chat auto-save exemption (daily token cap bounds chat volume). Do not add the indicator to chat notes. -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>dolfyn — Saved from Chat (Read-Only Chat View)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ============================================
+       Design System Tokens — dolfyn
+       Source: designs/design-system.md
+       ============================================ */
+      :root {
+        --surface: #fafaf7;
+        --surface-subtle: #f2f1ed;
+        --surface-raised: #ffffff;
+        --surface-overlay: rgba(15, 15, 14, 0.32);
+        --ink: #0f0f0e;
+        --ink-2: #3f3f3f;
+        --ink-3: #6b6b6b;
+        --ink-inverse: #fafaf7;
+        --border: #e5e5e1;
+        --border-strong: #c7c7c2;
+        --divider: #edede9;
+        --accent: #c2410c;
+        --accent-strong: #9a330a;
+        --accent-soft-bg: #fcefde;
+        --accent-tint: #f7f2ec;
+        --success: #15803d;
+        --error: #b91c1c;
+        --space-1: 4px;
+        --space-2: 8px;
+        --space-3: 12px;
+        --space-4: 16px;
+        --space-5: 24px;
+        --space-6: 32px;
+        --space-7: 48px;
+        --radius-sm: 6px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-xl: 16px;
+        --radius-full: 9999px;
+        --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        --ease-in: cubic-bezier(0.4, 0, 1, 1);
+        --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+        --duration-fast: 150ms;
+        --duration-base: 250ms;
+        --duration-slow: 350ms;
+        --elevation-panel:
+          0 8px 24px -8px rgba(15, 15, 14, 0.12),
+          0 2px 4px -2px rgba(15, 15, 14, 0.06);
+        --elevation-toast: 0 4px 12px -2px rgba(15, 15, 14, 0.08);
+        --z-base: 0;
+        --z-sticky: 100;
+        --z-overlay: 800;
+        --z-panel: 900;
+        --z-modal: 1000;
+        --z-toast: 1100;
+        --meta-bg: #ecebe5;
+        --meta-ink: #2a2a28;
+        --meta-ink-2: #6e6e68;
+        --meta-border: #d8d7d1;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        background: var(--meta-bg);
+        color: var(--meta-ink);
+        font-family: "Inter", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* ============================================
+       Mockup meta-header
+       ============================================ */
+      .mockup-nav {
+        position: sticky;
+        top: 0;
+        z-index: 1100;
+        background: var(--meta-bg);
+        border-bottom: 1px solid var(--meta-border);
+        padding: var(--space-3) var(--space-5);
+        display: flex;
+        align-items: center;
+        gap: var(--space-5);
+        flex-wrap: wrap;
+      }
+      .mockup-title {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink);
+      }
+      .mockup-subtitle {
+        font-size: 12px;
+        color: var(--meta-ink-2);
+      }
+      .state-tabs {
+        display: flex;
+        gap: var(--space-1);
+        margin-left: auto;
+        flex-wrap: wrap;
+      }
+      .state-tab {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--meta-ink-2);
+        text-decoration: none;
+        padding: var(--space-1) var(--space-2);
+        border-radius: var(--radius-sm);
+        border: 1px solid transparent;
+        transition:
+          background var(--duration-fast) var(--ease-out),
+          color var(--duration-fast) var(--ease-out);
+        white-space: nowrap;
+      }
+      .state-tab:hover {
+        background: rgba(15, 15, 14, 0.05);
+        color: var(--meta-ink);
+      }
+      #state-a:target ~ .mockup-nav .state-tab[href="#state-a"],
+      #state-b:target ~ .mockup-nav .state-tab[href="#state-b"],
+      #state-c:target ~ .mockup-nav .state-tab[href="#state-c"],
+      #state-d:target ~ .mockup-nav .state-tab[href="#state-d"] {
+        background: var(--meta-ink);
+        color: var(--ink-inverse);
+      }
+
+      /* ============================================
+       State section wrapper
+       ============================================ */
+      .state {
+        padding: var(--space-7) var(--space-5) var(--space-6);
+        max-width: 1400px;
+        margin: 0 auto;
+        border-top: 1px solid var(--meta-border);
+      }
+      .state:first-of-type {
+        border-top: none;
+      }
+      .state:target {
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: var(--radius-lg);
+      }
+      .state-header {
+        margin-bottom: var(--space-5);
+        max-width: 720px;
+      }
+      .state-tag {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink-2);
+        margin-bottom: var(--space-2);
+      }
+      .state-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--meta-ink);
+        margin: 0 0 var(--space-2);
+        letter-spacing: -0.01em;
+      }
+      .state-desc {
+        font-size: 14px;
+        color: var(--meta-ink-2);
+        line-height: 1.5;
+        margin: 0;
+      }
+
+      .viewports {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-5);
+        align-items: flex-start;
+      }
+      .viewport {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        flex-shrink: 0;
+      }
+      .device-label {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink-2);
+        padding-left: var(--space-1);
+      }
+      .device-frame {
+        background: var(--meta-ink);
+        border-radius: 28px;
+        padding: 8px;
+        box-shadow: 0 2px 8px -2px rgba(15, 15, 14, 0.12);
+      }
+      .device-frame--desktop {
+        width: 1440px;
+        height: 900px;
+        border-radius: 12px;
+        padding: 8px;
+        position: relative;
+        overflow: hidden;
+      }
+      .screen {
+        position: relative;
+        width: 375px;
+        height: 720px;
+        background: var(--surface);
+        border-radius: 22px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .screen--desktop {
+        width: 100%;
+        height: 100%;
+        background: var(--surface);
+        display: flex;
+        flex-direction: column;
+      }
+      .screen--desktop-canvas {
+        width: 100%;
+        height: 100%;
+        background: var(--surface);
+        border-radius: 4px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+      .screen--desktop-canvas .app-header {
+        flex-shrink: 0;
+      }
+      .screen--desktop-canvas .note-editor {
+        flex: 1;
+        min-height: 0;
+      }
+      .screen--desktop-canvas .bottom-nav {
+        flex-shrink: 0;
+      }
+
+      /* ============================================
+       APP SHELL
+       ============================================ */
+      .app {
+        position: relative;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+      .app-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-3) var(--space-4);
+        flex-shrink: 0;
+      }
+      .wordmark {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-weight: 600;
+        font-size: 20px;
+        letter-spacing: -0.01em;
+        color: var(--ink);
+        line-height: 1;
+      }
+      .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-full);
+        background: var(--surface-subtle);
+        color: var(--ink-2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
+        font-size: 13px;
+        flex-shrink: 0;
+      }
+      .avatar--tier {
+        position: relative;
+      }
+      .avatar--tier::after {
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        right: -1px;
+        width: 10px;
+        height: 10px;
+        border-radius: var(--radius-full);
+        background: var(--accent);
+        border: 2px solid var(--surface);
+      }
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+      }
+
+      /* ============================================
+       CHAT VIEW — reused from ambient-chat.html
+       ============================================ */
+      .chat-view {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .chat-thread {
+        flex: 1;
+        overflow-y: auto;
+        padding: var(--space-5) var(--space-4);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+        scrollbar-width: none;
+      }
+      .chat-thread::-webkit-scrollbar {
+        display: none;
+      }
+      .chat-msg {
+        max-width: 85%;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+      }
+      .chat-msg--user {
+        align-self: flex-end;
+      }
+      .chat-msg--ai {
+        align-self: flex-start;
+      }
+      .chat-bubble {
+        padding: var(--space-3) var(--space-4);
+        border-radius: var(--radius-lg);
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 15px;
+        line-height: 1.6;
+      }
+      .chat-bubble--user {
+        background: var(--ink);
+        color: var(--ink-inverse);
+        border-bottom-right-radius: var(--radius-sm);
+      }
+      .chat-bubble--ai {
+        background: var(--surface-subtle);
+        color: var(--ink);
+        border-bottom-left-radius: var(--radius-sm);
+      }
+      .chat-bubble p {
+        margin: 0 0 var(--space-2);
+      }
+      .chat-bubble p:last-child {
+        margin-bottom: 0;
+      }
+      .chat-bubble strong {
+        font-weight: 600;
+      }
+      .chat-msg-meta {
+        font-size: 11px;
+        color: var(--ink-3);
+        padding: 0 var(--space-1);
+      }
+      .chat-msg--user .chat-msg-meta {
+        text-align: right;
+      }
+
+      /* Citation chip — §4.5 */
+      .citation-chip {
+        display: inline-flex;
+        align-items: center;
+        height: 28px;
+        padding: 0 var(--space-2);
+        margin: 0 2px;
+        background: var(--surface-subtle);
+        border-radius: var(--radius-md);
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 14px;
+        line-height: 1.4;
+        color: var(--ink-2);
+        white-space: nowrap;
+        max-width: 220px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        vertical-align: baseline;
+        position: relative;
+        top: 2px;
+        cursor: pointer;
+        transition: background var(--duration-fast) var(--ease-out);
+      }
+      .citation-chip:active {
+        background: var(--border-strong);
+      }
+
+      /* Chat input bar */
+      .chat-input-bar {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-3) var(--space-4);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        background: var(--surface-raised);
+        margin: 0 var(--space-4) var(--space-3);
+      }
+      .chat-input {
+        flex: 1;
+        height: 44px;
+        border: none;
+        background: transparent;
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 15px;
+        color: var(--ink);
+        outline: none;
+        padding: 0 var(--space-2);
+      }
+      .chat-input::placeholder {
+        color: var(--ink-3);
+      }
+      .chat-send {
+        width: 44px;
+        height: 44px;
+        border: none;
+        border-radius: var(--radius-md);
+        background: var(--ink);
+        color: var(--ink-inverse);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        opacity: 0.4;
+      }
+
+      /* ============================================
+       SAVE ACTION — on AI message bubble
+       ============================================ */
+      .save-action {
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+        margin-top: var(--space-1);
+        padding: var(--space-1) 0;
+      }
+      .save-action-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-1);
+        height: 32px;
+        padding: 0 var(--space-2);
+        background: transparent;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--ink-3);
+        cursor: pointer;
+        transition:
+          background var(--duration-fast) var(--ease-out),
+          color var(--duration-fast) var(--ease-out),
+          border-color var(--duration-fast) var(--ease-out);
+      }
+      .save-action-btn:active {
+        background: var(--accent-soft-bg);
+        color: var(--accent-strong);
+        border-color: var(--accent);
+      }
+      .save-action-btn svg {
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+      }
+      .save-action-btn--saved {
+        background: var(--accent-soft-bg);
+        color: var(--accent-strong);
+        border-color: var(--accent);
+        pointer-events: none;
+      }
+
+      /* ============================================
+       TOAST — §4.13
+       ============================================ */
+      .toast {
+        position: absolute;
+        bottom: 124px;
+        left: var(--space-4);
+        right: var(--space-4);
+        z-index: var(--z-toast);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-2);
+        padding: var(--space-3) var(--space-4);
+        background: var(--ink);
+        color: var(--ink-inverse);
+        border-radius: var(--radius-md);
+        box-shadow: var(--elevation-toast);
+        font-size: 14px;
+        font-weight: 500;
+        opacity: 0;
+        transform: translateY(8px);
+        transition:
+          opacity var(--duration-base) var(--ease-out),
+          transform var(--duration-base) var(--ease-out);
+      }
+      .toast--visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .toast svg {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .toast {
+          transition: none;
+        }
+      }
+
+      /* ============================================
+       READ-ONLY CHAT VIEW (Req 22)
+       ============================================ */
+      .ro-view {
+        flex: 1;
+        overflow-y: auto;
+        scrollbar-width: none;
+        display: flex;
+        flex-direction: column;
+      }
+      .ro-view::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Position-0 band — provenance + read-only cue */
+      .ai-conversation-header {
+        position: sticky;
+        top: 0;
+        z-index: var(--z-base);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-2);
+        height: 40px;
+        padding: var(--space-2) var(--space-4);
+        background: var(--accent-tint);
+        border-bottom: 1px solid var(--divider);
+        pointer-events: none;
+        user-select: none;
+        flex-shrink: 0;
+      }
+      .ai-conversation-header .band-left {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        min-width: 0;
+      }
+      .ai-conversation-header .sparkle {
+        width: 14px;
+        height: 14px;
+        color: var(--accent);
+        flex-shrink: 0;
+      }
+      .ai-conversation-header .label {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--ink-3);
+        letter-spacing: 0.01em;
+        white-space: nowrap;
+      }
+      .readonly-cue {
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+        flex-shrink: 0;
+      }
+      .readonly-cue .cue-icon {
+        width: 12px;
+        height: 12px;
+        color: var(--ink-3);
+      }
+      .readonly-cue .cue-text {
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--ink-3);
+        letter-spacing: 0.01em;
+        white-space: nowrap;
+      }
+
+      /* Reading column */
+      .ro-column {
+        font-family: "Source Serif 4", Georgia, serif;
+        max-width: 480px;
+        width: 100%;
+        padding: 0 var(--space-4) 124px;
+        margin: 0 auto;
+      }
+      .screen--desktop-canvas .ro-column {
+        max-width: 720px;
+      }
+
+      /* Title — static text, no rename affordance */
+      .ro-title {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 1.3;
+        color: var(--ink);
+        margin: var(--space-5) 0 var(--space-5);
+        letter-spacing: -0.01em;
+      }
+
+      /* ============================================
+       Chat transcript — AI left, user right
+       ============================================ */
+      .chat-transcript {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-5);
+      }
+      .chat-turn {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+      }
+      .chat-turn--ai {
+        align-items: flex-start;
+      }
+      .chat-turn--user {
+        align-items: flex-end;
+      }
+
+      /* Role marker — sans chrome above serif content */
+      .turn-role {
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        color: var(--ink-3);
+        user-select: none;
+      }
+      .turn-role .turn-wordmark {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-weight: 600;
+        font-size: 12px;
+        letter-spacing: -0.01em;
+        line-height: 1.4;
+        color: var(--accent);
+      }
+      .turn-role--user {
+        flex-direction: row-reverse;
+      }
+
+      /* Turn bodies — user gets the quiet fill, AI gets the canvas */
+      .turn-body {
+        max-width: 85%;
+      }
+      .turn-body--ai {
+        width: auto;
+        color: var(--ink);
+      }
+      .turn-body--user {
+        background: var(--surface-subtle);
+        border-radius: var(--radius-lg) var(--radius-lg) var(--radius-sm)
+          var(--radius-lg);
+        padding: var(--space-3) var(--space-4);
+        color: var(--ink);
+      }
+      .turn-body p {
+        margin: 0 0 var(--space-3);
+      }
+      .turn-body p:last-child {
+        margin-bottom: 0;
+      }
+      .turn-body strong {
+        font-weight: 600;
+      }
+      .turn-body ul,
+      .turn-body ol {
+        margin: 0 0 var(--space-3) var(--space-4);
+        padding: 0;
+      }
+      .turn-body blockquote {
+        margin: 0 0 var(--space-3);
+        padding-left: var(--space-3);
+        border-left: 1px solid var(--border-strong);
+        color: var(--ink-2);
+      }
+      .turn-body blockquote p {
+        margin: 0;
+      }
+
+      /* ============================================
+       BOTTOM NAV — §4.12
+       ============================================ */
+      .bottom-nav {
+        height: 56px;
+        background: var(--surface-raised);
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: stretch;
+        justify-content: space-around;
+        padding: 0 var(--space-2);
+        flex-shrink: 0;
+      }
+      .tab {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--ink-3);
+        position: relative;
+        text-decoration: none;
+      }
+      .tab svg {
+        display: block;
+      }
+      .tab--active {
+        color: var(--ink-2);
+      }
+      .tab--active svg {
+        color: var(--ink);
+      }
+      .tab--active::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 32px;
+        height: 3px;
+        background: var(--accent);
+        border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      }
+
+      /* ============================================
+       DESKTOP — notes panel (left)
+       ============================================ */
+      .desktop-content-row {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+      }
+      .notes-panel {
+        position: relative;
+        width: 320px;
+        flex-shrink: 0;
+        border-right: 1px solid var(--border);
+        background: var(--surface-raised);
+        display: flex;
+        flex-direction: column;
+      }
+      .notes-panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-4);
+        border-bottom: 1px solid var(--divider);
+      }
+      .notes-panel-title {
+        font-size: 13px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        margin: 0;
+      }
+      .notes-panel-list {
+        flex: 1;
+        overflow-y: auto;
+      }
+      .notes-drawer-item {
+        padding: var(--space-3) var(--space-4);
+        border-bottom: 1px solid var(--divider);
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+      }
+      .notes-drawer-item:active {
+        background: var(--surface-subtle);
+      }
+      .notes-drawer-item-title {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 15px;
+        line-height: 1.4;
+        color: var(--ink);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+      }
+      .notes-drawer-item-meta {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        color: var(--ink-3);
+      }
+      .notes-drawer-item--active {
+        background: var(--surface-subtle);
+      }
+      .notes-drawer-item--active .notes-drawer-item-title {
+        font-weight: 600;
+      }
+      .notes-drawer-item--from-chat .notes-drawer-item-meta {
+        color: var(--accent-strong);
+      }
+      .notes-list-divider {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-2) var(--space-4);
+        background: var(--surface-subtle);
+      }
+      .notes-list-divider-line {
+        flex: 1;
+        height: 1px;
+        background: var(--divider);
+      }
+      .notes-list-divider-label {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        white-space: nowrap;
+      }
+      .notes-drawer-cap {
+        padding: var(--space-3) var(--space-4);
+        border-top: 1px solid var(--divider);
+        flex-shrink: 0;
+      }
+      .notes-drawer-cap-text {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--ink-3);
+        margin: 0;
+      }
+
+      @media (max-width: 900px) {
+        .device-frame--desktop {
+          display: none;
+        }
+      }
+      @media (max-width: 480px) {
+        .state {
+          padding: var(--space-5) var(--space-3);
+        }
+        .mockup-nav {
+          padding: var(--space-3);
+        }
+        .state-tabs {
+          width: 100%;
+          margin-left: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="mockup-nav">
+      <div>
+        <div class="mockup-title">dolfyn / Saved from Chat</div>
+        <div class="mockup-subtitle">Gap fill · AI chat → note · 4 states</div>
+      </div>
+      <nav class="state-tabs" aria-label="State selector">
+        <a href="#state-a" class="state-tab">A · save trigger</a>
+        <a href="#state-b" class="state-tab">B · saved + toast</a>
+        <a href="#state-c" class="state-tab">C · note in editor</a>
+        <a href="#state-d" class="state-tab">D · desktop note</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- ============================================
+         STATE A — Mobile: Chat with "Save as note" trigger
+         ============================================ -->
+      <section id="state-a" class="state">
+        <div class="state-header">
+          <span class="state-tag">Primary flow · 375px</span>
+          <h2 class="state-title">State A — Save trigger on AI message</h2>
+          <p class="state-desc">
+            The AI has just delivered a synthesis with inline citations. Below
+            the AI message, a subtle "Save as note" action appears — a bookmark
+            icon + text in a soft-bordered chip. The affordance is discoverable
+            but not loud: it sits below the bubble in the chat flow, using the
+            tool-type sans-serif, not the AI accent. Tapping it initiates the
+            save and transitions to State B. The user stays in chat — they don't
+            navigate away until they choose to.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div
+                class="screen"
+                data-component="chat"
+                data-state="save-trigger"
+              >
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="header-actions">
+                      <div class="avatar" aria-label="Profile">SC</div>
+                    </div>
+                  </header>
+                  <div class="chat-view">
+                    <div class="chat-thread">
+                      <div class="chat-msg chat-msg--user">
+                        <div class="chat-bubble chat-bubble--user">
+                          <p>
+                            What patterns do you see across my notes about
+                            first-time UX?
+                          </p>
+                        </div>
+                        <span class="chat-msg-meta">2m ago</span>
+                      </div>
+
+                      <div
+                        class="chat-msg chat-msg--ai"
+                        data-component="chat-msg"
+                        data-state="with-save-action"
+                      >
+                        <div class="chat-bubble chat-bubble--ai">
+                          <p>
+                            You keep circling back to one idea:
+                            <strong
+                              >don't explain the product, let the user do the
+                              thing.</strong
+                            >
+                            Your "write-first" note from last week said the same
+                            thing — "open the notebook, don't describe it."
+                          </p>
+                          <p>
+                            This connects to your onboarding thinking too. You
+                            noted that the empty canvas IS the onboarding
+                            <span
+                              class="citation-chip"
+                              role="button"
+                              tabindex="0"
+                              >What makes a great first-time...</span
+                            >
+                            and that the first note saved is the investment
+                            moment
+                            <span
+                              class="citation-chip"
+                              role="button"
+                              tabindex="0"
+                              >Activation problem today</span
+                            >.
+                          </p>
+                          <p>
+                            The pattern:
+                            <strong>show, don't tell.</strong> Every surface
+                            should let the user act, not read instructions.
+                          </p>
+                        </div>
+                        <div class="save-action" data-component="save-action">
+                          <button
+                            type="button"
+                            class="save-action-btn"
+                            aria-label="Save this response as a note"
+                          >
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <path
+                                d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"
+                              />
+                            </svg>
+                            Save as note
+                          </button>
+                        </div>
+                        <span class="chat-msg-meta">2m ago</span>
+                      </div>
+
+                      <div class="chat-msg chat-msg--user">
+                        <div class="chat-bubble chat-bubble--user">
+                          <p>So what's the one thing to remember?</p>
+                        </div>
+                        <span class="chat-msg-meta">Just now</span>
+                      </div>
+                    </div>
+                    <div class="chat-input-bar">
+                      <input
+                        type="text"
+                        class="chat-input"
+                        placeholder="Ask me about your notes"
+                        aria-label="Chat message input"
+                      />
+                      <button
+                        type="button"
+                        class="chat-send"
+                        aria-label="Send message"
+                        disabled
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M22 2 11 13" />
+                          <path d="m22 2-7 20-4-9-9-4z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE B — Mobile: Post-save with toast confirmation
+         ============================================ -->
+      <section id="state-b" class="state">
+        <div class="state-header">
+          <span class="state-tag">Post-save · 375px</span>
+          <h2 class="state-title">State B — Saved + toast confirmation</h2>
+          <p class="state-desc">
+            Immediately after tapping "Save as note": the button flips to a
+            saved state (accent-soft-bg fill, "Saved" text, checkmark), the
+            toast appears above the AI bar ("Saved as note · Open" — the "Open"
+            is a tappable link that navigates to the note). The toast
+            auto-dismisses after 4 seconds. The user stays in chat. The saved
+            indicator on the AI message is persistent — it tells the user "this
+            one's been kept" without navigating them away.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div
+                class="screen"
+                data-component="chat"
+                data-state="saved-toast"
+              >
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="header-actions">
+                      <div class="avatar" aria-label="Profile">SC</div>
+                    </div>
+                  </header>
+                  <div class="chat-view">
+                    <div class="chat-thread">
+                      <div class="chat-msg chat-msg--user">
+                        <div class="chat-bubble chat-bubble--user">
+                          <p>
+                            What patterns do you see across my notes about
+                            first-time UX?
+                          </p>
+                        </div>
+                        <span class="chat-msg-meta">2m ago</span>
+                      </div>
+
+                      <div
+                        class="chat-msg chat-msg--ai"
+                        data-component="chat-msg"
+                        data-state="saved"
+                      >
+                        <div class="chat-bubble chat-bubble--ai">
+                          <p>
+                            You keep circling back to one idea:
+                            <strong
+                              >don't explain the product, let the user do the
+                              thing.</strong
+                            >
+                            Your "write-first" note from last week said the same
+                            thing — "open the notebook, don't describe it."
+                          </p>
+                          <p>
+                            This connects to your onboarding thinking too. You
+                            noted that the empty canvas IS the onboarding
+                            <span
+                              class="citation-chip"
+                              role="button"
+                              tabindex="0"
+                              >What makes a great first-time...</span
+                            >
+                            and that the first note saved is the investment
+                            moment
+                            <span
+                              class="citation-chip"
+                              role="button"
+                              tabindex="0"
+                              >Activation problem today</span
+                            >.
+                          </p>
+                          <p>
+                            The pattern:
+                            <strong>show, don't tell.</strong> Every surface
+                            should let the user act, not read instructions.
+                          </p>
+                        </div>
+                        <div
+                          class="save-action"
+                          data-component="save-action"
+                          data-state="saved"
+                        >
+                          <button
+                            type="button"
+                            class="save-action-btn save-action-btn--saved"
+                            aria-label="Saved as note"
+                          >
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M20 6L9 17l-5-5" />
+                            </svg>
+                            Saved
+                          </button>
+                        </div>
+                        <span class="chat-msg-meta">2m ago</span>
+                      </div>
+
+                      <div class="chat-msg chat-msg--user">
+                        <div class="chat-bubble chat-bubble--user">
+                          <p>So what's the one thing to remember?</p>
+                        </div>
+                        <span class="chat-msg-meta">Just now</span>
+                      </div>
+                    </div>
+                    <div class="chat-input-bar">
+                      <input
+                        type="text"
+                        class="chat-input"
+                        placeholder="Ask me about your notes"
+                        aria-label="Chat message input"
+                      />
+                      <button
+                        type="button"
+                        class="chat-send"
+                        aria-label="Send message"
+                        disabled
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M22 2 11 13" />
+                          <path d="m22 2-7 20-4-9-9-4z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <!-- Toast -->
+                <div
+                  class="toast toast--visible"
+                  data-component="toast"
+                  data-state="visible"
+                  role="status"
+                  aria-live="polite"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                  Saved as note ·
+                  <span style="text-decoration: underline; cursor: pointer"
+                    >Open</span
+                  >
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE C — Mobile: The saved note as read-only chat view
+         ============================================ -->
+      <section id="state-c" class="state">
+        <div class="state-header">
+          <span class="state-tag">Note view · 375px</span>
+          <h2 class="state-title">
+            State C — Saved-from-chat note, read-only chat view
+          </h2>
+          <p class="state-desc">
+            The user tapped "Open" on the toast (or navigated to Notes tab and
+            tapped the new note). The note opens as a read-only chat transcript:
+            the conversation is displayed as alternating turns — user right in
+            subtle fill, dolfyn left as plain text — with the same header band
+            (sparkle + "AI conversation" left, lock + "Read-only" right). The
+            title is the first user message as static text. Citation chips from
+            the AI response are preserved inline and remain tappable. No
+            formatting toolbar, no AI presence bar, no cursor — this note cannot
+            be edited.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div
+                class="screen"
+                data-component="app-shell"
+                data-state="readonly-saved-from-chat"
+              >
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="header-actions">
+                      <div class="avatar" aria-label="Profile">SC</div>
+                    </div>
+                  </header>
+                  <div class="ro-view">
+                    <div
+                      class="ai-conversation-header"
+                      data-component="ai-conversation-header"
+                      data-state="readonly"
+                      data-interaction="none"
+                    >
+                      <div class="band-left">
+                        <svg
+                          class="sparkle"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                          />
+                        </svg>
+                        <span class="label">AI conversation</span>
+                      </div>
+                      <div
+                        class="readonly-cue"
+                        data-component="readonly-cue"
+                        role="note"
+                        aria-label="Read-only: this is a saved conversation and cannot be edited"
+                      >
+                        <svg
+                          class="cue-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          aria-hidden="true"
+                        >
+                          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                          <rect x="5" y="11" width="14" height="9" rx="2" />
+                        </svg>
+                        <span class="cue-text">Read-only</span>
+                      </div>
+                    </div>
+                    <div class="ro-column">
+                      <h1
+                        class="ro-title"
+                        data-component="note-title"
+                        data-variant="readonly"
+                      >
+                        Show, don't tell — the UX pattern across everything
+                      </h1>
+
+                      <div
+                        class="chat-transcript"
+                        data-component="chat-transcript"
+                        data-variant="readonly"
+                      >
+                        <!-- Turn 1 · User -->
+                        <section
+                          class="chat-turn chat-turn--user"
+                          data-component="chat-turn"
+                          data-variant="user"
+                        >
+                          <div
+                            class="turn-role turn-role--user"
+                            aria-hidden="true"
+                          >
+                            <span>You</span>
+                          </div>
+                          <div class="turn-body turn-body--user">
+                            <p>
+                              What patterns do you see across my notes about
+                              first-time UX?
+                            </p>
+                          </div>
+                        </section>
+
+                        <!-- Turn 1 · AI -->
+                        <section
+                          class="chat-turn chat-turn--ai"
+                          data-component="chat-turn"
+                          data-variant="ai"
+                        >
+                          <div
+                            class="turn-role turn-role--ai"
+                            aria-hidden="true"
+                          >
+                            <span class="turn-wordmark">dolfyn</span>
+                          </div>
+                          <div class="turn-body turn-body--ai">
+                            <p>
+                              You keep circling back to one idea:
+                              <strong
+                                >don't explain the product, let the user do the
+                                thing.</strong
+                              >
+                              Your "write-first" note from last week said the
+                              same thing — "open the notebook, don't describe
+                              it."
+                            </p>
+                            <p>
+                              This connects to your onboarding thinking too. You
+                              noted that the empty canvas IS the onboarding
+                              <span
+                                class="citation-chip"
+                                role="button"
+                                tabindex="0"
+                                >What makes a great first-time...</span
+                              >
+                              and that the first note saved is the investment
+                              moment
+                              <span
+                                class="citation-chip"
+                                role="button"
+                                tabindex="0"
+                                >Activation problem today</span
+                              >.
+                            </p>
+                            <p>
+                              The pattern:
+                              <strong>show, don't tell.</strong> Every surface
+                              should let the user act, not read instructions.
+                            </p>
+                          </div>
+                        </section>
+
+                        <!-- Turn 2 · User -->
+                        <section
+                          class="chat-turn chat-turn--user"
+                          data-component="chat-turn"
+                          data-variant="user"
+                        >
+                          <div
+                            class="turn-role turn-role--user"
+                            aria-hidden="true"
+                          >
+                            <span>You</span>
+                          </div>
+                          <div class="turn-body turn-body--user">
+                            <p>So what's the one thing to remember?</p>
+                          </div>
+                        </section>
+
+                        <!-- Turn 2 · AI -->
+                        <section
+                          class="chat-turn chat-turn--ai"
+                          data-component="chat-turn"
+                          data-variant="ai"
+                        >
+                          <div
+                            class="turn-role turn-role--ai"
+                            aria-hidden="true"
+                          >
+                            <span class="turn-wordmark">dolfyn</span>
+                          </div>
+                          <div class="turn-body turn-body--ai">
+                            <p>
+                              <strong>Show, don't tell.</strong> Every surface
+                              should let the user act, not read instructions.
+                            </p>
+                          </div>
+                        </section>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE D — Desktop: Saved-from-chat note, read-only chat view
+         ============================================ -->
+      <section id="state-d" class="state">
+        <div class="state-header">
+          <span class="state-tag">Desktop · ≥1024px</span>
+          <h2 class="state-title">
+            State D — Desktop saved-from-chat note, read-only
+          </h2>
+          <p class="state-desc">
+            Desktop three-panel layout. The saved note appears at the top of the
+            notes panel list with a "from chat" meta label in accent-strong. The
+            editor shows the read-only chat transcript with the same header
+            band, static title, and alternating turns. No formatting toolbar, no
+            AI presence bar. This closes the loop: chat insight → persistent
+            read-only note → AI gets sharper about this user's thinking.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div
+                class="screen screen--desktop-canvas"
+                data-component="app-shell"
+                data-state="desktop-readonly-saved-from-chat"
+              >
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="header-actions">
+                    <div
+                      class="avatar avatar--tier"
+                      aria-label="Profile, Think tier"
+                    >
+                      SC
+                    </div>
+                  </div>
+                </header>
+                <div class="desktop-content-row">
+                  <!-- Left: Notes panel -->
+                  <aside class="notes-panel">
+                    <div class="notes-panel-header">
+                      <div
+                        style="
+                          display: flex;
+                          align-items: center;
+                          gap: var(--space-3);
+                        "
+                      >
+                        <h2 class="notes-panel-title">Notes</h2>
+                        <span
+                          style="
+                            font-size: 12px;
+                            font-weight: 500;
+                            color: var(--ink-3);
+                          "
+                          >8/10</span
+                        >
+                      </div>
+                      <div
+                        style="
+                          display: flex;
+                          align-items: center;
+                          gap: var(--space-3);
+                        "
+                      >
+                        <button
+                          type="button"
+                          class="notes-list-add"
+                          style="
+                            font-size: 13px;
+                            padding: 0;
+                            color: var(--accent);
+                            background: none;
+                            border: none;
+                            cursor: pointer;
+                          "
+                        >
+                          + New
+                        </button>
+                        <button
+                          type="button"
+                          class="notes-panel-toggle"
+                          aria-label="Collapse notes panel"
+                          style="
+                            width: auto;
+                            height: auto;
+                            padding: 0;
+                            background: none;
+                            border: none;
+                            font-size: 15px;
+                            font-weight: 400;
+                            color: var(--ink-3);
+                            line-height: 1;
+                          "
+                        >
+                          &lt;
+                        </button>
+                      </div>
+                    </div>
+                    <div class="notes-panel-list">
+                      <div class="notes-drawer-item notes-drawer-item--active">
+                        <span class="notes-drawer-item-title"
+                          >What makes a great first-time user experience</span
+                        >
+                        <span class="notes-drawer-item-meta"
+                          >Today at 2:14 PM</span
+                        >
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Growth channels for the next 90 days</span
+                        >
+                        <span class="notes-drawer-item-meta">Yesterday</span>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >New user landing decision</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 16</span>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Competitive positioning — Capacities vs dolfyn</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 14</span>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Pricing tier philosophy</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 13</span>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Note-taking app positioning</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 12</span>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Auth decision — Better-Auth</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 11</span>
+                      </div>
+                      <!-- AI Conversations section -->
+                      <div class="notes-list-divider">
+                        <div class="notes-list-divider-line"></div>
+                        <span class="notes-list-divider-label"
+                          >AI Conversations</span
+                        >
+                        <div class="notes-list-divider-line"></div>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Pricing model discussion</span
+                        >
+                        <span class="notes-drawer-item-meta"
+                          >Today at 11:30 AM</span
+                        >
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >First-time UX patterns</span
+                        >
+                        <span class="notes-drawer-item-meta">Yesterday</span>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Competitors comparison</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 14</span>
+                      </div>
+                    </div>
+                    <div class="notes-drawer-cap">
+                      <p class="notes-drawer-cap-text">8 of 10 notes</p>
+                    </div>
+                  </aside>
+                  <!-- Center: read-only chat view -->
+                  <div
+                    style="
+                      flex: 1;
+                      min-width: 0;
+                      display: flex;
+                      flex-direction: column;
+                      overflow: hidden;
+                    "
+                  >
+                    <div class="ro-view">
+                      <div
+                        class="ai-conversation-header"
+                        data-component="ai-conversation-header"
+                        data-state="readonly"
+                      >
+                        <div class="band-left">
+                          <svg
+                            class="sparkle"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            aria-hidden="true"
+                          >
+                            <path
+                              d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                            />
+                          </svg>
+                          <span class="label">AI conversation</span>
+                        </div>
+                        <div
+                          class="readonly-cue"
+                          data-component="readonly-cue"
+                          role="note"
+                          aria-label="Read-only: this is a saved conversation and cannot be edited"
+                        >
+                          <svg
+                            class="cue-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                          >
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                            <rect x="5" y="11" width="14" height="9" rx="2" />
+                          </svg>
+                          <span class="cue-text">Read-only</span>
+                        </div>
+                      </div>
+                      <div class="ro-column">
+                        <h1
+                          class="ro-title"
+                          data-component="note-title"
+                          data-variant="readonly"
+                        >
+                          Show, don't tell — the UX pattern across everything
+                        </h1>
+                        <div
+                          class="chat-transcript"
+                          data-component="chat-transcript"
+                          data-variant="readonly"
+                        >
+                          <section
+                            class="chat-turn chat-turn--user"
+                            data-component="chat-turn"
+                            data-variant="user"
+                          >
+                            <div
+                              class="turn-role turn-role--user"
+                              aria-hidden="true"
+                            >
+                              <span>You</span>
+                            </div>
+                            <div class="turn-body turn-body--user">
+                              <p>
+                                What patterns do you see across my notes about
+                                first-time UX?
+                              </p>
+                            </div>
+                          </section>
+                          <section
+                            class="chat-turn chat-turn--ai"
+                            data-component="chat-turn"
+                            data-variant="ai"
+                          >
+                            <div
+                              class="turn-role turn-role--ai"
+                              aria-hidden="true"
+                            >
+                              <span class="turn-wordmark">dolfyn</span>
+                            </div>
+                            <div class="turn-body turn-body--ai">
+                              <p>
+                                You keep circling back to one idea:
+                                <strong
+                                  >don't explain the product, let the user do
+                                  the thing.</strong
+                                >
+                                Your "write-first" note from last week said the
+                                same thing — "open the notebook, don't describe
+                                it."
+                              </p>
+                              <p>
+                                This connects to your onboarding thinking too.
+                                You noted that the empty canvas IS the
+                                onboarding
+                                <span
+                                  class="citation-chip"
+                                  role="button"
+                                  tabindex="0"
+                                  >What makes a great first-time...</span
+                                >
+                                and that the first note saved is the investment
+                                moment
+                                <span
+                                  class="citation-chip"
+                                  role="button"
+                                  tabindex="0"
+                                  >Activation problem today</span
+                                >.
+                              </p>
+                            </div>
+                          </section>
+                          <section
+                            class="chat-turn chat-turn--user"
+                            data-component="chat-turn"
+                            data-variant="user"
+                          >
+                            <div
+                              class="turn-role turn-role--user"
+                              aria-hidden="true"
+                            >
+                              <span>You</span>
+                            </div>
+                            <div class="turn-body turn-body--user">
+                              <p>So what's the one thing to remember?</p>
+                            </div>
+                          </section>
+                          <section
+                            class="chat-turn chat-turn--ai"
+                            data-component="chat-turn"
+                            data-variant="ai"
+                          >
+                            <div
+                              class="turn-role turn-role--ai"
+                              aria-hidden="true"
+                            >
+                              <span class="turn-wordmark">dolfyn</span>
+                            </div>
+                            <div class="turn-body turn-body--ai">
+                              <p>
+                                <strong>Show, don't tell.</strong> Every surface
+                                should let the user act, not read instructions.
+                              </p>
+                            </div>
+                          </section>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
