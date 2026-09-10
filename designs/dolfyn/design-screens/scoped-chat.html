@@ -1,4 +1,4 @@
-<!-- COMPONENT INVENTORY: app-shell, panel-header, note-surface, note-actions-menu, chat-about-note-btn, scope-bar, scope-chip, scope-add-btn, note-picker, note-picker-search, note-picker-item, chat-thread, chat-msg, chat-bubble, chat-input-bar, chat-input, chat-send, chat-notice, ai-generated-label -->
+<!-- COMPONENT INVENTORY: app-shell, panel-header, note-surface, note-actions-menu, chat-about-note-btn, chat-thread, chat-msg, chat-bubble, chat-input-bar, chat-input-row, chat-input, chat-send, mention-chip-row, note-chip, mention-dropdown, mention-item, chat-notice, ai-generated-label, citation-chip -->
 <!doctype html>
 <html lang="en">
   <head>
@@ -7,7 +7,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
-    <title>dolfyn — Scoped Chat (single &amp; multi-note)</title>
+    <title>dolfyn — Scoped Chat (@mention note selection)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -127,88 +127,6 @@
         color: var(--ink);
       }
 
-      /* scope-bar + scope-chip */
-      .scope-bar {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: var(--space-2);
-        padding: var(--space-3) var(--space-4);
-        background: var(--accent-tint);
-        border-bottom: 1px solid var(--divider);
-      }
-      .scope-bar-label {
-        font-size: 12px;
-        color: var(--ink-2);
-        width: 100%;
-        margin-bottom: var(--space-1);
-      }
-      .scope-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: var(--space-2);
-        max-width: 100%;
-        padding: var(--space-1) var(--space-1) var(--space-1) var(--space-3);
-        background: var(--surface-raised);
-        border: 1px solid var(--border-strong);
-        border-radius: var(--radius-full);
-        font-size: 13px;
-        color: var(--ink);
-      }
-      .scope-chip-name {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        max-width: 180px;
-      }
-      .scope-chip-remove {
-        min-width: 28px;
-        min-height: 28px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border: none;
-        background: transparent;
-        color: var(--ink-3);
-        border-radius: var(--radius-full);
-        cursor: pointer;
-        font-size: 15px;
-        line-height: 1;
-      }
-      .scope-chip-remove:hover,
-      .scope-chip-remove:focus-visible {
-        background: var(--surface-subtle);
-        color: var(--ink);
-      }
-      .scope-chip[data-state="removed"] {
-        opacity: 0.45;
-        text-decoration: line-through;
-      }
-      .scope-add-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: var(--space-1);
-        min-height: 32px;
-        padding: 0 var(--space-3);
-        background: transparent;
-        border: 1px dashed var(--border-strong);
-        border-radius: var(--radius-full);
-        color: var(--accent-strong);
-        font-size: 13px;
-        font-weight: 500;
-        cursor: pointer;
-      }
-      .scope-add-btn:hover,
-      .scope-add-btn:focus-visible {
-        background: var(--surface-raised);
-        border-style: solid;
-      }
-      .scope-add-btn[data-state="disabled"] {
-        color: var(--ink-3);
-        cursor: not-allowed;
-        border-color: var(--border);
-      }
-
       /* thread */
       .chat-thread {
         padding: var(--space-4);
@@ -280,14 +198,125 @@
         border: 1px solid var(--border);
       }
 
-      /* input bar */
+      /* mention-dropdown + mention-item — the @-mention note picker.
+         Sits directly above the input bar it belongs to, never at the
+         top of the panel. Opened by typing "@" in chat-input. */
+      .mention-dropdown {
+        margin: 0 var(--space-4);
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        box-shadow: var(--elevation-panel);
+        overflow: hidden;
+      }
+      .mention-list {
+        list-style: none;
+        margin: 0;
+        padding: var(--space-1);
+        max-height: 220px;
+        overflow-y: auto;
+      }
+      .mention-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-3);
+        width: 100%;
+        min-height: 44px;
+        padding: 0 var(--space-2);
+        border: none;
+        background: transparent;
+        border-radius: var(--radius-sm);
+        font: inherit;
+        font-size: 14px;
+        color: var(--ink);
+        text-align: left;
+        cursor: pointer;
+      }
+      .mention-item:hover,
+      .mention-item:focus-visible,
+      .mention-item[data-state="active"] {
+        background: var(--surface-subtle);
+      }
+      .mention-item-meta {
+        font-size: 12px;
+        color: var(--ink-3);
+        white-space: nowrap;
+      }
+      .mention-dropdown-notice {
+        padding: var(--space-3);
+        color: var(--ink-3);
+        font-size: 13px;
+      }
+
+      /* chat-input-bar — the composer. mention-chip-row (only present once
+         a note is attached) stacks above the input row inside the SAME
+         bar; there is no separate top-of-panel selection component. */
       .chat-input-bar {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--space-2);
+        padding: var(--space-2) var(--space-4) var(--space-3);
+        border-top: 1px solid var(--divider);
+        background: var(--surface-raised);
+      }
+      .mention-chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-2);
+      }
+      .note-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        max-width: 100%;
+        padding: 4px 4px 4px var(--space-2);
+        background: var(--surface-subtle);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-full);
+        font-size: 12px;
+        color: var(--ink-2);
+      }
+      .note-chip-icon {
+        flex-shrink: 0;
+        color: var(--ink-3);
+        display: inline-flex;
+      }
+      .note-chip-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 130px;
+      }
+      .note-chip-remove {
+        min-width: 22px;
+        min-height: 22px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        background: transparent;
+        color: var(--ink-3);
+        border-radius: var(--radius-full);
+        cursor: pointer;
+        font-size: 12px;
+        line-height: 1;
+        flex-shrink: 0;
+      }
+      .note-chip-remove:hover,
+      .note-chip-remove:focus-visible {
+        background: var(--surface);
+        color: var(--ink);
+      }
+      .note-chip[data-state="removed"] {
+        opacity: 0.45;
+        text-decoration: line-through;
+      }
+      .chat-input-row {
         display: flex;
         align-items: center;
         gap: var(--space-2);
-        padding: var(--space-3) var(--space-4);
-        border-top: 1px solid var(--divider);
-        background: var(--surface-raised);
       }
       .chat-input {
         flex: 1;
@@ -389,65 +418,6 @@
         cursor: pointer;
       }
 
-      /* note picker */
-      .note-picker {
-        border-top: 1px solid var(--divider);
-        background: var(--surface-raised);
-        padding: var(--space-3) var(--space-4) var(--space-4);
-      }
-      .note-picker-search {
-        width: 100%;
-        min-height: 44px;
-        padding: 0 var(--space-3);
-        border: 1px solid var(--border-strong);
-        border-radius: var(--radius-md);
-        font: inherit;
-        font-size: 14px;
-        margin-bottom: var(--space-2);
-      }
-      .note-picker-list {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        max-height: 168px;
-        overflow-y: auto;
-      }
-      .note-picker-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: var(--space-3);
-        width: 100%;
-        min-height: 44px;
-        padding: var(--space-2) var(--space-2);
-        border: none;
-        background: transparent;
-        border-radius: var(--radius-md);
-        font: inherit;
-        font-size: 14px;
-        color: var(--ink);
-        text-align: left;
-        cursor: pointer;
-      }
-      .note-picker-item:hover,
-      .note-picker-item:focus-visible {
-        background: var(--surface-subtle);
-      }
-      .note-picker-item[data-state="selected"] {
-        color: var(--ink-3);
-        cursor: default;
-      }
-      .note-picker-item-meta {
-        font-size: 12px;
-        color: var(--ink-3);
-        white-space: nowrap;
-      }
-      .note-picker-empty {
-        padding: var(--space-3);
-        color: var(--ink-3);
-        font-size: 13px;
-      }
-
       /* desktop variants */
       .frame--desktop-panel {
         width: 480px;
@@ -469,8 +439,8 @@
       }
 
       @media (prefers-reduced-motion: no-preference) {
-        .scope-chip,
-        .note-picker-item {
+        .note-chip,
+        .mention-item {
           transition: background var(--duration-fast) var(--ease-out);
         }
       }
@@ -478,18 +448,22 @@
   </head>
   <body>
     <div class="spec-note">
-      <h1>Scoped chat — single &amp; multi-note</h1>
+      <h1>Scoped chat — @mention note selection</h1>
       <p>
-        A chat session carries a scope: a list of notes. Empty scope is today's
-        whole-corpus chat. One note is single-note mode. Two or more is
-        multi-note. Same mechanism at every size — scope grows by attaching,
-        never by a separate flow. Cap is 5 notes.
+        A chat session carries a scope: a list of notes. Empty scope is
+        today's whole-corpus chat. One note is single-note mode. Two or more
+        is multi-note. Cap is 5 notes.
       </p>
       <p>
-        <strong>Scope is optional, never required.</strong> A chat with no scope
-        is exactly today's ambient chat, with no extra UI — see state 0. The
-        scope bar only exists once a note is attached, and disappears again when
-        the last one is removed.
+        <strong
+          >Selection lives at the input, not at the top of the panel.</strong
+        >
+        Typing <code>@</code> right after whitespace or at the start of the
+        input opens a live-filtered note picker. Picking a note drops a chip
+        into a slim row directly above the text field — inside the same
+        composer bar, not a separate accent-tinted header. No standalone "+
+        Add note" button; <code>@</code> is the only way in. "Chat about this
+        note" still pre-seeds the first chip before the panel opens.
       </p>
     </div>
 
@@ -502,7 +476,6 @@
         <button class="icon-btn" aria-label="New chat">＋</button>
         <button class="icon-btn" aria-label="Close chat">✕</button>
       </header>
-      <!-- No scope-bar. A never-scoped chat gains zero new UI. -->
       <div class="chat-thread" data-component="chat-thread">
         <div class="chat-msg" data-variant="user" data-component="chat-msg">
           <div class="chat-bubble" data-component="chat-bubble">
@@ -525,35 +498,37 @@
         </div>
       </div>
       <div class="chat-input-bar" data-component="chat-input-bar">
-        <input
-          class="chat-input"
-          data-component="chat-input"
-          placeholder="Ask me about your notes"
-        />
-        <button
-          class="chat-send"
-          data-component="chat-send"
-          aria-label="Send message"
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+        <div class="chat-input-row" data-component="chat-input-row">
+          <input
+            class="chat-input"
+            data-component="chat-input"
+            placeholder="Ask me about your notes, or type @ to bring one in"
+          />
+          <button
+            class="chat-send"
+            data-component="chat-send"
+            aria-label="Send message"
           >
-            <path d="M22 2 11 13" />
-            <path d="m22 2-7 20-4-9-9-4z" />
-          </svg>
-        </button>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M22 2 11 13" />
+              <path d="m22 2-7 20-4-9-9-4z" />
+            </svg>
+          </button>
+        </div>
       </div>
     </section>
 
     <p class="state-label">
-      1 · Entry point — note overflow menu (⋮), first item
+      1 · Entry point — note overflow menu (⋮), first item (unchanged)
     </p>
     <section class="frame" data-component="app-shell" data-variant="note">
       <header class="panel-header" data-component="panel-header">
@@ -566,8 +541,8 @@
         <h2 class="note-title">Ideation Hour</h2>
         <p class="note-body">
           Set aside 30 minutes each week with no agenda. The point isn't to
-          decide anything — it's to let half-formed thoughts surface before they
-          get argued away.
+          decide anything — it's to let half-formed thoughts surface before
+          they get argued away.
         </p>
         <div
           class="note-actions-menu"
@@ -603,7 +578,9 @@
       </div>
     </section>
 
-    <p class="state-label">2 · Single-note scope — one chip, removable</p>
+    <p class="state-label">
+      2 · Single-note scope — chip lives above the input, inside the composer
+    </p>
     <section class="frame" data-component="app-shell" data-variant="chat">
       <header class="panel-header" data-component="panel-header">
         <span class="panel-header-title">Chat</span>
@@ -611,26 +588,6 @@
         <button class="icon-btn" aria-label="New chat">＋</button>
         <button class="icon-btn" aria-label="Close chat">✕</button>
       </header>
-
-      <div class="scope-bar" data-component="scope-bar" data-variant="single">
-        <span class="scope-bar-label" id="scope-label-1">Asking about</span>
-        <span class="scope-chip" data-component="scope-chip">
-          <span class="scope-chip-name">Ideation Hour</span>
-          <button
-            class="scope-chip-remove"
-            aria-label="Remove Ideation Hour from this chat"
-          >
-            ✕
-          </button>
-        </span>
-        <button
-          class="scope-add-btn"
-          data-component="scope-add-btn"
-          data-interaction="opens note-picker"
-        >
-          ＋ Add note
-        </button>
-      </div>
 
       <div class="chat-thread" data-component="chat-thread">
         <div class="chat-msg" data-variant="user" data-component="chat-msg">
@@ -656,123 +613,145 @@
       </div>
 
       <div class="chat-input-bar" data-component="chat-input-bar">
-        <input
-          class="chat-input"
-          data-component="chat-input"
-          placeholder="Ask about this note"
-          aria-labelledby="scope-label-1"
-        />
-        <button
-          class="chat-send"
-          data-component="chat-send"
-          aria-label="Send message"
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+        <div class="mention-chip-row" data-component="mention-chip-row">
+          <span class="note-chip" data-component="note-chip">
+            <span class="note-chip-icon" aria-hidden="true">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+            </span>
+            <span class="note-chip-name">Ideation Hour</span>
+            <button
+              class="note-chip-remove"
+              aria-label="Remove Ideation Hour from this chat"
+            >
+              ✕
+            </button>
+          </span>
+        </div>
+        <div class="chat-input-row" data-component="chat-input-row">
+          <input
+            class="chat-input"
+            data-component="chat-input"
+            placeholder="Ask about this note, or @ to add another"
+          />
+          <button
+            class="chat-send"
+            data-component="chat-send"
+            aria-label="Send message"
           >
-            <path d="M22 2 11 13" />
-            <path d="m22 2-7 20-4-9-9-4z" />
-          </svg>
-        </button>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M22 2 11 13" />
+              <path d="m22 2-7 20-4-9-9-4z" />
+            </svg>
+          </button>
+        </div>
       </div>
     </section>
 
-    <p class="state-label">3 · Note picker open — attaching a second note</p>
+    <p class="state-label">
+      3 · @ typed — live-filtered mention dropdown, second item keyboard-active
+    </p>
     <section class="frame" data-component="app-shell" data-variant="chat">
       <header class="panel-header" data-component="panel-header">
         <span class="panel-header-title">Chat</span>
         <button class="icon-btn" aria-label="Close chat">✕</button>
       </header>
 
-      <div class="scope-bar" data-component="scope-bar" data-variant="single">
-        <span class="scope-bar-label">Asking about</span>
-        <span class="scope-chip" data-component="scope-chip">
-          <span class="scope-chip-name">Ideation Hour</span>
-          <button class="scope-chip-remove" aria-label="Remove Ideation Hour">
-            ✕
-          </button>
-        </span>
+      <div class="chat-thread" data-component="chat-thread">
+        <div class="chat-msg" data-variant="user" data-component="chat-msg">
+          <div class="chat-bubble" data-component="chat-bubble">
+            What was I actually trying to protect here?
+          </div>
+        </div>
       </div>
 
-      <div class="note-picker" data-component="note-picker" data-state="open">
-        <input
-          class="note-picker-search"
-          data-component="note-picker-search"
-          placeholder="Search your notes"
-          aria-label="Search notes to add"
-        />
-        <ul class="note-picker-list">
+      <div
+        class="mention-dropdown"
+        data-component="mention-dropdown"
+        data-state="filtered"
+      >
+        <ul class="mention-list" role="listbox" aria-label="Notes matching @pric">
           <li>
-            <button class="note-picker-item" data-component="note-picker-item">
-              <span>Pricing experiments</span>
-              <span class="note-picker-item-meta">2d ago</span>
-            </button>
-          </li>
-          <li>
-            <button class="note-picker-item" data-component="note-picker-item">
-              <span>Work-life balance</span>
-              <span class="note-picker-item-meta">5d ago</span>
+            <button
+              class="mention-item"
+              role="option"
+              data-component="mention-item"
+            >
+              <span>Pricing model v2</span>
+              <span class="mention-item-meta">1d ago</span>
             </button>
           </li>
           <li>
             <button
-              class="note-picker-item"
-              data-component="note-picker-item"
-              data-state="selected"
-              aria-disabled="true"
+              class="mention-item"
+              role="option"
+              data-state="active"
+              aria-selected="true"
+              data-component="mention-item"
             >
-              <span>Ideation Hour</span>
-              <span class="note-picker-item-meta">Added</span>
+              <span>Pricing experiments</span>
+              <span class="mention-item-meta">2d ago</span>
             </button>
           </li>
         </ul>
       </div>
+
+      <div class="chat-input-bar" data-component="chat-input-bar">
+        <div class="mention-chip-row" data-component="mention-chip-row">
+          <span class="note-chip" data-component="note-chip">
+            <span class="note-chip-icon" aria-hidden="true">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+            </span>
+            <span class="note-chip-name">Ideation Hour</span>
+            <button class="note-chip-remove" aria-label="Remove Ideation Hour">
+              ✕
+            </button>
+          </span>
+        </div>
+        <div class="chat-input-row" data-component="chat-input-row">
+          <input
+            class="chat-input"
+            data-component="chat-input"
+            data-interaction="@ after whitespace opens mention-dropdown; typing filters it live; Esc or click-away clears the @query text"
+            value="Compare this against @pric"
+          />
+          <button
+            class="chat-send"
+            data-component="chat-send"
+            aria-label="Send message"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M22 2 11 13" />
+              <path d="m22 2-7 20-4-9-9-4z" />
+            </svg>
+          </button>
+        </div>
+      </div>
     </section>
 
-    <p class="state-label">4 · Multi-note scope — three notes attached</p>
+    <p class="state-label">4 · Multi-note scope — three notes chipped</p>
     <section class="frame" data-component="app-shell" data-variant="chat">
       <header class="panel-header" data-component="panel-header">
         <span class="panel-header-title">Chat</span>
         <button class="icon-btn" aria-label="Close chat">✕</button>
       </header>
-
-      <div class="scope-bar" data-component="scope-bar" data-variant="multi">
-        <span class="scope-bar-label">Asking about 3 notes</span>
-        <span class="scope-chip" data-component="scope-chip">
-          <span class="scope-chip-name">Ideation Hour</span>
-          <button class="scope-chip-remove" aria-label="Remove Ideation Hour">
-            ✕
-          </button>
-        </span>
-        <span class="scope-chip" data-component="scope-chip">
-          <span class="scope-chip-name">Pricing experiments</span>
-          <button
-            class="scope-chip-remove"
-            aria-label="Remove Pricing experiments"
-          >
-            ✕
-          </button>
-        </span>
-        <span class="scope-chip" data-component="scope-chip">
-          <span class="scope-chip-name">Work-life balance</span>
-          <button
-            class="scope-chip-remove"
-            aria-label="Remove Work-life balance"
-          >
-            ✕
-          </button>
-        </span>
-        <button class="scope-add-btn" data-component="scope-add-btn">
-          ＋ Add note
-        </button>
-      </div>
 
       <div class="chat-thread" data-component="chat-thread">
         <div class="chat-msg" data-variant="user" data-component="chat-msg">
@@ -788,134 +767,100 @@
           <div class="chat-bubble" data-component="chat-bubble">
             <span class="ai-generated-label">✦ AI-generated</span>
             On pace. Ideation Hour argues for protected unstructured time
-            <span class="citation-chip">1</span>, while the pricing note treats
-            every week as an experiment slot
-            <span class="citation-chip">2</span>. The work-life note sides with
-            the first <span class="citation-chip">3</span>.
+            <span class="citation-chip">1</span>, while the pricing note
+            treats every week as an experiment slot
+            <span class="citation-chip">2</span>. The work-life note sides
+            with the first <span class="citation-chip">3</span>.
           </div>
         </div>
       </div>
 
       <div class="chat-input-bar" data-component="chat-input-bar">
-        <input
-          class="chat-input"
-          data-component="chat-input"
-          placeholder="Ask about these 3 notes"
-        />
-        <button
-          class="chat-send"
-          data-component="chat-send"
-          aria-label="Send message"
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+        <div class="mention-chip-row" data-component="mention-chip-row">
+          <span class="note-chip">
+            <span class="note-chip-icon" aria-hidden="true"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>
+            <span class="note-chip-name">Ideation Hour</span>
+            <button class="note-chip-remove" aria-label="Remove Ideation Hour">✕</button>
+          </span>
+          <span class="note-chip">
+            <span class="note-chip-icon" aria-hidden="true"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>
+            <span class="note-chip-name">Pricing experiments</span>
+            <button class="note-chip-remove" aria-label="Remove Pricing experiments">✕</button>
+          </span>
+          <span class="note-chip">
+            <span class="note-chip-icon" aria-hidden="true"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>
+            <span class="note-chip-name">Work-life balance</span>
+            <button class="note-chip-remove" aria-label="Remove Work-life balance">✕</button>
+          </span>
+        </div>
+        <div class="chat-input-row" data-component="chat-input-row">
+          <input
+            class="chat-input"
+            data-component="chat-input"
+            placeholder="Ask about these 3 notes, or @ to add up to 2 more"
+          />
+          <button
+            class="chat-send"
+            data-component="chat-send"
+            aria-label="Send message"
           >
-            <path d="M22 2 11 13" />
-            <path d="m22 2-7 20-4-9-9-4z" />
-          </svg>
-        </button>
-      </div>
-    </section>
-
-    <p class="state-label">5 · Scope cap reached — 5 notes, add disabled</p>
-    <section class="frame" data-component="app-shell" data-variant="chat">
-      <div class="scope-bar" data-component="scope-bar" data-variant="multi">
-        <span class="scope-bar-label">Asking about 5 notes</span>
-        <span class="scope-chip"
-          ><span class="scope-chip-name">Ideation Hour</span
-          ><button class="scope-chip-remove" aria-label="Remove">
-            ✕
-          </button></span
-        >
-        <span class="scope-chip"
-          ><span class="scope-chip-name">Pricing experiments</span
-          ><button class="scope-chip-remove" aria-label="Remove">
-            ✕
-          </button></span
-        >
-        <span class="scope-chip"
-          ><span class="scope-chip-name">Work-life balance</span
-          ><button class="scope-chip-remove" aria-label="Remove">
-            ✕
-          </button></span
-        >
-        <span class="scope-chip"
-          ><span class="scope-chip-name">Onboarding teardown</span
-          ><button class="scope-chip-remove" aria-label="Remove">
-            ✕
-          </button></span
-        >
-        <span class="scope-chip"
-          ><span class="scope-chip-name">Retention notes</span
-          ><button class="scope-chip-remove" aria-label="Remove">
-            ✕
-          </button></span
-        >
-        <button
-          class="scope-add-btn"
-          data-component="scope-add-btn"
-          data-state="disabled"
-          aria-disabled="true"
-        >
-          ＋ Add note
-        </button>
-      </div>
-      <div class="chat-thread" data-component="chat-thread">
-        <div
-          class="chat-notice"
-          data-component="chat-notice"
-          data-variant="cap"
-        >
-          <span aria-hidden="true">ⓘ</span>
-          <span>5 notes is the limit. Remove one to add another.</span>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M22 2 11 13" />
+              <path d="m22 2-7 20-4-9-9-4z" />
+            </svg>
+          </button>
         </div>
       </div>
     </section>
 
     <p class="state-label">
-      6 · Truncation notice — scope too long for one answer
+      5 · Scope cap reached — @ opens dropdown showing the limit, not a note list
     </p>
     <section class="frame" data-component="app-shell" data-variant="chat">
-      <div class="scope-bar" data-component="scope-bar" data-variant="multi">
-        <span class="scope-bar-label">Asking about 4 notes</span>
-        <span class="scope-chip"
-          ><span class="scope-chip-name">Ideation Hour</span
-          ><button class="scope-chip-remove" aria-label="Remove">
-            ✕
-          </button></span
-        >
-        <span class="scope-chip"
-          ><span class="scope-chip-name">Pricing experiments</span
-          ><button class="scope-chip-remove" aria-label="Remove">
-            ✕
-          </button></span
-        >
-        <span class="scope-chip"
-          ><span class="scope-chip-name">Q3 retro (long)</span
-          ><button class="scope-chip-remove" aria-label="Remove">
-            ✕
-          </button></span
-        >
-        <span class="scope-chip"
-          ><span class="scope-chip-name">Work-life balance</span
-          ><button class="scope-chip-remove" aria-label="Remove">
-            ✕
-          </button></span
-        >
+      <div class="chat-thread" data-component="chat-thread"></div>
+
+      <div
+        class="mention-dropdown"
+        data-component="mention-dropdown"
+        data-state="limit"
+      >
+        <p class="mention-dropdown-notice">
+          5 notes is the limit. Remove one to add another.
+        </p>
       </div>
+
+      <div class="chat-input-bar" data-component="chat-input-bar">
+        <div class="mention-chip-row" data-component="mention-chip-row">
+          <span class="note-chip"><span class="note-chip-icon" aria-hidden="true"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span><span class="note-chip-name">Ideation Hour</span><button class="note-chip-remove" aria-label="Remove">✕</button></span>
+          <span class="note-chip"><span class="note-chip-icon" aria-hidden="true"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span><span class="note-chip-name">Pricing experiments</span><button class="note-chip-remove" aria-label="Remove">✕</button></span>
+          <span class="note-chip"><span class="note-chip-icon" aria-hidden="true"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span><span class="note-chip-name">Work-life balance</span><button class="note-chip-remove" aria-label="Remove">✕</button></span>
+          <span class="note-chip"><span class="note-chip-icon" aria-hidden="true"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span><span class="note-chip-name">Onboarding teardown</span><button class="note-chip-remove" aria-label="Remove">✕</button></span>
+          <span class="note-chip"><span class="note-chip-icon" aria-hidden="true"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span><span class="note-chip-name">Retention notes</span><button class="note-chip-remove" aria-label="Remove">✕</button></span>
+        </div>
+        <div class="chat-input-row" data-component="chat-input-row">
+          <input class="chat-input" data-component="chat-input" value="Summarize all of these @" />
+          <button class="chat-send" data-component="chat-send" aria-label="Send message">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13" /><path d="m22 2-7 20-4-9-9-4z" /></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <p class="state-label">
+      6 · Truncation notice — scope too long for one answer (unchanged copy)
+    </p>
+    <section class="frame" data-component="app-shell" data-variant="chat">
       <div class="chat-thread" data-component="chat-thread">
-        <div
-          class="chat-msg"
-          data-variant="assistant"
-          data-component="chat-msg"
-        >
+        <div class="chat-msg" data-variant="assistant" data-component="chat-msg">
           <div class="chat-bubble" data-component="chat-bubble">
             <span class="ai-generated-label">✦ AI-generated</span>
             All four treat pace as the real constraint
@@ -925,90 +870,68 @@
             ><span class="citation-chip">4</span>.
           </div>
         </div>
-        <div
-          class="chat-notice"
-          data-component="chat-notice"
-          data-variant="truncated"
-        >
+        <div class="chat-notice" data-component="chat-notice" data-variant="truncated">
           <span aria-hidden="true">ⓘ</span>
           <span>These notes are long, so I read part of each one.</span>
         </div>
       </div>
+      <div class="chat-input-bar" data-component="chat-input-bar">
+        <div class="mention-chip-row" data-component="mention-chip-row">
+          <span class="note-chip"><span class="note-chip-icon" aria-hidden="true"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span><span class="note-chip-name">Ideation Hour</span><button class="note-chip-remove" aria-label="Remove">✕</button></span>
+          <span class="note-chip"><span class="note-chip-icon" aria-hidden="true"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span><span class="note-chip-name">Pricing experiments</span><button class="note-chip-remove" aria-label="Remove">✕</button></span>
+          <span class="note-chip"><span class="note-chip-icon" aria-hidden="true"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span><span class="note-chip-name">Q3 retro (long)</span><button class="note-chip-remove" aria-label="Remove">✕</button></span>
+          <span class="note-chip"><span class="note-chip-icon" aria-hidden="true"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span><span class="note-chip-name">Work-life balance</span><button class="note-chip-remove" aria-label="Remove">✕</button></span>
+        </div>
+        <div class="chat-input-row" data-component="chat-input-row">
+          <input class="chat-input" data-component="chat-input" placeholder="Ask about these 4 notes" />
+          <button class="chat-send" data-component="chat-send" aria-label="Send message">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13" /><path d="m22 2-7 20-4-9-9-4z" /></svg>
+          </button>
+        </div>
+      </div>
     </section>
 
-    <p class="state-label">7 · A scoped note was deleted mid-session</p>
+    <p class="state-label">7 · A scoped note was deleted mid-session (unchanged copy)</p>
     <section class="frame" data-component="app-shell" data-variant="chat">
-      <div class="scope-bar" data-component="scope-bar" data-variant="multi">
-        <span class="scope-bar-label">Asking about 1 note</span>
-        <span class="scope-chip" data-state="removed" aria-hidden="true">
-          <span class="scope-chip-name">Pricing experiments</span>
-        </span>
-        <span class="scope-chip"
-          ><span class="scope-chip-name">Ideation Hour</span
-          ><button class="scope-chip-remove" aria-label="Remove">
-            ✕
-          </button></span
-        >
-        <button class="scope-add-btn" data-component="scope-add-btn">
-          ＋ Add note
-        </button>
-      </div>
       <div class="chat-thread" data-component="chat-thread">
-        <div
-          class="chat-notice"
-          data-component="chat-notice"
-          data-variant="scope-dropped"
-        >
+        <div class="chat-notice" data-component="chat-notice" data-variant="scope-dropped">
           <span aria-hidden="true">ⓘ</span>
-          <span
-            >"Pricing experiments" was deleted, so I dropped it. Still working
-            from the rest.</span
-          >
+          <span>"Pricing experiments" was deleted, so I dropped it. Still working from the rest.</span>
+        </div>
+      </div>
+      <div class="chat-input-bar" data-component="chat-input-bar">
+        <div class="mention-chip-row" data-component="mention-chip-row">
+          <span class="note-chip" data-state="removed" aria-hidden="true">
+            <span class="note-chip-name">Pricing experiments</span>
+          </span>
+          <span class="note-chip"><span class="note-chip-icon" aria-hidden="true"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span><span class="note-chip-name">Ideation Hour</span><button class="note-chip-remove" aria-label="Remove">✕</button></span>
+        </div>
+        <div class="chat-input-row" data-component="chat-input-row">
+          <input class="chat-input" data-component="chat-input" placeholder="Ask about this note, or @ to add another" />
+          <button class="chat-send" data-component="chat-send" aria-label="Send message">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13" /><path d="m22 2-7 20-4-9-9-4z" /></svg>
+          </button>
         </div>
       </div>
     </section>
 
     <p class="state-label">
-      8 · Last note removed — scope bar disappears, back to state 0
+      8 · Last note removed — chip row disappears, back to state 0 (unchanged)
     </p>
     <section class="frame" data-component="app-shell" data-variant="chat">
-      <!-- No scope-bar: removing the last chip returns the chat to the
-           unscoped shell shown in state 0. -->
       <div class="chat-thread" data-component="chat-thread">
-        <div
-          class="chat-notice"
-          data-component="chat-notice"
-          data-variant="scope-cleared"
-        >
+        <div class="chat-notice" data-component="chat-notice" data-variant="scope-cleared">
           <span aria-hidden="true">ⓘ</span>
           <span>Back to searching everything you've written.</span>
         </div>
       </div>
       <div class="chat-input-bar" data-component="chat-input-bar">
-        <input
-          class="chat-input"
-          data-component="chat-input"
-          placeholder="Ask me about your notes"
-        />
-        <button
-          class="chat-send"
-          data-component="chat-send"
-          aria-label="Send message"
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M22 2 11 13" />
-            <path d="m22 2-7 20-4-9-9-4z" />
-          </svg>
-        </button>
+        <div class="chat-input-row" data-component="chat-input-row">
+          <input class="chat-input" data-component="chat-input" placeholder="Ask me about your notes, or type @ to bring one in" />
+          <button class="chat-send" data-component="chat-send" aria-label="Send message">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13" /><path d="m22 2-7 20-4-9-9-4z" /></svg>
+          </button>
+        </div>
       </div>
     </section>
 
@@ -1025,78 +948,34 @@
         <button class="icon-btn" aria-label="Expand chat">⤢</button>
         <button class="icon-btn" aria-label="Close chat">✕</button>
       </header>
-      <div class="scope-bar" data-component="scope-bar" data-variant="multi">
-        <span class="scope-bar-label">Asking about 2 notes</span>
-        <span class="scope-chip" data-component="scope-chip"
-          ><span class="scope-chip-name">Ideation Hour</span
-          ><button class="scope-chip-remove" aria-label="Remove Ideation Hour">
-            ✕
-          </button></span
-        >
-        <span class="scope-chip" data-component="scope-chip"
-          ><span class="scope-chip-name">Pricing experiments</span
-          ><button
-            class="scope-chip-remove"
-            aria-label="Remove Pricing experiments"
-          >
-            ✕
-          </button></span
-        >
-        <button class="scope-add-btn" data-component="scope-add-btn">
-          ＋ Add note
-        </button>
-      </div>
       <div class="chat-thread" data-component="chat-thread">
         <div class="chat-msg" data-variant="user" data-component="chat-msg">
-          <div class="chat-bubble" data-component="chat-bubble">
-            Where do these two disagree?
-          </div>
+          <div class="chat-bubble" data-component="chat-bubble">Where do these two disagree?</div>
         </div>
-        <div
-          class="chat-msg"
-          data-variant="assistant"
-          data-component="chat-msg"
-        >
+        <div class="chat-msg" data-variant="assistant" data-component="chat-msg">
           <div class="chat-bubble" data-component="chat-bubble">
-            <span class="ai-generated-label" data-component="ai-generated-label"
-              >✦ AI-generated</span
-            >
+            <span class="ai-generated-label" data-component="ai-generated-label">✦ AI-generated</span>
             On pace. One protects unstructured time
-            <span class="citation-chip">1</span>; the other treats every week as
-            an experiment slot <span class="citation-chip">2</span>.
+            <span class="citation-chip">1</span>; the other treats every week as an experiment slot <span class="citation-chip">2</span>.
           </div>
         </div>
       </div>
       <div class="chat-input-bar" data-component="chat-input-bar">
-        <input
-          class="chat-input"
-          data-component="chat-input"
-          placeholder="Ask about these 2 notes"
-        />
-        <button
-          class="chat-send"
-          data-component="chat-send"
-          aria-label="Send message"
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M22 2 11 13" />
-            <path d="m22 2-7 20-4-9-9-4z" />
-          </svg>
-        </button>
+        <div class="mention-chip-row" data-component="mention-chip-row">
+          <span class="note-chip" data-component="note-chip"><span class="note-chip-icon" aria-hidden="true"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span><span class="note-chip-name">Ideation Hour</span><button class="note-chip-remove" aria-label="Remove Ideation Hour">✕</button></span>
+          <span class="note-chip" data-component="note-chip"><span class="note-chip-icon" aria-hidden="true"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span><span class="note-chip-name">Pricing experiments</span><button class="note-chip-remove" aria-label="Remove Pricing experiments">✕</button></span>
+        </div>
+        <div class="chat-input-row" data-component="chat-input-row">
+          <input class="chat-input" data-component="chat-input" placeholder="Ask about these 2 notes, or @ to add up to 3 more" />
+          <button class="chat-send" data-component="chat-send" aria-label="Send message">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13" /><path d="m22 2-7 20-4-9-9-4z" /></svg>
+          </button>
+        </div>
       </div>
     </section>
 
     <p class="state-label">
-      10 · Desktop expanded (720px) — picker open, wider note list
+      10 · Desktop expanded (720px) — @ dropdown open, wider note list
     </p>
     <section
       class="frame frame--desktop-expanded"
@@ -1108,81 +987,68 @@
         <button class="icon-btn" aria-label="Collapse chat">⤡</button>
         <button class="icon-btn" aria-label="Close chat">✕</button>
       </header>
-      <div class="scope-bar" data-component="scope-bar" data-variant="single">
-        <span class="scope-bar-label">Asking about</span>
-        <span class="scope-chip" data-component="scope-chip"
-          ><span class="scope-chip-name">Ideation Hour</span
-          ><button class="scope-chip-remove" aria-label="Remove Ideation Hour">
-            ✕
-          </button></span
-        >
-      </div>
-      <div class="note-picker" data-component="note-picker" data-state="open">
-        <input
-          class="note-picker-search"
-          data-component="note-picker-search"
-          placeholder="Search your notes"
-          aria-label="Search notes to add"
-        />
-        <ul class="note-picker-list">
-          <li>
-            <button class="note-picker-item" data-component="note-picker-item">
-              <span>Pricing experiments</span
-              ><span class="note-picker-item-meta">2d ago</span>
-            </button>
-          </li>
-          <li>
-            <button class="note-picker-item" data-component="note-picker-item">
-              <span>Work-life balance</span
-              ><span class="note-picker-item-meta">5d ago</span>
-            </button>
-          </li>
-          <li>
-            <button class="note-picker-item" data-component="note-picker-item">
-              <span>Onboarding teardown</span
-              ><span class="note-picker-item-meta">1w ago</span>
-            </button>
-          </li>
-          <li>
-            <button
-              class="note-picker-item"
-              data-component="note-picker-item"
-              data-state="selected"
-              aria-disabled="true"
-            >
-              <span>Ideation Hour</span
-              ><span class="note-picker-item-meta">Added</span>
-            </button>
-          </li>
+      <div class="chat-thread" data-component="chat-thread"></div>
+      <div class="mention-dropdown" data-component="mention-dropdown" data-state="filtered">
+        <ul class="mention-list" role="listbox" aria-label="All notes">
+          <li><button class="mention-item" role="option" data-component="mention-item"><span>Pricing experiments</span><span class="mention-item-meta">2d ago</span></button></li>
+          <li><button class="mention-item" role="option" data-component="mention-item"><span>Work-life balance</span><span class="mention-item-meta">5d ago</span></button></li>
+          <li><button class="mention-item" role="option" data-state="active" aria-selected="true" data-component="mention-item"><span>Onboarding teardown</span><span class="mention-item-meta">1w ago</span></button></li>
         </ul>
+      </div>
+      <div class="chat-input-bar" data-component="chat-input-bar">
+        <div class="mention-chip-row" data-component="mention-chip-row">
+          <span class="note-chip" data-component="note-chip"><span class="note-chip-icon" aria-hidden="true"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span><span class="note-chip-name">Ideation Hour</span><button class="note-chip-remove" aria-label="Remove Ideation Hour">✕</button></span>
+        </div>
+        <div class="chat-input-row" data-component="chat-input-row">
+          <input class="chat-input" data-component="chat-input" value="How does this compare with @" />
+          <button class="chat-send" data-component="chat-send" aria-label="Send message">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13" /><path d="m22 2-7 20-4-9-9-4z" /></svg>
+          </button>
+        </div>
       </div>
     </section>
 
     <p class="state-label">
-      11 · Desktop panel — note picker empty search result
+      11 · @ dropdown — no notes match the typed query
     </p>
     <section
       class="frame frame--desktop-panel"
       data-component="app-shell"
       data-variant="chat-desktop-panel"
     >
-      <div class="scope-bar" data-component="scope-bar" data-variant="single">
-        <span class="scope-bar-label">Asking about</span>
-        <span class="scope-chip" data-component="scope-chip"
-          ><span class="scope-chip-name">Ideation Hour</span
-          ><button class="scope-chip-remove" aria-label="Remove Ideation Hour">
-            ✕
-          </button></span
-        >
+      <div class="chat-thread" data-component="chat-thread"></div>
+      <div class="mention-dropdown" data-component="mention-dropdown" data-state="empty">
+        <p class="mention-dropdown-notice">No notes match "quarterly".</p>
       </div>
-      <div class="note-picker" data-component="note-picker" data-state="empty">
-        <input
-          class="note-picker-search"
-          data-component="note-picker-search"
-          value="quarterly"
-          aria-label="Search notes to add"
-        />
-        <p class="note-picker-empty">No notes match "quarterly".</p>
+      <div class="chat-input-bar" data-component="chat-input-bar">
+        <div class="chat-input-row" data-component="chat-input-row">
+          <input class="chat-input" data-component="chat-input" value="Pull in @quarterly" />
+          <button class="chat-send" data-component="chat-send" aria-label="Send message">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13" /><path d="m22 2-7 20-4-9-9-4z" /></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <p class="state-label">
+      12 · @ dropdown — account has no other notes yet
+    </p>
+    <section
+      class="frame frame--desktop-panel"
+      data-component="app-shell"
+      data-variant="chat-desktop-panel"
+    >
+      <div class="chat-thread" data-component="chat-thread"></div>
+      <div class="mention-dropdown" data-component="mention-dropdown" data-state="empty">
+        <p class="mention-dropdown-notice">You don't have any other notes yet.</p>
+      </div>
+      <div class="chat-input-bar" data-component="chat-input-bar">
+        <div class="chat-input-row" data-component="chat-input-row">
+          <input class="chat-input" data-component="chat-input" value="Bring in @" />
+          <button class="chat-send" data-component="chat-send" aria-label="Send message">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13" /><path d="m22 2-7 20-4-9-9-4z" /></svg>
+          </button>
+        </div>
       </div>
     </section>
   </body>
