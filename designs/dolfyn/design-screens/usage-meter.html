@@ -1,4 +1,10 @@
 <!doctype html>
+<!-- 2026-09-10: usage-meter-fab is now suppressed entirely (not rendered)
+     whenever any chat view is open — desktop split panel, desktop expanded
+     panel, or the mobile chat tab. It is a viewport-fixed FAB with no
+     awareness of the chat panel's own layout; at typical viewport heights
+     its bottom:128px position lands on top of the chat composer's send
+     button. See app-shell.jsx's <UsageMeter /> mount site. -->
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
