@@ -322,14 +322,13 @@
         display: none;
       }
 
-      /* Citation chip — §4.5, reused as-is. Thematic variant
-         (sparkle prefix) is the existing "thematic connection,
-         not a literal citation" case from the spec — exactly
-         what a related-note suggestion is. No new chip component. */
+      /* Citation chip — §4.5, reused as-is, plain (no sparkle
+         prefix — three repeated icons in a row read as noise,
+         not signal; the "Related" label already carries the
+         AI-context meaning). No new chip component. */
       .citation-chip {
         display: inline-flex;
         align-items: center;
-        gap: var(--space-1);
         height: 28px;
         padding: 0 var(--space-2);
         background: var(--surface-subtle);
@@ -348,12 +347,6 @@
       }
       .citation-chip:active {
         background: var(--border-strong);
-      }
-      .citation-chip-sparkle {
-        width: 14px;
-        height: 14px;
-        color: var(--accent);
-        flex-shrink: 0;
       }
 
       /* ============================================
@@ -505,10 +498,11 @@
             similarity floor and render as a chip row directly above the AI
             presence bar. Same canvas background — no card, no border, no
             label header beyond the small "Related" caption. Each chip is the
-            existing citation-chip component (§4.5) in its thematic-sparkle
-            variant, since a related-note suggestion is exactly a "thematic
-            connection, not a literal citation." Tapping a chip opens that
-            note in the canvas (same nav as note list).
+            existing citation-chip component (§4.5), plain — no sparkle icon
+            per chip; three repeated accent icons in a row read as decoration,
+            not signal, and the "Related" caption already carries the
+            AI-context meaning. Tapping a chip opens that note in the canvas
+            (same nav as note list).
           </p>
         </div>
         <div class="viewports">
@@ -549,61 +543,31 @@
                       <span
                         class="citation-chip"
                         data-component="citation-chip"
-                        data-variant="thematic"
                         data-interaction="navigate-to-note"
                         role="button"
                         tabindex="0"
                         title="Growth channels for the next 90 days"
                       >
-                        <svg
-                          class="citation-chip-sparkle"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                        >
-                          <path
-                            d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
-                          />
-                        </svg>
                         Growth channels for the ne…
                       </span>
                       <span
                         class="citation-chip"
                         data-component="citation-chip"
-                        data-variant="thematic"
                         data-interaction="navigate-to-note"
                         role="button"
                         tabindex="0"
                         title="New user landing decision"
                       >
-                        <svg
-                          class="citation-chip-sparkle"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                        >
-                          <path
-                            d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
-                          />
-                        </svg>
                         New user landing decision
                       </span>
                       <span
                         class="citation-chip"
                         data-component="citation-chip"
-                        data-variant="thematic"
                         data-interaction="navigate-to-note"
                         role="button"
                         tabindex="0"
                         title="Competitive positioning — Capacities vs dolfyn"
                       >
-                        <svg
-                          class="citation-chip-sparkle"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                        >
-                          <path
-                            d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
-                          />
-                        </svg>
                         Competitive positioning …
                       </span>
                     </div>
@@ -848,58 +812,28 @@
                         <span
                           class="citation-chip"
                           data-component="citation-chip"
-                          data-variant="thematic"
-                          data-interaction="navigate-to-note"
+                            data-interaction="navigate-to-note"
                           role="button"
                           tabindex="0"
                         >
-                          <svg
-                            class="citation-chip-sparkle"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                          >
-                            <path
-                              d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
-                            />
-                          </svg>
                           Growth channels for the ne…
                         </span>
                         <span
                           class="citation-chip"
                           data-component="citation-chip"
-                          data-variant="thematic"
-                          data-interaction="navigate-to-note"
+                            data-interaction="navigate-to-note"
                           role="button"
                           tabindex="0"
                         >
-                          <svg
-                            class="citation-chip-sparkle"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                          >
-                            <path
-                              d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
-                            />
-                          </svg>
                           New user landing decision
                         </span>
                         <span
                           class="citation-chip"
                           data-component="citation-chip"
-                          data-variant="thematic"
-                          data-interaction="navigate-to-note"
+                            data-interaction="navigate-to-note"
                           role="button"
                           tabindex="0"
                         >
-                          <svg
-                            class="citation-chip-sparkle"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                          >
-                            <path
-                              d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
-                            />
-                          </svg>
                           Competitive positioning …
                         </span>
                       </div>
