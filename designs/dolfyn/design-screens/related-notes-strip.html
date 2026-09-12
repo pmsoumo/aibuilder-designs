@@ -1,0 +1,931 @@
+<!-- COMPONENT INVENTORY: app-shell, app-header, wordmark, avatar, note-editor, ai-presence-bar, related-notes-strip, citation-chip, bottom-nav, notes-panel, notes-drawer-item -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>dolfyn — Related Notes Strip</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ============================================
+       Design System Tokens — dolfyn
+       Source: designs/design-system.md
+       ============================================ */
+      :root {
+        --surface: #fafaf7;
+        --surface-subtle: #f2f1ed;
+        --surface-raised: #ffffff;
+        --ink: #0f0f0e;
+        --ink-2: #3f3f3f;
+        --ink-3: #6b6b6b;
+        --ink-inverse: #fafaf7;
+        --border: #e5e5e1;
+        --border-strong: #c7c7c2;
+        --divider: #edede9;
+        --accent: #c2410c;
+        --accent-strong: #9a330a;
+        --accent-soft-bg: #fcefde;
+        --space-1: 4px;
+        --space-2: 8px;
+        --space-3: 12px;
+        --space-4: 16px;
+        --space-5: 24px;
+        --space-6: 32px;
+        --space-7: 48px;
+        --radius-sm: 6px;
+        --radius-md: 8px;
+        --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+        --duration-fast: 150ms;
+        --meta-bg: #ecebe5;
+        --meta-ink: #2a2a28;
+        --meta-ink-2: #6e6e68;
+        --meta-border: #d8d7d1;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        background: var(--meta-bg);
+        color: var(--meta-ink);
+        font-family: "Inter", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* ============================================
+       Mockup meta-header (copied from note-crud.html)
+       ============================================ */
+      .mockup-nav {
+        position: sticky;
+        top: 0;
+        z-index: 1100;
+        background: var(--meta-bg);
+        border-bottom: 1px solid var(--meta-border);
+        padding: var(--space-3) var(--space-5);
+        display: flex;
+        align-items: center;
+        gap: var(--space-5);
+        flex-wrap: wrap;
+      }
+      .mockup-title {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink);
+      }
+      .mockup-subtitle {
+        font-size: 12px;
+        color: var(--meta-ink-2);
+      }
+      .state-tabs {
+        display: flex;
+        gap: var(--space-1);
+        margin-left: auto;
+        flex-wrap: wrap;
+      }
+      .state-tab {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--meta-ink-2);
+        text-decoration: none;
+        padding: var(--space-1) var(--space-2);
+        border-radius: var(--radius-sm);
+        border: 1px solid transparent;
+        transition:
+          background var(--duration-fast) var(--ease-out),
+          color var(--duration-fast) var(--ease-out);
+        white-space: nowrap;
+      }
+      .state-tab:hover {
+        background: rgba(15, 15, 14, 0.05);
+        color: var(--meta-ink);
+      }
+      #state-a:target ~ .mockup-nav .state-tab[href="#state-a"],
+      #state-b:target ~ .mockup-nav .state-tab[href="#state-b"],
+      #state-c:target ~ .mockup-nav .state-tab[href="#state-c"] {
+        background: var(--meta-ink);
+        color: var(--ink-inverse);
+      }
+
+      .state {
+        padding: var(--space-7) var(--space-5) var(--space-6);
+        max-width: 1400px;
+        margin: 0 auto;
+        border-top: 1px solid var(--meta-border);
+      }
+      .state:first-of-type {
+        border-top: none;
+      }
+      .state:target {
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: 12px;
+      }
+      .state-header {
+        margin-bottom: var(--space-5);
+        max-width: 720px;
+      }
+      .state-tag {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink-2);
+        margin-bottom: var(--space-2);
+      }
+      .state-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--meta-ink);
+        margin: 0 0 var(--space-2);
+        letter-spacing: -0.01em;
+      }
+      .state-desc {
+        font-size: 14px;
+        color: var(--meta-ink-2);
+        line-height: 1.5;
+        margin: 0;
+      }
+
+      .viewports {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-5);
+        align-items: flex-start;
+      }
+      .viewport {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        flex-shrink: 0;
+      }
+      .device-label {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--meta-ink-2);
+        padding-left: var(--space-1);
+      }
+      .device-frame {
+        background: var(--meta-ink);
+        border-radius: 28px;
+        padding: 8px;
+        box-shadow: 0 2px 8px -2px rgba(15, 15, 14, 0.12);
+      }
+      .device-frame--desktop {
+        width: 1200px;
+        height: 760px;
+        border-radius: 12px;
+        padding: 8px;
+        position: relative;
+        overflow: hidden;
+      }
+      .screen {
+        position: relative;
+        width: 375px;
+        height: 720px;
+        background: var(--surface);
+        border-radius: 22px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .screen--desktop {
+        width: 100%;
+        height: 100%;
+        background: var(--surface);
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ============================================
+       APP SHELL (copied from note-crud.html)
+       ============================================ */
+      .app {
+        position: relative;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+      .app-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-3) var(--space-4);
+        flex-shrink: 0;
+      }
+      .wordmark {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-weight: 600;
+        font-size: 20px;
+        letter-spacing: -0.01em;
+        color: var(--ink);
+        line-height: 1;
+      }
+      .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 9999px;
+        background: var(--surface-subtle);
+        color: var(--ink-2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
+        font-size: 13px;
+        flex-shrink: 0;
+      }
+
+      /* ============================================
+       NOTE EDITOR — the canvas (§4.10)
+       ============================================ */
+      .note-editor {
+        flex: 1;
+        padding: var(--space-5) var(--space-4) var(--space-4);
+        overflow-y: auto;
+        scrollbar-width: none;
+      }
+      .note-editor::-webkit-scrollbar {
+        display: none;
+      }
+      .note-body {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--ink);
+        max-width: 480px;
+      }
+      .note-title {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 1.3;
+        color: var(--ink);
+        margin: 0 0 var(--space-5);
+      }
+      .note-paragraph {
+        margin: 0 0 var(--space-3);
+      }
+      .note-paragraph:last-child {
+        margin-bottom: 0;
+      }
+      .cursor {
+        display: inline-block;
+        width: 2px;
+        height: 1.1em;
+        background: var(--ink);
+        vertical-align: text-bottom;
+        margin-left: 1px;
+      }
+
+      /* ============================================
+       RELATED NOTES STRIP (new — spec: related-notes-strip.md)
+       Sits directly above the AI presence bar. Ambient: same
+       canvas background, no card/border/box. Absent entirely
+       when there are zero matches — see State B.
+       ============================================ */
+      .related-notes-strip {
+        flex-shrink: 0;
+        padding: var(--space-2) var(--space-4) var(--space-3);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+      }
+      .related-notes-label {
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        color: var(--ink-3);
+      }
+      .related-notes-row {
+        display: flex;
+        gap: var(--space-2);
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      .related-notes-row::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Citation chip — §4.5, reused as-is. Thematic variant
+         (sparkle prefix) is the existing "thematic connection,
+         not a literal citation" case from the spec — exactly
+         what a related-note suggestion is. No new chip component. */
+      .citation-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-1);
+        height: 28px;
+        padding: 0 var(--space-2);
+        background: var(--surface-subtle);
+        border-radius: var(--radius-md);
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 14px;
+        line-height: 1.4;
+        color: var(--ink-2);
+        white-space: nowrap;
+        max-width: 220px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: background var(--duration-fast) var(--ease-out);
+      }
+      .citation-chip:active {
+        background: var(--border-strong);
+      }
+      .citation-chip-sparkle {
+        width: 14px;
+        height: 14px;
+        color: var(--accent);
+        flex-shrink: 0;
+      }
+
+      /* ============================================
+       AI PRESENCE BAR (§4.2)
+       ============================================ */
+      .ai-bar {
+        height: 56px;
+        padding: 0 var(--space-4);
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 14px;
+        line-height: 1.5;
+        flex-shrink: 0;
+      }
+      .ai-bar--passive {
+        background: var(--surface-subtle);
+        color: var(--ink-2);
+      }
+      .ai-bar-sparkle {
+        flex-shrink: 0;
+        color: var(--accent);
+      }
+      .sparkle-18 {
+        width: 18px;
+        height: 18px;
+      }
+
+      /* ============================================
+       BOTTOM NAV (§4.12)
+       ============================================ */
+      .bottom-nav {
+        height: 56px;
+        background: var(--surface-raised);
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: stretch;
+        justify-content: space-around;
+        padding: 0 var(--space-2);
+        flex-shrink: 0;
+      }
+      .tab {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--ink-3);
+        text-decoration: none;
+      }
+      .tab--active {
+        color: var(--ink-2);
+      }
+      .tab--active svg {
+        color: var(--ink);
+      }
+
+      /* ============================================
+       NOTES PANEL — desktop persistent left panel
+       ============================================ */
+      .desktop-content-row {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+      }
+      .notes-panel {
+        width: 280px;
+        flex-shrink: 0;
+        border-right: 1px solid var(--border);
+        background: var(--surface-raised);
+        display: flex;
+        flex-direction: column;
+      }
+      .notes-panel-header {
+        padding: var(--space-4);
+        border-bottom: 1px solid var(--divider);
+      }
+      .notes-panel-title {
+        font-size: 13px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        margin: 0;
+      }
+      .notes-drawer-item {
+        padding: var(--space-3) var(--space-4);
+        border-bottom: 1px solid var(--divider);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+      }
+      .notes-drawer-item--active {
+        background: var(--surface-subtle);
+      }
+      .notes-drawer-item-title {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 15px;
+        color: var(--ink);
+      }
+      .notes-drawer-item--active .notes-drawer-item-title {
+        font-weight: 600;
+      }
+      .notes-drawer-item-meta {
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--ink-3);
+      }
+
+      @media (max-width: 900px) {
+        .device-frame--desktop {
+          width: 100%;
+          height: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="mockup-nav">
+      <div>
+        <div class="mockup-title">dolfyn — related notes strip</div>
+        <div class="mockup-subtitle">
+          Spec: product-requirements/related-notes-strip.md · Tier 2 · pending
+          go/no-go
+        </div>
+      </div>
+      <nav class="state-tabs" aria-label="State selector">
+        <a href="#state-a" class="state-tab">A · populated (mobile)</a>
+        <a href="#state-b" class="state-tab">B · absent — zero match / below threshold</a>
+        <a href="#state-c" class="state-tab">C · populated (desktop)</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- ============================================
+         STATE A — Mobile: strip populated, existing note open
+         ============================================ -->
+      <section id="state-a" class="state">
+        <div class="state-header">
+          <span class="state-tag">Mobile · 375px</span>
+          <h2 class="state-title">State A — Related notes, populated</h2>
+          <p class="state-desc">
+            Existing note open in canvas. 3 related notes cleared the
+            similarity floor and render as a chip row directly above the AI
+            presence bar. Same canvas background — no card, no border, no
+            label header beyond the small "Related" caption. Each chip is the
+            existing citation-chip component (§4.5) in its thematic-sparkle
+            variant, since a related-note suggestion is exactly a "thematic
+            connection, not a literal citation." Tapping a chip opens that
+            note in the canvas (same nav as note list).
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div
+                class="screen"
+                data-component="app-shell"
+                data-state="related-notes-populated"
+              >
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar" aria-label="Profile">SC</div>
+                  </header>
+                  <div class="note-editor" data-component="note-editor">
+                    <h1 class="note-title">
+                      What makes a great first-time user experience
+                    </h1>
+                    <p class="note-paragraph">
+                      The empty canvas IS the onboarding. There's no tutorial
+                      overlay, no tooltip tour — the first blinking cursor on
+                      a blank page is the entire first-run experience.
+                    </p>
+                    <p class="note-paragraph">
+                      The moment that matters is the first note saved
+                      <span class="cursor"></span>
+                    </p>
+                  </div>
+                  <div
+                    class="related-notes-strip"
+                    data-component="related-notes-strip"
+                    data-state="populated"
+                  >
+                    <span class="related-notes-label">Related</span>
+                    <div class="related-notes-row">
+                      <span
+                        class="citation-chip"
+                        data-component="citation-chip"
+                        data-variant="thematic"
+                        data-interaction="navigate-to-note"
+                        role="button"
+                        tabindex="0"
+                        title="Growth channels for the next 90 days"
+                      >
+                        <svg
+                          class="citation-chip-sparkle"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path
+                            d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                          />
+                        </svg>
+                        Growth channels for the ne…
+                      </span>
+                      <span
+                        class="citation-chip"
+                        data-component="citation-chip"
+                        data-variant="thematic"
+                        data-interaction="navigate-to-note"
+                        role="button"
+                        tabindex="0"
+                        title="New user landing decision"
+                      >
+                        <svg
+                          class="citation-chip-sparkle"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path
+                            d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                          />
+                        </svg>
+                        New user landing decision
+                      </span>
+                      <span
+                        class="citation-chip"
+                        data-component="citation-chip"
+                        data-variant="thematic"
+                        data-interaction="navigate-to-note"
+                        role="button"
+                        tabindex="0"
+                        title="Competitive positioning — Capacities vs dolfyn"
+                      >
+                        <svg
+                          class="citation-chip-sparkle"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path
+                            d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                          />
+                        </svg>
+                        Competitive positioning …
+                      </span>
+                    </div>
+                  </div>
+                  <div
+                    class="ai-bar ai-bar--passive"
+                    data-component="ai-presence-bar"
+                  >
+                    <svg
+                      class="ai-bar-sparkle sparkle-18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                    <span>I'm here. Type // to ask me anything</span>
+                  </div>
+                  <nav class="bottom-nav" aria-label="Primary">
+                    <a href="#" class="tab tab--active"
+                      ><svg
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.6"
+                      >
+                        <path
+                          d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                        />
+                        <path d="M14 2v6h6" /></svg
+                      ><span>Notes</span></a
+                    >
+                    <a href="#" class="tab"
+                      ><svg
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.6"
+                      >
+                        <path
+                          d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                        /></svg
+                      ><span>Chat</span></a
+                    >
+                  </nav>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE B — Mobile: strip absent
+         ============================================ -->
+      <section id="state-b" class="state">
+        <div class="state-header">
+          <span class="state-tag">Mobile · 375px</span>
+          <h2 class="state-title">
+            State B — Absent (zero related notes, or below word threshold)
+          </h2>
+          <p class="state-desc">
+            Two triggers produce the identical UI: (1) a new draft that
+            hasn't yet reached ~15–20 words, or (2) an existing/long note
+            where nothing clears the similarity floor. Either way, the strip
+            renders nothing — not a "no related notes" message, not a
+            skeleton. The canvas looks exactly as it does today, with the AI
+            presence bar sitting directly against the note editor.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div
+                class="screen"
+                data-component="app-shell"
+                data-state="related-notes-absent"
+              >
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="avatar" aria-label="Profile">SC</div>
+                  </header>
+                  <div class="note-editor" data-component="note-editor">
+                    <p class="note-paragraph">
+                      Need to remember to water the balcony plants twice this
+                      week<span class="cursor"></span>
+                    </p>
+                  </div>
+                  <!-- related-notes-strip: not rendered — data-condition="relatedNotes.length > 0" -->
+                  <div
+                    class="ai-bar ai-bar--passive"
+                    data-component="ai-presence-bar"
+                  >
+                    <svg
+                      class="ai-bar-sparkle sparkle-18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                      />
+                    </svg>
+                    <span>I'm here. Type // to ask me anything</span>
+                  </div>
+                  <nav class="bottom-nav" aria-label="Primary">
+                    <a href="#" class="tab tab--active"
+                      ><svg
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.6"
+                      >
+                        <path
+                          d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                        />
+                        <path d="M14 2v6h6" /></svg
+                      ><span>Notes</span></a
+                    >
+                    <a href="#" class="tab"
+                      ><svg
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.6"
+                      >
+                        <path
+                          d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                        /></svg
+                      ><span>Chat</span></a
+                    >
+                  </nav>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE C — Desktop: strip populated, notes panel open
+         ============================================ -->
+      <section id="state-c" class="state">
+        <div class="state-header">
+          <span class="state-tag">Desktop · 1440px</span>
+          <h2 class="state-title">State C — Related notes, populated (desktop)</h2>
+          <p class="state-desc">
+            Same component, same rules, right-hand editor column. Persistent
+            left notes panel is unaffected — clicking a related-note chip
+            updates the center column and the panel's active-item highlight,
+            same as clicking a note in the panel itself.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">1440px desktop</div>
+            <div class="device-frame device-frame--desktop">
+              <div
+                class="screen screen--desktop"
+                data-component="app-shell"
+                data-state="desktop-related-notes-populated"
+              >
+                <header class="app-header">
+                  <div class="wordmark">dolfyn</div>
+                  <div class="avatar" aria-label="Profile">SC</div>
+                </header>
+                <div class="desktop-content-row">
+                  <aside class="notes-panel" data-component="notes-panel">
+                    <div class="notes-panel-header">
+                      <p class="notes-panel-title">Notes</p>
+                    </div>
+                    <div class="notes-panel-list">
+                      <div class="notes-drawer-item notes-drawer-item--active">
+                        <span class="notes-drawer-item-title"
+                          >What makes a great first-time user experience</span
+                        >
+                        <span class="notes-drawer-item-meta"
+                          >Today at 2:14 PM</span
+                        >
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Growth channels for the next 90 days</span
+                        >
+                        <span class="notes-drawer-item-meta">Yesterday</span>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >New user landing decision</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 16</span>
+                      </div>
+                      <div class="notes-drawer-item">
+                        <span class="notes-drawer-item-title"
+                          >Competitive positioning — Capacities vs dolfyn</span
+                        >
+                        <span class="notes-drawer-item-meta">Jul 14</span>
+                      </div>
+                    </div>
+                  </aside>
+                  <div
+                    style="
+                      flex: 1;
+                      min-width: 0;
+                      display: flex;
+                      flex-direction: column;
+                      overflow: hidden;
+                    "
+                  >
+                    <div class="note-editor" data-component="note-editor">
+                      <h1 class="note-title">
+                        What makes a great first-time user experience
+                      </h1>
+                      <p class="note-paragraph">
+                        The empty canvas IS the onboarding. There's no
+                        tutorial overlay, no tooltip tour — the first
+                        blinking cursor on a blank page is the entire
+                        first-run experience.
+                      </p>
+                      <p class="note-paragraph">
+                        The moment that matters is the first note saved
+                        <span class="cursor"></span>
+                      </p>
+                    </div>
+                    <div
+                      class="related-notes-strip"
+                      data-component="related-notes-strip"
+                      data-state="populated"
+                    >
+                      <span class="related-notes-label">Related</span>
+                      <div class="related-notes-row">
+                        <span
+                          class="citation-chip"
+                          data-component="citation-chip"
+                          data-variant="thematic"
+                          data-interaction="navigate-to-note"
+                          role="button"
+                          tabindex="0"
+                        >
+                          <svg
+                            class="citation-chip-sparkle"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                          >
+                            <path
+                              d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                            />
+                          </svg>
+                          Growth channels for the ne…
+                        </span>
+                        <span
+                          class="citation-chip"
+                          data-component="citation-chip"
+                          data-variant="thematic"
+                          data-interaction="navigate-to-note"
+                          role="button"
+                          tabindex="0"
+                        >
+                          <svg
+                            class="citation-chip-sparkle"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                          >
+                            <path
+                              d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                            />
+                          </svg>
+                          New user landing decision
+                        </span>
+                        <span
+                          class="citation-chip"
+                          data-component="citation-chip"
+                          data-variant="thematic"
+                          data-interaction="navigate-to-note"
+                          role="button"
+                          tabindex="0"
+                        >
+                          <svg
+                            class="citation-chip-sparkle"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                          >
+                            <path
+                              d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                            />
+                          </svg>
+                          Competitive positioning …
+                        </span>
+                      </div>
+                    </div>
+                    <div
+                      class="ai-bar ai-bar--passive"
+                      data-component="ai-presence-bar"
+                    >
+                      <svg
+                        class="ai-bar-sparkle sparkle-18"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2 L13.5 10.5 L22 12 L13.5 13.5 L12 22 L10.5 13.5 L2 12 L10.5 10.5 Z"
+                        />
+                      </svg>
+                      <span>I'm here. Type // to ask me anything</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
