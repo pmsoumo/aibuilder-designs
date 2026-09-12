@@ -1049,12 +1049,36 @@
         border-color: var(--error);
         color: var(--error);
       }
-      .phase-sparkle {
-        animation: sparkle-spin 1s var(--ease-linear) infinite;
+      .phase-progress-bar {
+        display: block;
+        width: 100%;
+        height: 2px;
+        margin-top: var(--space-2);
+        border-radius: 9999px;
+        background: var(--divider);
+        overflow: hidden;
+      }
+      .phase-progress-bar__fill {
+        display: block;
+        width: 40%;
+        height: 100%;
+        border-radius: 9999px;
+        background: var(--accent);
+        animation: phase-progress-slide 1.2s var(--ease-linear) infinite;
+      }
+      @keyframes phase-progress-slide {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(250%);
+        }
       }
       @media (prefers-reduced-motion: reduce) {
-        .phase-sparkle {
+        .phase-progress-bar__fill {
           animation: none;
+          width: 45%;
+          transform: none;
         }
       }
       .phase-body {
@@ -1590,6 +1614,9 @@
                             <p class="phase-status">
                               Searching the web… ~12s elapsed
                             </p>
+                            <span class="phase-progress-bar" aria-hidden="true">
+                              <span class="phase-progress-bar__fill"></span>
+                            </span>
                           </div>
                         </li>
                         <li
@@ -1794,6 +1821,9 @@
                             <p class="phase-status">
                               Searching the web… ~12s elapsed
                             </p>
+                            <span class="phase-progress-bar" aria-hidden="true">
+                              <span class="phase-progress-bar__fill"></span>
+                            </span>
                           </div>
                         </li>
                         <li
