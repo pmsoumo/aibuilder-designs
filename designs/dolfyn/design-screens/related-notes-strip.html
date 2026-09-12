@@ -480,7 +480,9 @@
       </div>
       <nav class="state-tabs" aria-label="State selector">
         <a href="#state-a" class="state-tab">A · populated (mobile)</a>
-        <a href="#state-b" class="state-tab">B · absent — zero match / below threshold</a>
+        <a href="#state-b" class="state-tab"
+          >B · absent — zero match / below threshold</a
+        >
         <a href="#state-c" class="state-tab">C · populated (desktop)</a>
       </nav>
     </header>
@@ -494,15 +496,14 @@
           <span class="state-tag">Mobile · 375px</span>
           <h2 class="state-title">State A — Related notes, populated</h2>
           <p class="state-desc">
-            Existing note open in canvas. 3 related notes cleared the
-            similarity floor and render as a chip row directly above the AI
-            presence bar. Same canvas background — no card, no border, no
-            label header beyond the small "Related" caption. Each chip is the
-            existing citation-chip component (§4.5), plain — no sparkle icon
-            per chip; three repeated accent icons in a row read as decoration,
-            not signal, and the "Related" caption already carries the
-            AI-context meaning. Tapping a chip opens that note in the canvas
-            (same nav as note list).
+            Existing note open in canvas. 3 related notes cleared the similarity
+            floor and render as a chip row directly above the AI presence bar.
+            Same canvas background — no card, no border, no label header beyond
+            the small "Related" caption. Each chip is the existing citation-chip
+            component (§4.5), plain — no sparkle icon per chip; three repeated
+            accent icons in a row read as decoration, not signal, and the
+            "Related" caption already carries the AI-context meaning. Tapping a
+            chip opens that note in the canvas (same nav as note list).
           </p>
         </div>
         <div class="viewports">
@@ -525,8 +526,8 @@
                     </h1>
                     <p class="note-paragraph">
                       The empty canvas IS the onboarding. There's no tutorial
-                      overlay, no tooltip tour — the first blinking cursor on
-                      a blank page is the entire first-run experience.
+                      overlay, no tooltip tour — the first blinking cursor on a
+                      blank page is the entire first-run experience.
                     </p>
                     <p class="note-paragraph">
                       The moment that matters is the first note saved
@@ -635,12 +636,12 @@
             State B — Absent (zero related notes, or below word threshold)
           </h2>
           <p class="state-desc">
-            Two triggers produce the identical UI: (1) a new draft that
-            hasn't yet reached ~15–20 words, or (2) an existing/long note
-            where nothing clears the similarity floor. Either way, the strip
-            renders nothing — not a "no related notes" message, not a
-            skeleton. The canvas looks exactly as it does today, with the AI
-            presence bar sitting directly against the note editor.
+            Two triggers produce the identical UI: (1) a new draft that hasn't
+            yet reached ~15–20 words, or (2) an existing/long note where nothing
+            clears the similarity floor. Either way, the strip renders nothing —
+            not a "no related notes" message, not a skeleton. The canvas looks
+            exactly as it does today, with the AI presence bar sitting directly
+            against the note editor.
           </p>
         </div>
         <div class="viewports">
@@ -723,7 +724,9 @@
       <section id="state-c" class="state">
         <div class="state-header">
           <span class="state-tag">Desktop · 1440px</span>
-          <h2 class="state-title">State C — Related notes, populated (desktop)</h2>
+          <h2 class="state-title">
+            State C — Related notes, populated (desktop)
+          </h2>
           <p class="state-desc">
             Same component, same rules, right-hand editor column. Persistent
             left notes panel is unaffected — clicking a related-note chip
@@ -792,10 +795,9 @@
                         What makes a great first-time user experience
                       </h1>
                       <p class="note-paragraph">
-                        The empty canvas IS the onboarding. There's no
-                        tutorial overlay, no tooltip tour — the first
-                        blinking cursor on a blank page is the entire
-                        first-run experience.
+                        The empty canvas IS the onboarding. There's no tutorial
+                        overlay, no tooltip tour — the first blinking cursor on
+                        a blank page is the entire first-run experience.
                       </p>
                       <p class="note-paragraph">
                         The moment that matters is the first note saved
@@ -812,7 +814,7 @@
                         <span
                           class="citation-chip"
                           data-component="citation-chip"
-                            data-interaction="navigate-to-note"
+                          data-interaction="navigate-to-note"
                           role="button"
                           tabindex="0"
                         >
@@ -821,7 +823,7 @@
                         <span
                           class="citation-chip"
                           data-component="citation-chip"
-                            data-interaction="navigate-to-note"
+                          data-interaction="navigate-to-note"
                           role="button"
                           tabindex="0"
                         >
@@ -830,7 +832,7 @@
                         <span
                           class="citation-chip"
                           data-component="citation-chip"
-                            data-interaction="navigate-to-note"
+                          data-interaction="navigate-to-note"
                           role="button"
                           tabindex="0"
                         >
