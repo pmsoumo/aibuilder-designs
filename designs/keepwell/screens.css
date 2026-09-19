@@ -1295,3 +1295,46 @@ body {
   font-size: var(--kw-text-sm);
   margin-left: var(--kw-space-1);
 }
+
+/* ---------------------------------------------------------- outbox row (Send, 2026-09-19)
+   One message per row, every status visible. Replaces send-card + progress-track. */
+
+.kw-orow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--kw-space-2) var(--kw-space-3);
+  align-items: center;
+  padding: var(--kw-space-3) var(--kw-space-4);
+  border-bottom: 1px solid var(--kw-line);
+  min-height: 58px;
+}
+.kw-orow--skipped {
+  background: var(--kw-surface-sunk);
+}
+.kw-orow .name {
+  font-size: var(--kw-text-md);
+  display: block;
+}
+.kw-orow .sub {
+  font-size: var(--kw-text-base);
+  color: var(--kw-ink-soft);
+  display: block;
+}
+.kw-orow .actions {
+  display: flex;
+  gap: var(--kw-space-2);
+  align-items: center;
+}
+.kw-orow > .kw-tag {
+  grid-column: 1;
+}
+.vp-desktop .kw-orow {
+  grid-template-columns: minmax(200px, 1fr) auto auto;
+  gap: var(--kw-space-4);
+  padding: var(--kw-space-3) var(--kw-space-6);
+}
+.vp-desktop .kw-orow > .kw-tag {
+  grid-column: auto;
+  justify-self: end;
+}
+    

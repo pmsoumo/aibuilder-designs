@@ -1,0 +1,248 @@
+<!-- COMPONENT INVENTORY: app-shell, sidebar-nav, nav-toggle, bottom-nav, outbox-row, status-tag, section-header, button-primary, button-secondary, empty-state -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KeepWell — Send</title>
+    <link rel="stylesheet" href="../tokens.css" />
+    <link rel="stylesheet" href="../screens.css" />
+  </head>
+  <body>
+    <div class="board">
+      <h1>Send — the evening run, every message visible</h1>
+      <p class="lede">
+        Direction B (one card at a time) is withdrawn. It showed
+        <code>unsent[0]</code> while the badge counted every row, and a skipped
+        message left the screen for good — which quietly destroyed the
+        control-group data the pilot measures. This is a list. Every message the
+        app has prepared is on it with an honest status, and nothing is ever
+        removed. Skip is "not tonight", never "never".
+      </p>
+
+      <h2 class="group">Desktop — six due, one skipped, two already sent</h2>
+      <p class="groupnote">
+        One send per row. Later rows are reminders for appointments more than a
+        day out; they can be sent early. The skipped row is greyed and still
+        carries Send anyway.
+      </p>
+
+      <div class="vp-desktop">
+        <div
+          class="kw-shell"
+          data-component="app-shell"
+          data-variant="desktop"
+          data-responsive="1200"
+        >
+          <nav class="kw-sidebar" data-component="sidebar-nav" aria-label="Main">
+            <div class="kw-sidebar-head">
+              <div class="kw-brand">KeepWell</div>
+              <button
+                class="kw-navtoggle"
+                data-component="nav-toggle"
+                data-interaction="toggle-sidebar"
+                aria-label="Collapse navigation"
+                aria-expanded="true"
+              >
+                &#8249;
+              </button>
+            </div>
+            <a class="kw-navitem" href="#"
+              ><span>Today</span><span class="kw-count">11</span></a
+            >
+            <a class="kw-navitem" href="#" aria-current="page"
+              ><span>Send</span><span class="kw-count">6</span></a
+            >
+            <a class="kw-navitem" href="#"
+              ><span>Patients</span><span class="kw-count empty">0</span></a
+            >
+            <a class="kw-navitem" href="#"
+              ><span>Close day</span><span class="kw-count empty">0</span></a
+            >
+            <div class="kw-sidebar-foot">Dr Anjali Rao<br />Rao Clinic, Pune</div>
+          </nav>
+
+          <div class="kw-main">
+            <div class="kw-head">
+              <div>
+                <div class="kicker">The evening run</div>
+                <div class="title">Send 6 tonight</div>
+              </div>
+            </div>
+
+            <div class="kw-explain">
+              Each Send opens WhatsApp with the message written. Press send there
+              and come back — the row is marked here already, with Undo if you
+              didn't. Skip keeps the message; it never disappears.
+            </div>
+
+            <div class="kw-scroll">
+              <div class="kw-section" data-component="section-header">
+                <span>To send</span><span>6</span>
+              </div>
+
+              <div class="kw-orow" data-component="outbox-row" data-variant="due">
+                <span>
+                  <span class="name">Nilesh Jadhav</span>
+                  <span class="sub">Reminder · tomorrow at 12:00 PM</span>
+                </span>
+                <span class="kw-tag" data-component="status-tag">Not sent</span>
+                <span class="actions">
+                  <button class="kw-btn kw-btn--link" data-component="button-secondary" data-interaction="skip">Skip</button>
+                  <button class="kw-btn kw-btn--primary kw-btn--compact" data-component="button-primary" data-interaction="open-whatsapp">Send</button>
+                </span>
+              </div>
+              <div class="kw-orow" data-component="outbox-row" data-variant="due">
+                <span>
+                  <span class="name">Sadiya Khan</span>
+                  <span class="sub">Reminder · tomorrow at 5:00 PM</span>
+                </span>
+                <span class="kw-tag" data-component="status-tag">Not sent</span>
+                <span class="actions">
+                  <button class="kw-btn kw-btn--link" data-component="button-secondary" data-interaction="skip">Skip</button>
+                  <button class="kw-btn kw-btn--primary kw-btn--compact" data-component="button-primary" data-interaction="open-whatsapp">Send</button>
+                </span>
+              </div>
+              <div class="kw-orow" data-component="outbox-row" data-variant="due">
+                <span>
+                  <span class="name">Prakash Iyer</span>
+                  <span class="sub">Win back · missed today at 2:00 PM</span>
+                </span>
+                <span class="kw-tag" data-component="status-tag">Not sent</span>
+                <span class="actions">
+                  <button class="kw-btn kw-btn--link" data-component="button-secondary" data-interaction="skip">Skip</button>
+                  <button class="kw-btn kw-btn--primary kw-btn--compact" data-component="button-primary" data-interaction="open-whatsapp">Send</button>
+                </span>
+              </div>
+
+              <div class="kw-section" data-component="section-header">
+                <span>Later this week</span><span>1</span>
+              </div>
+              <div class="kw-orow" data-component="outbox-row" data-variant="later">
+                <span>
+                  <span class="name">Kavita More</span>
+                  <span class="sub">Reminder · on Friday, 11 September at 4:30 PM</span>
+                </span>
+                <span class="kw-tag" data-component="status-tag">Later</span>
+                <span class="actions">
+                  <button class="kw-btn kw-btn--link" data-component="button-secondary" data-interaction="skip">Skip</button>
+                  <button class="kw-btn kw-btn--primary kw-btn--compact" data-component="button-primary" data-interaction="open-whatsapp">Send</button>
+                </span>
+              </div>
+
+              <div class="kw-section" data-component="section-header">
+                <span>Skipped</span><span>1</span>
+              </div>
+              <div class="kw-orow kw-orow--skipped" data-component="outbox-row" data-variant="skipped">
+                <span>
+                  <span class="name">Ramesh Pawar</span>
+                  <span class="sub">Reminder · tomorrow at 9:30 AM</span>
+                </span>
+                <span class="kw-tag kw-tag--missed" data-component="status-tag">Skipped</span>
+                <span class="actions">
+                  <button class="kw-btn kw-btn--secondary kw-btn--compact" data-component="button-secondary" data-interaction="open-whatsapp">Send anyway</button>
+                </span>
+              </div>
+
+              <div class="kw-section" data-component="section-header">
+                <span>Sent</span><span>2</span>
+              </div>
+              <div class="kw-orow" data-component="outbox-row" data-variant="sent">
+                <span>
+                  <span class="name">Sunita Deshmukh</span>
+                  <span class="sub">Reminder · tomorrow at 10:30 AM</span>
+                </span>
+                <span class="kw-tag kw-tag--sent" data-component="status-tag">Sent</span>
+                <span class="actions">
+                  <button class="kw-btn kw-btn--link" data-component="button-secondary" data-interaction="undo-send">Undo</button>
+                </span>
+              </div>
+              <div class="kw-orow" data-component="outbox-row" data-variant="sent">
+                <span>
+                  <span class="name">Meera Kulkarni</span>
+                  <span class="sub">Reminder · tomorrow at 11:00 AM</span>
+                </span>
+                <span class="kw-tag kw-tag--sent" data-component="status-tag">Sent</span>
+                <span class="actions">
+                  <button class="kw-btn kw-btn--link" data-component="button-secondary" data-interaction="undo-send">Undo</button>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="group">Phone — same rows, tag under the name</h2>
+      <div class="states">
+        <div class="state">
+          <h3>Evening run</h3>
+          <p class="note">Actions stay on the right edge, ≥44px.</p>
+          <div class="vp-phone">
+            <div class="kw-shell" data-component="app-shell" data-variant="phone" data-responsive="375">
+              <div class="kw-topbar">
+                <div class="kicker">The evening run</div>
+                <div class="title">Send 6 tonight</div>
+              </div>
+              <div class="kw-scroll">
+                <div class="kw-section" data-component="section-header">
+                  <span>To send</span><span>6</span>
+                </div>
+                <div class="kw-orow" data-component="outbox-row" data-variant="due">
+                  <span>
+                    <span class="name">Nilesh Jadhav</span>
+                    <span class="sub">Reminder · tomorrow 12:00 PM</span>
+                  </span>
+                  <span class="actions">
+                    <button class="kw-btn kw-btn--link" data-component="button-secondary" data-interaction="skip">Skip</button>
+                    <button class="kw-btn kw-btn--primary kw-btn--compact" data-component="button-primary" data-interaction="open-whatsapp">Send</button>
+                  </span>
+                  <span class="kw-tag" data-component="status-tag">Not sent</span>
+                </div>
+                <div class="kw-orow kw-orow--skipped" data-component="outbox-row" data-variant="skipped">
+                  <span>
+                    <span class="name">Ramesh Pawar</span>
+                    <span class="sub">Reminder · tomorrow 9:30 AM</span>
+                  </span>
+                  <span class="actions">
+                    <button class="kw-btn kw-btn--secondary kw-btn--compact" data-component="button-secondary" data-interaction="open-whatsapp">Send anyway</button>
+                  </span>
+                  <span class="kw-tag kw-tag--missed" data-component="status-tag">Skipped</span>
+                </div>
+              </div>
+              <nav class="kw-bottomnav" data-component="bottom-nav" aria-label="Main">
+                <a href="#">Today<span class="kw-badge">11</span></a>
+                <a href="#" aria-current="page">Send<span class="kw-badge">6</span></a>
+                <a href="#">Patients</a>
+                <a href="#">Close day</a>
+              </nav>
+            </div>
+          </div>
+        </div>
+        <div class="state">
+          <h3>Nothing due</h3>
+          <div class="vp-phone">
+            <div class="kw-shell" data-component="app-shell" data-variant="phone" data-state="empty">
+              <div class="kw-topbar">
+                <div class="kicker">The evening run</div>
+                <div class="title">Nothing due tonight</div>
+              </div>
+              <div class="kw-scroll">
+                <div class="kw-empty" data-component="empty-state" data-variant="nothing-due">
+                  <h3>Nothing to send yet</h3>
+                  <p>Reminders appear here the evening before an appointment. Book something and it shows up.</p>
+                  <button class="kw-btn kw-btn--primary kw-btn--tall kw-btn--block" data-component="button-primary" data-primary-action="true">Back to today</button>
+                </div>
+              </div>
+              <nav class="kw-bottomnav" data-component="bottom-nav" aria-label="Main">
+                <a href="#">Today</a>
+                <a href="#" aria-current="page">Send</a>
+                <a href="#">Patients</a>
+                <a href="#">Close day</a>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

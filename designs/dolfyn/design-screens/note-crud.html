@@ -138,6 +138,7 @@
       #state-b:target ~ .mockup-nav .state-tab[href="#state-b"],
       #state-c:target ~ .mockup-nav .state-tab[href="#state-c"],
       #state-d:target ~ .mockup-nav .state-tab[href="#state-d"],
+      #state-d2:target ~ .mockup-nav .state-tab[href="#state-d2"],
       #state-e:target ~ .mockup-nav .state-tab[href="#state-e"],
       #state-f:target ~ .mockup-nav .state-tab[href="#state-f"],
       #state-g:target ~ .mockup-nav .state-tab[href="#state-g"],
@@ -482,7 +483,7 @@
         background: var(--surface-subtle);
       }
       .menu-item--destructive {
-        color: var(--ink-3);
+        color: var(--error);
       }
       .menu-item-icon {
         width: 18px;
@@ -527,7 +528,9 @@
       }
 
       /* ============================================
-       DELETE CONFIRMATION DIALOG
+       DELETE CONFIRMATION DIALOG — data-component="delete-confirm"
+       data-variant="modal" (desktop + legacy mobile) below;
+       data-variant="sheet" (proposed mobile, State D2) further down.
        ============================================ */
       .dialog-backdrop {
         position: absolute;
@@ -588,6 +591,36 @@
       .dialog-btn--danger {
         background: var(--error);
         color: var(--ink-inverse);
+      }
+
+      /* ============================================
+       DELETE CONFIRMATION — data-variant="sheet" (State D2, proposed)
+       Reuses the citation-sheet / usage-help-sheet bottom-sheet pattern
+       already shipped elsewhere in the app (§4.6/§4.17) instead of
+       inventing a new one.
+       ============================================ */
+      .confirm-sheet-backdrop {
+        position: absolute;
+        inset: 0;
+        background: var(--surface-overlay);
+        z-index: var(--z-modal);
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+      }
+      .confirm-sheet {
+        background: var(--surface-raised);
+        border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        box-shadow: var(--elevation-modal);
+        width: 100%;
+        padding: var(--space-2) var(--space-6) var(--space-6);
+      }
+      .confirm-sheet__handle {
+        width: 36px;
+        height: 4px;
+        background: var(--border-strong);
+        border-radius: 2px;
+        margin: var(--space-2) auto var(--space-4);
       }
 
       /* ============================================
@@ -883,6 +916,9 @@
         <a href="#state-b" class="state-tab">B · editing</a>
         <a href="#state-c" class="state-tab">C · actions menu</a>
         <a href="#state-d" class="state-tab">D · delete confirm</a>
+        <a href="#state-d2" class="state-tab"
+          >D2 · delete confirm — sheet (proposed)</a
+        >
         <a href="#state-e" class="state-tab">E · auto-save</a>
         <a href="#state-f" class="state-tab">F · desktop editing</a>
         <a href="#state-g" class="state-tab">G · desktop menu</a>
@@ -1412,7 +1448,7 @@
          ============================================ -->
       <section id="state-d" class="state">
         <div class="state-header">
-          <span class="state-tag">Mobile · 375px</span>
+          <span class="state-tag">Mobile · 375px · current, shipped</span>
           <h2 class="state-title">State D — Delete confirmation</h2>
           <p class="state-desc">
             The user tapped "Delete" in the actions menu. A centered modal
@@ -1420,6 +1456,10 @@
             undone." Two buttons: "Cancel" (ghost) and "Delete" (red/danger).
             This is a hard confirmation — not a subtle undo toast. The backdrop
             dims the note content behind. Deletion is permanent; no trash in v1.
+            BUG-069: on a long note this centered layout could render off the
+            visible viewport. That bug is already fixed in code (centering now
+            correctly targets the viewport); <a href="#state-d2">State D2</a>
+            proposes replacing the centered pattern itself with a bottom sheet.
           </p>
         </div>
         <div class="viewports">
@@ -1531,6 +1571,7 @@
                 <div
                   class="dialog-backdrop"
                   data-component="delete-confirm"
+                  data-variant="modal"
                   data-state="open"
                 >
                   <div
@@ -1544,6 +1585,164 @@
                       Delete this note?
                     </h3>
                     <p class="dialog-body" id="delete-body">
+                      This can't be undone. The note will be permanently removed
+                      from your collection.
+                    </p>
+                    <div class="dialog-actions">
+                      <button
+                        type="button"
+                        class="dialog-btn dialog-btn--ghost"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        class="dialog-btn dialog-btn--danger"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+         STATE D2 — Mobile: Delete confirmation, bottom sheet (PROPOSED)
+         ============================================ -->
+      <section id="state-d2" class="state">
+        <div class="state-header">
+          <span class="state-tag">Mobile · 375px · proposed</span>
+          <h2 class="state-title">
+            State D2 — Delete confirmation, bottom sheet
+          </h2>
+          <p class="state-desc">
+            Proposal: replace the centered-modal pattern for
+            <code>data-component="delete-confirm"</code> with a bottom sheet on
+            mobile (desktop keeps the centered modal, State H, unchanged).
+            Reuses the existing citation-sheet / usage-help-sheet bottom-sheet
+            pattern already shipped in this app — same handle bar, same
+            slide-up, same rounded-top-corner treatment — rather than a new
+            pattern. Rationale: a bottom sheet is anchored to the bottom edge of
+            the actual viewport, so it can never center itself against the wrong
+            box the way BUG-069's modal did, and it's a thumb-reachable
+            destructive-action pattern on a phone. This is the same shared
+            <code>ConfirmDialog</code> component used by Account-delete and the
+            scoped-chat Conflict dialog — fixing it here fixes all three; not
+            mocked separately per call site.
+          </p>
+        </div>
+        <div class="viewports">
+          <div class="viewport">
+            <div class="device-label">375px</div>
+            <div class="device-frame">
+              <div
+                class="screen"
+                data-component="app-shell"
+                data-state="delete-confirm"
+              >
+                <div class="app">
+                  <header class="app-header">
+                    <div class="wordmark">dolfyn</div>
+                    <div class="header-actions">
+                      <button
+                        type="button"
+                        class="note-actions-trigger note-actions-trigger--mobile"
+                        aria-label="Note actions"
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                        >
+                          <circle cx="12" cy="5" r="1" />
+                          <circle cx="12" cy="12" r="1" />
+                          <circle cx="12" cy="19" r="1" />
+                        </svg>
+                      </button>
+                      <div class="avatar" aria-label="Profile">SC</div>
+                    </div>
+                  </header>
+                  <div
+                    class="note-editor"
+                    data-component="note-editor"
+                    data-state="has-content"
+                  >
+                    <div class="note-body">
+                      <div class="note-title">
+                        What makes a great first-time user experience
+                      </div>
+                      <p class="note-paragraph">
+                        A great first-time experience doesn't explain. It
+                        doesn't onboard. It just lets the user do the thing they
+                        came to do, and shows them a glimpse of why it was worth
+                        coming.
+                      </p>
+                      <p class="note-paragraph">
+                        The empty canvas is the onboarding. The blinking cursor
+                        is the invitation.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <nav class="bottom-nav" aria-label="Primary">
+                  <a href="#" class="tab tab--active"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 13h8M8 17h6" /></svg
+                    ><span>Notes</span></a
+                  >
+                  <a href="#" class="tab"
+                    ><svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      /></svg
+                    ><span>Chat</span></a
+                  >
+                </nav>
+                <!-- Dialog overlay — sheet variant -->
+                <div
+                  class="confirm-sheet-backdrop"
+                  data-component="delete-confirm"
+                  data-variant="sheet"
+                  data-state="open"
+                >
+                  <div
+                    class="confirm-sheet"
+                    role="alertdialog"
+                    aria-modal="true"
+                    aria-labelledby="delete-title-sheet"
+                    aria-describedby="delete-body-sheet"
+                  >
+                    <div class="confirm-sheet__handle"></div>
+                    <h3 class="dialog-title" id="delete-title-sheet">
+                      Delete this note?
+                    </h3>
+                    <p class="dialog-body" id="delete-body-sheet">
                       This can't be undone. The note will be permanently removed
                       from your collection.
                     </p>
@@ -2671,6 +2870,7 @@
                 <div
                   class="dialog-backdrop"
                   data-component="delete-confirm"
+                  data-variant="modal"
                   data-state="open"
                 >
                   <div
