@@ -15,18 +15,19 @@
         Every booking and every accepted check-in already creates a patient row;
         the app simply never showed them, and the nav item labelled "Patients"
         rendered the live queue instead. This is that screen. The directory is a
-        rail, not a page, because a name is chosen in order to look at the person
-        — the two are one act, and making it two navigations costs a tap the
-        doctor pays for every patient of the day.
+        rail, not a page, because a name is chosen in order to look at the
+        person — the two are one act, and making it two navigations costs a tap
+        the doctor pays for every patient of the day.
       </p>
 
       <h2 class="group">Desktop — list rail beside the record</h2>
       <p class="groupnote">
-        The <strong>vitals strip carries the change, not just the reading</strong>.
+        The
+        <strong>vitals strip carries the change, not just the reading</strong>.
         A BP of 138/90 is a fact the doctor already had on paper; "138/90, up
         from 128/84 in March" is the thing paper never gave them, and it is the
-        single most defensible reason this record exists. The timeline merges the
-        next appointment into the same list as past visits, so history and
+        single most defensible reason this record exists. The timeline merges
+        the next appointment into the same list as past visits, so history and
         what's coming read as one thread.
       </p>
 
@@ -37,7 +38,11 @@
           data-variant="desktop-split"
           data-responsive="1200"
         >
-          <nav class="kw-sidebar" data-component="sidebar-nav" aria-label="Main">
+          <nav
+            class="kw-sidebar"
+            data-component="sidebar-nav"
+            aria-label="Main"
+          >
             <div class="kw-sidebar-head">
               <div class="kw-brand">KeepWell</div>
               <button
@@ -62,7 +67,9 @@
             <a class="kw-navitem" href="#"
               ><span>Close day</span><span class="kw-count empty">0</span></a
             >
-            <div class="kw-sidebar-foot">Dr Anjali Rao<br />Rao Clinic, Pune</div>
+            <div class="kw-sidebar-foot">
+              Dr Anjali Rao<br />Rao Clinic, Pune
+            </div>
           </nav>
 
           <div class="kw-list">
@@ -118,7 +125,9 @@
             <header class="kw-phead" data-component="patient-header">
               <div>
                 <span class="who">Sunita Deshmukh</span>
-                <span class="meta">34 · 98220 41556 · patient since Jan 2025</span>
+                <span class="meta"
+                  >34 · 98220 41556 · patient since Jan 2025</span
+                >
                 <span class="kw-tag kw-tag--sent" data-component="status-tag"
                   >Messaging allowed</span
                 >
@@ -157,11 +166,17 @@
                 <span>6</span>
               </div>
 
-              <div class="kw-vrow" data-component="visit-row" data-variant="upcoming">
+              <div
+                class="kw-vrow"
+                data-component="visit-row"
+                data-variant="upcoming"
+              >
                 <span class="date">12 Sep</span>
                 <span>
                   <span class="what">Follow-up — fever review</span>
-                  <span class="sub">Booked from today's visit · recall not sent yet</span>
+                  <span class="sub"
+                    >Booked from today's visit · recall not sent yet</span
+                  >
                 </span>
                 <span class="kw-tag" data-component="status-tag">Upcoming</span>
               </div>
@@ -170,9 +185,13 @@
                 <span class="date">7 Sep</span>
                 <span>
                   <span class="what">Fever, dry cough</span>
-                  <span class="sub">2 medicines · receipt &#8377;400 · review in 5 days</span>
+                  <span class="sub"
+                    >2 medicines · receipt &#8377;400 · review in 5 days</span
+                  >
                 </span>
-                <span class="kw-tag kw-tag--sent" data-component="status-tag">Rx sent</span>
+                <span class="kw-tag kw-tag--sent" data-component="status-tag"
+                  >Rx sent</span
+                >
               </div>
 
               <div class="kw-vrow" data-component="visit-row">
@@ -181,7 +200,9 @@
                   <span class="what">BP review</span>
                   <span class="sub">1 medicine · receipt &#8377;400</span>
                 </span>
-                <span class="kw-tag kw-tag--sent" data-component="status-tag">Rx sent</span>
+                <span class="kw-tag kw-tag--sent" data-component="status-tag"
+                  >Rx sent</span
+                >
               </div>
 
               <div class="kw-vrow" data-component="visit-row">
@@ -190,7 +211,9 @@
                   <span class="what">Acidity, disturbed sleep</span>
                   <span class="sub">2 medicines · receipt &#8377;350</span>
                 </span>
-                <span class="kw-tag" data-component="status-tag">Rx printed</span>
+                <span class="kw-tag" data-component="status-tag"
+                  >Rx printed</span
+                >
               </div>
 
               <div class="kw-section" data-component="section-header">
@@ -211,7 +234,9 @@
               </div>
               <div class="kw-sentrow">
                 <span class="name">Prescription — 7 Sep</span>
-                <span class="kw-tag kw-tag--sent" data-component="status-tag">Sent</span>
+                <span class="kw-tag kw-tag--sent" data-component="status-tag"
+                  >Sent</span
+                >
                 <button
                   class="kw-btn kw-btn--link"
                   data-component="button-secondary"
@@ -228,8 +253,8 @@
       <h2 class="group">Desktop — a patient with no history yet</h2>
       <p class="groupnote">
         Created seconds ago by a booking or an accepted check-in, which is how
-        most records will begin. The empty state doubles as onboarding and offers
-        the one action that turns a name into a record.
+        most records will begin. The empty state doubles as onboarding and
+        offers the one action that turns a name into a record.
       </p>
 
       <div class="vp-desktop">
@@ -239,7 +264,11 @@
           data-variant="desktop-split"
           data-state="empty"
         >
-          <nav class="kw-sidebar" data-component="sidebar-nav" aria-label="Main">
+          <nav
+            class="kw-sidebar"
+            data-component="sidebar-nav"
+            aria-label="Main"
+          >
             <div class="kw-sidebar-head">
               <div class="kw-brand">KeepWell</div>
               <button
@@ -264,7 +293,9 @@
             <a class="kw-navitem" href="#"
               ><span>Close day</span><span class="kw-count empty">0</span></a
             >
-            <div class="kw-sidebar-foot">Dr Anjali Rao<br />Rao Clinic, Pune</div>
+            <div class="kw-sidebar-foot">
+              Dr Anjali Rao<br />Rao Clinic, Pune
+            </div>
           </nav>
 
           <div class="kw-list">
@@ -305,8 +336,12 @@
             <header class="kw-phead" data-component="patient-header">
               <div>
                 <span class="who">Imran Shaikh</span>
-                <span class="meta">99700 18234 · added today from the door QR</span>
-                <span class="kw-tag" data-component="status-tag">Messaging not allowed</span>
+                <span class="meta"
+                  >99700 18234 · added today from the door QR</span
+                >
+                <span class="kw-tag" data-component="status-tag"
+                  >Messaging not allowed</span
+                >
               </div>
               <button
                 class="kw-btn kw-btn--primary"
@@ -325,9 +360,9 @@
             >
               <h3>Nothing recorded yet</h3>
               <p>
-                The record starts with the first visit. Vitals, prescriptions and
-                what you charged all land here, and the trend appears from the
-                second visit onwards.
+                The record starts with the first visit. Vitals, prescriptions
+                and what you charged all land here, and the trend appears from
+                the second visit onwards.
               </p>
               <button
                 class="kw-btn kw-btn--secondary"
@@ -351,7 +386,9 @@
       <div class="states">
         <div class="state">
           <h3>The directory</h3>
-          <p class="note">Search first — a clinic has more names than a screen.</p>
+          <p class="note">
+            Search first — a clinic has more names than a screen.
+          </p>
           <div class="vp-phone">
             <div
               class="kw-shell"
@@ -402,7 +439,11 @@
                   <span class="ago">2 mo</span>
                 </button>
               </div>
-              <nav class="kw-bottomnav" data-component="bottom-nav" aria-label="Main">
+              <nav
+                class="kw-bottomnav"
+                data-component="bottom-nav"
+                aria-label="Main"
+              >
                 <a href="#">Today<span class="kw-badge">11</span></a>
                 <a href="#">Send<span class="kw-badge">6</span></a>
                 <a href="#" aria-current="page">Patients</a>
@@ -419,7 +460,11 @@
             before they say a word.
           </p>
           <div class="vp-phone">
-            <div class="kw-shell" data-component="app-shell" data-variant="phone">
+            <div
+              class="kw-shell"
+              data-component="app-shell"
+              data-variant="phone"
+            >
               <div class="kw-topbar with-back">
                 <button
                   class="kw-back"
@@ -447,7 +492,11 @@
                   <span>Visits</span>
                   <span>6</span>
                 </div>
-                <div class="kw-vrow" data-component="visit-row" data-variant="upcoming">
+                <div
+                  class="kw-vrow"
+                  data-component="visit-row"
+                  data-variant="upcoming"
+                >
                   <span class="date">12 Sep</span>
                   <span>
                     <span class="what">Follow-up</span>

@@ -1233,7 +1233,9 @@ body {
   border-bottom: 1px solid var(--kw-line);
 }
 .vp-desktop .kw-rxrow {
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr) 36px;
+  grid-template-columns:
+    minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)
+    minmax(0, 2fr) 36px;
   align-items: center;
   gap: var(--kw-space-2);
 }
@@ -1337,4 +1339,3 @@ body {
   grid-column: auto;
   justify-self: end;
 }
-    
