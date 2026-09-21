@@ -5,6 +5,11 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="color-scheme" content="light" />
+<meta name="description" content="The story behind that photo is fading faster than the photo. membren lets you write the memory whenever it comes back to you — backdate it, tag who was there, keep the feeling too." />
+<meta property="og:title" content="membren — keep the story, not just the photo" />
+<meta property="og:description" content="The story behind that photo is fading faster than the photo. Write it down whenever it comes back to you." />
+<meta property="og:image" content="https://pmsoumo.github.io/aibuilder-designs/designs/membren/design-screens/assets/samay-shark-story.jpg" />
+<meta property="og:type" content="website" />
 <title>membren — Landing (family-backfill concept test)</title>
 <style>
   :root {
@@ -50,7 +55,8 @@
   .field .error-msg { font-size: var(--type-caption-size); color: var(--error); display: none; }
   .field[data-state="error"] .error-msg { display: block; }
 
-  .btn-primary { min-height: 44px; padding: 0 var(--space-5); background: var(--primary); color: var(--ink-inverse); border: none; border-radius: var(--radius-md); font-family: var(--font-sans); font-size: var(--type-button-size); font-weight: 600; }
+  .btn-primary { min-height: 44px; padding: 0 var(--space-5); background: var(--primary); color: var(--ink-inverse); border: none; border-radius: var(--radius-md); font-family: var(--font-sans); font-size: var(--type-button-size); font-weight: 600; cursor: pointer; }
+  .btn-primary:hover { background: var(--primary-strong); }
   .btn-primary:active { background: var(--primary-strong); }
 
   .capture-success { display: none; align-items: center; gap: var(--space-2); padding: var(--space-3); background: var(--accent-soft-bg); border-radius: var(--radius-md); font-size: var(--type-body-size); color: var(--ink); }
@@ -83,8 +89,8 @@
   footer.site-footer { padding: var(--space-5) 0 var(--space-7); text-align: center; }
   footer.site-footer p { font-size: var(--type-caption-size); color: var(--ink-3); margin: 0; }
 
-  /* ---- Desktop (>=860px): real two-column hero, wider canvas, larger type ---- */
-  @media (min-width: 860px) {
+  /* ---- Desktop (>=1024px): real two-column hero, wider canvas, larger type ---- */
+  @media (min-width: 1024px) {
     :root {
       --type-hero-size: 46px;
       --type-sub-size: 19px;
@@ -108,15 +114,14 @@
     }
 
     header.site-header { grid-area: header; padding: var(--space-6) 0 0; }
-    section.hero { grid-area: hero; align-self: center; padding: var(--space-6) 0; }
-    section.demo { grid-area: demo; align-self: center; padding: var(--space-6) 0; }
+    section.hero { grid-area: hero; align-self: start; padding: var(--space-6) 0; }
+    section.demo { grid-area: demo; align-self: start; padding: var(--space-6) 0; }
     section.ache { grid-area: ache; }
     section.trust { grid-area: trust; }
     section.cta-repeat { grid-area: cta; }
     footer.site-footer { grid-area: footer; }
 
     section.hero h1 { font-size: var(--type-hero-size); }
-    section.hero p.sub { max-width: 46ch; }
 
     section.ache p { font-size: 26px; }
     section.ache p .quiet { font-size: 19px; }
@@ -127,7 +132,7 @@
 </head>
 <body>
 
-<div class="wrap" data-app="membren" data-screen="landing-family-backfill">
+<main class="wrap" data-app="membren" data-screen="landing-family-backfill">
 
   <header class="site-header">
     <div class="wordmark">membren</div>
@@ -179,6 +184,6 @@
     <p>membren — a private way to keep the stories, not just the photos.</p>
   </footer>
 
-</div>
+</main>
 </body>
 </html>

@@ -19,7 +19,7 @@
     --elevation-modal: 0 24px 48px -12px rgba(43,36,32,0.2);
     --z-panel: 900; --z-overlay: 800;
     --sidebar-width-expanded: 220px;
-    --drawer-width: 440px;
+    --drawer-width-capture: 640px;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; background: var(--surface); font-family: var(--font-sans); }
@@ -48,18 +48,21 @@
   /* backdrop dims the feed behind the drawer, feed stays mounted underneath */
   .drawer-backdrop { position: absolute; inset: 0; background: var(--surface-overlay); z-index: var(--z-overlay); }
 
-  aside.drawer-panel { position: fixed; top: 0; right: 0; bottom: 0; width: var(--drawer-width); background: var(--surface); box-shadow: var(--elevation-modal); z-index: var(--z-panel); display: flex; flex-direction: column; }
+  aside.drawer-panel { position: fixed; top: 0; right: 0; bottom: 0; width: var(--drawer-width-capture); background: var(--surface); box-shadow: var(--elevation-modal); z-index: var(--z-panel); display: flex; flex-direction: column; }
 
   header.drawer-header { padding: var(--space-4) var(--space-5); display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--surface-raised); flex-shrink: 0; }
   header.drawer-header h1 { font-family: var(--font-serif); font-size: var(--type-title-size); font-weight: 600; color: var(--ink); margin: 0; }
   button.icon-btn { width: 36px; height: 36px; border-radius: var(--radius-full); border: 1.5px solid var(--border); background: var(--surface-raised); display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; color: var(--ink-2); }
   button.icon-btn:hover { border-color: var(--border-strong); color: var(--ink); }
 
-  form { flex: 1; overflow-y: auto; padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-5); }
+  /* two columns only when a photo is present — photo+preset on the left, the rest on the right; nothing to put beside empty space otherwise */
+  form { flex: 1; overflow-y: auto; padding: var(--space-5); display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); align-content: start; }
+  form[data-state="no-photo"] { grid-template-columns: 1fr; max-width: 380px; margin: 0 auto; }
+  .form-col { display: flex; flex-direction: column; gap: var(--space-5); min-width: 0; }
 
   label.field-label { display: block; font-size: 13px; font-weight: 600; color: var(--ink-2); margin-bottom: var(--space-2); }
 
-  .field-photo-preview { width: 100%; aspect-ratio: 16/10; border-radius: var(--radius-md); background: linear-gradient(160deg, #e7c9a9, #a8503a 120%); }
+  .field-photo-preview { width: 100%; aspect-ratio: 4/3; border-radius: var(--radius-md); background: linear-gradient(160deg, #e7c9a9, #a8503a 120%); }
   .field-preset-picker { display: flex; gap: var(--space-2); margin-top: var(--space-2); }
   .preset-thumb { flex: 1; display: flex; flex-direction: column; align-items: center; gap: var(--space-1); border: 1.5px solid var(--border); border-radius: var(--radius-md); background: var(--surface-raised); padding: var(--space-1); }
   .preset-thumb .swatch { width: 100%; aspect-ratio: 1/1; border-radius: 8px; background: linear-gradient(160deg, #e7c9a9, #a8503a 120%); }
@@ -122,40 +125,45 @@
         </button>
       </header>
 
-      <form data-focus-order="1,2,3,4">
-        <div>
-          <label class="field-label" for="photo">Photo <span style="font-weight:400;color:var(--ink-3)">(optional)</span></label>
-          <div class="field-photo-preview" role="img" aria-label="Selected photo, Warm preset applied"></div>
-          <div class="field-preset-picker" data-component="input" data-variant="preset-picker" data-state="preset-picker" role="radiogroup" aria-label="Photo look">
-            <button type="button" class="preset-thumb"><span class="swatch"></span><span>Original</span></button>
-            <button type="button" class="preset-thumb" data-state="selected"><span class="swatch"></span><span>Warm</span></button>
-            <button type="button" class="preset-thumb"><span class="swatch"></span><span>Bright</span></button>
+      <!-- two-column-when-photo-present: real behavior toggles form[data-state] between "photo"/"no-photo" when the photo picker is used; this mockup renders the photo-present state -->
+      <form data-focus-order="1,2,3,4" data-state="photo">
+        <div class="form-col">
+          <div>
+            <label class="field-label" for="photo">Photo <span style="font-weight:400;color:var(--ink-3)">(optional)</span></label>
+            <div class="field-photo-preview" role="img" aria-label="Selected photo, Warm preset applied"></div>
+            <div class="field-preset-picker" data-component="input" data-variant="preset-picker" data-state="preset-picker" role="radiogroup" aria-label="Photo look">
+              <button type="button" class="preset-thumb"><span class="swatch"></span><span>Original</span></button>
+              <button type="button" class="preset-thumb" data-state="selected"><span class="swatch"></span><span>Warm</span></button>
+              <button type="button" class="preset-thumb"><span class="swatch"></span><span>Bright</span></button>
+            </div>
           </div>
         </div>
 
-        <div>
-          <label class="field-label">How did it feel?</label>
-          <div class="field-emoji-picker" data-component="input" data-variant="emoji-picker" data-state="emoji-picker" data-validate="required" role="radiogroup" aria-label="Feeling">
-            <button type="button" data-state="selected">🥹 moved</button>
-            <button type="button">😂 delighted</button>
-            <button type="button">😭 overwhelmed</button>
-            <button type="button">😌 relieved</button>
-            <button type="button">🥰 grateful</button>
-            <button type="button">😮 surprised</button>
+        <div class="form-col">
+          <div>
+            <label class="field-label">How did it feel?</label>
+            <div class="field-emoji-picker" data-component="input" data-variant="emoji-picker" data-state="emoji-picker" data-validate="required" role="radiogroup" aria-label="Feeling">
+              <button type="button" data-state="selected">🥹 moved</button>
+              <button type="button">😂 delighted</button>
+              <button type="button">😭 overwhelmed</button>
+              <button type="button">😌 relieved</button>
+              <button type="button">🥰 grateful</button>
+              <button type="button">😮 surprised</button>
+            </div>
           </div>
-        </div>
 
-        <div>
-          <label class="field-label" for="note">What happened?</label>
-          <textarea id="note" class="field-textarea" data-component="input" data-variant="textarea" data-state="textarea" placeholder="First steps. Four wobbly ones toward the fence…">First steps. Four wobbly ones toward the fence, then straight into my arms.</textarea>
-        </div>
+          <div>
+            <label class="field-label" for="note">What happened?</label>
+            <textarea id="note" class="field-textarea" data-component="input" data-variant="textarea" data-state="textarea" placeholder="First steps. Four wobbly ones toward the fence…">First steps. Four wobbly ones toward the fence, then straight into my arms.</textarea>
+          </div>
 
-        <div>
-          <label class="field-label">Who's this about? <span style="font-weight:400;color:var(--ink-3)">(optional)</span></label>
-          <div class="field-person-picker" data-component="input" data-variant="person-picker" data-state="person-picker">
-            <button type="button" data-state="selected">Kai</button>
-            <button type="button">Grandma Rita</button>
-            <button type="button">+ Add person</button>
+          <div>
+            <label class="field-label">Who's this about? <span style="font-weight:400;color:var(--ink-3)">(optional)</span></label>
+            <div class="field-person-picker" data-component="input" data-variant="person-picker" data-state="person-picker">
+              <button type="button" data-state="selected">Kai</button>
+              <button type="button">Grandma Rita</button>
+              <button type="button">+ Add person</button>
+            </div>
           </div>
         </div>
       </form>
