@@ -32,6 +32,14 @@
 
   .field-photo-picker { width: 100%; aspect-ratio: 16/10; border: 1.5px dashed var(--border-strong); border-radius: var(--radius-md); background: var(--surface-raised); color: var(--ink-2); font-family: var(--font-sans); font-size: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-2); }
   .field-photo-picker .icon { font-size: 26px; }
+  .field-photo-preview { width: 100%; aspect-ratio: 16/10; border-radius: var(--radius-md); background: linear-gradient(160deg, #e7c9a9, #a8503a 120%); }
+
+  .field-preset-picker { display: flex; gap: var(--space-2); margin-top: var(--space-2); }
+  .preset-thumb { flex: 1; display: flex; flex-direction: column; align-items: center; gap: var(--space-1); border: 1.5px solid var(--border); border-radius: var(--radius-md); background: var(--surface-raised); padding: var(--space-1); }
+  .preset-thumb .swatch { width: 100%; aspect-ratio: 1/1; border-radius: var(--radius-sm); background: linear-gradient(160deg, #e7c9a9, #a8503a 120%); }
+  .preset-thumb span { font-family: var(--font-sans); font-size: 12px; color: var(--ink-2); }
+  .preset-thumb[data-state="selected"] { border-color: var(--primary); }
+  .preset-thumb[data-state="selected"] span { color: var(--primary); font-weight: 600; }
 
   .field-emoji-picker { display: flex; flex-wrap: wrap; gap: var(--space-2); }
   .field-emoji-picker button { min-width: 44px; min-height: 44px; padding: 0 var(--space-3); border-radius: var(--radius-full); border: 1.5px solid var(--border); background: var(--surface-raised); font-size: 15px; color: var(--ink); }
@@ -67,6 +75,13 @@
         <span class="icon">📷</span>
         Add a photo
       </button>
+      <!-- Photo selected + enhancement preset chosen (photo-enhancement-on-upload spec) -->
+      <div class="field-photo-preview" role="img" aria-label="Selected photo, Warm preset applied"></div>
+      <div class="field-preset-picker" data-component="input" data-variant="preset-picker" data-state="preset-picker" role="radiogroup" aria-label="Photo look">
+        <button type="button" class="preset-thumb"><span class="swatch"></span><span>Original</span></button>
+        <button type="button" class="preset-thumb" data-state="selected"><span class="swatch"></span><span>Warm</span></button>
+        <button type="button" class="preset-thumb"><span class="swatch"></span><span>Bright</span></button>
+      </div>
     </div>
 
     <div>
