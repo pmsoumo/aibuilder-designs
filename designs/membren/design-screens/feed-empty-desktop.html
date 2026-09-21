@@ -1,0 +1,87 @@
+<!-- COMPONENT INVENTORY: sidebar-nav, empty-state, button-primary, icon -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>membren — Feed, empty (desktop)</title>
+<style>
+  :root {
+    --surface: #f7f6f5; --surface-subtle: #efece9; --surface-raised: #ffffff;
+    --ink: #2b2420; --ink-2: #6b6058; --ink-3: #a39a91; --ink-inverse: #ffffff;
+    --border: #e8e4e0;
+    --primary: #a8503a; --primary-soft-bg: #f6e9e5;
+    --font-serif: ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
+    --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+    --type-button-size: 15px;
+    --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px; --space-6: 32px;
+    --radius-md: 12px; --radius-full: 9999px;
+    --sidebar-width-expanded: 220px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--surface); font-family: var(--font-sans); }
+  .desktop-shell { display: grid; grid-template-columns: var(--sidebar-width-expanded) 1fr; min-height: 100vh; }
+  .desktop-shell[data-sidebar="collapsed"] { grid-template-columns: var(--sidebar-width-collapsed) 1fr; }
+  .desktop-shell[data-sidebar="collapsed"] .label,
+  .desktop-shell[data-sidebar="collapsed"] .wordmark,
+  .desktop-shell[data-sidebar="collapsed"] .sidebar-toggle .label { display: none; }
+  .desktop-shell[data-sidebar="collapsed"] .btn-capture,
+  .desktop-shell[data-sidebar="collapsed"] .sidebar-links a,
+  .desktop-shell[data-sidebar="collapsed"] .sidebar-toggle { justify-content: center; padding: 0; }
+  .desktop-shell[data-sidebar="collapsed"] .sidebar-toggle .icon { transform: rotate(180deg); }
+
+  aside.sidebar { background: var(--surface-raised); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: var(--space-5) var(--space-3); gap: var(--space-6); }
+  .wordmark { font-family: var(--font-serif); font-size: 18px; font-weight: 600; color: var(--ink); padding: 0 var(--space-2); }
+  .btn-capture { display: flex; align-items: center; gap: var(--space-2); min-height: 44px; padding: 0 var(--space-3); background: var(--primary); color: var(--ink-inverse); border: none; border-radius: var(--radius-md); font-family: var(--font-sans); font-size: 14px; font-weight: 600; cursor: pointer; }
+  .sidebar-links { display: flex; flex-direction: column; gap: var(--space-1); flex: 1; }
+  .sidebar-links a { display: flex; align-items: center; gap: var(--space-3); min-height: 44px; padding: 0 var(--space-2); border-radius: var(--radius-md); text-decoration: none; color: var(--ink-2); font-size: 14px; font-weight: 600; white-space: nowrap; }
+  .sidebar-links a[data-state="active"] { color: var(--primary); background: var(--primary-soft-bg); }
+  .sidebar-toggle { display: flex; align-items: center; gap: var(--space-2); min-height: 44px; padding: 0 var(--space-2); background: none; border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--ink-2); font-size: 13px; cursor: pointer; white-space: nowrap; }
+
+  main.content { display: flex; align-items: center; justify-content: center; }
+  .empty-state { text-align: center; display: flex; flex-direction: column; align-items: center; gap: var(--space-4); max-width: 360px; }
+  .empty-state .glyph { width: 64px; height: 64px; border-radius: var(--radius-full); background: var(--primary-soft-bg); display: flex; align-items: center; justify-content: center; font-size: 28px; }
+  .empty-state p { font-family: var(--font-serif); font-size: 18px; line-height: 1.5; color: var(--ink); margin: 0; }
+  .empty-state p.sub { font-family: var(--font-sans); font-size: 14px; color: var(--ink-2); margin: -8px 0 0; }
+  .btn-primary { min-height: 44px; padding: 0 var(--space-5); background: var(--primary); color: var(--ink-inverse); border: none; border-radius: var(--radius-md); font-family: var(--font-sans); font-size: var(--type-button-size); font-weight: 600; cursor: pointer; }
+</style>
+</head>
+<body>
+<div class="desktop-shell" data-app="membren" data-screen="feed-empty-desktop" data-sidebar="expanded" data-breakpoint="desktop">
+
+  <aside class="sidebar" data-component="sidebar-nav" data-state="expanded">
+    <div class="sidebar-top">
+      <span class="wordmark">membren</span>
+      <button class="btn-capture" data-component="button-primary" data-state="capture-cta" data-primary-action="true" aria-label="Capture a memory" data-interaction="open-capture-drawer" onclick="location.href='capture-desktop.html'">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" data-component="icon" data-variant="plus"><path d="M12 5v14M5 12h14"/></svg>
+        <span class="label">New memory</span>
+      </button>
+    </div>
+    <nav class="sidebar-links" role="navigation" aria-label="Primary">
+      <a href="feed-desktop.html" data-state="active">
+        <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-component="icon" data-variant="home"><path d="M4 11l8-7 8 7"/><path d="M6 10v9a1 1 0 0 0 1 1h4v-6h2v6h4a1 1 0 0 0 1-1v-9"/></svg>
+        <span class="label">Feed</span>
+      </a>
+      <a href="#">
+        <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-component="icon" data-variant="settings"><path d="M4 6h16"/><circle cx="9" cy="6" r="2" fill="currentColor" stroke="none"/><path d="M4 12h16"/><circle cx="15" cy="12" r="2" fill="currentColor" stroke="none"/><path d="M4 18h16"/><circle cx="7" cy="18" r="2" fill="currentColor" stroke="none"/></svg>
+        <span class="label">Settings</span>
+      </a>
+    </nav>
+    <button class="sidebar-toggle" data-component="sidebar-toggle" aria-label="Collapse sidebar" data-interaction="toggle-sidebar" onclick="document.querySelector('.desktop-shell').dataset.sidebar = document.querySelector('.desktop-shell').dataset.sidebar === 'collapsed' ? 'expanded' : 'collapsed'; this.setAttribute('aria-label', document.querySelector('.desktop-shell').dataset.sidebar === 'collapsed' ? 'Expand sidebar' : 'Collapse sidebar')">
+      <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-component="icon" data-variant="collapse"><path d="M15 6l-6 6 6 6"/></svg>
+      <span class="label">Collapse</span>
+    </button>
+  </aside>
+
+  <main class="content">
+    <div class="empty-state" data-component="empty-state">
+      <span class="glyph" role="img" aria-label="Camera">📸</span>
+      <p>Nothing here yet. Your feed fills up one small moment at a time.</p>
+      <p class="sub">A photo, a thought, a feeling — that's all it takes.</p>
+      <button class="btn-primary" data-component="button-primary" data-state="capture-first" data-primary-action="true" onclick="location.href='capture-desktop.html'">Capture your first memory</button>
+    </div>
+  </main>
+
+</div>
+</body>
+</html>
