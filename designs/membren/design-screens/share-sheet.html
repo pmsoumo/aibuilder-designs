@@ -1,10 +1,10 @@
-<!-- PROPOSAL MOCKUP (not yet canonical) — collapses the Spaces tab into a Share icon+sheet off Feed, replaces the Spaces nav slot with Settings. Pending Soumo go-ahead before wiring into app.jsx/CapturePage flow. -->
+<!-- COMPONENT INVENTORY: share-trigger, share-sheet — canonicalized 2026-09-21, replaces spaces.html (Spaces tab collapsed into a Feed-header share icon + this sheet). -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>membren — Feed (Share redesign proposal)</title>
+<title>membren — Share sheet</title>
 <style>
   :root {
     --surface: #f7f6f5; --surface-subtle: #efece9; --surface-raised: #ffffff; --surface-overlay: rgba(43,36,32,0.35);
@@ -24,9 +24,7 @@
     --elevation-panel: 0 8px 24px -8px rgba(43,36,32,0.14), 0 2px 4px -2px rgba(43,36,32,0.06);
   }
   * { box-sizing: border-box; }
-  body { margin: 0; background: #e9e7e4; font-family: var(--font-sans); display: flex; gap: 24px; justify-content: center; padding: 32px 12px; flex-wrap: wrap; }
-  .caption { text-align: center; font-size: 12px; color: #6b6058; margin-top: 8px; }
-  .device-wrap { display: flex; flex-direction: column; align-items: center; }
+  body { margin: 0; background: #e9e7e4; font-family: var(--font-sans); display: flex; justify-content: center; padding: 32px 12px; }
   .device { width: 375px; height: 780px; background: var(--surface); border-radius: var(--radius-lg); overflow: hidden; box-shadow: 0 1px 3px rgba(43,36,32,0.15); display: flex; flex-direction: column; position: relative; }
 
   header.app-header { padding: var(--space-5) var(--space-4) var(--space-3); display: flex; align-items: baseline; justify-content: space-between; }
@@ -48,12 +46,13 @@
   nav.bottom-nav a.capture-tab .icon { width: 44px; height: 44px; border-radius: var(--radius-full); background: var(--primary); color: var(--ink-inverse); display: flex; align-items: center; justify-content: center; font-size: 22px; margin-top: -18px; box-shadow: 0 2px 6px rgba(168,80,58,0.35); }
   nav.bottom-nav a:not(.capture-tab) .icon { font-size: 18px; }
 
-  /* share sheet — slides up over feed, same elevation token family as other panels */
+  /* ===== share sheet ===== */
   .share-sheet-backdrop { position: absolute; inset: 0; background: var(--surface-overlay); display: flex; align-items: flex-end; }
-  .share-sheet { width: 100%; background: var(--surface); border-radius: var(--radius-lg) var(--radius-lg) 0 0; box-shadow: var(--elevation-panel); padding: var(--space-5) var(--space-4) var(--space-6); display: flex; flex-direction: column; gap: var(--space-5); }
+  .share-sheet { width: 100%; background: var(--surface); border-radius: var(--radius-lg) var(--radius-lg) 0 0; box-shadow: var(--elevation-panel); padding: var(--space-5) var(--space-4) var(--space-6); display: flex; flex-direction: column; gap: var(--space-4); max-height: 80vh; overflow-y: auto; }
   .share-sheet .sheet-handle { width: 36px; height: 4px; border-radius: var(--radius-full); background: var(--border-strong); margin: 0 auto; }
+  .share-sheet-heading { display: flex; align-items: center; justify-content: space-between; }
   .share-sheet h2 { font-family: var(--font-serif); font-size: 18px; margin: 0; color: var(--ink); }
-  .share-sheet .sub { font-size: 13px; color: var(--ink-2); margin: var(--space-1) 0 0; }
+  .share-sheet .sub { font-size: 13px; color: var(--ink-2); margin: 0; }
   .share-sheet section { display: flex; flex-direction: column; gap: var(--space-2); }
   .share-sheet .field-label { font-size: var(--type-caption-size); font-weight: 600; color: var(--ink-2); }
   .share-sheet input[readonly] { min-height: 44px; border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 0 var(--space-3); font-size: 13px; color: var(--ink-2); background: var(--surface-raised); }
@@ -64,81 +63,50 @@
 </head>
 <body>
 
-<div class="device-wrap">
-  <div class="device" data-app="membren" data-screen="feed">
-    <header class="app-header">
-      <h1>Feed</h1>
-      <div class="header-right">
-        <time datetime="2026-09-21">Mon, Sep 21</time>
-        <button class="icon-btn" aria-label="Share your feed" data-component="share-trigger">🔗</button>
-      </div>
-    </header>
-    <main>
-      <h2 class="section-heading">Recent</h2>
-      <article class="memory-card" data-component="memory-card" data-variant="thought">
-        <p class="note">He said "mama" for the first time today. I nearly dropped my phone.</p>
-        <div class="meta-row" style="display:flex;align-items:center;gap:8px;">
-          <span class="badge-emotion" data-component="emotion-badge">😭 overwhelmed</span>
-          <time class="entry-time">Yesterday</time>
-        </div>
-      </article>
-    </main>
-    <nav class="bottom-nav" data-component="bottom-nav" role="navigation" aria-label="Primary">
-      <a href="feed.html" data-state="active"><span class="icon">🏠</span>Feed</a>
-      <a href="capture.html" class="capture-tab" data-component="capture-tab" aria-label="Capture a memory"><span class="icon">+</span></a>
-      <a href="#"><span class="icon">⚙️</span>Settings</a>
-    </nav>
-  </div>
-  <p class="caption">1 — Feed header gets a share icon; 3rd nav tab is now Settings (was Spaces)</p>
-</div>
-
-<div class="device-wrap">
-  <div class="device" data-app="membren" data-screen="feed-share-open">
-    <header class="app-header">
-      <h1>Feed</h1>
-      <div class="header-right">
-        <time datetime="2026-09-21">Mon, Sep 21</time>
-        <button class="icon-btn" aria-label="Share your feed">🔗</button>
-      </div>
-    </header>
-    <main>
-      <h2 class="section-heading">Recent</h2>
-      <article class="memory-card" data-component="memory-card" data-variant="thought">
-        <p class="note">He said "mama" for the first time today. I nearly dropped my phone.</p>
-        <div class="meta-row" style="display:flex;align-items:center;gap:8px;">
-          <span class="badge-emotion" data-component="emotion-badge">😭 overwhelmed</span>
-          <time class="entry-time">Yesterday</time>
-        </div>
-      </article>
-    </main>
-    <div class="share-sheet-backdrop">
-      <div class="share-sheet" data-component="share-sheet">
-        <div class="sheet-handle"></div>
-        <div>
-          <h2>Share your feed</h2>
-          <p class="sub">Anyone with this link can view — not edit or add.</p>
-        </div>
-        <section aria-label="Invite link">
-          <span class="field-label">View-only link</span>
-          <input readonly value="https://membren.pages.dev/#/view/a8de49a…" />
-          <button class="btn-secondary-invite">+ Generate new link</button>
-        </section>
-        <section aria-label="People">
-          <span class="field-label">People in your memories</span>
-          <div class="people-list">
-            <span class="chip-person">Shaili</span>
-            <span class="chip-person" style="border-style:dashed;cursor:pointer;">+ Add person</span>
-          </div>
-        </section>
-      </div>
+<div class="device" data-app="membren" data-screen="share-sheet">
+  <header class="app-header">
+    <h1>Feed</h1>
+    <div class="header-right">
+      <time datetime="2026-09-21">Mon, Sep 21</time>
+      <button class="icon-btn" aria-label="Share your feed">🔗</button>
     </div>
-    <nav class="bottom-nav" data-component="bottom-nav" role="navigation" aria-label="Primary">
-      <a href="feed.html" data-state="active"><span class="icon">🏠</span>Feed</a>
-      <a href="capture.html" class="capture-tab" data-component="capture-tab" aria-label="Capture a memory"><span class="icon">+</span></a>
-      <a href="#"><span class="icon">⚙️</span>Settings</a>
-    </nav>
+  </header>
+  <main>
+    <h2 class="section-heading">Recent</h2>
+    <article class="memory-card" data-component="memory-card" data-variant="thought">
+      <p class="note">He said "mama" for the first time today. I nearly dropped my phone.</p>
+      <div class="meta-row" style="display:flex;align-items:center;gap:8px;">
+        <span class="badge-emotion" data-component="emotion-badge">😭 overwhelmed</span>
+        <time class="entry-time">Yesterday</time>
+      </div>
+    </article>
+  </main>
+  <div class="share-sheet-backdrop">
+    <div class="share-sheet" data-component="share-sheet">
+      <div class="sheet-handle"></div>
+      <div class="share-sheet-heading">
+        <h2>Share your feed</h2>
+        <button class="icon-btn" aria-label="Close">✕</button>
+      </div>
+      <p class="sub">Anyone with this link can view — not edit or add.</p>
+      <section aria-label="Invite link">
+        <span class="field-label">View-only link</span>
+        <input readonly value="https://membren.pages.dev/#/view/a8de49a…" />
+      </section>
+      <section aria-label="People">
+        <span class="field-label">People in your memories</span>
+        <div class="people-list">
+          <span class="chip-person">Shaili</span>
+          <span class="chip-person" style="border-style:dashed;cursor:pointer;">+ Add person</span>
+        </div>
+      </section>
+    </div>
   </div>
-  <p class="caption">2 — Tapping the icon opens the share sheet: link + people tags, no "Spaces"/"Just you" framing</p>
+  <nav class="bottom-nav" data-component="bottom-nav" role="navigation" aria-label="Primary">
+    <a href="feed.html" data-state="active"><span class="icon">🏠</span>Feed</a>
+    <a href="capture.html" class="capture-tab" data-component="capture-tab" aria-label="Capture a memory"><span class="icon">+</span></a>
+    <a href="#"><span class="icon">⚙️</span>Settings</a>
+  </nav>
 </div>
 
 </body>
