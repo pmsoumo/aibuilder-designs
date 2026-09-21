@@ -60,7 +60,11 @@
   section.demo .demo-label { font-family: var(--font-sans); font-size: var(--type-label-size); color: var(--ink-2); margin: 0 0 var(--space-3); }
 
   .memory-card { background: var(--surface-raised); box-shadow: var(--elevation-card); border-radius: var(--radius-lg); padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); }
-  .memory-card .photo { width: 100%; aspect-ratio: 4/3; border-radius: var(--radius-md); background: linear-gradient(135deg, #e4c9b8, #cdb79a); }
+  .memory-card .photo { width: 100%; aspect-ratio: 4/3; border-radius: var(--radius-md); object-fit: cover; display: block; }
+
+  section.ache { padding: var(--space-6) 0; text-align: center; }
+  section.ache p { font-family: var(--font-serif); font-size: 21px; line-height: 1.45; color: var(--ink); margin: 0; }
+  section.ache p .quiet { color: var(--ink-2); font-size: 17px; display: block; margin-top: var(--space-2); }
   .memory-card .note { font-family: var(--font-serif); font-size: var(--type-note-size); line-height: 1.5; color: var(--ink); margin: 0; }
   .memory-card .meta-row { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
 
@@ -105,14 +109,18 @@
   <section class="demo">
     <p class="demo-label">Found an old photo? Give it its story.</p>
     <article class="memory-card" data-component="memory-card" data-variant="photo">
-      <div class="photo" role="img" aria-label="Old family photo"></div>
-      <p class="note">Found this going through boxes — the summer we taught her to ride without training wheels in Grandpa's driveway. She fell twice and refused help both times.</p>
+      <img class="photo" src="assets/samay-shark-story.jpg" alt="Samay holding a soft toy shark at a hillside gift shop" loading="lazy" />
+      <p class="note">We were at a hillside café and he found soft toys — wanted every one. I told him: pick one, not three. Pick the one that matters. He sat with it a while, then chose the shark. First time he learned you can't have it all — you choose, and you move on.</p>
       <div class="meta-row">
-        <span class="emotion-badge" data-component="emotion-badge">😌 grateful</span>
-        <span class="person-chip" data-component="person-chip">with Grandpa Tom</span>
-        <time class="entry-time">week of Aug 2019</time>
+        <span class="emotion-badge" data-component="emotion-badge">🥹 moved</span>
+        <span class="person-chip" data-component="person-chip">with Samay</span>
+        <time class="entry-time">this summer</time>
       </div>
     </article>
+  </section>
+
+  <section class="ache">
+    <p>You'll remember the promotion.<span class="quiet">Will you remember the Tuesday he learned to ride a bike?</span></p>
   </section>
 
   <section class="trust">
