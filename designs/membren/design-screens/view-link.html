@@ -1,4 +1,4 @@
-<!-- COMPONENT INVENTORY: memory-card, emotion-badge, button-secondary -->
+<!-- COMPONENT INVENTORY: memory-card, emotion-badge, button-secondary, icon -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,7 +45,10 @@
 <body>
 <div class="device" data-app="membren" data-screen="view-link" data-state="read-only" data-condition="!user.isAuthenticated">
 
-  <div class="read-only-banner" role="note">👁 View only — shared by Kai's parent</div>
+  <div class="read-only-banner" role="note">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-component="icon" data-variant="eye"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+    View only — shared by Kai's parent
+  </div>
 
   <header class="app-header">
     <h1>Kai's moments</h1>
