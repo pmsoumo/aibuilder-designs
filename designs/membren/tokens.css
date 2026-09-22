@@ -116,7 +116,8 @@
   --sidebar-width-expanded: 220px;
   --sidebar-width-collapsed: 72px;
   --content-max-width-desktop: 640px;
-  --drawer-width: 640px;
+  --drawer-width: 640px; /* deprecated 2026-09-22 (round 3) — drawer-panel's capture/detail variants replaced by page-panel; see design-system.md §4.17/§4.20 */
+  --page-max-width: 920px;
   --auth-brand-panel-width: 50%;
   --auth-form-panel-width: 50%;
 }

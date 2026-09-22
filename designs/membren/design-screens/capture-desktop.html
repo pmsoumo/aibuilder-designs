@@ -1,25 +1,23 @@
-<!-- COMPONENT INVENTORY: sidebar-nav, drawer-panel, input, button-primary, button-secondary, icon, feeling-picker -->
+<!-- COMPONENT INVENTORY: sidebar-nav, page-panel, input, button-primary, button-secondary, icon, feeling-picker -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>membren — Capture (desktop drawer)</title>
+<title>membren — Capture (desktop page)</title>
 <style>
   :root {
-    --surface: #f7f6f5; --surface-subtle: #efece9; --surface-raised: #ffffff; --surface-overlay: rgba(43,36,32,0.35);
+    --surface: #f7f6f5; --surface-subtle: #efece9; --surface-raised: #ffffff;
     --ink: #2b2420; --ink-2: #6b6058; --ink-3: #a39a91; --ink-inverse: #ffffff;
     --border: #e8e4e0; --border-strong: #d8d2cb;
     --primary: #a8503a; --primary-soft-bg: #f6e9e5;
     --font-serif: ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
     --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
-    --type-title-size: 18px;
-    --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px;
+    --type-title-size: 22px;
+    --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px; --space-6: 32px; --space-7: 48px;
     --radius-md: 12px; --radius-lg: 16px; --radius-full: 9999px;
-    --elevation-modal: 0 24px 48px -12px rgba(43,36,32,0.2);
-    --z-panel: 900; --z-overlay: 800;
     --sidebar-width-expanded: 220px; --sidebar-width-collapsed: 72px;
-    --drawer-width: 640px;
+    --page-max-width: 920px;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; background: var(--surface); font-family: var(--font-sans); }
@@ -41,28 +39,25 @@
   .sidebar-links a[data-state="active"] { color: var(--primary); background: var(--primary-soft-bg); }
   .sidebar-toggle { display: flex; align-items: center; gap: var(--space-2); min-height: 44px; padding: 0 var(--space-2); background: none; border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--ink-2); font-size: 13px; cursor: pointer; white-space: nowrap; }
 
-  main.content { position: relative; background: var(--surface-subtle); }
+  main.content { background: var(--surface-subtle); overflow-y: auto; }
 
-  /* backdrop dims the WHOLE app (sidebar included, not just the content pane) for focus — feed stays mounted underneath */
-  .drawer-backdrop { position: fixed; inset: 0; background: var(--surface-overlay); z-index: var(--z-overlay); }
+  /* page-panel: full-page route within the content pane, not an overlay (2026-09-22, round 3).
+     The previous edge-anchored panel left 55-75% of a wide viewport dimmed and unused; this uses
+     the width it's actually given. See design-system.md §4.20. */
+  .page-panel { max-width: var(--page-max-width); margin: 0 auto; padding: var(--space-6) var(--space-7) var(--space-7); }
+  a.page-back { font-size: 13px; color: var(--ink-2); text-decoration: none; display: inline-flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-5); }
+  .page-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); margin-bottom: var(--space-6); }
+  .page-head h1 { font-family: var(--font-serif); font-size: var(--type-title-size); font-weight: 600; color: var(--ink); margin: 0; }
+  .page-actions { display: flex; gap: var(--space-3); flex-shrink: 0; }
 
-  /* rounded only on the two inner (left) corners — the panel meets the viewport's top/right/bottom edges flush, but the inward-facing edge gets a soft corner instead of a hard rule */
-  aside.drawer-panel { position: fixed; top: 0; right: 0; bottom: 0; width: var(--drawer-width); background: var(--surface); border-radius: var(--radius-lg) 0 0 var(--radius-lg); box-shadow: var(--elevation-modal); z-index: var(--z-panel); display: flex; flex-direction: column; overflow: hidden; }
-
-  header.drawer-header { padding: var(--space-4) var(--space-5); display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--surface-raised); flex-shrink: 0; }
-  header.drawer-header h1 { font-family: var(--font-serif); font-size: var(--type-title-size); font-weight: 600; color: var(--ink); margin: 0; }
-  button.icon-btn { width: 36px; height: 36px; border-radius: var(--radius-full); border: 1.5px solid var(--border); background: var(--surface-raised); display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; color: var(--ink-2); }
-  button.icon-btn:hover { border-color: var(--border-strong); color: var(--ink); }
-
-  /* single column always — photo above, note below, same order as mobile's capture.html, just wider.
-     (Round-2's two-up split was reverted 2026-09-22: keeping photo and note side by side read as two
-     unrelated fields, not one flow, and looked lopsided once the picker grew.) */
-  form { flex: 1; overflow-y: auto; padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-5); }
+  .page-grid { display: grid; grid-template-columns: 340px 1fr; gap: var(--space-6); }
+  .page-body { display: flex; flex-direction: column; gap: var(--space-5); }
 
   label.field-label { display: block; font-size: 13px; font-weight: 600; color: var(--ink-2); margin-bottom: var(--space-2); }
 
-  .field-photo-preview { width: 100%; aspect-ratio: 16/9; border-radius: var(--radius-md); background: linear-gradient(160deg, #e7c9a9, #a8503a 120%); }
-  .field-preset-picker { display: flex; gap: var(--space-2); margin-top: var(--space-2); max-width: 320px; }
+  .field-photo-picker { width: 100%; height: 52px; border: 1.5px dashed var(--border-strong); border-radius: var(--radius-md); background: var(--surface-raised); color: var(--ink-2); font-family: var(--font-sans); font-size: 14px; display: flex; align-items: center; justify-content: center; gap: var(--space-2); cursor: pointer; }
+  .field-photo-preview { width: 100%; aspect-ratio: 4/5; border-radius: var(--radius-lg); background: linear-gradient(160deg, #e7c9a9, #a8503a 120%); }
+  .field-preset-picker { display: flex; gap: var(--space-2); margin-top: var(--space-2); }
   .preset-thumb { flex: 1; display: flex; flex-direction: column; align-items: center; gap: var(--space-1); border: 1.5px solid var(--border); border-radius: var(--radius-md); background: var(--surface-raised); padding: var(--space-1); }
   .preset-thumb .swatch { width: 100%; aspect-ratio: 1/1; border-radius: 8px; background: linear-gradient(160deg, #e7c9a9, #a8503a 120%); }
   .preset-thumb span { font-size: 12px; color: var(--ink-2); }
@@ -75,9 +70,6 @@
   .field-emoji-picker button[data-state="selected"] { border-color: var(--primary); background: var(--primary-soft-bg); color: var(--primary); font-weight: 600; }
   .field-custom-feeling { width: 100%; min-height: 40px; margin-top: var(--space-2); border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 0 var(--space-3); display: flex; align-items: center; font-family: var(--font-sans); font-size: 14px; color: var(--ink); background: var(--surface-raised); }
 
-  /* feeling-picker: valence-first two-step, same component as mobile's capture.html — see that file for
-     the full rationale. Default state (nothing picked yet) is what the live form renders below;
-     the toggled-open and confirmed/custom states are reference blocks after the drawer. */
   .feeling-toggle { display: flex; gap: var(--space-2); }
   .feeling-toggle-btn { min-height: 40px; padding: 0 var(--space-3); border-radius: var(--radius-md); border: 1.5px solid var(--border); background: var(--surface-raised); font-family: var(--font-sans); font-size: 14px; color: var(--ink); cursor: pointer; }
   .feeling-toggle-btn:hover { border-color: var(--border-strong); }
@@ -94,15 +86,15 @@
   .feeling-confirmed ~ .feeling-toggle, .feeling-confirmed ~ .feeling-add-another, .feeling-confirmed ~ .feeling-confirmed { margin-top: var(--space-2); }
   .feeling-add-another { min-height: 36px; padding: 0 var(--space-3); border-radius: var(--radius-full); border: 1.5px dashed var(--border); background: none; font-family: var(--font-sans); font-size: 13px; color: var(--ink-2); cursor: pointer; }
 
-  .field-textarea { width: 100%; min-height: 120px; border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: var(--space-3); font-family: var(--font-serif); font-size: 16px; line-height: 1.5; color: var(--ink); background: var(--surface-raised); resize: none; }
+  .field-textarea { width: 100%; min-height: 220px; border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: var(--space-3); font-family: var(--font-serif); font-size: 17px; line-height: 1.55; color: var(--ink); background: var(--surface-raised); resize: none; }
+  .field-textarea::placeholder { color: var(--ink-3); font-family: var(--font-sans); font-size: 14px; }
 
   .field-person-picker { display: flex; flex-wrap: wrap; gap: var(--space-2); }
   .field-person-picker button { min-height: 40px; padding: 0 var(--space-3); border-radius: var(--radius-full); border: 1.5px solid var(--border); background: var(--surface-raised); font-size: 13px; color: var(--ink-2); cursor: pointer; }
   .field-person-picker button[data-state="selected"] { border-color: var(--primary); background: var(--primary-soft-bg); color: var(--primary); font-weight: 600; }
 
-  footer.action-bar { padding: var(--space-4) var(--space-5); border-top: 1px solid var(--border); background: var(--surface-raised); display: flex; gap: var(--space-3); flex-shrink: 0; }
-  .btn-secondary { flex: 0 0 auto; min-height: 44px; padding: 0 var(--space-4); background: var(--surface-raised); border: 1.5px solid var(--border); border-radius: var(--radius-md); font-family: var(--font-sans); font-size: 15px; font-weight: 600; color: var(--ink); cursor: pointer; }
-  .btn-primary { flex: 1; min-height: 44px; background: var(--primary); color: var(--ink-inverse); border: none; border-radius: var(--radius-md); font-family: var(--font-sans); font-size: 15px; font-weight: 600; cursor: pointer; }
+  .btn-secondary { min-height: 44px; padding: 0 var(--space-4); background: var(--surface-raised); border: 1.5px solid var(--border); border-radius: var(--radius-md); font-family: var(--font-sans); font-size: 15px; font-weight: 600; color: var(--ink); cursor: pointer; }
+  .btn-primary { min-height: 44px; padding: 0 var(--space-4); background: var(--primary); color: var(--ink-inverse); border: none; border-radius: var(--radius-md); font-family: var(--font-sans); font-size: 15px; font-weight: 600; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -113,11 +105,11 @@
       <span class="wordmark">membren</span>
     </div>
     <nav class="sidebar-links" role="navigation" aria-label="Primary">
-      <a aria-label="Capture a memory" onclick="location.href='capture-desktop.html'">
+      <a aria-label="Capture a memory" data-state="active">
         <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-component="icon" data-variant="plus"><path d="M12 5v14M5 12h14"/></svg>
         <span class="label">New memory</span>
       </a>
-      <a href="feed-desktop.html" data-state="active">
+      <a href="feed-desktop.html">
         <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-component="icon" data-variant="home"><path d="M4 11l8-7 8 7"/><path d="M6 10v9a1 1 0 0 0 1 1h4v-6h2v6h4a1 1 0 0 0 1-1v-9"/></svg>
         <span class="label">Feed</span>
       </a>
@@ -133,18 +125,28 @@
   </aside>
 
   <main class="content">
-    <!-- feed stays mounted behind the drawer per the design decision: capture never navigates away from context -->
-    <div class="drawer-backdrop" data-interaction="close-drawer" onclick="location.href='feed-desktop.html'"></div>
-
-    <aside class="drawer-panel" data-component="drawer-panel" data-variant="capture" role="dialog" aria-modal="true" aria-label="New memory">
-      <header class="drawer-header">
+    <div class="page-panel" data-component="page-panel" data-variant="capture">
+      <a class="page-back" href="feed-desktop.html">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" data-component="icon" data-variant="back"><path d="M15 18l-6-6 6-6"/></svg>
+        Feed
+      </a>
+      <div class="page-head">
         <h1>New memory</h1>
-      </header>
+        <div class="page-actions">
+          <button class="btn-secondary" data-component="button-secondary" data-state="cancel" onclick="location.href='feed-desktop.html'">Cancel</button>
+          <button class="btn-primary" data-component="button-primary" data-state="save" data-primary-action="true" onclick="location.href='feed-desktop.html'">Save memory</button>
+        </div>
+      </div>
 
-      <form data-focus-order="1,2,3,4">
+      <form class="page-grid" data-focus-order="1,2,3,4">
         <div>
           <label class="field-label" for="photo">Photo <span style="font-weight:400;color:var(--ink-3)">(optional)</span></label>
-          <div class="field-photo-preview" role="img" aria-label="Selected photo, Warm preset applied"></div>
+          <button type="button" id="photo" class="field-photo-picker" data-component="input" data-variant="photo-picker" data-state="photo-picker">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3.5"/></svg>
+            Add a photo
+          </button>
+          <!-- selected + enhancement preset chosen — see mobile capture.html for the shared photo-picker states -->
+          <div class="field-photo-preview" role="img" aria-label="Selected photo, Warm preset applied" style="margin-top: var(--space-3)"></div>
           <div class="field-preset-picker" data-component="input" data-variant="preset-picker" data-state="preset-picker" role="radiogroup" aria-label="Photo look">
             <button type="button" class="preset-thumb"><span class="swatch"></span><span>Original</span></button>
             <button type="button" class="preset-thumb" data-state="selected"><span class="swatch"></span><span>Warm</span></button>
@@ -152,43 +154,40 @@
           </div>
         </div>
 
-        <div>
-          <label class="field-label" for="note">What happened?</label>
-          <textarea id="note" class="field-textarea" data-component="input" data-variant="textarea" data-state="textarea" placeholder="First steps. Four wobbly ones toward the fence…">First steps. Four wobbly ones toward the fence, then straight into my arms.</textarea>
-        </div>
-
-        <div>
-          <label class="field-label">How did it feel?</label>
-          <!-- default: nothing picked, chips stay hidden until a valence is chosen — see the reference block after the drawer for the expanded state -->
-          <div class="feeling-toggle" data-component="feeling-picker" data-variant="toggle" data-validate="required" role="radiogroup" aria-label="How did it feel, broadly">
-            <button type="button" class="feeling-toggle-btn" data-valence="positive">🙂 Good</button>
-            <button type="button" class="feeling-toggle-btn" data-valence="negative">😔 Hard</button>
-            <button type="button" class="feeling-toggle-btn" data-valence="custom">💬 Something else</button>
+        <div class="page-body">
+          <div>
+            <label class="field-label" for="note">What happened?</label>
+            <textarea id="note" class="field-textarea" data-component="input" data-variant="textarea" data-state="textarea" placeholder="First steps. Four wobbly ones toward the fence…">First steps. Four wobbly ones toward the fence, then straight into my arms.</textarea>
           </div>
-        </div>
 
-        <div>
-          <label class="field-label">Who's this about? <span style="font-weight:400;color:var(--ink-3)">(optional)</span></label>
-          <div class="field-person-picker" data-component="input" data-variant="person-picker" data-state="person-picker">
-            <button type="button" data-state="selected">Kai</button>
-            <button type="button">Grandma Rita</button>
-            <button type="button">+ Add person</button>
+          <div>
+            <label class="field-label">How did it feel?</label>
+            <!-- default: nothing picked, chips stay hidden until a valence is chosen — see the reference block after the page for the expanded/confirmed states -->
+            <div class="feeling-toggle" data-component="feeling-picker" data-variant="toggle" data-validate="required" role="radiogroup" aria-label="How did it feel, broadly">
+              <button type="button" class="feeling-toggle-btn" data-valence="positive">🙂 Good</button>
+              <button type="button" class="feeling-toggle-btn" data-valence="negative">😔 Hard</button>
+              <button type="button" class="feeling-toggle-btn" data-valence="custom">💬 Something else</button>
+            </div>
+          </div>
+
+          <div>
+            <label class="field-label">Who's this about? <span style="font-weight:400;color:var(--ink-3)">(optional)</span></label>
+            <div class="field-person-picker" data-component="input" data-variant="person-picker" data-state="person-picker">
+              <button type="button" data-state="selected">Kai</button>
+              <button type="button">Grandma Rita</button>
+              <button type="button">+ Add person</button>
+            </div>
           </div>
         </div>
       </form>
-
-      <footer class="action-bar">
-        <button class="btn-secondary" data-component="button-secondary" data-state="cancel" onclick="location.href='feed-desktop.html'">Cancel</button>
-        <button class="btn-primary" data-component="button-primary" data-state="save" data-primary-action="true" onclick="location.href='feed-desktop.html'">Save memory</button>
-      </footer>
-    </aside>
+    </div>
   </main>
 
 </div>
 
 <!-- feeling-picker's other states — the live form above shows the true default (nothing picked); these
-     show what it looks like mid-interaction and after. -->
-<div style="width:640px;margin:16px auto 0;font-family:var(--font-sans);">
+     show what it looks like mid-interaction and after. Same component, same states as mobile capture.html. -->
+<div style="max-width:920px;margin:16px auto 0;font-family:var(--font-sans);">
   <p style="font-size:12px;color:var(--ink-2);margin:0 0 8px;">feeling-picker — expanded (Good tapped, its chips reveal):</p>
   <div class="feeling-toggle" data-component="feeling-picker" data-variant="toggle">
     <button type="button" class="feeling-toggle-btn" data-valence="positive" data-state="selected">🙂 Good</button>
