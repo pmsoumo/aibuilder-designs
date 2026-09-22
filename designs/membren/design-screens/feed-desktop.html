@@ -1,4 +1,4 @@
-<!-- COMPONENT INVENTORY: sidebar-nav, memory-card, emotion-badge, person-chip, on-this-day-banner, filter-trigger, share-trigger, detail-pane, button-primary, icon -->
+<!-- COMPONENT INVENTORY: sidebar-nav, memory-card, emotion-badge, person-chip, on-this-day-banner, filter-trigger, share-trigger, icon -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,7 +23,6 @@
     --elevation-card: 0 0 0 1px var(--border);
     --sidebar-width-expanded: 220px; --sidebar-width-collapsed: 72px;
     --content-max-width-desktop: 640px;
-    --list-pane-width: 380px;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; background: var(--surface); font-family: var(--font-sans); }
@@ -51,11 +50,8 @@
   .desktop-shell[data-sidebar="collapsed"] .sidebar-toggle { justify-content: center; padding: 0; }
   .desktop-shell[data-sidebar="collapsed"] .sidebar-toggle .icon { transform: rotate(180deg); }
 
-  /* 1024-1279px: single-column feed, same shape as the mid-tier build (memory-detail lives in the drawer, memory-detail-desktop.html). >=1280px: switches to a 3-column split below. */
-  .content-split { display: flex; flex: 1; min-height: 0; }
-  main.content { flex: 1; display: flex; flex-direction: column; align-items: center; overflow-y: auto; }
+  main.content { display: flex; flex-direction: column; align-items: center; overflow-y: auto; }
   .content-inner { width: 100%; max-width: var(--content-max-width-desktop); padding: var(--space-6) var(--space-5) var(--space-6); display: flex; flex-direction: column; gap: var(--space-4); }
-  aside.detail-pane { display: none; }
 
   header.app-header { display: flex; align-items: baseline; justify-content: space-between; }
   header.app-header h1 { font-family: var(--font-serif); font-size: 26px; font-weight: var(--type-title-weight); color: var(--ink); margin: 0; }
@@ -83,31 +79,6 @@
   .chip-person { font-size: var(--type-caption-size); color: var(--ink-2); background: var(--surface); border: 1px solid var(--border); padding: 3px 10px; border-radius: var(--radius-full); }
   .meta-row .with-label { font-size: var(--type-caption-size); color: var(--ink-3); }
   time.entry-time { font-size: var(--type-caption-size); color: var(--ink-3); margin-left: auto; }
-
-  /* ===== >=1280px: split-pane (memory list + detail), matches design.md's overview-plus-detail archetype ===== */
-  @media (min-width: 1280px) {
-    main.content { flex: 0 0 var(--list-pane-width); border-right: 1px solid var(--border); align-items: stretch; }
-    .content-inner { max-width: none; padding: var(--space-5) var(--space-4); }
-    header.app-header h1 { font-size: var(--type-title-size); }
-
-    /* cards compact into list rows: thumbnail + one line + date, not the full mobile card */
-    article.memory-card { flex-direction: row; align-items: center; padding: var(--space-3); gap: var(--space-3); cursor: pointer; }
-    article.memory-card .photo { width: 48px; height: 48px; aspect-ratio: 1/1; flex-shrink: 0; padding: 0; }
-    article.memory-card .photo span { display: none; }
-    article.memory-card a[data-focus-order] { display: contents; }
-    article.memory-card .note { font-size: 14px; line-height: 1.4; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    article.memory-card .meta-row { flex-wrap: nowrap; flex-shrink: 0; }
-    article.memory-card .with-label,
-    article.memory-card .chip-person { display: none; } /* room's tight at row height; feeling badge + date carry enough at a glance, full context is one click away in the detail pane */
-    article.memory-card[data-selected="true"] { box-shadow: 0 0 0 2px var(--primary); }
-
-    aside.detail-pane { display: flex; flex: 1; overflow-y: auto; justify-content: center; }
-    .detail-inner { width: 100%; max-width: 640px; padding: var(--space-6) var(--space-6); display: flex; flex-direction: column; gap: var(--space-4); }
-    .detail-inner .photo-lg { width: 100%; aspect-ratio: 4/3; border-radius: var(--radius-lg); background: linear-gradient(160deg, #e7c9a9, #a8503a 120%); }
-    .detail-inner time.entry-date { font-size: 13px; color: var(--ink-3); }
-    .detail-inner p.note-lg { font-family: var(--font-serif); font-size: 20px; line-height: 1.6; color: var(--ink); margin: 0; }
-    .detail-inner .btn-primary { align-self: flex-start; min-height: 44px; padding: 0 var(--space-5); background: var(--primary); color: var(--ink-inverse); border: none; border-radius: var(--radius-md); font-family: var(--font-sans); font-size: 15px; font-weight: 600; cursor: pointer; }
-  }
 </style>
 </head>
 <body>
@@ -137,15 +108,12 @@
     </button>
   </aside>
 
-  <!-- >=1280px only: cards below stay clickable via href to memory-detail-desktop.html for this static mockup;
-       in the real build a click at this width updates the detail pane in place instead of navigating. -->
-  <div class="content-split">
   <main class="content">
     <div class="content-inner">
       <header class="app-header">
         <h1>Feed</h1>
         <div class="header-right">
-          <time datetime="2026-09-21">Mon, Sep 21</time>
+          <time datetime="2026-09-22">Tue, Sep 22</time>
           <button class="icon-btn" aria-label="Filter your feed" data-component="filter-trigger">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-component="icon" data-variant="filter"><path d="M4 5h16l-6 8v6l-4-2v-4L4 5z"/></svg>
           </button>
@@ -168,7 +136,7 @@
       <h2 class="section-heading">Recent</h2>
 
       <section aria-label="Recent memories">
-        <article class="memory-card" data-component="memory-card" data-variant="photo" data-state="photo-owner" data-selected="true">
+        <article class="memory-card" data-component="memory-card" data-variant="photo" data-state="photo-owner">
           <a href="memory-detail-desktop.html" style="text-decoration:none;color:inherit;display:contents" data-focus-order="1">
             <div class="photo" role="img" aria-label="Photo: first steps in the backyard"><span>backyard, 5:40pm</span></div>
             <p class="note">First steps. Four wobbly ones toward the fence, then straight into my arms.</p>
@@ -208,20 +176,6 @@
       </section>
     </div>
   </main>
-
-  <aside class="detail-pane" data-component="detail-pane" aria-label="Memory detail">
-    <div class="detail-inner">
-      <div class="photo-lg" role="img" aria-label="Photo: first steps in the backyard"></div>
-      <time class="entry-date" datetime="2026-09-21">Today, 5:40pm</time>
-      <p class="note-lg">First steps. Four wobbly ones toward the fence, then straight into my arms. He looked so proud of himself he almost forgot to keep going.</p>
-      <div class="meta-row">
-        <span class="badge-emotion" data-component="emotion-badge" data-state="moved">🥹 moved</span>
-        <span class="chip-person" data-component="person-chip" data-state="kai">Kai</span>
-      </div>
-      <button class="btn-primary" data-component="button-primary" data-state="share" data-primary-action="true" onclick="location.href='share-sheet-desktop.html'">Share this memory</button>
-    </div>
-  </aside>
-  </div>
 
 </div>
 </body>
