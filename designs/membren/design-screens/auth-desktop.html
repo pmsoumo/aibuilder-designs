@@ -48,10 +48,11 @@
   .auth-brand-cards { display: flex; flex-direction: column; gap: var(--space-4); width: 100%; max-width: 380px; }
 
   article.memory-card { background: var(--surface-raised); box-shadow: var(--elevation-card); border-radius: var(--radius-lg); padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); }
-  article.memory-card .photo { border-radius: 8px; aspect-ratio: 4/3; background: linear-gradient(160deg, #e7c9a9, var(--primary) 120%); }
+  article.memory-card .photo { display: block; width: 100%; border-radius: 8px; aspect-ratio: 4/3; object-fit: cover; background: linear-gradient(160deg, #e7c9a9, var(--primary) 120%); }
   article.memory-card .note { font-family: var(--font-serif); font-size: 15px; line-height: 1.5; color: var(--ink); margin: 0; }
-  .meta-row { display: flex; align-items: center; gap: var(--space-2); }
+  .meta-row { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
   .badge-emotion { font-size: 12px; background: var(--accent-soft-bg); color: var(--accent); padding: 3px 10px; border-radius: var(--radius-full); font-weight: 600; }
+  .chip-person { font-size: 12px; color: var(--ink-2); background: var(--surface); border: 1px solid var(--border); padding: 3px 10px; border-radius: var(--radius-full); }
 </style>
 </head>
 <body>
@@ -61,10 +62,11 @@
     <p class="tagline">Every small moment, kept.</p>
     <div class="auth-brand-cards">
       <article class="memory-card" data-component="memory-card" data-variant="photo">
-        <div class="photo" role="img" aria-label="Photo: first steps in the backyard"></div>
-        <p class="note">First steps. Four wobbly ones toward the fence, then straight into my arms.</p>
+        <img class="photo" src="assets/samay-shark-story.jpg" alt="Samay holding a soft toy shark at a hillside gift shop" />
+        <p class="note">We were at a hillside café and he found soft toys — wanted every one. I told him: pick one, not three. Pick the one that matters. He sat with it a while, then chose the shark.</p>
         <div class="meta-row">
           <span class="badge-emotion" data-component="emotion-badge" data-state="moved">🥹 moved</span>
+          <span class="chip-person" data-component="person-chip">with Samay</span>
         </div>
       </article>
       <article class="memory-card" data-component="memory-card" data-variant="thought">
