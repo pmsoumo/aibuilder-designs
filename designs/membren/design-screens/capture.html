@@ -101,22 +101,11 @@
 
     <div>
       <label class="field-label">How did it feel?</label>
+      <!-- default: nothing picked, chips stay hidden until a valence is chosen — see the reference block below the drawer for the expanded state -->
       <div class="feeling-toggle" data-component="feeling-picker" data-variant="toggle" data-validate="required" role="radiogroup" aria-label="How did it feel, broadly">
-        <button type="button" class="feeling-toggle-btn" data-valence="positive" data-state="selected">🙂 Good</button>
+        <button type="button" class="feeling-toggle-btn" data-valence="positive">🙂 Good</button>
         <button type="button" class="feeling-toggle-btn" data-valence="negative">😔 Hard</button>
         <button type="button" class="feeling-toggle-btn" data-valence="custom">💬 Something else</button>
-      </div>
-      <!-- Good selected → its 5 chips reveal below. Picking Hard instead swaps
-           this row to the 8 negative chips and clears any prior pick. -->
-      <div class="field-emoji-picker feeling-chips" data-component="feeling-picker" data-variant="chips" data-animation="fade-slide-down" data-animation-duration="180ms" role="radiogroup" aria-label="Feeling">
-        <button type="button" data-state="selected">🥹 moved</button>
-        <button type="button">😊 delighted</button>
-        <button type="button">😌 relieved</button>
-        <button type="button">😇 grateful</button>
-        <button type="button">😮 surprised</button>
-        <button type="button">😆 funny</button>
-        <button type="button">🕊️ peaceful</button>
-        <button type="button">🥰 loved</button>
       </div>
     </div>
 
@@ -142,11 +131,26 @@
 
 </div>
 
-<!-- feeling-picker's two other states — the live form above shows "chips
-     expanded" (the interesting mid-interaction one); these show what it
-     collapses to after a pick, and the custom-text branch. -->
+<!-- feeling-picker's other states — the live form above shows the true default (nothing picked); these
+     show what it looks like mid-interaction and after. -->
 <div style="width:375px;margin-top:16px;font-family:var(--font-sans);">
-  <p style="font-size:12px;color:var(--ink-2);margin:0 0 8px;">feeling-picker — confirmed state (after picking a chip, row collapses):</p>
+  <p style="font-size:12px;color:var(--ink-2);margin:0 0 8px;">feeling-picker — expanded (Good tapped, its chips reveal):</p>
+  <div class="feeling-toggle" data-component="feeling-picker" data-variant="toggle">
+    <button type="button" class="feeling-toggle-btn" data-valence="positive" data-state="selected">🙂 Good</button>
+    <button type="button" class="feeling-toggle-btn" data-valence="negative">😔 Hard</button>
+    <button type="button" class="feeling-toggle-btn" data-valence="custom">💬 Something else</button>
+  </div>
+  <div class="field-emoji-picker feeling-chips" data-component="feeling-picker" data-variant="chips" data-animation="fade-slide-down" data-animation-duration="180ms" role="radiogroup" aria-label="Feeling">
+    <button type="button" data-state="selected">🥹 moved</button>
+    <button type="button">😊 happy</button>
+    <button type="button">😌 relieved</button>
+    <button type="button">😇 grateful</button>
+    <button type="button">😮 surprised</button>
+    <button type="button">😆 funny</button>
+    <button type="button">🕊️ peaceful</button>
+    <button type="button">🥰 loved</button>
+  </div>
+  <p style="font-size:12px;color:var(--ink-2);margin:16px 0 8px;">feeling-picker — confirmed state (after picking a chip, row collapses):</p>
   <div class="feeling-confirmed" data-component="feeling-picker" data-variant="confirmed">
     <span>🥹 moved</span>
     <button type="button">Change</button>

@@ -19,7 +19,7 @@
     --elevation-modal: 0 24px 48px -12px rgba(43,36,32,0.2);
     --z-panel: 900; --z-overlay: 800;
     --sidebar-width-expanded: 220px; --sidebar-width-collapsed: 72px;
-    --drawer-width: 440px;
+    --drawer-width: 640px;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; background: var(--surface); font-family: var(--font-sans); }
@@ -43,8 +43,9 @@
   .sidebar-toggle { display: flex; align-items: center; gap: var(--space-2); min-height: 44px; padding: 0 var(--space-2); background: none; border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--ink-2); font-size: 13px; cursor: pointer; white-space: nowrap; }
 
   main.content { position: relative; background: var(--surface-subtle); }
-  .drawer-backdrop { position: absolute; inset: 0; background: var(--surface-overlay); z-index: var(--z-overlay); }
-  aside.drawer-panel { position: fixed; top: 0; right: 0; bottom: 0; width: var(--drawer-width); background: var(--surface); box-shadow: var(--elevation-modal); z-index: var(--z-panel); display: flex; flex-direction: column; }
+  /* backdrop dims the WHOLE app (sidebar included), matching capture-desktop.html and share-sheet's modal */
+  .drawer-backdrop { position: fixed; inset: 0; background: var(--surface-overlay); z-index: var(--z-overlay); }
+  aside.drawer-panel { position: fixed; top: 0; right: 0; bottom: 0; width: var(--drawer-width); background: var(--surface); border-radius: var(--radius-lg) 0 0 var(--radius-lg); box-shadow: var(--elevation-modal); z-index: var(--z-panel); display: flex; flex-direction: column; overflow: hidden; }
 
   header.drawer-header { padding: var(--space-4) var(--space-5); display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--surface-raised); flex-shrink: 0; }
   header.drawer-header h1 { font-family: var(--font-serif); font-size: var(--type-title-size); font-weight: 600; color: var(--ink); margin: 0; }

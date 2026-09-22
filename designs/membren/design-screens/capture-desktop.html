@@ -19,7 +19,7 @@
     --elevation-modal: 0 24px 48px -12px rgba(43,36,32,0.2);
     --z-panel: 900; --z-overlay: 800;
     --sidebar-width-expanded: 220px; --sidebar-width-collapsed: 72px;
-    --drawer-width-capture: 640px;
+    --drawer-width: 640px;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; background: var(--surface); font-family: var(--font-sans); }
@@ -49,24 +49,22 @@
   .drawer-backdrop { position: fixed; inset: 0; background: var(--surface-overlay); z-index: var(--z-overlay); }
 
   /* rounded only on the two inner (left) corners — the panel meets the viewport's top/right/bottom edges flush, but the inward-facing edge gets a soft corner instead of a hard rule */
-  aside.drawer-panel { position: fixed; top: 0; right: 0; bottom: 0; width: var(--drawer-width-capture); background: var(--surface); border-radius: var(--radius-lg) 0 0 var(--radius-lg); box-shadow: var(--elevation-modal); z-index: var(--z-panel); display: flex; flex-direction: column; overflow: hidden; }
+  aside.drawer-panel { position: fixed; top: 0; right: 0; bottom: 0; width: var(--drawer-width); background: var(--surface); border-radius: var(--radius-lg) 0 0 var(--radius-lg); box-shadow: var(--elevation-modal); z-index: var(--z-panel); display: flex; flex-direction: column; overflow: hidden; }
 
   header.drawer-header { padding: var(--space-4) var(--space-5); display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--surface-raised); flex-shrink: 0; }
   header.drawer-header h1 { font-family: var(--font-serif); font-size: var(--type-title-size); font-weight: 600; color: var(--ink); margin: 0; }
   button.icon-btn { width: 36px; height: 36px; border-radius: var(--radius-full); border: 1.5px solid var(--border); background: var(--surface-raised); display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; color: var(--ink-2); }
   button.icon-btn:hover { border-color: var(--border-strong); color: var(--ink); }
 
-  /* only the photo+note row goes two-up, and only when a photo is present (nothing to pair the note with otherwise).
-     Feeling and people stay full-width rows below for layout consistency with the two-up row above. */
+  /* single column always — photo above, note below, same order as mobile's capture.html, just wider.
+     (Round-2's two-up split was reverted 2026-09-22: keeping photo and note side by side read as two
+     unrelated fields, not one flow, and looked lopsided once the picker grew.) */
   form { flex: 1; overflow-y: auto; padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-5); }
-  .form-row-top { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); }
-  form[data-state="no-photo"] .form-row-top { grid-template-columns: 1fr; }
-  .form-col { display: flex; flex-direction: column; min-width: 0; }
 
   label.field-label { display: block; font-size: 13px; font-weight: 600; color: var(--ink-2); margin-bottom: var(--space-2); }
 
-  .field-photo-preview { width: 100%; aspect-ratio: 4/3; border-radius: var(--radius-md); background: linear-gradient(160deg, #e7c9a9, #a8503a 120%); }
-  .field-preset-picker { display: flex; gap: var(--space-2); margin-top: var(--space-2); }
+  .field-photo-preview { width: 100%; aspect-ratio: 16/9; border-radius: var(--radius-md); background: linear-gradient(160deg, #e7c9a9, #a8503a 120%); }
+  .field-preset-picker { display: flex; gap: var(--space-2); margin-top: var(--space-2); max-width: 320px; }
   .preset-thumb { flex: 1; display: flex; flex-direction: column; align-items: center; gap: var(--space-1); border: 1.5px solid var(--border); border-radius: var(--radius-md); background: var(--surface-raised); padding: var(--space-1); }
   .preset-thumb .swatch { width: 100%; aspect-ratio: 1/1; border-radius: 8px; background: linear-gradient(160deg, #e7c9a9, #a8503a 120%); }
   .preset-thumb span { font-size: 12px; color: var(--ink-2); }
@@ -79,7 +77,9 @@
   .field-emoji-picker button[data-state="selected"] { border-color: var(--primary); background: var(--primary-soft-bg); color: var(--primary); font-weight: 600; }
   .field-custom-feeling { width: 100%; min-height: 40px; margin-top: var(--space-2); border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 0 var(--space-3); display: flex; align-items: center; font-family: var(--font-sans); font-size: 14px; color: var(--ink); background: var(--surface-raised); }
 
-  /* feeling-picker: valence-first two-step (2026-09-22) — same component as mobile's capture.html, see that file for the full rationale. */
+  /* feeling-picker: valence-first two-step, same component as mobile's capture.html — see that file for
+     the full rationale. Default state (nothing picked yet) is what the live form renders below;
+     the toggled-open and confirmed/custom states are reference blocks after the drawer. */
   .feeling-toggle { display: flex; gap: var(--space-2); }
   .feeling-toggle-btn { min-height: 40px; padding: 0 var(--space-3); border-radius: var(--radius-md); border: 1.5px solid var(--border); background: var(--surface-raised); font-family: var(--font-sans); font-size: 14px; color: var(--ink); cursor: pointer; }
   .feeling-toggle-btn:hover { border-color: var(--border-strong); }
@@ -92,9 +92,7 @@
   .feeling-confirmed { display: flex; align-items: center; justify-content: space-between; min-height: 40px; padding: 0 var(--space-3); border-radius: var(--radius-full); border: 1.5px solid var(--primary); background: var(--primary-soft-bg); color: var(--primary); font-weight: 600; font-size: 14px; max-width: 220px; }
   .feeling-confirmed button { background: none; border: none; color: var(--ink-2); font-family: var(--font-sans); font-size: 13px; font-weight: 600; text-decoration: underline; padding: var(--space-1); cursor: pointer; }
 
-  /* height roughly matches the photo+preset column beside it (~4:3 preview + preset row) so the top row doesn't look lopsided */
-  .field-textarea { width: 100%; min-height: 220px; border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: var(--space-3); font-family: var(--font-serif); font-size: 16px; line-height: 1.5; color: var(--ink); background: var(--surface-raised); resize: none; }
-  form[data-state="no-photo"] .field-textarea { min-height: 140px; }
+  .field-textarea { width: 100%; min-height: 120px; border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: var(--space-3); font-family: var(--font-serif); font-size: 16px; line-height: 1.5; color: var(--ink); background: var(--surface-raised); resize: none; }
 
   .field-person-picker { display: flex; flex-wrap: wrap; gap: var(--space-2); }
   .field-person-picker button { min-height: 40px; padding: 0 var(--space-3); border-radius: var(--radius-full); border: 1.5px solid var(--border); background: var(--surface-raised); font-size: 13px; color: var(--ink-2); cursor: pointer; }
@@ -144,41 +142,29 @@
         </button>
       </header>
 
-      <!-- two-column-when-photo-present: real behavior toggles form[data-state] between "photo"/"no-photo" when the photo picker is used; this mockup renders the photo-present state -->
-      <form data-focus-order="1,2,3,4" data-state="photo">
-        <div class="form-row-top">
-          <div class="form-col">
-            <label class="field-label" for="photo">Photo <span style="font-weight:400;color:var(--ink-3)">(optional)</span></label>
-            <div class="field-photo-preview" role="img" aria-label="Selected photo, Warm preset applied"></div>
-            <div class="field-preset-picker" data-component="input" data-variant="preset-picker" data-state="preset-picker" role="radiogroup" aria-label="Photo look">
-              <button type="button" class="preset-thumb"><span class="swatch"></span><span>Original</span></button>
-              <button type="button" class="preset-thumb" data-state="selected"><span class="swatch"></span><span>Warm</span></button>
-              <button type="button" class="preset-thumb"><span class="swatch"></span><span>Bright</span></button>
-            </div>
-          </div>
-
-          <div class="form-col">
-            <label class="field-label" for="note">What happened?</label>
-            <textarea id="note" class="field-textarea" data-component="input" data-variant="textarea" data-state="textarea" placeholder="First steps. Four wobbly ones toward the fence…">First steps. Four wobbly ones toward the fence, then straight into my arms.</textarea>
+      <form data-focus-order="1,2,3,4">
+        <div>
+          <label class="field-label" for="photo">Photo <span style="font-weight:400;color:var(--ink-3)">(optional)</span></label>
+          <div class="field-photo-preview" role="img" aria-label="Selected photo, Warm preset applied"></div>
+          <div class="field-preset-picker" data-component="input" data-variant="preset-picker" data-state="preset-picker" role="radiogroup" aria-label="Photo look">
+            <button type="button" class="preset-thumb"><span class="swatch"></span><span>Original</span></button>
+            <button type="button" class="preset-thumb" data-state="selected"><span class="swatch"></span><span>Warm</span></button>
+            <button type="button" class="preset-thumb"><span class="swatch"></span><span>Bright</span></button>
           </div>
         </div>
 
         <div>
+          <label class="field-label" for="note">What happened?</label>
+          <textarea id="note" class="field-textarea" data-component="input" data-variant="textarea" data-state="textarea" placeholder="First steps. Four wobbly ones toward the fence…">First steps. Four wobbly ones toward the fence, then straight into my arms.</textarea>
+        </div>
+
+        <div>
           <label class="field-label">How did it feel?</label>
+          <!-- default: nothing picked, chips stay hidden until a valence is chosen — see the reference block after the drawer for the expanded state -->
           <div class="feeling-toggle" data-component="feeling-picker" data-variant="toggle" data-validate="required" role="radiogroup" aria-label="How did it feel, broadly">
-            <button type="button" class="feeling-toggle-btn" data-valence="positive" data-state="selected">🙂 Good</button>
+            <button type="button" class="feeling-toggle-btn" data-valence="positive">🙂 Good</button>
             <button type="button" class="feeling-toggle-btn" data-valence="negative">😔 Hard</button>
             <button type="button" class="feeling-toggle-btn" data-valence="custom">💬 Something else</button>
-          </div>
-          <div class="field-emoji-picker feeling-chips" data-component="feeling-picker" data-variant="chips" data-animation="fade-slide-down" data-animation-duration="180ms" role="radiogroup" aria-label="Feeling">
-            <button type="button" data-state="selected">🥹 moved</button>
-            <button type="button">😊 delighted</button>
-            <button type="button">😌 relieved</button>
-            <button type="button">😇 grateful</button>
-            <button type="button">😮 surprised</button>
-            <button type="button">😆 funny</button>
-            <button type="button">🕊️ peaceful</button>
-            <button type="button">🥰 loved</button>
           </div>
         </div>
 
@@ -201,8 +187,26 @@
 
 </div>
 
+<!-- feeling-picker's other states — the live form above shows the true default (nothing picked); these
+     show what it looks like mid-interaction and after. -->
 <div style="width:640px;margin:16px auto 0;font-family:var(--font-sans);">
-  <p style="font-size:12px;color:var(--ink-2);margin:0 0 8px;">feeling-picker — confirmed state (after picking a chip, row collapses):</p>
+  <p style="font-size:12px;color:var(--ink-2);margin:0 0 8px;">feeling-picker — expanded (Good tapped, its chips reveal):</p>
+  <div class="feeling-toggle" data-component="feeling-picker" data-variant="toggle">
+    <button type="button" class="feeling-toggle-btn" data-valence="positive" data-state="selected">🙂 Good</button>
+    <button type="button" class="feeling-toggle-btn" data-valence="negative">😔 Hard</button>
+    <button type="button" class="feeling-toggle-btn" data-valence="custom">💬 Something else</button>
+  </div>
+  <div class="field-emoji-picker feeling-chips" data-component="feeling-picker" data-variant="chips" data-animation="fade-slide-down" data-animation-duration="180ms" role="radiogroup" aria-label="Feeling">
+    <button type="button" data-state="selected">🥹 moved</button>
+    <button type="button">😊 happy</button>
+    <button type="button">😌 relieved</button>
+    <button type="button">😇 grateful</button>
+    <button type="button">😮 surprised</button>
+    <button type="button">😆 funny</button>
+    <button type="button">🕊️ peaceful</button>
+    <button type="button">🥰 loved</button>
+  </div>
+  <p style="font-size:12px;color:var(--ink-2);margin:16px 0 8px;">feeling-picker — confirmed state (after picking a chip, row collapses):</p>
   <div class="feeling-confirmed" data-component="feeling-picker" data-variant="confirmed">
     <span>🥹 moved</span>
     <button type="button">Change</button>
