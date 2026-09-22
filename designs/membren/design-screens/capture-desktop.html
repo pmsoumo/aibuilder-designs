@@ -89,6 +89,10 @@
   .feeling-chips[data-animation="fade-slide-down"] { animation: feeling-reveal 180ms cubic-bezier(0.16, 1, 0.3, 1); }
   .feeling-confirmed { display: flex; align-items: center; justify-content: space-between; min-height: 40px; padding: 0 var(--space-3); border-radius: var(--radius-full); border: 1.5px solid var(--primary); background: var(--primary-soft-bg); color: var(--primary); font-weight: 600; font-size: 14px; max-width: 220px; }
   .feeling-confirmed button { background: none; border: none; color: var(--ink-2); font-family: var(--font-sans); font-size: 13px; font-weight: 600; text-decoration: underline; padding: var(--space-1); cursor: pointer; }
+  .feeling-confirmed-actions { display: flex; align-items: center; gap: var(--space-2); }
+  .feeling-remove { text-decoration: none !important; font-size: 18px !important; line-height: 1; }
+  .feeling-confirmed ~ .feeling-toggle, .feeling-confirmed ~ .feeling-add-another, .feeling-confirmed ~ .feeling-confirmed { margin-top: var(--space-2); }
+  .feeling-add-another { min-height: 36px; padding: 0 var(--space-3); border-radius: var(--radius-full); border: 1.5px dashed var(--border); background: none; font-family: var(--font-sans); font-size: 13px; color: var(--ink-2); cursor: pointer; }
 
   .field-textarea { width: 100%; min-height: 120px; border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: var(--space-3); font-family: var(--font-serif); font-size: 16px; line-height: 1.5; color: var(--ink); background: var(--surface-raised); resize: none; }
 
@@ -208,6 +212,19 @@
   </div>
   <p style="font-size:12px;color:var(--ink-2);margin:16px 0 8px;">feeling-picker — custom state (tapping "Something else"):</p>
   <div class="field-custom-feeling" data-component="feeling-picker" data-variant="custom-input" style="max-width:320px;">Describe how it felt…</div>
+
+  <p style="font-size:12px;color:var(--ink-2);margin:16px 0 8px;">feeling-picker — REQ-005, both slots confirmed:</p>
+  <div class="feeling-confirmed" data-component="feeling-picker" data-variant="confirmed">
+    <span>🥹 moved</span>
+    <span class="feeling-confirmed-actions">
+      <button type="button">Change</button>
+      <button type="button" class="feeling-remove" aria-label="Remove this feeling">×</button>
+    </span>
+  </div>
+  <div class="feeling-confirmed" data-component="feeling-picker" data-variant="confirmed">
+    <span>😭 overwhelmed</span>
+    <button type="button" class="feeling-remove" aria-label="Remove this feeling">×</button>
+  </div>
 </div>
 </body>
 </html>
