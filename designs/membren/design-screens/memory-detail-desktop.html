@@ -1,25 +1,23 @@
-<!-- COMPONENT INVENTORY: sidebar-nav, drawer-panel, emotion-badge, person-chip, button-primary, icon -->
+<!-- COMPONENT INVENTORY: sidebar-nav, page-panel, emotion-badge, person-chip, button-primary, button-secondary, icon, feeling-picker -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>membren — Memory detail (desktop drawer)</title>
+<title>membren — Memory detail (desktop page)</title>
 <style>
   :root {
-    --surface: #f7f6f5; --surface-subtle: #efece9; --surface-raised: #ffffff; --surface-overlay: rgba(43,36,32,0.35);
+    --surface: #f7f6f5; --surface-subtle: #efece9; --surface-raised: #ffffff;
     --ink: #2b2420; --ink-2: #6b6058; --ink-3: #a39a91; --ink-inverse: #ffffff;
-    --border: #e8e4e0;
-    --primary: #a8503a; --accent: #6f8267; --accent-soft-bg: #eef1ec;
+    --border: #e8e4e0; --border-strong: #d8d2cb;
+    --primary: #a8503a; --accent: #6f8267; --accent-soft-bg: #eef1ec; --primary-soft-bg: #f6e9e5;
     --font-serif: ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
     --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
-    --type-title-size: 18px;
-    --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px;
+    --type-title-size: 22px;
+    --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px; --space-6: 32px; --space-7: 48px;
     --radius-md: 12px; --radius-lg: 16px; --radius-full: 9999px;
-    --elevation-modal: 0 24px 48px -12px rgba(43,36,32,0.2);
-    --z-panel: 900; --z-overlay: 800;
     --sidebar-width-expanded: 220px; --sidebar-width-collapsed: 72px;
-    --drawer-width: 640px;
+    --page-max-width: 920px;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; background: var(--surface); font-family: var(--font-sans); }
@@ -40,25 +38,39 @@
   .sidebar-links a[data-state="active"] { color: var(--primary); background: var(--primary-soft-bg); }
   .sidebar-toggle { display: flex; align-items: center; gap: var(--space-2); min-height: 44px; padding: 0 var(--space-2); background: none; border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--ink-2); font-size: 13px; cursor: pointer; white-space: nowrap; }
 
-  main.content { position: relative; background: var(--surface-subtle); }
-  /* backdrop dims the WHOLE app (sidebar included), matching capture-desktop.html and share-sheet's modal */
-  .drawer-backdrop { position: fixed; inset: 0; background: var(--surface-overlay); z-index: var(--z-overlay); }
-  aside.drawer-panel { position: fixed; top: 0; right: 0; bottom: 0; width: var(--drawer-width); background: var(--surface); border-radius: var(--radius-lg) 0 0 var(--radius-lg); box-shadow: var(--elevation-modal); z-index: var(--z-panel); display: flex; flex-direction: column; overflow: hidden; }
+  main.content { background: var(--surface-subtle); overflow-y: auto; }
 
-  header.drawer-header { padding: var(--space-4) var(--space-5); display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--surface-raised); flex-shrink: 0; }
-  header.drawer-header h1 { font-family: var(--font-serif); font-size: var(--type-title-size); font-weight: 600; color: var(--ink); margin: 0; }
-  button.icon-btn { width: 36px; height: 36px; border-radius: var(--radius-full); border: 1.5px solid var(--border); background: var(--surface-raised); display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; color: var(--ink-2); }
+  /* page-panel: full-page route within the content pane, not an overlay (2026-09-22, round 3). See design-system.md §4.20. */
+  .page-panel { max-width: var(--page-max-width); margin: 0 auto; padding: var(--space-6) var(--space-7) var(--space-7); }
+  a.page-back { font-size: 13px; color: var(--ink-2); text-decoration: none; display: inline-flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-5); }
+  .page-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); margin-bottom: var(--space-6); }
+  .page-head h1 { font-family: var(--font-serif); font-size: var(--type-title-size); font-weight: 600; color: var(--ink); margin: 0; }
+  .page-actions { display: flex; gap: var(--space-3); flex-shrink: 0; }
 
-  main.drawer-body { flex: 1; overflow-y: auto; padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-4); }
-  .photo { width: 100%; aspect-ratio: 4/3; border-radius: var(--radius-lg); background: linear-gradient(160deg, #e7c9a9, #a8503a 120%); }
+  .page-grid { display: grid; grid-template-columns: 340px 1fr; gap: var(--space-6); }
+  .page-body { display: flex; flex-direction: column; gap: var(--space-5); }
+
+  .photo { width: 100%; aspect-ratio: 4/5; border-radius: var(--radius-lg); background: linear-gradient(160deg, #e7c9a9, #a8503a 120%); }
   time.entry-date { font-size: 13px; color: var(--ink-3); }
   p.note { font-family: var(--font-serif); font-size: 19px; line-height: 1.6; color: var(--ink); margin: 0; }
   .meta-row { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
   .badge-emotion { font-size: 13px; background: var(--accent-soft-bg); color: var(--accent); padding: 3px 10px; border-radius: var(--radius-full); font-weight: 600; }
   .chip-person { font-size: 12px; color: var(--ink-2); background: var(--surface-raised); border: 1px solid var(--border); padding: 3px 10px; border-radius: var(--radius-full); }
 
-  footer.action-bar { padding: var(--space-4) var(--space-5); border-top: 1px solid var(--border); background: var(--surface-raised); flex-shrink: 0; }
-  .btn-primary { width: 100%; min-height: 44px; background: var(--primary); color: var(--ink-inverse); border: none; border-radius: var(--radius-md); font-family: var(--font-sans); font-size: 15px; font-weight: 600; cursor: pointer; }
+  label.field-label { display: block; font-size: 13px; font-weight: 600; color: var(--ink-2); margin-bottom: var(--space-2); }
+  .field-textarea { width: 100%; min-height: 220px; border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: var(--space-3); font-family: var(--font-serif); font-size: 17px; line-height: 1.55; color: var(--ink); background: var(--surface-raised); resize: none; }
+  .feeling-confirmed { display: flex; align-items: center; justify-content: space-between; min-height: 40px; padding: 0 var(--space-3); border-radius: var(--radius-full); border: 1.5px solid var(--primary); background: var(--primary-soft-bg); color: var(--primary); font-weight: 600; font-size: 14px; max-width: 220px; }
+  .feeling-confirmed button { background: none; border: none; color: var(--ink-2); font-family: var(--font-sans); font-size: 13px; font-weight: 600; text-decoration: underline; padding: var(--space-1); cursor: pointer; }
+  .field-person-picker { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .field-person-picker button { min-height: 40px; padding: 0 var(--space-3); border-radius: var(--radius-full); border: 1.5px solid var(--border); background: var(--surface-raised); font-size: 13px; color: var(--ink-2); cursor: pointer; }
+  .field-person-picker button[data-state="selected"] { border-color: var(--primary); background: var(--primary-soft-bg); color: var(--primary); font-weight: 600; }
+
+  .btn-secondary { min-height: 44px; padding: 0 var(--space-4); background: var(--surface-raised); border: 1.5px solid var(--border); border-radius: var(--radius-md); font-family: var(--font-sans); font-size: 15px; font-weight: 600; color: var(--ink); cursor: pointer; }
+  .btn-primary { min-height: 44px; padding: 0 var(--space-4); background: var(--primary); color: var(--ink-inverse); border: none; border-radius: var(--radius-md); font-family: var(--font-sans); font-size: 15px; font-weight: 600; cursor: pointer; }
+
+  /* view/edit toggle — dummy interactive state per self-documenting-HTML spec */
+  [data-mode="view"] [data-hide-in~="view"] { display: none !important; }
+  [data-mode="edit"] [data-hide-in~="edit"] { display: none !important; }
 </style>
 </head>
 <body>
@@ -89,29 +101,51 @@
   </aside>
 
   <main class="content">
-    <div class="drawer-backdrop" data-interaction="close-drawer" onclick="location.href='feed-desktop.html'"></div>
-
-    <aside class="drawer-panel" data-component="drawer-panel" data-variant="detail" role="dialog" aria-modal="true" aria-label="Memory detail">
-      <header class="drawer-header">
+    <div class="page-panel" data-component="page-panel" data-variant="detail" data-mode="view" id="detail-panel">
+      <a class="page-back" href="feed-desktop.html">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" data-component="icon" data-variant="back"><path d="M15 18l-6-6 6-6"/></svg>
+        Feed
+      </a>
+      <div class="page-head">
         <h1>Today, 5:40pm</h1>
-        <button class="icon-btn" aria-label="Close" data-interaction="close-drawer" onclick="location.href='feed-desktop.html'">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" data-component="icon" data-variant="close"><path d="M6 6l12 12M18 6L6 18"/></svg>
-        </button>
-      </header>
-
-      <main class="drawer-body">
-        <div class="photo" role="img" aria-label="Photo: first steps in the backyard"></div>
-        <p class="note">First steps. Four wobbly ones toward the fence, then straight into my arms. He looked so proud of himself he almost forgot to keep going.</p>
-        <div class="meta-row">
-          <span class="badge-emotion" data-component="emotion-badge" data-state="moved">🥹 moved</span>
-          <span class="chip-person" data-component="person-chip" data-state="kai">Kai</span>
+        <div class="page-actions">
+          <button class="btn-secondary" data-component="button-secondary" data-state="edit" data-hide-in="edit" data-interaction="enter-edit" onclick="document.getElementById('detail-panel').dataset.mode='edit'">Edit</button>
+          <button class="btn-primary" data-component="button-primary" data-state="share" data-hide-in="edit" data-primary-action="true" onclick="location.href='share-sheet-desktop.html'">Share this memory</button>
+          <button class="btn-secondary" data-component="button-secondary" data-state="cancel" data-hide-in="view" data-interaction="cancel-edit" onclick="document.getElementById('detail-panel').dataset.mode='view'">Cancel</button>
+          <button class="btn-primary" data-component="button-primary" data-state="save" data-primary-action="true" data-hide-in="view" onclick="document.getElementById('detail-panel').dataset.mode='view'">Save changes</button>
         </div>
-      </main>
+      </div>
 
-      <footer class="action-bar">
-        <button class="btn-primary" data-component="button-primary" data-state="share" data-primary-action="true" onclick="location.href='share-sheet-desktop.html'">Share this memory</button>
-      </footer>
-    </aside>
+      <div class="page-grid">
+        <div class="photo" role="img" aria-label="Photo: first steps in the backyard"></div>
+        <div class="page-body">
+          <time class="entry-date" data-hide-in="edit">Today · 5:40pm</time>
+          <p class="note" data-hide-in="edit">First steps. Four wobbly ones toward the fence, then straight into my arms. He looked so proud of himself he almost forgot to keep going.</p>
+          <textarea class="field-textarea" data-hide-in="view" data-component="input" data-variant="textarea">First steps. Four wobbly ones toward the fence, then straight into my arms. He looked so proud of himself he almost forgot to keep going.</textarea>
+
+          <div class="meta-row" data-hide-in="edit">
+            <span class="badge-emotion" data-component="emotion-badge" data-state="moved">🥹 moved</span>
+            <span class="chip-person" data-component="person-chip" data-state="kai">Kai</span>
+          </div>
+
+          <div data-hide-in="view">
+            <label class="field-label">How did it feel?</label>
+            <div class="feeling-confirmed" data-component="feeling-picker" data-variant="confirmed">
+              <span>🥹 moved</span>
+              <button type="button">Change</button>
+            </div>
+          </div>
+          <div data-hide-in="view">
+            <label class="field-label">Who's this about?</label>
+            <div class="field-person-picker" data-component="input" data-variant="person-picker">
+              <button type="button" data-state="selected">Kai</button>
+              <button type="button">Grandma Rita</button>
+              <button type="button">+ Add person</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 
 </div>
