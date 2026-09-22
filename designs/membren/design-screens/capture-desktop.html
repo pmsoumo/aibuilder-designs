@@ -1,4 +1,4 @@
-<!-- COMPONENT INVENTORY: sidebar-nav, drawer-panel, input, button-primary, button-secondary, icon -->
+<!-- COMPONENT INVENTORY: sidebar-nav, drawer-panel, input, button-primary, button-secondary, icon, feeling-picker -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -57,8 +57,7 @@
   button.icon-btn:hover { border-color: var(--border-strong); color: var(--ink); }
 
   /* only the photo+note row goes two-up, and only when a photo is present (nothing to pair the note with otherwise).
-     Feeling and people stay full-width rows below — 13 feeling chips cramped into a ~280px column wrapped
-     into a tall, lopsided mess against the photo; full width lets them sit in 1-2 relaxed rows instead. */
+     Feeling and people stay full-width rows below for layout consistency with the two-up row above. */
   form { flex: 1; overflow-y: auto; padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-5); }
   .form-row-top { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); }
   form[data-state="no-photo"] .form-row-top { grid-template-columns: 1fr; }
@@ -75,11 +74,23 @@
   .preset-thumb[data-state="selected"] span { color: var(--primary); font-weight: 600; }
 
   .field-emoji-picker { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-  .field-emoji-picker-positive { margin-bottom: var(--space-3); }
   .field-emoji-picker button { min-width: 44px; min-height: 40px; padding: 0 var(--space-3); border-radius: var(--radius-full); border: 1.5px solid var(--border); background: var(--surface-raised); font-size: 14px; color: var(--ink); cursor: pointer; }
   .field-emoji-picker button:hover { border-color: var(--border-strong); }
   .field-emoji-picker button[data-state="selected"] { border-color: var(--primary); background: var(--primary-soft-bg); color: var(--primary); font-weight: 600; }
-  .picker-group-label { display: block; font-size: 12px; font-weight: 600; color: var(--ink-3); margin: 0 0 6px; text-transform: uppercase; letter-spacing: 0.02em; }
+  .field-custom-feeling { width: 100%; min-height: 40px; margin-top: var(--space-2); border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 0 var(--space-3); display: flex; align-items: center; font-family: var(--font-sans); font-size: 14px; color: var(--ink); background: var(--surface-raised); }
+
+  /* feeling-picker: valence-first two-step (2026-09-22) — same component as mobile's capture.html, see that file for the full rationale. */
+  .feeling-toggle { display: flex; gap: var(--space-2); }
+  .feeling-toggle-btn { min-height: 40px; padding: 0 var(--space-3); border-radius: var(--radius-md); border: 1.5px solid var(--border); background: var(--surface-raised); font-family: var(--font-sans); font-size: 14px; color: var(--ink); cursor: pointer; }
+  .feeling-toggle-btn:hover { border-color: var(--border-strong); }
+  .feeling-toggle-btn[data-valence="positive"], .feeling-toggle-btn[data-valence="negative"] { flex: 0 0 auto; min-width: 140px; font-weight: 600; }
+  .feeling-toggle-btn[data-valence="custom"] { flex: 0 0 auto; font-size: 13px; color: var(--ink-2); border-style: dashed; }
+  .feeling-toggle-btn[data-state="selected"] { border-color: var(--primary); background: var(--primary-soft-bg); color: var(--primary); }
+  .feeling-chips { margin-top: var(--space-3); }
+  @keyframes feeling-reveal { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+  .feeling-chips[data-animation="fade-slide-down"] { animation: feeling-reveal 180ms cubic-bezier(0.16, 1, 0.3, 1); }
+  .feeling-confirmed { display: flex; align-items: center; justify-content: space-between; min-height: 40px; padding: 0 var(--space-3); border-radius: var(--radius-full); border: 1.5px solid var(--primary); background: var(--primary-soft-bg); color: var(--primary); font-weight: 600; font-size: 14px; max-width: 220px; }
+  .feeling-confirmed button { background: none; border: none; color: var(--ink-2); font-family: var(--font-sans); font-size: 13px; font-weight: 600; text-decoration: underline; padding: var(--space-1); cursor: pointer; }
 
   /* height roughly matches the photo+preset column beside it (~4:3 preview + preset row) so the top row doesn't look lopsided */
   .field-textarea { width: 100%; min-height: 220px; border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: var(--space-3); font-family: var(--font-serif); font-size: 16px; line-height: 1.5; color: var(--ink); background: var(--surface-raised); resize: none; }
@@ -154,25 +165,20 @@
 
         <div>
           <label class="field-label">How did it feel?</label>
-          <span class="picker-group-label">Positive</span>
-          <div class="field-emoji-picker field-emoji-picker-positive" data-component="input" data-variant="emoji-picker" data-state="emoji-picker" data-validate="required" role="radiogroup" aria-label="Feeling">
-            <button type="button" data-state="selected">🥹 moved</button>
-            <button type="button">😂 delighted</button>
-            <button type="button">😌 relieved</button>
-            <button type="button">🥰 grateful</button>
-            <button type="button">😮 surprised</button>
+          <div class="feeling-toggle" data-component="feeling-picker" data-variant="toggle" data-validate="required" role="radiogroup" aria-label="How did it feel, broadly">
+            <button type="button" class="feeling-toggle-btn" data-valence="positive" data-state="selected">🙂 Good</button>
+            <button type="button" class="feeling-toggle-btn" data-valence="negative">😔 Hard</button>
+            <button type="button" class="feeling-toggle-btn" data-valence="custom">💬 Something else</button>
           </div>
-          <span class="picker-group-label">Negative</span>
-          <div class="field-emoji-picker field-emoji-picker-negative" role="radiogroup" aria-label="Feeling, continued">
-            <button type="button">😭 overwhelmed</button>
-            <button type="button">😠 angry</button>
-            <button type="button">😖 stressed</button>
-            <button type="button">😒 jealous</button>
-            <button type="button">😢 sad</button>
-            <button type="button">😞 disappointed</button>
-            <button type="button">😤 frustrated</button>
-            <button type="button">😔 helpless</button>
-            <button type="button" data-state="custom-trigger">💬 something else</button>
+          <div class="field-emoji-picker feeling-chips" data-component="feeling-picker" data-variant="chips" data-animation="fade-slide-down" data-animation-duration="180ms" role="radiogroup" aria-label="Feeling">
+            <button type="button" data-state="selected">🥹 moved</button>
+            <button type="button">😊 delighted</button>
+            <button type="button">😌 relieved</button>
+            <button type="button">😇 grateful</button>
+            <button type="button">😮 surprised</button>
+            <button type="button">😆 funny</button>
+            <button type="button">🕊️ peaceful</button>
+            <button type="button">🥰 loved</button>
           </div>
         </div>
 
@@ -193,6 +199,16 @@
     </aside>
   </main>
 
+</div>
+
+<div style="width:640px;margin:16px auto 0;font-family:var(--font-sans);">
+  <p style="font-size:12px;color:var(--ink-2);margin:0 0 8px;">feeling-picker — confirmed state (after picking a chip, row collapses):</p>
+  <div class="feeling-confirmed" data-component="feeling-picker" data-variant="confirmed">
+    <span>🥹 moved</span>
+    <button type="button">Change</button>
+  </div>
+  <p style="font-size:12px;color:var(--ink-2);margin:16px 0 8px;">feeling-picker — custom state (tapping "Something else"):</p>
+  <div class="field-custom-feeling" data-component="feeling-picker" data-variant="custom-input" style="max-width:320px;">Describe how it felt…</div>
 </div>
 </body>
 </html>
