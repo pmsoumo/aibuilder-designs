@@ -117,5 +117,6 @@
   --sidebar-width-collapsed: 72px;
   --content-max-width-desktop: 640px;
   --drawer-width: 640px;
-  --auth-form-panel-width: 440px;
+  --auth-brand-panel-width: 60%;
+  --auth-form-panel-width: 40%;
 }
