@@ -18,7 +18,7 @@
     --radius-md: 12px; --radius-lg: 16px; --radius-full: 9999px;
     --elevation-modal: 0 24px 48px -12px rgba(43,36,32,0.2);
     --z-panel: 900; --z-overlay: 800;
-    --sidebar-width-expanded: 220px;
+    --sidebar-width-expanded: 220px; --sidebar-width-collapsed: 72px;
     --drawer-width-capture: 640px;
   }
   * { box-sizing: border-box; }
@@ -45,20 +45,24 @@
 
   main.content { position: relative; background: var(--surface-subtle); }
 
-  /* backdrop dims the feed behind the drawer, feed stays mounted underneath */
-  .drawer-backdrop { position: absolute; inset: 0; background: var(--surface-overlay); z-index: var(--z-overlay); }
+  /* backdrop dims the WHOLE app (sidebar included, not just the content pane) for focus — feed stays mounted underneath */
+  .drawer-backdrop { position: fixed; inset: 0; background: var(--surface-overlay); z-index: var(--z-overlay); }
 
-  aside.drawer-panel { position: fixed; top: 0; right: 0; bottom: 0; width: var(--drawer-width-capture); background: var(--surface); box-shadow: var(--elevation-modal); z-index: var(--z-panel); display: flex; flex-direction: column; }
+  /* rounded only on the two inner (left) corners — the panel meets the viewport's top/right/bottom edges flush, but the inward-facing edge gets a soft corner instead of a hard rule */
+  aside.drawer-panel { position: fixed; top: 0; right: 0; bottom: 0; width: var(--drawer-width-capture); background: var(--surface); border-radius: var(--radius-lg) 0 0 var(--radius-lg); box-shadow: var(--elevation-modal); z-index: var(--z-panel); display: flex; flex-direction: column; overflow: hidden; }
 
   header.drawer-header { padding: var(--space-4) var(--space-5); display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--surface-raised); flex-shrink: 0; }
   header.drawer-header h1 { font-family: var(--font-serif); font-size: var(--type-title-size); font-weight: 600; color: var(--ink); margin: 0; }
   button.icon-btn { width: 36px; height: 36px; border-radius: var(--radius-full); border: 1.5px solid var(--border); background: var(--surface-raised); display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; color: var(--ink-2); }
   button.icon-btn:hover { border-color: var(--border-strong); color: var(--ink); }
 
-  /* two columns only when a photo is present — photo+preset on the left, the rest on the right; nothing to put beside empty space otherwise */
-  form { flex: 1; overflow-y: auto; padding: var(--space-5); display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); align-content: start; }
-  form[data-state="no-photo"] { grid-template-columns: 1fr; max-width: 380px; margin: 0 auto; }
-  .form-col { display: flex; flex-direction: column; gap: var(--space-5); min-width: 0; }
+  /* only the photo+note row goes two-up, and only when a photo is present (nothing to pair the note with otherwise).
+     Feeling and people stay full-width rows below — 13 feeling chips cramped into a ~280px column wrapped
+     into a tall, lopsided mess against the photo; full width lets them sit in 1-2 relaxed rows instead. */
+  form { flex: 1; overflow-y: auto; padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-5); }
+  .form-row-top { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); }
+  form[data-state="no-photo"] .form-row-top { grid-template-columns: 1fr; }
+  .form-col { display: flex; flex-direction: column; min-width: 0; }
 
   label.field-label { display: block; font-size: 13px; font-weight: 600; color: var(--ink-2); margin-bottom: var(--space-2); }
 
@@ -77,7 +81,9 @@
   .field-emoji-picker button[data-state="selected"] { border-color: var(--primary); background: var(--primary-soft-bg); color: var(--primary); font-weight: 600; }
   .picker-group-label { display: block; font-size: 12px; font-weight: 600; color: var(--ink-3); margin: 0 0 6px; text-transform: uppercase; letter-spacing: 0.02em; }
 
-  .field-textarea { width: 100%; min-height: 96px; border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: var(--space-3); font-family: var(--font-serif); font-size: 16px; line-height: 1.5; color: var(--ink); background: var(--surface-raised); resize: none; }
+  /* height roughly matches the photo+preset column beside it (~4:3 preview + preset row) so the top row doesn't look lopsided */
+  .field-textarea { width: 100%; min-height: 220px; border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: var(--space-3); font-family: var(--font-serif); font-size: 16px; line-height: 1.5; color: var(--ink); background: var(--surface-raised); resize: none; }
+  form[data-state="no-photo"] .field-textarea { min-height: 140px; }
 
   .field-person-picker { display: flex; flex-wrap: wrap; gap: var(--space-2); }
   .field-person-picker button { min-height: 40px; padding: 0 var(--space-3); border-radius: var(--radius-full); border: 1.5px solid var(--border); background: var(--surface-raised); font-size: 13px; color: var(--ink-2); cursor: pointer; }
@@ -129,8 +135,8 @@
 
       <!-- two-column-when-photo-present: real behavior toggles form[data-state] between "photo"/"no-photo" when the photo picker is used; this mockup renders the photo-present state -->
       <form data-focus-order="1,2,3,4" data-state="photo">
-        <div class="form-col">
-          <div>
+        <div class="form-row-top">
+          <div class="form-col">
             <label class="field-label" for="photo">Photo <span style="font-weight:400;color:var(--ink-3)">(optional)</span></label>
             <div class="field-photo-preview" role="img" aria-label="Selected photo, Warm preset applied"></div>
             <div class="field-preset-picker" data-component="input" data-variant="preset-picker" data-state="preset-picker" role="radiogroup" aria-label="Photo look">
@@ -139,45 +145,43 @@
               <button type="button" class="preset-thumb"><span class="swatch"></span><span>Bright</span></button>
             </div>
           </div>
-        </div>
 
-        <div class="form-col">
-          <div>
-            <label class="field-label">How did it feel?</label>
-            <span class="picker-group-label">Positive</span>
-            <div class="field-emoji-picker field-emoji-picker-positive" data-component="input" data-variant="emoji-picker" data-state="emoji-picker" data-validate="required" role="radiogroup" aria-label="Feeling">
-              <button type="button" data-state="selected">🥹 moved</button>
-              <button type="button">😂 delighted</button>
-              <button type="button">😌 relieved</button>
-              <button type="button">🥰 grateful</button>
-              <button type="button">😮 surprised</button>
-            </div>
-            <span class="picker-group-label">Negative</span>
-            <div class="field-emoji-picker field-emoji-picker-negative" role="radiogroup" aria-label="Feeling, continued">
-              <button type="button">😭 overwhelmed</button>
-              <button type="button">😠 angry</button>
-              <button type="button">😖 stressed</button>
-              <button type="button">😒 jealous</button>
-              <button type="button">😢 sad</button>
-              <button type="button">😞 disappointed</button>
-              <button type="button">😤 frustrated</button>
-              <button type="button">😔 helpless</button>
-              <button type="button" data-state="custom-trigger">💬 something else</button>
-            </div>
-          </div>
-
-          <div>
+          <div class="form-col">
             <label class="field-label" for="note">What happened?</label>
             <textarea id="note" class="field-textarea" data-component="input" data-variant="textarea" data-state="textarea" placeholder="First steps. Four wobbly ones toward the fence…">First steps. Four wobbly ones toward the fence, then straight into my arms.</textarea>
           </div>
+        </div>
 
-          <div>
-            <label class="field-label">Who's this about? <span style="font-weight:400;color:var(--ink-3)">(optional)</span></label>
-            <div class="field-person-picker" data-component="input" data-variant="person-picker" data-state="person-picker">
-              <button type="button" data-state="selected">Kai</button>
-              <button type="button">Grandma Rita</button>
-              <button type="button">+ Add person</button>
-            </div>
+        <div>
+          <label class="field-label">How did it feel?</label>
+          <span class="picker-group-label">Positive</span>
+          <div class="field-emoji-picker field-emoji-picker-positive" data-component="input" data-variant="emoji-picker" data-state="emoji-picker" data-validate="required" role="radiogroup" aria-label="Feeling">
+            <button type="button" data-state="selected">🥹 moved</button>
+            <button type="button">😂 delighted</button>
+            <button type="button">😌 relieved</button>
+            <button type="button">🥰 grateful</button>
+            <button type="button">😮 surprised</button>
+          </div>
+          <span class="picker-group-label">Negative</span>
+          <div class="field-emoji-picker field-emoji-picker-negative" role="radiogroup" aria-label="Feeling, continued">
+            <button type="button">😭 overwhelmed</button>
+            <button type="button">😠 angry</button>
+            <button type="button">😖 stressed</button>
+            <button type="button">😒 jealous</button>
+            <button type="button">😢 sad</button>
+            <button type="button">😞 disappointed</button>
+            <button type="button">😤 frustrated</button>
+            <button type="button">😔 helpless</button>
+            <button type="button" data-state="custom-trigger">💬 something else</button>
+          </div>
+        </div>
+
+        <div>
+          <label class="field-label">Who's this about? <span style="font-weight:400;color:var(--ink-3)">(optional)</span></label>
+          <div class="field-person-picker" data-component="input" data-variant="person-picker" data-state="person-picker">
+            <button type="button" data-state="selected">Kai</button>
+            <button type="button">Grandma Rita</button>
+            <button type="button">+ Add person</button>
           </div>
         </div>
       </form>

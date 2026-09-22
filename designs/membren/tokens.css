@@ -113,13 +113,9 @@
 
   /* ===== Layout — desktop (>=1024px) ===== */
   --desktop-breakpoint: 1024px;
-  --desktop-breakpoint-wide: 1280px;
   --sidebar-width-expanded: 220px;
   --sidebar-width-collapsed: 72px;
   --content-max-width-desktop: 640px;
   --drawer-width: 440px;
   --drawer-width-capture: 640px;
-  --list-pane-width: 380px;
-  --modal-width-capture: 560px;
-  --modal-width-detail: 680px;
 }
