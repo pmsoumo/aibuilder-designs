@@ -1,74 +1,258 @@
 <!-- COMPONENT INVENTORY: bottom-nav, capture-tab, empty-state, button-primary, icon -->
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>membren — Feed (empty / first-time)</title>
-<style>
-  :root {
-    --surface: #f7f6f5; --surface-raised: #ffffff;
-    --ink: #2b2420; --ink-2: #6b6058; --ink-3: #a39a91; --ink-inverse: #ffffff;
-    --border: #e8e4e0;
-    --primary: #a8503a; --primary-soft-bg: #f6e9e5;
-    --font-serif: ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
-    --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
-    --type-title-size: 22px; --type-title-weight: 600;
-    --type-button-size: 15px;
-    --space-3: 12px; --space-4: 16px; --space-5: 24px; --space-6: 32px;
-    --radius-md: 12px; --radius-lg: 16px; --radius-full: 9999px;
-  }
-  * { box-sizing: border-box; }
-  body { margin: 0; background: #e9e7e4; font-family: var(--font-sans); display: flex; justify-content: center; padding: 32px 12px; }
-  .device { width: 375px; min-height: 780px; background: var(--surface); border-radius: var(--radius-lg); overflow: hidden; box-shadow: 0 1px 3px rgba(43,36,32,0.15); display: flex; flex-direction: column; }
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>membren — Feed (empty / first-time)</title>
+    <style>
+      :root {
+        --surface: #f7f6f5;
+        --surface-raised: #ffffff;
+        --ink: #2b2420;
+        --ink-2: #6b6058;
+        --ink-3: #a39a91;
+        --ink-inverse: #ffffff;
+        --border: #e8e4e0;
+        --primary: #a8503a;
+        --primary-soft-bg: #f6e9e5;
+        --font-serif:
+          ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
+        --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+        --type-title-size: 22px;
+        --type-title-weight: 600;
+        --type-button-size: 15px;
+        --space-3: 12px;
+        --space-4: 16px;
+        --space-5: 24px;
+        --space-6: 32px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --radius-full: 9999px;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #e9e7e4;
+        font-family: var(--font-sans);
+        display: flex;
+        justify-content: center;
+        padding: 32px 12px;
+      }
+      .device {
+        width: 375px;
+        min-height: 780px;
+        background: var(--surface);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(43, 36, 32, 0.15);
+        display: flex;
+        flex-direction: column;
+      }
 
-  header.app-header { padding: var(--space-5) var(--space-4) var(--space-3); }
-  header.app-header h1 { font-family: var(--font-serif); font-size: var(--type-title-size); font-weight: var(--type-title-weight); color: var(--ink); margin: 0; }
+      header.app-header {
+        padding: var(--space-5) var(--space-4) var(--space-3);
+      }
+      header.app-header h1 {
+        font-family: var(--font-serif);
+        font-size: var(--type-title-size);
+        font-weight: var(--type-title-weight);
+        color: var(--ink);
+        margin: 0;
+      }
 
-  main { flex: 1; display: flex; align-items: center; justify-content: center; padding: var(--space-6); }
+      main {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--space-6);
+      }
 
-  .empty-state { text-align: center; display: flex; flex-direction: column; align-items: center; gap: var(--space-4); }
-  .empty-state .glyph { width: 64px; height: 64px; border-radius: var(--radius-full); background: var(--primary-soft-bg); display: flex; align-items: center; justify-content: center; font-size: 28px; }
-  .empty-state p { font-family: var(--font-serif); font-size: 17px; line-height: 1.5; color: var(--ink); margin: 0; max-width: 26ch; }
-  .empty-state p.sub { font-family: var(--font-sans); font-size: 14px; color: var(--ink-2); margin: -8px 0 0; }
+      .empty-state {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-4);
+      }
+      .empty-state .glyph {
+        width: 64px;
+        height: 64px;
+        border-radius: var(--radius-full);
+        background: var(--primary-soft-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+      }
+      .empty-state p {
+        font-family: var(--font-serif);
+        font-size: 17px;
+        line-height: 1.5;
+        color: var(--ink);
+        margin: 0;
+        max-width: 26ch;
+      }
+      .empty-state p.sub {
+        font-family: var(--font-sans);
+        font-size: 14px;
+        color: var(--ink-2);
+        margin: -8px 0 0;
+      }
 
-  .btn-primary { min-height: 44px; padding: 0 var(--space-5); background: var(--primary); color: var(--ink-inverse); border: none; border-radius: var(--radius-md); font-family: var(--font-sans); font-size: var(--type-button-size); font-weight: 600; }
+      .btn-primary {
+        min-height: 44px;
+        padding: 0 var(--space-5);
+        background: var(--primary);
+        color: var(--ink-inverse);
+        border: none;
+        border-radius: var(--radius-md);
+        font-family: var(--font-sans);
+        font-size: var(--type-button-size);
+        font-weight: 600;
+      }
 
-  nav.bottom-nav { display: flex; align-items: center; justify-content: space-around; padding: var(--space-3) var(--space-4); border-top: 1px solid var(--border); background: var(--surface-raised); position: sticky; bottom: 0; z-index: 10; }
-  nav.bottom-nav a { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 44px; min-height: 44px; justify-content: center; text-decoration: none; color: var(--ink-3); font-size: 11px; }
-  nav.bottom-nav a[data-state="active"] { color: var(--primary); font-weight: 600; }
-  nav.bottom-nav a.capture-tab .icon-circle { width: 44px; height: 44px; border-radius: var(--radius-full); background: var(--primary); color: var(--ink-inverse); display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(168,80,58,0.35); }
-  nav.bottom-nav a:not(.capture-tab) .icon { font-size: 18px; }
-</style>
-</head>
-<body>
-<div class="device" data-app="membren" data-screen="feed-empty">
+      nav.bottom-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        padding: var(--space-3) var(--space-4);
+        border-top: 1px solid var(--border);
+        background: var(--surface-raised);
+        position: sticky;
+        bottom: 0;
+        z-index: 10;
+      }
+      nav.bottom-nav a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        min-width: 44px;
+        min-height: 44px;
+        justify-content: center;
+        text-decoration: none;
+        color: var(--ink-3);
+        font-size: 11px;
+      }
+      nav.bottom-nav a[data-state="active"] {
+        color: var(--primary);
+        font-weight: 600;
+      }
+      nav.bottom-nav a.capture-tab .icon-circle {
+        width: 44px;
+        height: 44px;
+        border-radius: var(--radius-full);
+        background: var(--primary);
+        color: var(--ink-inverse);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 6px rgba(168, 80, 58, 0.35);
+      }
+      nav.bottom-nav a:not(.capture-tab) .icon {
+        font-size: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="device" data-app="membren" data-screen="feed-empty">
+      <header class="app-header"><h1>Feed</h1></header>
 
-  <header class="app-header"><h1>Feed</h1></header>
+      <main>
+        <div class="empty-state" data-component="empty-state">
+          <span class="glyph" role="img" aria-label="Camera">📸</span>
+          <p>
+            Nothing here yet. Your feed fills up one small moment at a time.
+          </p>
+          <p class="sub">
+            A photo, a thought, a feeling — that's all it takes.
+          </p>
+          <button
+            class="btn-primary"
+            data-component="button-primary"
+            data-state="capture-first"
+            data-primary-action="true"
+            onclick="location.href = 'capture.html'"
+          >
+            Capture your first memory
+          </button>
+        </div>
+      </main>
 
-  <main>
-    <div class="empty-state" data-component="empty-state">
-      <span class="glyph" role="img" aria-label="Camera">📸</span>
-      <p>Nothing here yet. Your feed fills up one small moment at a time.</p>
-      <p class="sub">A photo, a thought, a feeling — that's all it takes.</p>
-      <button class="btn-primary" data-component="button-primary" data-state="capture-first" data-primary-action="true" onclick="location.href='capture.html'">Capture your first memory</button>
+      <nav
+        class="bottom-nav"
+        data-component="bottom-nav"
+        role="navigation"
+        aria-label="Primary"
+      >
+        <a href="feed.html" data-state="active">
+          <svg
+            class="icon"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            data-component="icon"
+            data-variant="home"
+          >
+            <path d="M4 11l8-7 8 7" />
+            <path d="M6 10v9a1 1 0 0 0 1 1h4v-6h2v6h4a1 1 0 0 0 1-1v-9" />
+          </svg>
+          Feed
+        </a>
+        <a
+          href="capture.html"
+          class="capture-tab"
+          data-component="capture-tab"
+          aria-label="Capture a memory"
+        >
+          <span class="icon-circle"
+            ><svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              data-component="icon"
+              data-variant="plus"
+            >
+              <path d="M12 5v14M5 12h14" /></svg
+          ></span>
+        </a>
+        <a href="#">
+          <svg
+            class="icon"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            data-component="icon"
+            data-variant="settings"
+          >
+            <path d="M4 6h16" />
+            <circle cx="9" cy="6" r="2" fill="currentColor" stroke="none" />
+            <path d="M4 12h16" />
+            <circle cx="15" cy="12" r="2" fill="currentColor" stroke="none" />
+            <path d="M4 18h16" />
+            <circle cx="7" cy="18" r="2" fill="currentColor" stroke="none" />
+          </svg>
+          Settings
+        </a>
+      </nav>
     </div>
-  </main>
-
-  <nav class="bottom-nav" data-component="bottom-nav" role="navigation" aria-label="Primary">
-    <a href="feed.html" data-state="active">
-      <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-component="icon" data-variant="home"><path d="M4 11l8-7 8 7"/><path d="M6 10v9a1 1 0 0 0 1 1h4v-6h2v6h4a1 1 0 0 0 1-1v-9"/></svg>
-      Feed
-    </a>
-    <a href="capture.html" class="capture-tab" data-component="capture-tab" aria-label="Capture a memory">
-      <span class="icon-circle"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" data-component="icon" data-variant="plus"><path d="M12 5v14M5 12h14"/></svg></span>
-    </a>
-    <a href="#">
-      <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-component="icon" data-variant="settings"><path d="M4 6h16"/><circle cx="9" cy="6" r="2" fill="currentColor" stroke="none"/><path d="M4 12h16"/><circle cx="15" cy="12" r="2" fill="currentColor" stroke="none"/><path d="M4 18h16"/><circle cx="7" cy="18" r="2" fill="currentColor" stroke="none"/></svg>
-      Settings
-    </a>
-  </nav>
-
-</div>
-</body>
+  </body>
 </html>

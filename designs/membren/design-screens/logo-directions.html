@@ -1,0 +1,383 @@
+<!-- COMPONENT INVENTORY: brand-mark, wordmark -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>membren — logo directions (warm hearth)</title>
+    <style>
+      :root {
+        --surface: #f7f6f5;
+        --surface-raised: #ffffff;
+        --ink: #2b2420;
+        --ink-2: #6b6058;
+        --border: #e8e4e0;
+        --primary: #a8503a;
+        --primary-strong: #8a4230;
+        --accent: #6f8267;
+        --radius-lg: 16px;
+        --font-serif:
+          ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
+        --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--surface);
+        color: var(--ink);
+        font-family: var(--font-sans);
+      }
+      .wrap {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 32px 20px 64px;
+      }
+      h1 {
+        font-family: var(--font-serif);
+        font-size: 28px;
+        margin: 0 0 6px;
+      }
+      .sub {
+        color: var(--ink-2);
+        font-size: 15px;
+        margin: 0 0 24px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+      }
+      .card {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .card h2 {
+        font-family: var(--font-serif);
+        font-size: 19px;
+        margin: 0;
+      }
+      .card .tag {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--ink-2);
+        letter-spacing: 0.02em;
+      }
+      .lockup {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 20px 16px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+      }
+      .lockup .wm {
+        font-family: var(--font-serif);
+        font-size: 30px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+      .row {
+        display: flex;
+        gap: 12px;
+      }
+      .tile {
+        flex: 1;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px;
+        text-align: center;
+      }
+      .tile.dark {
+        background: var(--ink);
+        border-color: var(--ink);
+        color: #fff;
+      }
+      .tile .cap {
+        font-size: 11px;
+        color: var(--ink-2);
+        margin-top: 8px;
+      }
+      .tile.dark .cap {
+        color: #cbbfb6;
+      }
+      .fav {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        width: 48px;
+        height: 48px;
+      }
+      .note {
+        font-size: 13px;
+        line-height: 1.55;
+        color: var(--ink-2);
+      }
+      .note strong {
+        color: var(--ink);
+      }
+      .rec {
+        margin-top: 24px;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--primary);
+        border-radius: 12px;
+        padding: 18px 20px;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      .foot {
+        margin-top: 16px;
+        color: var(--ink-2);
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>membren — logo directions</h1>
+      <p class="sub">
+        Warm hearth · clay <b>#a8503a</b> · ink <b>#2b2420</b> · cream
+        <b>#f7f6f5</b> · serif wordmark. Pick one — I wire the winner into
+        sidebar / auth / favicon.
+      </p>
+      <div class="grid">
+        <!-- A: thread-knot M -->
+        <section class="card">
+          <div>
+            <div class="tag">A — THREAD-KNOT M</div>
+            <h2>One thread, kept</h2>
+          </div>
+          <div
+            class="lockup"
+            data-component="brand-mark"
+            data-variant="thread-knot"
+          >
+            <svg
+              width="44"
+              height="44"
+              viewBox="0 0 40 40"
+              fill="none"
+              aria-label="membren mark A"
+            >
+              <path
+                d="M7 31 V13 c0-4.5 6-5.5 8.2-1.8 L20 19.5 24.8 11.2 C27 7.5 33 8.5 33 13 V31"
+                stroke="#a8503a"
+                stroke-width="4.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <circle cx="20" cy="31" r="2.6" fill="#2b2420" />
+            </svg>
+            <span class="wm">membren</span>
+          </div>
+          <div class="row">
+            <div class="tile">
+              <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+                <path
+                  d="M7 31 V13 c0-4.5 6-5.5 8.2-1.8 L20 19.5 24.8 11.2 C27 7.5 33 8.5 33 13 V31"
+                  stroke="#a8503a"
+                  stroke-width="4.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <circle cx="20" cy="31" r="2.6" fill="#2b2420" />
+              </svg>
+              <div class="cap">mark · light</div>
+            </div>
+            <div class="tile dark">
+              <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+                <path
+                  d="M7 31 V13 c0-4.5 6-5.5 8.2-1.8 L20 19.5 24.8 11.2 C27 7.5 33 8.5 33 13 V31"
+                  stroke="#f7f6f5"
+                  stroke-width="4.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <circle cx="20" cy="31" r="2.6" fill="#e8a58f" />
+              </svg>
+              <div class="cap">mark · reversed</div>
+            </div>
+            <div class="tile">
+              <span class="fav"
+                ><svg width="24" height="24" viewBox="0 0 40 40" fill="none">
+                  <path
+                    d="M7 31 V13 c0-4.5 6-5.5 8.2-1.8 L20 19.5 24.8 11.2 C27 7.5 33 8.5 33 13 V31"
+                    stroke="#a8503a"
+                    stroke-width="5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  /></svg
+              ></span>
+              <div class="cap">favicon 24px</div>
+            </div>
+          </div>
+          <p class="note">
+            <strong>Reads as:</strong> memory as a kept thread; the dot is the
+            kept moment. Most ownable, warmest. <strong>Risk:</strong> busiest
+            at 16px — needs the bold favicon cut.
+          </p>
+        </section>
+
+        <!-- B: ember ring -->
+        <section class="card">
+          <div>
+            <div class="tag">B — EMBER RING</div>
+            <h2>Quiet hearth circle</h2>
+          </div>
+          <div
+            class="lockup"
+            data-component="brand-mark"
+            data-variant="ember-ring"
+          >
+            <svg
+              width="44"
+              height="44"
+              viewBox="0 0 40 40"
+              fill="none"
+              aria-label="membren mark B"
+            >
+              <path
+                d="M20 6 a14 14 0 1 0 12.1 7"
+                stroke="#2b2420"
+                stroke-width="4.2"
+                stroke-linecap="round"
+              />
+              <circle cx="32.5" cy="12.5" r="3.4" fill="#a8503a" />
+            </svg>
+            <span class="wm">membren</span>
+          </div>
+          <div class="row">
+            <div class="tile">
+              <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+                <path
+                  d="M20 6 a14 14 0 1 0 12.1 7"
+                  stroke="#2b2420"
+                  stroke-width="4.2"
+                  stroke-linecap="round"
+                />
+                <circle cx="32.5" cy="12.5" r="3.4" fill="#a8503a" />
+              </svg>
+              <div class="cap">mark · light</div>
+            </div>
+            <div class="tile dark">
+              <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+                <path
+                  d="M20 6 a14 14 0 1 0 12.1 7"
+                  stroke="#f7f6f5"
+                  stroke-width="4.2"
+                  stroke-linecap="round"
+                />
+                <circle cx="32.5" cy="12.5" r="3.4" fill="#e8a58f" />
+              </svg>
+              <div class="cap">mark · reversed</div>
+            </div>
+            <div class="tile">
+              <span class="fav"
+                ><svg width="24" height="24" viewBox="0 0 40 40" fill="none">
+                  <path
+                    d="M20 6 a14 14 0 1 0 12.1 7"
+                    stroke="#2b2420"
+                    stroke-width="5"
+                    stroke-linecap="round"
+                  />
+                  <circle cx="32.5" cy="12.5" r="4" fill="#a8503a" /></svg
+              ></span>
+              <div class="cap">favicon 24px</div>
+            </div>
+          </div>
+          <p class="note">
+            <strong>Reads as:</strong> hearth circle, ember gap = the warm
+            moment. Calmest, most premium-minimal, best at tiny sizes.
+            <strong>Risk:</strong> least literal — circle-plus-dot genre is
+            common.
+          </p>
+        </section>
+
+        <!-- C: wordmark only -->
+        <section class="card">
+          <div>
+            <div class="tag">C — WORDMARK ONLY</div>
+            <h2>Refined lowercase serif</h2>
+          </div>
+          <div
+            class="lockup"
+            data-component="wordmark"
+            data-variant="serif-stop"
+          >
+            <span class="wm" style="font-size: 34px"
+              >membren<span style="color: #a8503a">.</span></span
+            >
+          </div>
+          <div class="row">
+            <div class="tile">
+              <span
+                style="
+                  font-family: var(--font-serif);
+                  font-size: 24px;
+                  font-weight: 600;
+                "
+                >membren<span style="color: #a8503a">.</span></span
+              >
+              <div class="cap">wordmark · light</div>
+            </div>
+            <div class="tile dark">
+              <span
+                style="
+                  font-family: var(--font-serif);
+                  font-size: 24px;
+                  font-weight: 600;
+                  color: #fff;
+                "
+                >membren<span style="color: #e8a58f">.</span></span
+              >
+              <div class="cap">wordmark · reversed</div>
+            </div>
+            <div class="tile">
+              <span class="fav"
+                ><span
+                  style="
+                    font-family: var(--font-serif);
+                    font-size: 22px;
+                    font-weight: 700;
+                    color: #a8503a;
+                  "
+                  >m.</span
+                ></span
+              >
+              <div class="cap">favicon “m.”</div>
+            </div>
+          </div>
+          <p class="note">
+            <strong>Reads as:</strong> editorial keepsake — nothing to decode.
+            Cheapest to own everywhere. <strong>Risk:</strong> no symbol, so
+            app-icon/sidebar rely on the “m.” cut alone.
+          </p>
+        </section>
+      </div>
+
+      <div class="rec">
+        <strong>My recommendation: A (thread-knot M).</strong> It is the only
+        one that says <i>memories, kept</i> without words, carries the clay
+        brand color in the mark itself, and still pairs with the existing serif
+        wordmark. B if you want quieter luxury; C if you want zero-symbol
+        minimalism.
+      </div>
+      <p class="foot">
+        Reply <b>A</b>, <b>B</b>, or <b>C</b> (or a tweak, e.g. “A but softer”)
+        — then I build the SVG set + wire sidebar / auth / favicon in one pass.
+      </p>
+    </div>
+  </body>
+</html>
