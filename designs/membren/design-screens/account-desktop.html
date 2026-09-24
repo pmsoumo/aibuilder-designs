@@ -1,0 +1,166 @@
+<!-- COMPONENT INVENTORY: sidebar-nav, page-panel, icon -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>membren — Account (desktop)</title>
+    <style>
+      :root {
+        --surface: #f7f6f5;
+        --surface-raised: #ffffff;
+        --ink: #2b2420;
+        --ink-2: #6b6058;
+        --border: #e8e4e0;
+        --primary: #a8503a;
+        --space-1: 4px;
+        --space-3: 12px;
+        --space-4: 16px;
+        --space-5: 24px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --font-serif: ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
+        --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+      body {
+        margin: 0;
+        background: #e9e7e4;
+        font-family: var(--font-sans);
+        display: flex;
+        justify-content: center;
+        padding: 32px 12px;
+      }
+      .desktop-shell {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        width: 100%;
+        max-width: 1200px;
+        min-height: 800px;
+        background: var(--surface);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+      }
+      .sidebar {
+        background: var(--surface-raised);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        padding: var(--space-4);
+      }
+      .sidebar-links {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+        flex: 1;
+      }
+      .sidebar-links a {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        min-height: 44px;
+        padding: 0 var(--space-2);
+        border-radius: var(--radius-md);
+        text-decoration: none;
+        color: var(--ink-2);
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .sidebar-account {
+        padding-top: var(--space-4);
+        border-top: 1px solid var(--border);
+      }
+      .account-block {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        padding: var(--space-2);
+        border-radius: var(--radius-md);
+        background: var(--primary-soft-bg, #f6e9e5);
+        color: var(--primary);
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+      }
+      .content {
+        padding: var(--space-5);
+      }
+      .account-grid {
+        max-width: 600px;
+        display: grid;
+        gap: var(--space-5);
+      }
+      .section-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--ink-2);
+        text-transform: uppercase;
+        margin-bottom: var(--space-3);
+      }
+      .account-row {
+        background: var(--surface-raised);
+        padding: var(--space-3) var(--space-4);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: var(--space-2);
+      }
+      .account-row.danger {
+        color: var(--primary);
+      }
+      .account-row.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="desktop-shell">
+      <aside class="sidebar">
+        <div class="sidebar-links">
+          <a href="capture-desktop.html">New memory</a>
+          <a href="feed-desktop.html">Feed</a>
+          <a href="#">Settings</a>
+        </div>
+        <div class="sidebar-account">
+          <a href="account-desktop.html" class="account-block">
+            <span>Avatar</span>
+            user@example.com
+          </a>
+        </div>
+      </aside>
+      <main class="content">
+        <div class="account-grid">
+          <h1>Account</h1>
+          <div class="account-section">
+            <div class="section-title">Identity</div>
+            <div class="account-row">
+              <span>Email</span>
+              <span style="color: var(--ink-2)">user@example.com</span>
+            </div>
+          </div>
+          <div class="account-section">
+            <div class="section-title">Legal</div>
+            <a href="/legal/privacy" class="account-row" style="text-decoration: none; color: var(--ink)">
+              <span>Privacy Policy</span>
+            </a>
+            <a href="/legal/terms" class="account-row" style="text-decoration: none; color: var(--ink)">
+              <span>Terms and Conditions</span>
+            </a>
+          </div>
+          <div class="account-section">
+            <div class="section-title">Danger Zone</div>
+            <div class="account-row danger disabled">
+              <span>Delete account</span>
+              <span>Coming soon</span>
+            </div>
+            <div class="account-row" style="cursor: pointer;">
+              <span style="color: var(--ink)">Sign out</span>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
