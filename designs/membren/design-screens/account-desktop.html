@@ -1,4 +1,4 @@
-<!-- COMPONENT INVENTORY: sidebar-nav, page-panel, icon -->
+<!-- COMPONENT INVENTORY: sidebar-nav, account-settings, confirmation-dialog, button-secondary, icon -->
 <!doctype html>
 <html lang="en">
   <head>
@@ -13,6 +13,8 @@
         --ink-2: #6b6058;
         --border: #e8e4e0;
         --primary: #a8503a;
+        --error: #b3402c;
+        --surface-overlay: rgba(43, 36, 32, 0.35);
         --space-1: 4px;
         --space-3: 12px;
         --space-4: 16px;
@@ -108,11 +110,21 @@
         margin-bottom: var(--space-2);
       }
       .account-row.danger {
-        color: var(--primary);
+        color: var(--error);
       }
-      .account-row.disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
+      .account-row button { width: 100%; min-height: 44px; border: 0; background: transparent; color: inherit; text-align: left; font: inherit; cursor: pointer; }
+      .arrow { color: var(--ink-2); }
+      .confirmation-backdrop { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: var(--surface-overlay); }
+      .confirmation-dialog { width: 420px; max-width: calc(100vw - 48px); background: var(--surface-raised); border-radius: var(--radius-lg); box-shadow: 0 24px 48px -12px rgba(43, 36, 32, 0.2); padding: var(--space-5); }
+      .confirmation-dialog h2 { margin: 0; font-family: var(--font-serif); font-size: 22px; color: var(--ink); }
+      .confirmation-dialog p { margin: var(--space-3) 0 var(--space-4); color: var(--ink-2); font-size: 14px; line-height: 1.5; }
+      .confirmation-dialog label { display: block; color: var(--ink); font-size: 13px; font-weight: 600; margin-bottom: var(--space-2); }
+      .confirmation-dialog input { box-sizing: border-box; width: 100%; min-height: 44px; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0 var(--space-3); font: inherit; }
+      .dialog-actions { display: flex; justify-content: end; gap: var(--space-2); margin-top: var(--space-4); }
+      .dialog-actions button { min-height: 44px; padding: 0 var(--space-4); border-radius: var(--radius-md); font: inherit; font-weight: 600; cursor: pointer; }
+      .cancel { border: 1px solid var(--border); background: var(--surface-raised); color: var(--ink); }
+      .delete { border: 1px solid var(--error); background: var(--error); color: #fff; }
+      .delete:disabled { border-color: var(--border); background: var(--border); color: var(--ink-2); cursor: not-allowed; }
       }
     </style>
   </head>
@@ -131,7 +143,7 @@
           </a>
         </div>
       </aside>
-      <main class="content">
+      <main class="content" data-component="account-settings">
         <div class="account-grid">
           <h1>Account</h1>
           <div class="account-section">
@@ -149,6 +161,7 @@
               style="text-decoration: none; color: var(--ink)"
             >
               <span>Privacy Policy</span>
+              <span class="arrow" aria-hidden="true">›</span>
             </a>
             <a
               href="/legal/terms"
@@ -156,13 +169,13 @@
               style="text-decoration: none; color: var(--ink)"
             >
               <span>Terms and Conditions</span>
+              <span class="arrow" aria-hidden="true">›</span>
             </a>
           </div>
           <div class="account-section">
             <div class="section-title">Danger Zone</div>
-            <div class="account-row danger disabled">
-              <span>Delete account</span>
-              <span>Coming soon</span>
+            <div class="account-row danger">
+              <button type="button" data-interaction="open-delete-confirmation" onclick="openDialog()">Delete account</button>
             </div>
             <div class="account-row" style="cursor: pointer">
               <span style="color: var(--ink)">Sign out</span>
@@ -170,6 +183,25 @@
           </div>
         </div>
       </main>
+      <div id="delete-dialog" class="confirmation-backdrop" data-component="confirmation-dialog" data-variant="modal" data-state="closed" role="presentation" hidden>
+        <section class="confirmation-dialog" role="dialog" aria-modal="true" aria-labelledby="delete-heading" onclick="event.stopPropagation()">
+          <h2 id="delete-heading">Delete your account?</h2>
+          <p>This permanently removes your memories, photos, and public links. It cannot be undone.</p>
+          <label for="delete-confirmation">Type DELETE to continue</label>
+          <input id="delete-confirmation" autocomplete="off" data-validate="required|exact:DELETE" oninput="syncDelete(this.value)" />
+          <div class="dialog-actions">
+            <button class="cancel" type="button" onclick="closeDialog()">Cancel</button>
+            <button id="delete-action" class="delete" type="button" disabled>Delete account</button>
+          </div>
+        </section>
+      </div>
     </div>
+    <script>
+      const dialog = document.getElementById('delete-dialog');
+      function openDialog() { dialog.hidden = false; dialog.dataset.state = 'open'; document.getElementById('delete-confirmation').focus(); }
+      function closeDialog() { dialog.hidden = true; dialog.dataset.state = 'closed'; document.getElementById('delete-confirmation').value = ''; syncDelete(''); }
+      function syncDelete(value) { document.getElementById('delete-action').disabled = value !== 'DELETE'; }
+      dialog.addEventListener('click', closeDialog);
+    </script>
   </body>
 </html>
