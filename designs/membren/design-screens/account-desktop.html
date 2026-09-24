@@ -143,7 +143,7 @@
           </a>
         </div>
       </aside>
-      <main class="content" data-component="account-settings">
+      <main class="content" data-component="account-settings" data-state="desktop">
         <div class="account-grid">
           <h1>Account</h1>
           <div class="account-section">
@@ -183,7 +183,7 @@
           </div>
         </div>
       </main>
-      <div id="delete-dialog" class="confirmation-backdrop" data-component="confirmation-dialog" data-variant="modal" data-state="closed" role="presentation" hidden>
+      <div id="delete-dialog" class="confirmation-backdrop" data-component="confirmation-dialog" data-variant="modal" data-state="closed-desktop" role="presentation" hidden>
         <section class="confirmation-dialog" role="dialog" aria-modal="true" aria-labelledby="delete-heading" onclick="event.stopPropagation()">
           <h2 id="delete-heading">Delete your account?</h2>
           <p>This permanently removes your memories, photos, and public links. It cannot be undone.</p>
@@ -198,8 +198,8 @@
     </div>
     <script>
       const dialog = document.getElementById('delete-dialog');
-      function openDialog() { dialog.hidden = false; dialog.dataset.state = 'open'; document.getElementById('delete-confirmation').focus(); }
-      function closeDialog() { dialog.hidden = true; dialog.dataset.state = 'closed'; document.getElementById('delete-confirmation').value = ''; syncDelete(''); }
+      function openDialog() { dialog.hidden = false; dialog.dataset.state = 'open-desktop'; document.getElementById('delete-confirmation').focus(); }
+      function closeDialog() { dialog.hidden = true; dialog.dataset.state = 'closed-desktop'; document.getElementById('delete-confirmation').value = ''; syncDelete(''); }
       function syncDelete(value) { document.getElementById('delete-action').disabled = value !== 'DELETE'; }
       dialog.addEventListener('click', closeDialog);
     </script>
