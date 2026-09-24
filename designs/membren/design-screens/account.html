@@ -41,6 +41,7 @@
         overflow: hidden;
         display: flex;
         flex-direction: column;
+        position: relative;
       }
       header.app-header {
         padding: var(--space-5) var(--space-4) var(--space-3);
@@ -78,8 +79,8 @@
       }
       .account-row button { width: 100%; min-height: 44px; border: 0; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; }
       .account-row .arrow { color: var(--ink-2); }
-      .confirmation-backdrop { position: fixed; inset: 0; display: flex; align-items: end; background: var(--surface-overlay); z-index: 800; }
-      .confirmation-dialog { width: 100%; box-sizing: border-box; border-radius: var(--radius-lg) var(--radius-lg) 0 0; background: var(--surface-raised); padding: var(--space-5) var(--space-4); }
+      .confirmation-backdrop { position: absolute; inset: 0; display: flex; align-items: end; background: var(--surface-overlay); z-index: 800; }
+      .confirmation-dialog { width: 100%; max-width: 100%; box-sizing: border-box; border-radius: var(--radius-lg) var(--radius-lg) 0 0; background: var(--surface-raised); padding: var(--space-5) var(--space-4); }
       .confirmation-dialog h2 { margin: 0; font-family: var(--font-serif); font-size: 22px; color: var(--ink); }
       .confirmation-dialog p { margin: var(--space-2) 0 var(--space-4); color: var(--ink-2); font-size: 14px; line-height: 1.5; }
       .confirmation-dialog label { display: block; color: var(--ink); font-size: 13px; font-weight: 600; margin-bottom: var(--space-2); }
