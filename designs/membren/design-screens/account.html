@@ -112,7 +112,11 @@
   <body>
     <div class="device">
       <header class="app-header">Account</header>
-      <main class="content" data-component="account-settings" data-state="mobile">
+      <main
+        class="content"
+        data-component="account-settings"
+        data-state="mobile"
+      >
         <div class="account-section">
           <div class="section-title">Identity</div>
           <div class="account-row">
@@ -142,22 +146,54 @@
         <div class="account-section">
           <div class="section-title">Danger Zone</div>
           <div class="account-row danger">
-            <button type="button" data-interaction="open-delete-confirmation" onclick="openDialog()">Delete account</button>
+            <button
+              type="button"
+              data-interaction="open-delete-confirmation"
+              onclick="openDialog()"
+            >
+              Delete account
+            </button>
           </div>
           <div class="account-row" style="cursor: pointer">
             <span style="color: var(--ink)">Sign out</span>
           </div>
         </div>
       </main>
-      <div id="delete-dialog" class="confirmation-backdrop" data-component="confirmation-dialog" data-variant="sheet" data-state="closed-mobile" role="presentation" hidden>
-        <section class="confirmation-dialog" role="dialog" aria-modal="true" aria-labelledby="delete-heading" onclick="event.stopPropagation()">
+      <div
+        id="delete-dialog"
+        class="confirmation-backdrop"
+        data-component="confirmation-dialog"
+        data-variant="sheet"
+        data-state="closed-mobile"
+        role="presentation"
+        hidden
+      >
+        <section
+          class="confirmation-dialog"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="delete-heading"
+          onclick="event.stopPropagation()"
+        >
           <h2 id="delete-heading">Delete your account?</h2>
-          <p>This permanently removes your memories, photos, and public links. It cannot be undone.</p>
+          <p>
+            This permanently removes your memories, photos, and public links. It
+            cannot be undone.
+          </p>
           <label for="delete-confirmation">Type DELETE to continue</label>
-          <input id="delete-confirmation" autocomplete="off" data-validate="required|exact:DELETE" oninput="syncDelete(this.value)" />
+          <input
+            id="delete-confirmation"
+            autocomplete="off"
+            data-validate="required|exact:DELETE"
+            oninput="syncDelete(this.value)"
+          />
           <div class="dialog-actions">
-            <button class="cancel" type="button" onclick="closeDialog()">Cancel</button>
-            <button id="delete-action" class="delete" type="button" disabled>Delete account</button>
+            <button class="cancel" type="button" onclick="closeDialog()">
+              Cancel
+            </button>
+            <button id="delete-action" class="delete" type="button" disabled>
+              Delete account
+            </button>
           </div>
         </section>
       </div>
@@ -220,11 +256,22 @@
       </nav>
     </div>
     <script>
-      const dialog = document.getElementById('delete-dialog');
-      function openDialog() { dialog.hidden = false; dialog.dataset.state = 'open-mobile'; document.getElementById('delete-confirmation').focus(); }
-      function closeDialog() { dialog.hidden = true; dialog.dataset.state = 'closed-mobile'; document.getElementById('delete-confirmation').value = ''; syncDelete(''); }
-      function syncDelete(value) { document.getElementById('delete-action').disabled = value !== 'DELETE'; }
-      dialog.addEventListener('click', closeDialog);
+      const dialog = document.getElementById("delete-dialog");
+      function openDialog() {
+        dialog.hidden = false;
+        dialog.dataset.state = "open-mobile";
+        document.getElementById("delete-confirmation").focus();
+      }
+      function closeDialog() {
+        dialog.hidden = true;
+        dialog.dataset.state = "closed-mobile";
+        document.getElementById("delete-confirmation").value = "";
+        syncDelete("");
+      }
+      function syncDelete(value) {
+        document.getElementById("delete-action").disabled = value !== "DELETE";
+      }
+      dialog.addEventListener("click", closeDialog);
     </script>
   </body>
 </html>
