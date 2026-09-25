@@ -11,123 +11,566 @@
     />
     <link rel="stylesheet" href="../tokens.css" />
     <style>
-      * { box-sizing: border-box; }
-      html { scroll-behavior: smooth; }
-      body { margin: 0; background: var(--surface); color: var(--ink); font: 16px/1.55 var(--font-sans); }
-      a { color: inherit; }
-      button, input { font: inherit; }
-      .wrap { width: min(1120px, calc(100% - 48px)); margin-inline: auto; }
-      .section { padding-block: clamp(76px, 9vw, 144px); }
-      .eyebrow { color: var(--primary); font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
-      h1, h2, h3, p { margin-top: 0; }
-      h1, h2, .story-quote, .entry-note, .close-title { font-family: var(--font-serif); font-weight: 400; }
-      h1 { max-width: 780px; font-size: clamp(50px, 6.3vw, 86px); line-height: 1.04; letter-spacing: -.055em; margin: 24px 0 26px; }
-      h1 em, h2 em { color: var(--primary); font-style: normal; }
-      h2 { font-size: clamp(36px, 4vw, 56px); line-height: 1.13; letter-spacing: -.04em; }
-      .lead { color: var(--ink-2); font-size: clamp(17px, 1.7vw, 20px); line-height: 1.55; max-width: 590px; }
-      .muted { color: var(--ink-2); }
-      .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 25px; background: var(--primary); border-radius: var(--radius-sm); color: white; font-size: 14px; font-weight: 650; text-decoration: none; transition: background .15s, transform .15s; }
-      .btn:hover { background: var(--primary-strong); transform: translateY(-2px); }
-      .btn:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
-      .caption { color: var(--ink-3); font-size: 12px; line-height: 1.5; }
-      header { border-bottom: 1px solid var(--border); }
-      .nav { min-height: 84px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
-      .brand { font-family: var(--font-serif); font-size: 29px; letter-spacing: -.05em; text-decoration: none; }
-      .nav-note { font-size: 13px; color: var(--ink-2); }
-      .nav-link { color: var(--primary); font-size: 13px; font-weight: 650; text-decoration: none; }
-      .hero { padding-top: clamp(76px, 9vw, 138px); padding-bottom: clamp(88px, 10vw, 154px); overflow: hidden; }
-      .hero-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(360px, .95fr); align-items: center; gap: clamp(48px, 6vw, 100px); }
-      .hero-copy { position: relative; z-index: 1; }
-      .hero-copy .lead { margin-bottom: 30px; }
-      .hero-foot { margin: 17px 0 0; max-width: 370px; }
-      .hero-art { position: relative; padding: 26px 0 22px 35px; }
-      .hero-art::before { content: ""; position: absolute; inset: 8% -21% 1% 4%; background: #eee7e0; border-radius: 52% 48% 49% 51%; transform: rotate(-9deg); }
-      .photograph { position: relative; display: block; width: 83%; aspect-ratio: 4 / 4.8; object-fit: cover; object-position: center; border: 9px solid white; box-shadow: 0 16px 45px rgba(43,36,32,.13); transform: rotate(4deg); }
-      .paper { position: absolute; bottom: 0; left: 0; width: min(340px, 83%); background: #fffdf9; padding: 24px 27px 22px; box-shadow: 0 12px 35px rgba(43,36,32,.13); transform: rotate(-5deg); }
-      .paper .date { color: var(--ink-3); font-size: 11px; text-transform: uppercase; letter-spacing: .12em; }
-      .paper p { font-family: var(--font-serif); font-size: 20px; line-height: 1.4; margin: 12px 0 15px; }
-      .feeling { display: inline-flex; align-items: center; gap: 7px; background: var(--accent-soft-bg); border-radius: 999px; color: var(--accent-strong); font-size: 11px; font-weight: 650; padding: 6px 10px; }
-      .feeling::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
-      .section-line { border-top: 1px solid var(--border); }
-      .recognition { background: #fffdf9; }
-      .recognition-grid { display: grid; grid-template-columns: .85fr 1.15fr; gap: clamp(50px, 10vw, 150px); align-items: start; }
-      .recognition h2 { max-width: 370px; margin-top: 17px; }
-      .recognition-text { padding-top: 18px; }
-      .recognition-text > p { color: var(--ink-2); font-size: 18px; max-width: 580px; }
-      .moments { margin: 30px 0 0; padding: 0; list-style: none; border-top: 1px solid var(--border); }
-      .moments li { border-bottom: 1px solid var(--border); padding: 18px 0; font-family: var(--font-serif); font-size: clamp(18px, 2vw, 22px); line-height: 1.4; }
-      .moments span { color: var(--primary); font: 600 12px var(--font-sans); letter-spacing: .12em; margin-right: 16px; }
-      .recognition-end { margin-top: 30px; font-family: var(--font-serif); font-size: 24px; line-height: 1.4; }
-      .how .section-head { max-width: 720px; }
-      .how .section-head h2 { margin: 18px 0 20px; }
-      .how-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 54px; }
-      .how-card { background: var(--surface-raised); box-shadow: var(--elevation-card); border-radius: var(--radius-lg); padding: 29px 27px 32px; min-height: 238px; }
-      .how-card .number { color: var(--primary); font-family: var(--font-serif); font-size: 30px; }
-      .how-card h3 { font-family: var(--font-serif); font-size: 27px; font-weight: 400; margin: 22px 0 11px; letter-spacing: -.025em; }
-      .how-card p { color: var(--ink-2); font-size: 14px; margin: 0; }
-      .how-foot { margin: 27px 0 0; color: var(--ink-2); font-size: 14px; }
-      .archive { background: #ebece6; overflow: hidden; }
-      .archive-grid { display: grid; grid-template-columns: .85fr 1.15fr; gap: clamp(40px, 7vw, 100px); align-items: center; }
-      .archive h2 { margin: 18px 0 22px; }
-      .archive-copy p:not(.eyebrow) { max-width: 375px; color: var(--ink-2); }
-      .timeline { background: #fffdfa; border-radius: var(--radius-lg); box-shadow: 0 18px 55px rgba(43,36,32,.09); padding: 29px clamp(20px, 3.5vw, 40px) 31px; }
-      .timeline-top { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; border-bottom: 1px solid var(--border); padding-bottom: 19px; }
-      .timeline-title { font-family: var(--font-serif); font-size: 25px; letter-spacing: -.03em; }
-      .timeline-label { color: var(--ink-3); font-size: 11px; }
-      .entry { display: grid; grid-template-columns: 86px minmax(0, 1fr); gap: 16px; padding: 23px 0; border-bottom: 1px solid var(--border); }
-      .entry:last-of-type { border: 0; padding-bottom: 0; }
-      .entry-date { color: var(--ink-3); font-size: 11px; line-height: 1.5; padding-top: 4px; }
-      .entry-heading { font-weight: 650; font-size: 13px; margin: 0 0 8px; }
-      .entry-note { font-size: 17px; line-height: 1.45; margin: 0 0 12px; }
-      .entry .feeling { font-size: 10px; padding: 4px 8px; }
-      .entry-with-image { display: grid; grid-template-columns: minmax(0, 1fr) 82px; gap: 14px; }
-      .entry-image { width: 82px; height: 82px; object-fit: cover; border-radius: var(--radius-sm); }
-      .archive-bottom { color: var(--accent-strong); font-size: 11px; margin-top: 26px; padding: 11px 13px; border-radius: var(--radius-sm); background: var(--accent-soft-bg); }
-      .quiet { background: #fffdf9; }
-      .quiet-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(50px, 8vw, 120px); align-items: center; }
-      .quiet h2 { max-width: 490px; margin: 17px 0 0; }
-      .quiet-copy { font-family: var(--font-serif); font-size: clamp(21px, 2.2vw, 27px); line-height: 1.45; }
-      .quiet-copy p:last-child { color: var(--ink-2); font-family: var(--font-sans); font-size: 15px; line-height: 1.65; }
-      .closing { text-align: center; background: var(--surface); }
-      .closing-inner { max-width: 660px; margin: auto; }
-      .closing h2 { margin: 18px 0 20px; }
-      .closing .lead { margin: 0 auto 30px; }
-      .closing .caption { margin: 15px auto 0; }
-      footer { border-top: 1px solid var(--border); padding: 32px 0 45px; }
-      .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; color: var(--ink-2); font-size: 12px; }
-      .footer-inner a { text-decoration: none; }
-      .footer-inner a:hover { text-decoration: underline; }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        background: var(--surface);
+        color: var(--ink);
+        font: 16px/1.55 var(--font-sans);
+      }
+      a {
+        color: inherit;
+      }
+      button,
+      input {
+        font: inherit;
+      }
+      .wrap {
+        width: min(1120px, calc(100% - 48px));
+        margin-inline: auto;
+      }
+      .section {
+        padding-block: clamp(76px, 9vw, 144px);
+      }
+      .eyebrow {
+        color: var(--primary);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+      h1,
+      h2,
+      .story-quote,
+      .entry-note,
+      .close-title {
+        font-family: var(--font-serif);
+        font-weight: 400;
+      }
+      h1 {
+        max-width: 780px;
+        font-size: clamp(50px, 6.3vw, 86px);
+        line-height: 1.04;
+        letter-spacing: -0.055em;
+        margin: 24px 0 26px;
+      }
+      h1 em,
+      h2 em {
+        color: var(--primary);
+        font-style: normal;
+      }
+      h2 {
+        font-size: clamp(36px, 4vw, 56px);
+        line-height: 1.13;
+        letter-spacing: -0.04em;
+      }
+      .lead {
+        color: var(--ink-2);
+        font-size: clamp(17px, 1.7vw, 20px);
+        line-height: 1.55;
+        max-width: 590px;
+      }
+      .muted {
+        color: var(--ink-2);
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 52px;
+        padding: 0 25px;
+        background: var(--primary);
+        border-radius: var(--radius-sm);
+        color: white;
+        font-size: 14px;
+        font-weight: 650;
+        text-decoration: none;
+        transition:
+          background 0.15s,
+          transform 0.15s;
+      }
+      .btn:hover {
+        background: var(--primary-strong);
+        transform: translateY(-2px);
+      }
+      .btn:focus-visible,
+      a:focus-visible {
+        outline: 3px solid var(--accent);
+        outline-offset: 3px;
+      }
+      .caption {
+        color: var(--ink-3);
+        font-size: 12px;
+        line-height: 1.5;
+      }
+      header {
+        border-bottom: 1px solid var(--border);
+      }
+      .nav {
+        min-height: 84px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+      }
+      .brand {
+        font-family: var(--font-serif);
+        font-size: 29px;
+        letter-spacing: -0.05em;
+        text-decoration: none;
+      }
+      .nav-note {
+        font-size: 13px;
+        color: var(--ink-2);
+      }
+      .nav-link {
+        color: var(--primary);
+        font-size: 13px;
+        font-weight: 650;
+        text-decoration: none;
+      }
+      .hero {
+        padding-top: clamp(76px, 9vw, 138px);
+        padding-bottom: clamp(88px, 10vw, 154px);
+        overflow: hidden;
+      }
+      .hero-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
+        align-items: center;
+        gap: clamp(48px, 6vw, 100px);
+      }
+      .hero-copy {
+        position: relative;
+        z-index: 1;
+      }
+      .hero-copy .lead {
+        margin-bottom: 30px;
+      }
+      .hero-foot {
+        margin: 17px 0 0;
+        max-width: 370px;
+      }
+      .hero-art {
+        position: relative;
+        padding: 26px 0 22px 35px;
+      }
+      .hero-art::before {
+        content: "";
+        position: absolute;
+        inset: 8% -21% 1% 4%;
+        background: #eee7e0;
+        border-radius: 52% 48% 49% 51%;
+        transform: rotate(-9deg);
+      }
+      .photograph {
+        position: relative;
+        display: block;
+        width: 83%;
+        aspect-ratio: 4 / 4.8;
+        object-fit: cover;
+        object-position: center;
+        border: 9px solid white;
+        box-shadow: 0 16px 45px rgba(43, 36, 32, 0.13);
+        transform: rotate(4deg);
+      }
+      .paper {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: min(340px, 83%);
+        background: #fffdf9;
+        padding: 24px 27px 22px;
+        box-shadow: 0 12px 35px rgba(43, 36, 32, 0.13);
+        transform: rotate(-5deg);
+      }
+      .paper .date {
+        color: var(--ink-3);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+      }
+      .paper p {
+        font-family: var(--font-serif);
+        font-size: 20px;
+        line-height: 1.4;
+        margin: 12px 0 15px;
+      }
+      .feeling {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: var(--accent-soft-bg);
+        border-radius: 999px;
+        color: var(--accent-strong);
+        font-size: 11px;
+        font-weight: 650;
+        padding: 6px 10px;
+      }
+      .feeling::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--accent);
+      }
+      .section-line {
+        border-top: 1px solid var(--border);
+      }
+      .recognition {
+        background: #fffdf9;
+      }
+      .recognition-grid {
+        display: grid;
+        grid-template-columns: 0.85fr 1.15fr;
+        gap: clamp(50px, 10vw, 150px);
+        align-items: start;
+      }
+      .recognition h2 {
+        max-width: 370px;
+        margin-top: 17px;
+      }
+      .recognition-text {
+        padding-top: 18px;
+      }
+      .recognition-text > p {
+        color: var(--ink-2);
+        font-size: 18px;
+        max-width: 580px;
+      }
+      .moments {
+        margin: 30px 0 0;
+        padding: 0;
+        list-style: none;
+        border-top: 1px solid var(--border);
+      }
+      .moments li {
+        border-bottom: 1px solid var(--border);
+        padding: 18px 0;
+        font-family: var(--font-serif);
+        font-size: clamp(18px, 2vw, 22px);
+        line-height: 1.4;
+      }
+      .moments span {
+        color: var(--primary);
+        font: 600 12px var(--font-sans);
+        letter-spacing: 0.12em;
+        margin-right: 16px;
+      }
+      .recognition-end {
+        margin-top: 30px;
+        font-family: var(--font-serif);
+        font-size: 24px;
+        line-height: 1.4;
+      }
+      .how .section-head {
+        max-width: 720px;
+      }
+      .how .section-head h2 {
+        margin: 18px 0 20px;
+      }
+      .how-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 20px;
+        margin-top: 54px;
+      }
+      .how-card {
+        background: var(--surface-raised);
+        box-shadow: var(--elevation-card);
+        border-radius: var(--radius-lg);
+        padding: 29px 27px 32px;
+        min-height: 238px;
+      }
+      .how-card .number {
+        color: var(--primary);
+        font-family: var(--font-serif);
+        font-size: 30px;
+      }
+      .how-card h3 {
+        font-family: var(--font-serif);
+        font-size: 27px;
+        font-weight: 400;
+        margin: 22px 0 11px;
+        letter-spacing: -0.025em;
+      }
+      .how-card p {
+        color: var(--ink-2);
+        font-size: 14px;
+        margin: 0;
+      }
+      .how-foot {
+        margin: 27px 0 0;
+        color: var(--ink-2);
+        font-size: 14px;
+      }
+      .archive {
+        background: #ebece6;
+        overflow: hidden;
+      }
+      .archive-grid {
+        display: grid;
+        grid-template-columns: 0.85fr 1.15fr;
+        gap: clamp(40px, 7vw, 100px);
+        align-items: center;
+      }
+      .archive h2 {
+        margin: 18px 0 22px;
+      }
+      .archive-copy p:not(.eyebrow) {
+        max-width: 375px;
+        color: var(--ink-2);
+      }
+      .timeline {
+        background: #fffdfa;
+        border-radius: var(--radius-lg);
+        box-shadow: 0 18px 55px rgba(43, 36, 32, 0.09);
+        padding: 29px clamp(20px, 3.5vw, 40px) 31px;
+      }
+      .timeline-top {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 14px;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 19px;
+      }
+      .timeline-title {
+        font-family: var(--font-serif);
+        font-size: 25px;
+        letter-spacing: -0.03em;
+      }
+      .timeline-label {
+        color: var(--ink-3);
+        font-size: 11px;
+      }
+      .entry {
+        display: grid;
+        grid-template-columns: 86px minmax(0, 1fr);
+        gap: 16px;
+        padding: 23px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .entry:last-of-type {
+        border: 0;
+        padding-bottom: 0;
+      }
+      .entry-date {
+        color: var(--ink-3);
+        font-size: 11px;
+        line-height: 1.5;
+        padding-top: 4px;
+      }
+      .entry-heading {
+        font-weight: 650;
+        font-size: 13px;
+        margin: 0 0 8px;
+      }
+      .entry-note {
+        font-size: 17px;
+        line-height: 1.45;
+        margin: 0 0 12px;
+      }
+      .entry .feeling {
+        font-size: 10px;
+        padding: 4px 8px;
+      }
+      .entry-with-image {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 82px;
+        gap: 14px;
+      }
+      .entry-image {
+        width: 82px;
+        height: 82px;
+        object-fit: cover;
+        border-radius: var(--radius-sm);
+      }
+      .archive-bottom {
+        color: var(--accent-strong);
+        font-size: 11px;
+        margin-top: 26px;
+        padding: 11px 13px;
+        border-radius: var(--radius-sm);
+        background: var(--accent-soft-bg);
+      }
+      .quiet {
+        background: #fffdf9;
+      }
+      .quiet-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: clamp(50px, 8vw, 120px);
+        align-items: center;
+      }
+      .quiet h2 {
+        max-width: 490px;
+        margin: 17px 0 0;
+      }
+      .quiet-copy {
+        font-family: var(--font-serif);
+        font-size: clamp(21px, 2.2vw, 27px);
+        line-height: 1.45;
+      }
+      .quiet-copy p:last-child {
+        color: var(--ink-2);
+        font-family: var(--font-sans);
+        font-size: 15px;
+        line-height: 1.65;
+      }
+      .closing {
+        text-align: center;
+        background: var(--surface);
+      }
+      .closing-inner {
+        max-width: 660px;
+        margin: auto;
+      }
+      .closing h2 {
+        margin: 18px 0 20px;
+      }
+      .closing .lead {
+        margin: 0 auto 30px;
+      }
+      .closing .caption {
+        margin: 15px auto 0;
+      }
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 32px 0 45px;
+      }
+      .footer-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        color: var(--ink-2);
+        font-size: 12px;
+      }
+      .footer-inner a {
+        text-decoration: none;
+      }
+      .footer-inner a:hover {
+        text-decoration: underline;
+      }
       @media (max-width: 850px) {
-        .hero-grid, .recognition-grid, .archive-grid, .quiet-grid { grid-template-columns: 1fr; }
-        .hero-grid { gap: 56px; }
-        .hero-art { max-width: 540px; width: 100%; margin: auto; }
-        .recognition-grid, .quiet-grid { gap: 20px; }
-        .how-grid { grid-template-columns: 1fr; gap: 13px; }
-        .how-card { min-height: auto; padding: 23px; }
-        .how-card h3 { margin-top: 6px; }
-        .archive-grid { gap: 32px; }
+        .hero-grid,
+        .recognition-grid,
+        .archive-grid,
+        .quiet-grid {
+          grid-template-columns: 1fr;
+        }
+        .hero-grid {
+          gap: 56px;
+        }
+        .hero-art {
+          max-width: 540px;
+          width: 100%;
+          margin: auto;
+        }
+        .recognition-grid,
+        .quiet-grid {
+          gap: 20px;
+        }
+        .how-grid {
+          grid-template-columns: 1fr;
+          gap: 13px;
+        }
+        .how-card {
+          min-height: auto;
+          padding: 23px;
+        }
+        .how-card h3 {
+          margin-top: 6px;
+        }
+        .archive-grid {
+          gap: 32px;
+        }
       }
       @media (max-width: 560px) {
-        .wrap { width: min(100% - 36px, 460px); }
-        .nav { min-height: 68px; }
-        .nav-note { display: none; }
-        .brand { font-size: 26px; }
-        .hero { padding-top: 65px; }
-        h1 { font-size: clamp(47px, 12vw, 64px); margin: 17px 0 21px; }
-        .lead { font-size: 16px; }
-        .hero-art { padding-left: 24px; max-width: 420px; }
-        .paper { padding: 17px 18px; width: 84%; }
-        .paper p { font-size: 16px; margin: 8px 0 10px; }
-        .recognition-text { padding-top: 0; }
-        .moments li { padding: 16px 0; }
-        .timeline { padding: 21px 18px 24px; }
-        .entry { grid-template-columns: 56px 1fr; gap: 10px; }
-        .entry-with-image { grid-template-columns: 1fr 62px; gap: 8px; }
-        .entry-image { width: 62px; height: 70px; }
-        .entry-note { font-size: 15px; }
-        .footer-inner { align-items: flex-start; flex-direction: column; gap: 12px; }
+        .wrap {
+          width: min(100% - 36px, 460px);
+        }
+        .nav {
+          min-height: 68px;
+        }
+        .nav-note {
+          display: none;
+        }
+        .brand {
+          font-size: 26px;
+        }
+        .hero {
+          padding-top: 65px;
+        }
+        h1 {
+          font-size: clamp(47px, 12vw, 64px);
+          margin: 17px 0 21px;
+        }
+        .lead {
+          font-size: 16px;
+        }
+        .hero-art {
+          padding-left: 24px;
+          max-width: 420px;
+        }
+        .paper {
+          padding: 17px 18px;
+          width: 84%;
+        }
+        .paper p {
+          font-size: 16px;
+          margin: 8px 0 10px;
+        }
+        .recognition-text {
+          padding-top: 0;
+        }
+        .moments li {
+          padding: 16px 0;
+        }
+        .timeline {
+          padding: 21px 18px 24px;
+        }
+        .entry {
+          grid-template-columns: 56px 1fr;
+          gap: 10px;
+        }
+        .entry-with-image {
+          grid-template-columns: 1fr 62px;
+          gap: 8px;
+        }
+        .entry-image {
+          width: 62px;
+          height: 70px;
+        }
+        .entry-note {
+          font-size: 15px;
+        }
+        .footer-inner {
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 12px;
+        }
       }
-      @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .btn { transition: none; } }
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        .btn {
+          transition: none;
+        }
+      }
     </style>
   </head>
   <body>
@@ -145,35 +588,71 @@
           <div class="hero-copy">
             <p class="eyebrow">A private place for your moments</p>
             <h1>Photos show what happened. <em>Keep how it felt.</em></h1>
-            <p class="lead">Membren is a private memory journal for the feelings and thoughts behind the moments you want to remember.</p>
+            <p class="lead">
+              Membren is a private memory journal for the feelings and thoughts
+              behind the moments you want to remember.
+            </p>
             <a class="btn" href="#early-access">Join early access</a>
-            <p class="caption hero-foot">A few words and a feeling are enough. No daily journal to keep up with.</p>
+            <p class="caption hero-foot">
+              A few words and a feeling are enough. No daily journal to keep up
+              with.
+            </p>
           </div>
-          <div class="hero-art" aria-label="A photograph alongside the words and feeling kept with the moment">
-            <img class="photograph" src="assets/samay-shark-story.jpg" alt="Samay holding a soft-toy shark at a hillside gift shop" />
+          <div
+            class="hero-art"
+            aria-label="A photograph alongside the words and feeling kept with the moment"
+          >
+            <img
+              class="photograph"
+              src="assets/samay-shark-story.jpg"
+              alt="Samay holding a soft-toy shark at a hillside gift shop"
+            />
             <div class="paper">
               <div class="date">One afternoon, this summer</div>
-              <p>He wanted every soft toy. Then he sat with them a while and chose the shark.</p>
+              <p>
+                He wanted every soft toy. Then he sat with them a while and
+                chose the shark.
+              </p>
               <span class="feeling">moved</span>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="section recognition section-line" aria-labelledby="recognition-title">
+      <section
+        class="section recognition section-line"
+        aria-labelledby="recognition-title"
+      >
         <div class="wrap recognition-grid">
           <div>
             <p class="eyebrow">You know the feeling</p>
-            <h2 id="recognition-title">You have the photo. <em>But not quite the moment.</em></h2>
+            <h2 id="recognition-title">
+              You have the photo. <em>But not quite the moment.</em>
+            </h2>
           </div>
           <div class="recognition-text">
-            <p>You scroll back to a trip and remember where you went. The rest is harder to reach: the conversation after dinner, the drink you loved, how you felt on the way home.</p>
+            <p>
+              You scroll back to a trip and remember where you went. The rest is
+              harder to reach: the conversation after dinner, the drink you
+              loved, how you felt on the way home.
+            </p>
             <ul class="moments">
-              <li><span>01</span>The lunch where an old friend said something that stayed with you.</li>
-              <li><span>02</span>The way the sea looked on a day you finally slowed down.</li>
-              <li><span>03</span>The look on your child’s face when they tried something alone.</li>
+              <li>
+                <span>01</span>The lunch where an old friend said something that
+                stayed with you.
+              </li>
+              <li>
+                <span>02</span>The way the sea looked on a day you finally
+                slowed down.
+              </li>
+              <li>
+                <span>03</span>The look on your child’s face when they tried
+                something alone.
+              </li>
             </ul>
-            <p class="recognition-end">The picture is still there. Your side of the story gets blurrier.</p>
+            <p class="recognition-end">
+              The picture is still there. Your side of the story gets blurrier.
+            </p>
           </div>
         </div>
       </section>
@@ -183,26 +662,41 @@
           <div class="section-head">
             <p class="eyebrow">What membren keeps</p>
             <h2 id="how-title">The part a photo <em>can’t hold.</em></h2>
-            <p class="lead">Not a polished life story. Just the words you would want to find again when the details have started to fade.</p>
+            <p class="lead">
+              Not a polished life story. Just the words you would want to find
+              again when the details have started to fade.
+            </p>
           </div>
           <div class="how-grid">
             <article class="how-card">
               <div class="number">01</div>
               <h3>Your words</h3>
-              <p>One line, a little more, or a whole thought. Write what this moment meant to you, not what would look good to anyone else.</p>
+              <p>
+                One line, a little more, or a whole thought. Write what this
+                moment meant to you, not what would look good to anyone else.
+              </p>
             </article>
             <article class="how-card">
               <div class="number">02</div>
               <h3>The feeling</h3>
-              <p>Keep the emotion alongside it. Sometimes a few words and a feeling say everything you need.</p>
+              <p>
+                Keep the emotion alongside it. Sometimes a few words and a
+                feeling say everything you need.
+              </p>
             </article>
             <article class="how-card">
               <div class="number">03</div>
               <h3>The moment around it</h3>
-              <p>Add a photo, a date, or the people who were there when you have them. A memory can be small and still be worth keeping.</p>
+              <p>
+                Add a photo, a date, or the people who were there when you have
+                them. A memory can be small and still be worth keeping.
+              </p>
             </article>
           </div>
-          <p class="how-foot">Start with a moment from today—or one you’ve been meaning to put into words for years.</p>
+          <p class="how-foot">
+            Start with a moment from today—or one you’ve been meaning to put
+            into words for years.
+          </p>
         </div>
       </section>
 
@@ -211,16 +705,33 @@
           <div class="archive-copy">
             <p class="eyebrow">For your future self</p>
             <h2 id="archive-title">Come back to more than a photograph.</h2>
-            <p>Your moments gather in a simple timeline. Later, you can find the words you chose, the feeling you named, and the person you were in that moment.</p>
-            <p>Some dates bring a memory back into view. No promise to recreate the past—just a way back to what you actually wrote.</p>
+            <p>
+              Your moments gather in a simple timeline. Later, you can find the
+              words you chose, the feeling you named, and the person you were in
+              that moment.
+            </p>
+            <p>
+              Some dates bring a memory back into view. No promise to recreate
+              the past—just a way back to what you actually wrote.
+            </p>
           </div>
-          <div class="timeline" role="img" aria-label="Illustrative timeline of three moments with dated notes, a feeling, and a photograph">
-            <div class="timeline-top"><span class="timeline-title">Your moments</span><span class="timeline-label">ILLUSTRATIVE PREVIEW</span></div>
+          <div
+            class="timeline"
+            role="img"
+            aria-label="Illustrative timeline of three moments with dated notes, a feeling, and a photograph"
+          >
+            <div class="timeline-top">
+              <span class="timeline-title">Your moments</span
+              ><span class="timeline-label">ILLUSTRATIVE PREVIEW</span>
+            </div>
             <div class="entry">
               <div class="entry-date">18 JUN<br />2026</div>
               <div>
                 <p class="entry-heading">After the long drive</p>
-                <p class="entry-note">The windows were down. For once, nobody needed us to be anywhere else.</p>
+                <p class="entry-note">
+                  The windows were down. For once, nobody needed us to be
+                  anywhere else.
+                </p>
                 <span class="feeling">at ease</span>
               </div>
             </div>
@@ -229,21 +740,32 @@
               <div class="entry-with-image">
                 <div>
                   <p class="entry-heading">The shark came with us</p>
-                  <p class="entry-note">He wanted every soft toy. Then he sat with them a while and chose the shark.</p>
+                  <p class="entry-note">
+                    He wanted every soft toy. Then he sat with them a while and
+                    chose the shark.
+                  </p>
                   <span class="feeling">moved</span>
                 </div>
-                <img class="entry-image" src="assets/samay-shark-story.jpg" alt="Samay with his shark" />
+                <img
+                  class="entry-image"
+                  src="assets/samay-shark-story.jpg"
+                  alt="Samay with his shark"
+                />
               </div>
             </div>
             <div class="entry">
               <div class="entry-date">12 APR<br />2026</div>
               <div>
                 <p class="entry-heading">Lunch with an old friend</p>
-                <p class="entry-note">We picked up mid-sentence after years apart.</p>
+                <p class="entry-note">
+                  We picked up mid-sentence after years apart.
+                </p>
                 <span class="feeling">grateful</span>
               </div>
             </div>
-            <div class="archive-bottom">Around this time last year &middot; A moment to revisit</div>
+            <div class="archive-bottom">
+              Around this time last year &middot; A moment to revisit
+            </div>
           </div>
         </div>
       </section>
@@ -255,19 +777,39 @@
             <h2 id="quiet-title">For remembering, <em>not performing.</em></h2>
           </div>
           <div class="quiet-copy">
-            <p>Not every feeling belongs in a post. Not every good day needs a highlight reel.</p>
-            <p>Membren is a private place for the honest, unfinished version of a moment. Keep it for yourself, and choose who you share it with.</p>
+            <p>
+              Not every feeling belongs in a post. Not every good day needs a
+              highlight reel.
+            </p>
+            <p>
+              Membren is a private place for the honest, unfinished version of a
+              moment. Keep it for yourself, and choose who you share it with.
+            </p>
           </div>
         </div>
       </section>
 
-      <section class="section closing section-line" id="early-access" aria-labelledby="closing-title">
+      <section
+        class="section closing section-line"
+        id="early-access"
+        aria-labelledby="closing-title"
+      >
         <div class="wrap closing-inner">
           <p class="eyebrow">A little more of your life, kept</p>
-          <h2 id="closing-title">Someday, you’ll be glad <em>you wrote it down.</em></h2>
-          <p class="lead">The small things become hard to remember. Give the moments you care about a place to stay.</p>
-          <a class="btn" href="https://getmembren.pages.dev/">Join early access</a>
-          <p class="caption">Design preview: this takes you to the current live waitlist. We’ll email you when early access is ready.</p>
+          <h2 id="closing-title">
+            Someday, you’ll be glad <em>you wrote it down.</em>
+          </h2>
+          <p class="lead">
+            The small things become hard to remember. Give the moments you care
+            about a place to stay.
+          </p>
+          <a class="btn" href="https://getmembren.pages.dev/"
+            >Join early access</a
+          >
+          <p class="caption">
+            Design preview: this takes you to the current live waitlist. We’ll
+            email you when early access is ready.
+          </p>
         </div>
       </section>
     </main>
