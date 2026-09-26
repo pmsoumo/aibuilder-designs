@@ -1,17 +1,83 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>membren — Upload &amp; video confirmation · mobile concept</title>
-  <link rel="stylesheet" href="assets/mixed-media-demo.css">
-  <link rel="stylesheet" href="assets/mixed-media-upload.css">
-  <script src="assets/mixed-media-upload.js" defer></script>
-</head>
-<body data-app="membren" data-screen="mixed-media-upload-mobile">
-  <div class="concept-bar"><strong>Interactive concept · not the live app</strong><a href="mixed-media-upload-desktop.html">Try desktop</a><a href="mixed-media-memory-mobile.html">Return to viewer concept</a><label for="upload-stage">Explore a state: <select id="upload-stage"><option value="uploading">Uploading video</option><option value="checking">Transfer finished · awaiting confirmation</option><option value="preparing">Preparing to play</option><option value="ready">Ready</option><option value="delayed">Confirmation taking longer</option><option value="failed">Video could not be prepared</option></select></label></div>
-  <div class="mobile-stage"><div class="device"><header class="mobile-head"><a href="feed.html" aria-label="Back to feed">←</a><span class="brand">membren</span><button type="button" disabled aria-label="More options">⋯</button></header>
-    <main class="mobile-content"><h1 data-screen-title>New memory</h1><span class="draft-label" data-draft-label>Saving your memory</span><div class="capture-layout"><div class="capture-media"><div class="field-name">Photos <span>up to 3</span></div><div class="photo-thumb"><img src="assets/mixed-media-photo.svg" alt="Illustrative photo chosen for this concept"><span>Photo 1 · saved</span></div><div class="field-name video-label">Video <span>up to 1</span></div><div class="video-file">▣ &nbsp; a-moment.mp4 <span data-file-state>uploading</span></div></div><div class="capture-story"><label class="field-name" for="memory-story">What happened?</label><textarea id="memory-story" readonly>This is a memory from building apps with agents.</textarea><div class="status-card" role="status" aria-live="polite"><span class="status-glyph" aria-hidden="true">◷</span><div><strong data-status-title></strong><p data-status-message></p><p class="status-next" data-status-next></p></div></div><p class="prototype-note" data-leave-hint></p></div></div><p class="prototype-note concept-footnote">Simulated states; no file is transferred or timing promised.</p></main>
-    <footer class="mobile-footer"><button class="btn primary" type="button" data-leave>See owner’s memory view</button></footer>
-  </div></div>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>membren — Upload &amp; video confirmation · mobile concept</title>
+    <link rel="stylesheet" href="assets/mixed-media-demo.css" />
+    <link rel="stylesheet" href="assets/mixed-media-upload.css" />
+    <script src="assets/mixed-media-upload.js" defer></script>
+  </head>
+  <body data-app="membren" data-screen="mixed-media-upload-mobile">
+    <div class="concept-bar">
+      <strong>Interactive concept · not the live app</strong
+      ><a href="mixed-media-upload-desktop.html">Try desktop</a
+      ><a href="mixed-media-memory-mobile.html">Return to viewer concept</a
+      ><label for="upload-stage"
+        >Explore a state:
+        <select id="upload-stage">
+          <option value="uploading">Uploading video</option>
+          <option value="checking">
+            Transfer finished · awaiting confirmation
+          </option>
+          <option value="preparing">Preparing to play</option>
+          <option value="ready">Ready</option>
+          <option value="delayed">Confirmation taking longer</option>
+          <option value="failed">Video could not be prepared</option>
+        </select></label
+      >
+    </div>
+    <div class="mobile-stage">
+      <div class="device">
+        <header class="mobile-head">
+          <a href="feed.html" aria-label="Back to feed">←</a
+          ><span class="brand">membren</span
+          ><button type="button" disabled aria-label="More options">⋯</button>
+        </header>
+        <main class="mobile-content">
+          <h1 data-screen-title>New memory</h1>
+          <span class="draft-label" data-draft-label>Saving your memory</span>
+          <div class="capture-layout">
+            <div class="capture-media">
+              <div class="field-name">Photos <span>up to 3</span></div>
+              <div class="photo-thumb">
+                <img
+                  src="assets/mixed-media-photo.svg"
+                  alt="Illustrative photo chosen for this concept"
+                /><span>Photo 1 · saved</span>
+              </div>
+              <div class="field-name video-label">
+                Video <span>up to 1</span>
+              </div>
+              <div class="video-file">
+                ▣ &nbsp; a-moment.mp4 <span data-file-state>uploading</span>
+              </div>
+            </div>
+            <div class="capture-story">
+              <label class="field-name" for="memory-story">What happened?</label
+              ><textarea id="memory-story" readonly>
+This is a memory from building apps with agents.</textarea>
+              <div class="status-card" role="status" aria-live="polite">
+                <span class="status-glyph" aria-hidden="true">◷</span>
+                <div>
+                  <strong data-status-title></strong>
+                  <p data-status-message></p>
+                  <p class="status-next" data-status-next></p>
+                </div>
+              </div>
+              <p class="prototype-note" data-leave-hint></p>
+            </div>
+          </div>
+          <p class="prototype-note concept-footnote">
+            Simulated states; no file is transferred or timing promised.
+          </p>
+        </main>
+        <footer class="mobile-footer">
+          <button class="btn primary" type="button" data-leave>
+            See owner’s memory view
+          </button>
+        </footer>
+      </div>
+    </div>
+  </body>
 </html>
