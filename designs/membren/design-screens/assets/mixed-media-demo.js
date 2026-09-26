@@ -50,6 +50,7 @@
       frame.innerHTML = '<div class="processing"><span class="processing-icon" aria-hidden="true">◷</span><strong>Video is processing</strong><p>Your photo is ready. The video will be playable once processing finishes.</p></div>';
     }
     counter.textContent = `${index + 1} of ${items.length} · ${item}`;
+    viewer.dataset.single = String(items.length === 1);
     previous.disabled = index === 0;
     next.disabled = index === items.length - 1;
     previous.setAttribute('aria-label', `Previous media, ${index > 0 ? items[index - 1] : 'unavailable'}`);
