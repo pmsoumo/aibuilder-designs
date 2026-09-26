@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 750" role="img" aria-label="Illustrative photo of an evening at home">
+  <defs><linearGradient id="wall" x2="0" y2="1"><stop stop-color="#ead4bd"/><stop offset="1" stop-color="#c8ac95"/></linearGradient><linearGradient id="window" x2="0" y2="1"><stop stop-color="#edbc98"/><stop offset="1" stop-color="#aaa287"/></linearGradient></defs>
+  <rect width="600" height="750" fill="url(#wall)"/>
+  <rect x="57" y="58" width="485" height="410" rx="12" fill="#9d7460"/><rect x="71" y="72" width="457" height="382" fill="url(#window)"/>
+  <circle cx="360" cy="258" r="69" fill="#f0d2a9"/><path d="M71 346Q180 291 267 358T528 346V454H71Z" fill="#737968"/><path d="M71 397Q214 319 351 413T528 365V454H71Z" fill="#5b6a57"/>
+  <path d="M300 72V454M71 281H528" stroke="#98715c" stroke-width="15"/>
+  <path d="M0 480H600V750H0Z" fill="#b99579"/><path d="M0 480H600" stroke="#8c6857" stroke-width="13"/>
+  <path d="M30 607Q169 535 331 589T600 561V750H0Z" fill="#d5b59e"/><ellipse cx="250" cy="650" rx="132" ry="31" fill="#97755f" opacity=".4"/>
+  <rect x="167" y="483" width="177" height="119" rx="20" fill="#bc7d65"/><path d="M187 480q80-62 139 0" fill="#cb9076"/>
+  <circle cx="449" cy="523" r="40" fill="#c59473"/><path d="M396 566q56-52 106 0l23 126H376Z" fill="#7c846d"/>
+  <path d="M413 515q17-57 64-29 8 13 5 30-29-24-69-1" fill="#443c36"/>
+  <text x="300" y="724" text-anchor="middle" fill="#664c40" font-family="Georgia,serif" font-size="17">An illustrative memory · no personal media</text>
+</svg>
