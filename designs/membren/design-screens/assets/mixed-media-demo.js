@@ -46,6 +46,8 @@
           }
         }, 1000);
       });
+    } else if (item === 'Unconfirmed video') {
+      frame.innerHTML = '<div class="processing"><span class="processing-icon" aria-hidden="true">◷</span><strong>Checking your video</strong><p>Your photo is saved. We haven’t confirmed the video with our video service yet, so it can’t play here. Only you can see this status.</p></div>';
     } else {
       frame.innerHTML = '<div class="processing"><span class="processing-icon" aria-hidden="true">◷</span><strong>Video is processing</strong><p>Your photo is ready. The video will be playable once processing finishes.</p></div>';
     }
@@ -74,7 +76,7 @@
   }
 
   function chooseScenario() {
-    items = scenario.value === 'processing' ? ['Photo', 'Processing video'] : scenario.value === 'photo' ? ['Photo'] : scenario.value === 'video' ? ['Video'] : ['Photo', 'Video'];
+    items = scenario.value === 'processing' ? ['Photo', 'Processing video'] : scenario.value === 'checking' ? ['Photo', 'Unconfirmed video'] : scenario.value === 'photo' ? ['Photo'] : scenario.value === 'video' ? ['Video'] : ['Photo', 'Video'];
     index = 0;
     render();
   }
