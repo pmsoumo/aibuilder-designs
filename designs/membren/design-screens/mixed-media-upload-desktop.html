@@ -1,20 +1,90 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>membren — Upload &amp; video confirmation · desktop concept</title>
-  <link rel="stylesheet" href="assets/mixed-media-demo.css">
-  <link rel="stylesheet" href="assets/mixed-media-upload.css">
-  <script src="assets/mixed-media-upload.js" defer></script>
-</head>
-<body data-app="membren" data-screen="mixed-media-upload-desktop">
-  <div class="concept-bar"><strong>Interactive concept · not the live app</strong><a href="mixed-media-upload-mobile.html">Try mobile</a><a href="mixed-media-memory-desktop.html">Return to viewer concept</a><label for="upload-stage">Explore a state: <select id="upload-stage"><option value="uploading">Uploading video</option><option value="checking">Transfer finished · awaiting confirmation</option><option value="preparing">Preparing to play</option><option value="ready">Ready</option><option value="delayed">Confirmation taking longer</option><option value="failed">Video could not be prepared</option></select></label></div>
-  <div class="shell"><aside class="sidebar"><div class="brand"><span class="brand-mark">M</span>membren</div><nav aria-label="App navigation"><a href="capture-desktop.html" class="active">＋ &nbsp; New memory</a><a href="feed-desktop.html">⌂ &nbsp; Feed</a><a href="#">☷ &nbsp; Settings</a></nav><div class="sidebar-bottom">Account settings</div></aside>
-    <main class="content"><div class="page-panel"><a class="back" href="feed-desktop.html">← &nbsp; Feed</a><div class="page-head"><h1 data-screen-title>New memory</h1><span class="draft-label" data-draft-label>Saving your memory</span></div>
-      <div class="capture-layout"><div class="capture-media"><div class="field-name">Photos <span>up to 3</span></div><div class="photo-thumb"><img src="assets/mixed-media-photo.svg" alt="Illustrative photo chosen for this concept"><span>Photo 1 · saved</span></div><div class="field-name video-label">Video <span>up to 1</span></div><div class="video-file">▣ &nbsp; a-moment.mp4 <span data-file-state>uploading</span></div></div>
-        <div class="capture-story"><label class="field-name" for="memory-story">What happened?</label><textarea id="memory-story" readonly>This is a memory from building apps with agents.</textarea><div class="status-card" role="status" aria-live="polite"><span class="status-glyph" aria-hidden="true">◷</span><div><strong data-status-title></strong><p data-status-message></p><p class="status-next" data-status-next></p></div></div><div class="concept-actions"><button class="btn primary" type="button" data-leave>See owner’s memory view</button><span class="prototype-note" data-leave-hint></span></div></div></div>
-      <p class="prototype-note concept-footnote">Choose stages above to explore the wording. This is simulated: no file is transferred, no progress percentage or timing is promised.</p>
-    </div></main>
-  </div>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>membren — Upload &amp; video confirmation · desktop concept</title>
+    <link rel="stylesheet" href="assets/mixed-media-demo.css" />
+    <link rel="stylesheet" href="assets/mixed-media-upload.css" />
+    <script src="assets/mixed-media-upload.js" defer></script>
+  </head>
+  <body data-app="membren" data-screen="mixed-media-upload-desktop">
+    <div class="concept-bar">
+      <strong>Interactive concept · not the live app</strong
+      ><a href="mixed-media-upload-mobile.html">Try mobile</a
+      ><a href="mixed-media-memory-desktop.html">Return to viewer concept</a
+      ><label for="upload-stage"
+        >Explore a state:
+        <select id="upload-stage">
+          <option value="uploading">Uploading video</option>
+          <option value="checking">
+            Transfer finished · awaiting confirmation
+          </option>
+          <option value="preparing">Preparing to play</option>
+          <option value="ready">Ready</option>
+          <option value="delayed">Confirmation taking longer</option>
+          <option value="failed">Video could not be prepared</option>
+        </select></label
+      >
+    </div>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand"><span class="brand-mark">M</span>membren</div>
+        <nav aria-label="App navigation">
+          <a href="capture-desktop.html" class="active">＋ &nbsp; New memory</a
+          ><a href="feed-desktop.html">⌂ &nbsp; Feed</a
+          ><a href="#">☷ &nbsp; Settings</a>
+        </nav>
+        <div class="sidebar-bottom">Account settings</div>
+      </aside>
+      <main class="content">
+        <div class="page-panel">
+          <a class="back" href="feed-desktop.html">← &nbsp; Feed</a>
+          <div class="page-head">
+            <h1 data-screen-title>New memory</h1>
+            <span class="draft-label" data-draft-label>Saving your memory</span>
+          </div>
+          <div class="capture-layout">
+            <div class="capture-media">
+              <div class="field-name">Photos <span>up to 3</span></div>
+              <div class="photo-thumb">
+                <img
+                  src="assets/mixed-media-photo.svg"
+                  alt="Illustrative photo chosen for this concept"
+                /><span>Photo 1 · saved</span>
+              </div>
+              <div class="field-name video-label">
+                Video <span>up to 1</span>
+              </div>
+              <div class="video-file">
+                ▣ &nbsp; a-moment.mp4 <span data-file-state>uploading</span>
+              </div>
+            </div>
+            <div class="capture-story">
+              <label class="field-name" for="memory-story">What happened?</label
+              ><textarea id="memory-story" readonly>
+This is a memory from building apps with agents.</textarea>
+              <div class="status-card" role="status" aria-live="polite">
+                <span class="status-glyph" aria-hidden="true">◷</span>
+                <div>
+                  <strong data-status-title></strong>
+                  <p data-status-message></p>
+                  <p class="status-next" data-status-next></p>
+                </div>
+              </div>
+              <div class="concept-actions">
+                <button class="btn primary" type="button" data-leave>
+                  See owner’s memory view</button
+                ><span class="prototype-note" data-leave-hint></span>
+              </div>
+            </div>
+          </div>
+          <p class="prototype-note concept-footnote">
+            Choose stages above to explore the wording. This is simulated: no
+            file is transferred, no progress percentage or timing is promised.
+          </p>
+        </div>
+      </main>
+    </div>
+  </body>
 </html>
