@@ -470,41 +470,6 @@
 
       <form data-focus-order="1,2,3,4">
         <div>
-          <label class="field-label">How did it feel?</label>
-          <!-- default: nothing picked, chips stay hidden until a valence is chosen — see the reference block below the drawer for the expanded state -->
-          <div
-            class="feeling-toggle"
-            data-component="feeling-picker"
-            data-variant="toggle"
-            data-validate="required"
-            role="radiogroup"
-            aria-label="How did it feel, broadly"
-          >
-            <button
-              type="button"
-              class="feeling-toggle-btn"
-              data-valence="positive"
-            >
-              🙂 Good
-            </button>
-            <button
-              type="button"
-              class="feeling-toggle-btn"
-              data-valence="negative"
-            >
-              😔 Hard
-            </button>
-            <button
-              type="button"
-              class="feeling-toggle-btn"
-              data-valence="custom"
-            >
-              💬 Something else
-            </button>
-          </div>
-        </div>
-
-        <div>
           <label class="field-label" for="note">What happened?</label>
           <textarea
             id="note"
@@ -538,6 +503,41 @@ First steps. Four wobbly ones toward the fence, then straight into my arms.</tex
             </button>
           </div>
           <!-- media-chips renders here once photos/video are attached — see reference states below -->
+        </div>
+
+        <div>
+          <label class="field-label">How did it feel?</label>
+          <!-- default: nothing picked, chips stay hidden until a valence is chosen — see the reference block below the drawer for the expanded state -->
+          <div
+            class="feeling-toggle"
+            data-component="feeling-picker"
+            data-variant="toggle"
+            data-validate="required"
+            role="radiogroup"
+            aria-label="How did it feel, broadly"
+          >
+            <button
+              type="button"
+              class="feeling-toggle-btn"
+              data-valence="positive"
+            >
+              🙂 Good
+            </button>
+            <button
+              type="button"
+              class="feeling-toggle-btn"
+              data-valence="negative"
+            >
+              😔 Hard
+            </button>
+            <button
+              type="button"
+              class="feeling-toggle-btn"
+              data-valence="custom"
+            >
+              💬 Something else
+            </button>
+          </div>
         </div>
 
         <div>
