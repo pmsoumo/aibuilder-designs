@@ -314,7 +314,7 @@
         border: none;
         cursor: pointer;
       }
-      .media-chip[data-kind="video-pending"] {
+      .media-chip[data-kind="video-pill"] {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -325,7 +325,60 @@
         text-align: center;
         padding: var(--space-1);
       }
+      .media-chip[data-state="processing"] {
+        opacity: 0.6;
+      }
       .chip-preset-reveal {
+        margin-top: var(--space-2);
+      }
+      .video-inline-preview {
+        position: relative;
+        width: 100%;
+        max-width: 420px;
+        aspect-ratio: 16/10;
+        border-radius: var(--radius-md);
+        background: linear-gradient(160deg, #cddcc7, #6f8267 120%);
+        margin-top: var(--space-2);
+      }
+      .video-play-badge {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius-full);
+        background: rgba(43, 36, 32, 0.55);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .video-duration {
+        position: absolute;
+        bottom: var(--space-2);
+        right: var(--space-2);
+        background: rgba(43, 36, 32, 0.6);
+        color: var(--ink-inverse);
+        font-size: 11px;
+        padding: 2px 6px;
+        border-radius: var(--radius-sm);
+      }
+      .video-remove {
+        position: absolute;
+        top: var(--space-1);
+        right: var(--space-1);
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-full);
+        border: none;
+        background: rgba(43, 36, 32, 0.55);
+        color: var(--ink-inverse);
+        font-size: 16px;
+        cursor: pointer;
+      }
+      .upload-error {
+        font-size: 13px;
+        color: #b3402c;
         margin-top: var(--space-2);
       }
 
@@ -922,40 +975,38 @@ First steps. Four wobbly ones toward the fence, then straight into my arms.</tex
       </div>
     </div>
 
-    <!-- media-toolbar / media-chip reference states — same states as mobile capture.html -->
-    <div style="max-width: 780px; margin: 16px auto 0; font-family: var(--font-sans)">
+    <!-- media-toolbar / media-chip — step-by-step upload sequence, grounded in real
+         CapturePage.jsx (onPickPhoto:138-168, onPickVideo:191-197). Same steps as mobile
+         capture.html; desktop-sized chips (72px) and preview. -->
+    <div style="max-width: 480px; margin: 16px auto 0; font-family: var(--font-sans)">
       <p style="font-size: 12px; color: var(--ink-2); margin: 0 0 8px">
-        media-toolbar — 2 photos + 1 video attached (video icon dims at its cap of 1):
+        <strong>Step 1</strong> — empty, tap the camera icon: opens the OS's native photo picker (platform UI, not this app's).
+      </p>
+
+      <p style="font-size: 12px; color: var(--ink-2); margin: 16px 0 8px">
+        <strong>Step 2</strong> — file picked, chip appears instantly with the raw original (presets not computed yet — CapturePage.jsx:150, no network call):
       </p>
       <div class="media-toolbar">
         <button type="button" aria-label="Add a photo, up to 3">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2" /><circle cx="12" cy="12.5" r="3.3" /></svg>
         </button>
-        <button type="button" data-state="disabled" aria-label="Video limit reached">
+        <button type="button" aria-label="Add a video">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2" /><path d="M16 10.5l5-2.5v8l-5-2.5" /></svg>
         </button>
       </div>
-      <div class="media-chips" data-component="media-chip">
-        <div class="media-chip" data-kind="photo">
-          <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='72' height='72'><rect width='72' height='72' fill='%23e7c9a9'/></svg>" alt="Photo 1" />
-          <button type="button" class="remove" aria-label="Remove photo 1">×</button>
+      <div class="media-chips">
+        <div class="media-chip" data-kind="photo" data-state="processing">
+          <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='72' height='72'><rect width='72' height='72' fill='%23cdbfae'/></svg>" alt="Photo 1, raw original" />
         </div>
-        <div class="media-chip" data-kind="photo">
-          <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='72' height='72'><rect width='72' height='72' fill='%23d8b48f'/></svg>" alt="Photo 2" />
-          <button type="button" class="remove" aria-label="Remove photo 2">×</button>
-        </div>
-        <div class="media-chip" data-kind="video-pill">
-          🎬<br /><span style="font-size:9px">1 video</span>
-          <button type="button" class="remove" aria-label="Remove video">×</button>
-        </div>
+        <span style="font-size:10px;color:var(--ink-3)">↑ original, presets pending (near-instant)</span>
       </div>
 
       <p style="font-size: 12px; color: var(--ink-2); margin: 16px 0 8px">
-        media-chip — tapped, reveals ITS preset row only (reuses field-preset-picker/preset-thumb verbatim):
+        <strong>Step 3</strong> — presets ready (CapturePage.jsx:153-163): chip swaps to the Warm default; tapping reveals Original/Warm/Bright (reuses field-preset-picker/preset-thumb verbatim):
       </p>
-      <div class="media-chips">
+      <div class="media-chips" data-component="media-chip">
         <div class="media-chip" data-kind="photo" data-state="expanded">
-          <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='72' height='72'><rect width='72' height='72' fill='%23e7c9a9'/></svg>" alt="Photo 1, expanded" />
+          <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='72' height='72'><rect width='72' height='72' fill='%23e7c9a9'/></svg>" alt="Photo 1, Warm preset" />
           <button type="button" class="remove" aria-label="Remove photo 1">×</button>
         </div>
       </div>
@@ -972,7 +1023,7 @@ First steps. Four wobbly ones toward the fence, then straight into my arms.</tex
       </div>
 
       <p style="font-size: 12px; color: var(--ink-2); margin: 16px 0 8px">
-        media-toolbar — 3 photos (cap reached) + a video still uploading (icon+filename, no poster):
+        <strong>Step 4</strong> — 3 photos attached (cap reached, camera icon dims — MAX_PHOTOS):
       </p>
       <div class="media-toolbar">
         <button type="button" data-state="disabled" aria-label="Photo limit reached">
@@ -986,11 +1037,31 @@ First steps. Four wobbly ones toward the fence, then straight into my arms.</tex
         <div class="media-chip" data-kind="photo"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='72' height='72'><rect width='72' height='72' fill='%23e7c9a9'/></svg>" alt="Photo 1" /><button type="button" class="remove">×</button></div>
         <div class="media-chip" data-kind="photo"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='72' height='72'><rect width='72' height='72' fill='%23d8b48f'/></svg>" alt="Photo 2" /><button type="button" class="remove">×</button></div>
         <div class="media-chip" data-kind="photo"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='72' height='72'><rect width='72' height='72' fill='%23c99a6c'/></svg>" alt="Photo 3" /><button type="button" class="remove">×</button></div>
-        <div class="media-chip" data-kind="video-pending">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="13" height="12" rx="2" /><path d="M16 10.5l5-2.5v8l-5-2.5" /></svg>
-          a-moment.mp4<br />Uploading…
+      </div>
+
+      <p style="font-size: 12px; color: var(--ink-2); margin: 16px 0 8px">
+        <strong>Step 5</strong> — video just picked (CapturePage.jsx:191-197): a real, playable local preview appears below the toolbar — deliberately NOT a tiny chip (controls need real size). Collapses to a compact "1 video" pill only later, once saved and reopened:
+      </p>
+      <div class="video-inline-preview">
+        <button type="button" class="video-remove" aria-label="Remove video">×</button>
+        <span class="video-play-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z" /></svg></span>
+        <span class="video-duration">0:12</span>
+      </div>
+
+      <p style="font-size: 12px; color: var(--ink-2); margin: 16px 0 8px">
+        <strong>Step 6</strong> — later, reopening a saved memory to edit: the video collapses to an icon+label pill, no poster (matches real existingVideoId branch, CapturePage.jsx:764-772):
+      </p>
+      <div class="media-chips">
+        <div class="media-chip" data-kind="video-pill">
+          🎬<br /><span style="font-size:9px">1 video</span>
+          <button type="button" class="remove" aria-label="Remove video">×</button>
         </div>
       </div>
+
+      <p style="font-size: 12px; color: var(--ink-2); margin: 16px 0 8px">
+        <strong>Step 7</strong> — Save-time failure (CapturePage.jsx:529): a failed photo upload surfaces as an inline sentence below the media area, not a per-chip badge:
+      </p>
+      <p class="upload-error">Couldn't add that photo: try again. The rest of the memory is saved — Save again to retry.</p>
     </div>
   </body>
 </html>
