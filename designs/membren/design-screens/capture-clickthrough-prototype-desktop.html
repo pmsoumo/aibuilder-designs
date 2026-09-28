@@ -22,83 +22,469 @@
         --primary-soft-bg: #f6e9e5;
         --accent: #6f8267;
         --error: #b3402c;
-        --font-serif: ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
+        --font-serif:
+          ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
         --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
         --type-title-size: 22px;
-        --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px; --space-6: 32px; --space-7: 48px;
-        --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-full: 9999px;
-        --sidebar-width-expanded: 220px; --page-max-width: 780px;
+        --space-1: 4px;
+        --space-2: 8px;
+        --space-3: 12px;
+        --space-4: 16px;
+        --space-5: 24px;
+        --space-6: 32px;
+        --space-7: 48px;
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --radius-full: 9999px;
+        --sidebar-width-expanded: 220px;
+        --page-max-width: 780px;
       }
-      * { box-sizing: border-box; }
-      html, body { margin: 0; height: 100%; background: var(--surface); font-family: var(--font-sans); }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: var(--surface);
+        font-family: var(--font-sans);
+      }
       .concept-bar {
-        background: var(--ink); color: #fff; font-size: 12px; padding: var(--space-2) var(--space-4);
-        display: flex; justify-content: space-between; gap: var(--space-3);
+        background: var(--ink);
+        color: #fff;
+        font-size: 12px;
+        padding: var(--space-2) var(--space-4);
+        display: flex;
+        justify-content: space-between;
+        gap: var(--space-3);
       }
-      .concept-bar a { color: #fff; text-decoration: underline; }
-      .desktop-shell { display: grid; grid-template-columns: var(--sidebar-width-expanded) 1fr; min-height: calc(100vh - 34px); }
-      aside.sidebar { background: var(--surface-raised); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: var(--space-5) var(--space-3); gap: var(--space-6); }
-      .brand-lockup { display: flex; align-items: center; gap: var(--space-2); padding: 0 var(--space-2); }
-      .wordmark { font-family: var(--font-serif); font-size: 18px; font-weight: 600; color: var(--ink); }
-      .sidebar-links { display: flex; flex-direction: column; gap: var(--space-1); flex: 1; }
-      .sidebar-links a { display: flex; align-items: center; gap: var(--space-3); min-height: 44px; padding: 0 var(--space-2); border-radius: var(--radius-md); text-decoration: none; color: var(--ink-2); font-size: 14px; font-weight: 600; }
-      .sidebar-links a[data-state="active"] { color: var(--primary); background: var(--primary-soft-bg); }
-      main.content { background: var(--surface-subtle); overflow-y: auto; }
-      .page-panel { max-width: var(--page-max-width); margin: 0 auto; padding: var(--space-6) var(--space-7) var(--space-7); }
-      a.page-back { font-size: 13px; color: var(--ink-2); text-decoration: none; display: inline-flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-5); cursor: pointer; }
-      .page-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); margin-bottom: var(--space-6); }
-      .page-head h1 { font-family: var(--font-serif); font-size: var(--type-title-size); font-weight: 600; color: var(--ink); margin: 0; }
-      .page-actions { display: flex; gap: var(--space-3); }
-      .page-body { display: flex; flex-direction: column; gap: var(--space-5); }
+      .concept-bar a {
+        color: #fff;
+        text-decoration: underline;
+      }
+      .desktop-shell {
+        display: grid;
+        grid-template-columns: var(--sidebar-width-expanded) 1fr;
+        min-height: calc(100vh - 34px);
+      }
+      aside.sidebar {
+        background: var(--surface-raised);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        padding: var(--space-5) var(--space-3);
+        gap: var(--space-6);
+      }
+      .brand-lockup {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: 0 var(--space-2);
+      }
+      .wordmark {
+        font-family: var(--font-serif);
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--ink);
+      }
+      .sidebar-links {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+        flex: 1;
+      }
+      .sidebar-links a {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        min-height: 44px;
+        padding: 0 var(--space-2);
+        border-radius: var(--radius-md);
+        text-decoration: none;
+        color: var(--ink-2);
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .sidebar-links a[data-state="active"] {
+        color: var(--primary);
+        background: var(--primary-soft-bg);
+      }
+      main.content {
+        background: var(--surface-subtle);
+        overflow-y: auto;
+      }
+      .page-panel {
+        max-width: var(--page-max-width);
+        margin: 0 auto;
+        padding: var(--space-6) var(--space-7) var(--space-7);
+      }
+      a.page-back {
+        font-size: 13px;
+        color: var(--ink-2);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        margin-bottom: var(--space-5);
+        cursor: pointer;
+      }
+      .page-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-4);
+        margin-bottom: var(--space-6);
+      }
+      .page-head h1 {
+        font-family: var(--font-serif);
+        font-size: var(--type-title-size);
+        font-weight: 600;
+        color: var(--ink);
+        margin: 0;
+      }
+      .page-actions {
+        display: flex;
+        gap: var(--space-3);
+      }
+      .page-body {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-5);
+      }
 
-      label.field-label { display: block; font-size: 13px; font-weight: 600; color: var(--ink-2); margin-bottom: var(--space-2); }
-      .field-textarea { width: 100%; min-height: 180px; border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: var(--space-3); font-family: var(--font-serif); font-size: 17px; line-height: 1.55; color: var(--ink); background: var(--surface-raised); resize: none; }
-      .field-textarea::placeholder { color: var(--ink-3); font-family: var(--font-sans); font-size: 14px; }
+      label.field-label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--ink-2);
+        margin-bottom: var(--space-2);
+      }
+      .field-textarea {
+        width: 100%;
+        min-height: 180px;
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: var(--space-3);
+        font-family: var(--font-serif);
+        font-size: 17px;
+        line-height: 1.55;
+        color: var(--ink);
+        background: var(--surface-raised);
+        resize: none;
+      }
+      .field-textarea::placeholder {
+        color: var(--ink-3);
+        font-family: var(--font-sans);
+        font-size: 14px;
+      }
 
-      .media-toolbar { display: flex; gap: var(--space-2); margin-top: var(--space-2); }
-      .media-toolbar button { width: 40px; height: 40px; border-radius: var(--radius-full); border: 1.5px solid var(--border); background: var(--primary-soft-bg); color: var(--primary); display: flex; align-items: center; justify-content: center; cursor: pointer; }
-      .media-toolbar button:hover:not(:disabled) { border-color: var(--primary); }
-      .media-toolbar button:disabled { background: var(--surface-subtle); color: var(--ink-3); cursor: default; }
-      .media-chips { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-3); }
-      .media-chip { position: relative; width: 72px; height: 72px; border-radius: var(--radius-md); overflow: hidden; background: var(--surface-raised); border: 1px solid var(--border); cursor: pointer; }
-      .media-chip[data-state="processing"] { opacity: 0.6; cursor: default; }
-      .media-chip img { width: 100%; height: 100%; object-fit: cover; display: block; }
-      .media-chip .remove { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: var(--radius-full); background: var(--ink); color: var(--ink-inverse); font-size: 12px; line-height: 20px; text-align: center; border: none; cursor: pointer; }
-      .field-preset-picker { display: flex; gap: var(--space-2); margin-top: var(--space-3); max-width: 320px; }
-      .preset-thumb { flex: 1; display: flex; flex-direction: column; align-items: center; gap: var(--space-1); border: 1.5px solid var(--border); border-radius: var(--radius-md); background: var(--surface-raised); padding: var(--space-2); cursor: pointer; }
-      .preset-thumb .swatch { width: 100%; aspect-ratio: 1/1; border-radius: var(--radius-sm); background: linear-gradient(160deg, #e7c9a9, var(--primary) 120%); }
-      .preset-thumb span { font-size: 12px; color: var(--ink-2); }
-      .preset-thumb[data-state="selected"] { border-color: var(--primary); }
-      .preset-thumb[data-state="selected"] span { color: var(--primary); font-weight: 600; }
+      .media-toolbar {
+        display: flex;
+        gap: var(--space-2);
+        margin-top: var(--space-2);
+      }
+      .media-toolbar button {
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius-full);
+        border: 1.5px solid var(--border);
+        background: var(--primary-soft-bg);
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+      .media-toolbar button:hover:not(:disabled) {
+        border-color: var(--primary);
+      }
+      .media-toolbar button:disabled {
+        background: var(--surface-subtle);
+        color: var(--ink-3);
+        cursor: default;
+      }
+      .media-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-2);
+        margin-top: var(--space-3);
+      }
+      .media-chip {
+        position: relative;
+        width: 72px;
+        height: 72px;
+        border-radius: var(--radius-md);
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        cursor: pointer;
+      }
+      .media-chip[data-state="processing"] {
+        opacity: 0.6;
+        cursor: default;
+      }
+      .media-chip img {
+        width: 100%;
+        height: 100%;
+        border-radius: var(--radius-md);
+        object-fit: cover;
+        display: block;
+      }
+      .media-chip .remove {
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        width: 20px;
+        height: 20px;
+        border-radius: var(--radius-full);
+        background: var(--ink);
+        color: var(--ink-inverse);
+        font-size: 12px;
+        line-height: 20px;
+        text-align: center;
+        border: none;
+        cursor: pointer;
+      }
+      .field-preset-picker {
+        display: flex;
+        gap: var(--space-2);
+        margin-top: var(--space-3);
+        max-width: 320px;
+      }
+      .preset-thumb {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-1);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-md);
+        background: var(--surface-raised);
+        padding: var(--space-2);
+        cursor: pointer;
+      }
+      .preset-thumb .swatch {
+        width: 100%;
+        aspect-ratio: 1/1;
+        border-radius: var(--radius-sm);
+        background: linear-gradient(160deg, #e7c9a9, var(--primary) 120%);
+      }
+      .preset-thumb span {
+        font-size: 12px;
+        color: var(--ink-2);
+      }
+      .preset-thumb[data-state="selected"] {
+        border-color: var(--primary);
+      }
+      .preset-thumb[data-state="selected"] span {
+        color: var(--primary);
+        font-weight: 600;
+      }
 
-      .video-inline-preview { position: relative; width: 100%; max-width: 420px; border-radius: var(--radius-md); overflow: hidden; margin-top: var(--space-2); background: #000; }
-      .video-inline-preview video { width: 100%; display: block; max-height: 260px; }
-      .video-remove { position: absolute; top: var(--space-1); right: var(--space-1); width: 32px; height: 32px; border-radius: var(--radius-full); border: none; background: rgba(43, 36, 32, 0.65); color: var(--ink-inverse); font-size: 16px; cursor: pointer; z-index: 2; }
+      .video-inline-preview {
+        position: relative;
+        width: 100%;
+        max-width: 420px;
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        margin-top: var(--space-2);
+        background: #000;
+      }
+      .video-inline-preview video {
+        width: 100%;
+        display: block;
+        max-height: 260px;
+      }
+      .video-remove {
+        position: absolute;
+        top: var(--space-1);
+        right: var(--space-1);
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-full);
+        border: none;
+        background: rgba(43, 36, 32, 0.65);
+        color: var(--ink-inverse);
+        font-size: 16px;
+        cursor: pointer;
+        z-index: 2;
+      }
 
-      .feeling-toggle { display: flex; gap: var(--space-2); }
-      .feeling-toggle-btn { min-height: 40px; padding: 0 var(--space-3); border-radius: var(--radius-md); border: 1.5px solid var(--border); background: var(--surface-raised); font-size: 14px; color: var(--ink); cursor: pointer; }
-      .feeling-toggle-btn[data-valence="positive"], .feeling-toggle-btn[data-valence="negative"] { flex: 0 0 auto; min-width: 140px; font-weight: 600; }
-      .feeling-toggle-btn[data-valence="custom"] { flex: 0 0 auto; font-size: 13px; color: var(--ink-2); border-style: dashed; }
-      .feeling-toggle-btn[data-state="selected"] { border-color: var(--primary); background: var(--primary-soft-bg); color: var(--primary); }
-      .feeling-chips { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-3); }
-      @keyframes feeling-reveal { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
-      .feeling-chips { animation: feeling-reveal 180ms cubic-bezier(0.16, 1, 0.3, 1); }
-      .feeling-chips button { min-width: 44px; min-height: 40px; padding: 0 var(--space-3); border-radius: var(--radius-full); border: 1.5px solid var(--border); background: var(--surface-raised); font-size: 14px; color: var(--ink); cursor: pointer; }
-      .feeling-chips button[disabled] { opacity: 0.35; cursor: not-allowed; }
-      .feeling-confirmed { display: flex; align-items: center; justify-content: space-between; min-height: 40px; padding: 0 var(--space-3); border-radius: var(--radius-full); border: 1.5px solid var(--primary); background: var(--primary-soft-bg); color: var(--primary); font-weight: 600; font-size: 14px; max-width: 240px; margin-top: var(--space-2); }
-      .feeling-confirmed button { background: none; border: none; color: var(--ink-2); font-size: 13px; font-weight: 600; text-decoration: underline; padding: var(--space-1); cursor: pointer; }
-      .feeling-confirmed .feeling-remove { text-decoration: none; font-size: 18px; line-height: 1; color: var(--ink-2); }
-      .field-custom-feeling { width: 100%; max-width: 320px; min-height: 40px; margin-top: var(--space-3); border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 0 var(--space-3); font-size: 14px; color: var(--ink); background: var(--surface-raised); }
-      .feeling-add-another { min-height: 36px; padding: 0 var(--space-3); border-radius: var(--radius-full); border: 1.5px dashed var(--border); background: none; font-size: 13px; color: var(--ink-2); cursor: pointer; margin-top: var(--space-2); }
-      #slot2 { margin-top: var(--space-2); }
+      .feeling-toggle {
+        display: flex;
+        gap: var(--space-2);
+      }
+      .feeling-toggle-btn {
+        min-height: 40px;
+        padding: 0 var(--space-3);
+        border-radius: var(--radius-md);
+        border: 1.5px solid var(--border);
+        background: var(--surface-raised);
+        font-size: 14px;
+        color: var(--ink);
+        cursor: pointer;
+      }
+      .feeling-toggle-btn[data-valence="positive"],
+      .feeling-toggle-btn[data-valence="negative"] {
+        flex: 0 0 auto;
+        min-width: 140px;
+        font-weight: 600;
+      }
+      .feeling-toggle-btn[data-valence="custom"] {
+        flex: 0 0 auto;
+        font-size: 13px;
+        color: var(--ink-2);
+        border-style: dashed;
+      }
+      .feeling-toggle-btn[data-state="selected"] {
+        border-color: var(--primary);
+        background: var(--primary-soft-bg);
+        color: var(--primary);
+      }
+      .feeling-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-2);
+        margin-top: var(--space-3);
+      }
+      @keyframes feeling-reveal {
+        from {
+          opacity: 0;
+          transform: translateY(-6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .feeling-chips {
+        animation: feeling-reveal 180ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .feeling-chips button {
+        min-width: 44px;
+        min-height: 40px;
+        padding: 0 var(--space-3);
+        border-radius: var(--radius-full);
+        border: 1.5px solid var(--border);
+        background: var(--surface-raised);
+        font-size: 14px;
+        color: var(--ink);
+        cursor: pointer;
+      }
+      .feeling-chips button[disabled] {
+        opacity: 0.35;
+        cursor: not-allowed;
+      }
+      .feeling-confirmed {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 40px;
+        padding: 0 var(--space-3);
+        border-radius: var(--radius-full);
+        border: 1.5px solid var(--primary);
+        background: var(--primary-soft-bg);
+        color: var(--primary);
+        font-weight: 600;
+        font-size: 14px;
+        max-width: 240px;
+        margin-top: var(--space-2);
+      }
+      .feeling-confirmed button {
+        background: none;
+        border: none;
+        color: var(--ink-2);
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: underline;
+        padding: var(--space-1);
+        cursor: pointer;
+      }
+      .feeling-confirmed .feeling-remove {
+        text-decoration: none;
+        font-size: 18px;
+        line-height: 1;
+        color: var(--ink-2);
+      }
+      .field-custom-feeling {
+        width: 100%;
+        max-width: 320px;
+        min-height: 40px;
+        margin-top: var(--space-3);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: 0 var(--space-3);
+        font-size: 14px;
+        color: var(--ink);
+        background: var(--surface-raised);
+      }
+      .feeling-add-another {
+        min-height: 36px;
+        padding: 0 var(--space-3);
+        border-radius: var(--radius-full);
+        border: 1.5px dashed var(--border);
+        background: none;
+        font-size: 13px;
+        color: var(--ink-2);
+        cursor: pointer;
+        margin-top: var(--space-2);
+      }
+      #slot2 {
+        margin-top: var(--space-2);
+      }
 
-      .field-person-picker { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-      .field-person-picker button { min-height: 40px; padding: 0 var(--space-3); border-radius: var(--radius-full); border: 1.5px solid var(--border); background: var(--surface-raised); font-size: 13px; color: var(--ink-2); cursor: pointer; }
-      .field-person-picker button[data-state="selected"] { border-color: var(--primary); background: var(--primary-soft-bg); color: var(--primary); font-weight: 600; }
-      .field-person-picker input { min-height: 40px; border: 1.5px solid var(--border); border-radius: var(--radius-full); padding: 0 var(--space-3); font-size: 13px; width: 120px; }
+      .field-person-picker {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-2);
+      }
+      .field-person-picker button {
+        min-height: 40px;
+        padding: 0 var(--space-3);
+        border-radius: var(--radius-full);
+        border: 1.5px solid var(--border);
+        background: var(--surface-raised);
+        font-size: 13px;
+        color: var(--ink-2);
+        cursor: pointer;
+      }
+      .field-person-picker button[data-state="selected"] {
+        border-color: var(--primary);
+        background: var(--primary-soft-bg);
+        color: var(--primary);
+        font-weight: 600;
+      }
+      .field-person-picker input {
+        min-height: 40px;
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-full);
+        padding: 0 var(--space-3);
+        font-size: 13px;
+        width: 120px;
+      }
 
-      .btn-secondary { min-height: 44px; padding: 0 var(--space-4); background: var(--surface-raised); border: 1.5px solid var(--border); border-radius: var(--radius-md); font-size: 15px; font-weight: 600; color: var(--ink); cursor: pointer; }
-      .btn-primary { min-height: 44px; padding: 0 var(--space-4); background: var(--primary); color: var(--ink-inverse); border: none; border-radius: var(--radius-md); font-size: 15px; font-weight: 600; cursor: pointer; }
+      .btn-secondary {
+        min-height: 44px;
+        padding: 0 var(--space-4);
+        background: var(--surface-raised);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-md);
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--ink);
+        cursor: pointer;
+      }
+      .btn-primary {
+        min-height: 44px;
+        padding: 0 var(--space-4);
+        background: var(--primary);
+        color: var(--ink-inverse);
+        border: none;
+        border-radius: var(--radius-md);
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
@@ -107,11 +493,27 @@
       <a href="capture-desktop.html">Static spec</a>
     </div>
 
-    <div class="desktop-shell" data-app="membren" data-screen="capture-clickthrough-desktop">
+    <div
+      class="desktop-shell"
+      data-app="membren"
+      data-screen="capture-clickthrough-desktop"
+    >
       <aside class="sidebar" data-component="sidebar-nav" data-state="expanded">
         <div class="brand-lockup">
-          <svg width="20" height="20" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-            <path d="M7 31V13c0-4.5 6-5.5 8.2-1.8L20 19.5 24.8 11.2C27 7.5 33 8.5 33 13V31" stroke="#a8503a" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" />
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 40 40"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M7 31V13c0-4.5 6-5.5 8.2-1.8L20 19.5 24.8 11.2C27 7.5 33 8.5 33 13V31"
+              stroke="#a8503a"
+              stroke-width="4.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
             <circle cx="20" cy="31" r="2.6" fill="#2b2420" />
           </svg>
           <span class="wordmark">membren</span>
@@ -124,27 +526,81 @@
       </aside>
 
       <main class="content">
-        <div class="page-panel" data-component="page-panel" data-variant="capture">
-          <a class="page-back" onclick="location.href='feed-desktop.html'">← Feed</a>
+        <div
+          class="page-panel"
+          data-component="page-panel"
+          data-variant="capture"
+        >
+          <a class="page-back" onclick="location.href = 'feed-desktop.html'"
+            >← Feed</a
+          >
           <div class="page-head">
             <h1>New memory</h1>
             <div class="page-actions">
-              <button class="btn-secondary" onclick="location.href='feed-desktop.html'">Cancel</button>
-              <button class="btn-primary" onclick="location.href='feed-desktop.html'">Save memory</button>
+              <button
+                class="btn-secondary"
+                onclick="location.href = 'feed-desktop.html'"
+              >
+                Cancel
+              </button>
+              <button
+                class="btn-primary"
+                onclick="location.href = 'feed-desktop.html'"
+              >
+                Save memory
+              </button>
             </div>
           </div>
 
-          <form class="page-body" id="composerForm" onsubmit="return false">
+          <form class="page-body" id="composerForm" onsubmit="return false;">
             <div>
               <label class="field-label" for="note">What happened?</label>
-              <textarea id="note" class="field-textarea" placeholder="First steps. Four wobbly ones toward the fence…"></textarea>
+              <textarea
+                id="note"
+                class="field-textarea"
+                placeholder="First steps. Four wobbly ones toward the fence…"
+              ></textarea>
 
               <div class="media-toolbar">
-                <button type="button" id="photoBtn" aria-label="Add a photo, up to 3" onclick="photoInput.click()">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2" /><circle cx="12" cy="12.5" r="3.3" /></svg>
+                <button
+                  type="button"
+                  id="photoBtn"
+                  aria-label="Add a photo, up to 3"
+                  onclick="photoInput.click()"
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <rect x="3" y="6" width="18" height="13" rx="2" />
+                    <circle cx="12" cy="12.5" r="3.3" />
+                  </svg>
                 </button>
-                <button type="button" id="videoBtn" aria-label="Add a video" onclick="videoInput.click()">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2" /><path d="M16 10.5l5-2.5v8l-5-2.5" /></svg>
+                <button
+                  type="button"
+                  id="videoBtn"
+                  aria-label="Add a video"
+                  onclick="videoInput.click()"
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <rect x="3" y="6" width="13" height="12" rx="2" />
+                    <path d="M16 10.5l5-2.5v8l-5-2.5" />
+                  </svg>
                 </button>
                 <input type="file" id="photoInput" accept="image/*" hidden />
                 <input type="file" id="videoInput" accept="video/*" hidden />
@@ -162,10 +618,17 @@
             </div>
 
             <div>
-              <label class="field-label">Who's this about? <span style="font-weight:400;color:var(--ink-3)">(optional)</span></label>
+              <label class="field-label"
+                >Who's this about?
+                <span style="font-weight: 400; color: var(--ink-3)"
+                  >(optional)</span
+                ></label
+              >
               <div class="field-person-picker" id="personPicker">
                 <button type="button" data-name="Kai">Kai</button>
-                <button type="button" data-name="Grandma Rita">Grandma Rita</button>
+                <button type="button" data-name="Grandma Rita">
+                  Grandma Rita
+                </button>
                 <button type="button" id="addPersonBtn">+ Add person</button>
               </div>
             </div>
@@ -175,8 +638,27 @@
     </div>
 
     <script>
-      const POSITIVE = [["🥹","moved"],["😊","happy"],["😌","relieved"],["😇","grateful"],["😮","surprised"],["😆","funny"],["🕊️","peaceful"],["🥰","loved"]];
-      const NEGATIVE = [["😭","overwhelmed"],["😡","angry"],["😖","stressed"],["😒","jealous"],["😢","sad"],["😞","disappointed"],["😤","frustrated"],["😔","helpless"],["😠","regretful"]];
+      const POSITIVE = [
+        ["🥹", "moved"],
+        ["😊", "happy"],
+        ["😌", "relieved"],
+        ["😇", "grateful"],
+        ["😮", "surprised"],
+        ["😆", "funny"],
+        ["🕊️", "peaceful"],
+        ["🥰", "loved"],
+      ];
+      const NEGATIVE = [
+        ["😭", "overwhelmed"],
+        ["😡", "angry"],
+        ["😖", "stressed"],
+        ["😒", "jealous"],
+        ["😢", "sad"],
+        ["😞", "disappointed"],
+        ["😤", "frustrated"],
+        ["😔", "helpless"],
+        ["😠", "regretful"],
+      ];
       const MAX_PHOTOS = 3;
 
       const photoInput = document.getElementById("photoInput");
@@ -192,7 +674,11 @@
       let activePhotoId = null;
 
       function presetFilter(name) {
-        return name === "warm" ? "sepia(.35) saturate(1.3) brightness(1.05)" : name === "bright" ? "brightness(1.25) contrast(1.05)" : "none";
+        return name === "warm"
+          ? "sepia(.35) saturate(1.3) brightness(1.05)"
+          : name === "bright"
+            ? "brightness(1.25) contrast(1.05)"
+            : "none";
       }
 
       function renderChips() {
@@ -206,7 +692,10 @@
             : `<img src="${p.url}" alt="Photo">`;
           if (p.ready) {
             chip.querySelector("img").onclick = () => openPreset(p.id);
-            chip.querySelector(".remove").onclick = (e) => { e.stopPropagation(); removePhoto(p.id); };
+            chip.querySelector(".remove").onclick = (e) => {
+              e.stopPropagation();
+              removePhoto(p.id);
+            };
           }
           mediaChips.appendChild(chip);
         });
@@ -214,7 +703,11 @@
       }
 
       function openPreset(id) {
-        if (activePhotoId === id) { activePhotoId = null; presetRow.innerHTML = ""; return; }
+        if (activePhotoId === id) {
+          activePhotoId = null;
+          presetRow.innerHTML = "";
+          return;
+        }
         activePhotoId = id;
         const p = photos.find((p) => p.id === id);
         presetRow.innerHTML = `
@@ -224,13 +717,20 @@
             <button type="button" class="preset-thumb" data-name="bright" data-state="${p.preset === "bright" ? "selected" : ""}"><span class="swatch"></span><span>Bright</span></button>
           </div>`;
         presetRow.querySelectorAll(".preset-thumb").forEach((btn) => {
-          btn.onclick = () => { p.preset = btn.dataset.name; renderChips(); openPreset(id); };
+          btn.onclick = () => {
+            p.preset = btn.dataset.name;
+            renderChips();
+            openPreset(id);
+          };
         });
       }
 
       function removePhoto(id) {
         photos = photos.filter((p) => p.id !== id);
-        if (activePhotoId === id) { activePhotoId = null; presetRow.innerHTML = ""; }
+        if (activePhotoId === id) {
+          activePhotoId = null;
+          presetRow.innerHTML = "";
+        }
         renderChips();
       }
 
@@ -244,7 +744,10 @@
         renderChips();
         setTimeout(() => {
           const p = photos.find((p) => p.id === id);
-          if (p) { p.ready = true; renderChips(); }
+          if (p) {
+            p.ready = true;
+            renderChips();
+          }
         }, 500);
       });
 
@@ -261,7 +764,9 @@
             <video controls src="${url}"></video>
           </div>`;
         videoPreviewWrap.querySelector(".video-remove").onclick = () => {
-          hasVideo = false; videoBtn.disabled = false; videoPreviewWrap.innerHTML = "";
+          hasVideo = false;
+          videoBtn.disabled = false;
+          videoPreviewWrap.innerHTML = "";
         };
       });
 
@@ -269,22 +774,38 @@
       let feeling2 = null;
 
       function chipsHTML(list, otherValue) {
-        return list.map(([emoji, label]) =>
-          `<button type="button" data-emoji="${emoji}" data-label="${label}" ${otherValue === label ? "disabled" : ""}>${emoji} ${label}</button>`
-        ).join("");
+        return list
+          .map(
+            ([emoji, label]) =>
+              `<button type="button" data-emoji="${emoji}" data-label="${label}" ${otherValue === label ? "disabled" : ""}>${emoji} ${label}</button>`,
+          )
+          .join("");
       }
 
       function renderSlot1() {
         const el = document.getElementById("slot1");
         if (feeling1) {
-          const label = feeling1.custom ? feeling1.custom : `${feeling1.emoji} ${feeling1.label}`;
+          const label = feeling1.custom
+            ? feeling1.custom
+            : `${feeling1.emoji} ${feeling1.label}`;
           el.innerHTML = `<div class="feeling-confirmed"><span>${label}</span><span style="display:flex;align-items:center;gap:8px">
             <button type="button" id="changeSlot1">Change</button>
             ${feeling2 ? '<button type="button" class="feeling-remove" id="removeSlot1" aria-label="Remove this feeling">×</button>' : ""}
           </span></div>`;
-          document.getElementById("changeSlot1").onclick = () => { feeling1 = null; renderSlot1(); renderAddAnother(); };
+          document.getElementById("changeSlot1").onclick = () => {
+            feeling1 = null;
+            renderSlot1();
+            renderAddAnother();
+          };
           const rm = document.getElementById("removeSlot1");
-          if (rm) rm.onclick = () => { feeling1 = feeling2; feeling2 = null; renderSlot1(); renderSlot2(); renderAddAnother(); };
+          if (rm)
+            rm.onclick = () => {
+              feeling1 = feeling2;
+              feeling2 = null;
+              renderSlot1();
+              renderSlot2();
+              renderAddAnother();
+            };
         } else {
           el.innerHTML = `
             <div class="feeling-toggle" role="radiogroup" aria-label="How did it feel, broadly">
@@ -295,21 +816,38 @@
             <div id="slot1Chips"></div>`;
           el.querySelectorAll(".feeling-toggle-btn").forEach((btn) => {
             btn.onclick = () => {
-              el.querySelectorAll(".feeling-toggle-btn").forEach((b) => delete b.dataset.state);
+              el.querySelectorAll(".feeling-toggle-btn").forEach(
+                (b) => delete b.dataset.state,
+              );
               btn.dataset.state = "selected";
               const chipsEl = document.getElementById("slot1Chips");
-              const other = feeling2 && !feeling2.custom ? feeling2.label : null;
+              const other =
+                feeling2 && !feeling2.custom ? feeling2.label : null;
               if (btn.dataset.valence === "custom") {
                 chipsEl.innerHTML = `<input type="text" class="field-custom-feeling" placeholder="Describe how it felt…">`;
                 chipsEl.querySelector("input").onkeydown = (e) => {
-                  if (e.key === "Enter" && e.target.value.trim()) { feeling1 = { custom: "💬 " + e.target.value.trim() }; renderSlot1(); renderAddAnother(); }
+                  if (e.key === "Enter" && e.target.value.trim()) {
+                    feeling1 = { custom: "💬 " + e.target.value.trim() };
+                    renderSlot1();
+                    renderAddAnother();
+                  }
                 };
               } else {
-                const list = btn.dataset.valence === "positive" ? POSITIVE : NEGATIVE;
+                const list =
+                  btn.dataset.valence === "positive" ? POSITIVE : NEGATIVE;
                 chipsEl.innerHTML = `<div class="feeling-chips">${chipsHTML(list, other)}</div>`;
-                chipsEl.querySelectorAll("button:not([disabled])").forEach((chip) => {
-                  chip.onclick = () => { feeling1 = { emoji: chip.dataset.emoji, label: chip.dataset.label }; renderSlot1(); renderAddAnother(); };
-                });
+                chipsEl
+                  .querySelectorAll("button:not([disabled])")
+                  .forEach((chip) => {
+                    chip.onclick = () => {
+                      feeling1 = {
+                        emoji: chip.dataset.emoji,
+                        label: chip.dataset.label,
+                      };
+                      renderSlot1();
+                      renderAddAnother();
+                    };
+                  });
               }
             };
           });
@@ -318,13 +856,24 @@
 
       function renderAddAnother() {
         const el = document.getElementById("addAnotherWrap");
-        el.innerHTML = feeling1 && !feeling2 ? `<button type="button" class="feeling-add-another" id="addAnotherBtn">+ Add another feeling</button>` : "";
-        if (feeling1 && !feeling2) el.querySelector("#addAnotherBtn").onclick = () => { feeling2 = { pending: true }; renderAddAnother(); renderSlot2(); };
+        el.innerHTML =
+          feeling1 && !feeling2
+            ? `<button type="button" class="feeling-add-another" id="addAnotherBtn">+ Add another feeling</button>`
+            : "";
+        if (feeling1 && !feeling2)
+          el.querySelector("#addAnotherBtn").onclick = () => {
+            feeling2 = { pending: true };
+            renderAddAnother();
+            renderSlot2();
+          };
       }
 
       function renderSlot2() {
         const el = document.getElementById("slot2");
-        if (!feeling2) { el.innerHTML = ""; return; }
+        if (!feeling2) {
+          el.innerHTML = "";
+          return;
+        }
         if (feeling2.pending) {
           el.innerHTML = `
             <div class="feeling-toggle" role="radiogroup" aria-label="A second feeling, broadly">
@@ -335,28 +884,51 @@
             <div id="slot2Chips"></div>`;
           el.querySelectorAll(".feeling-toggle-btn").forEach((btn) => {
             btn.onclick = () => {
-              el.querySelectorAll(".feeling-toggle-btn").forEach((b) => delete b.dataset.state);
+              el.querySelectorAll(".feeling-toggle-btn").forEach(
+                (b) => delete b.dataset.state,
+              );
               btn.dataset.state = "selected";
               const chipsEl = document.getElementById("slot2Chips");
-              const other = feeling1 && !feeling1.custom ? feeling1.label : null;
+              const other =
+                feeling1 && !feeling1.custom ? feeling1.label : null;
               if (btn.dataset.valence === "custom") {
                 chipsEl.innerHTML = `<input type="text" class="field-custom-feeling" placeholder="Describe the other feeling…">`;
                 chipsEl.querySelector("input").onkeydown = (e) => {
-                  if (e.key === "Enter" && e.target.value.trim()) { feeling2 = { custom: "💬 " + e.target.value.trim() }; renderSlot1(); renderSlot2(); }
+                  if (e.key === "Enter" && e.target.value.trim()) {
+                    feeling2 = { custom: "💬 " + e.target.value.trim() };
+                    renderSlot1();
+                    renderSlot2();
+                  }
                 };
               } else {
-                const list = btn.dataset.valence === "positive" ? POSITIVE : NEGATIVE;
+                const list =
+                  btn.dataset.valence === "positive" ? POSITIVE : NEGATIVE;
                 chipsEl.innerHTML = `<div class="feeling-chips">${chipsHTML(list, other)}</div>`;
-                chipsEl.querySelectorAll("button:not([disabled])").forEach((chip) => {
-                  chip.onclick = () => { feeling2 = { emoji: chip.dataset.emoji, label: chip.dataset.label }; renderSlot1(); renderSlot2(); };
-                });
+                chipsEl
+                  .querySelectorAll("button:not([disabled])")
+                  .forEach((chip) => {
+                    chip.onclick = () => {
+                      feeling2 = {
+                        emoji: chip.dataset.emoji,
+                        label: chip.dataset.label,
+                      };
+                      renderSlot1();
+                      renderSlot2();
+                    };
+                  });
               }
             };
           });
         } else {
-          const label = feeling2.custom ? feeling2.custom : `${feeling2.emoji} ${feeling2.label}`;
+          const label = feeling2.custom
+            ? feeling2.custom
+            : `${feeling2.emoji} ${feeling2.label}`;
           el.innerHTML = `<div class="feeling-confirmed"><span>${label}</span><button type="button" class="feeling-remove" id="removeSlot2" aria-label="Remove this feeling">×</button></div>`;
-          document.getElementById("removeSlot2").onclick = () => { feeling2 = null; renderSlot2(); renderAddAnother(); };
+          document.getElementById("removeSlot2").onclick = () => {
+            feeling2 = null;
+            renderSlot2();
+            renderAddAnother();
+          };
         }
       }
 
@@ -367,7 +939,10 @@
       const personPicker = document.getElementById("personPicker");
       function wirePersonButtons() {
         personPicker.querySelectorAll("button[data-name]").forEach((btn) => {
-          btn.onclick = () => { btn.dataset.state = btn.dataset.state === "selected" ? "" : "selected"; };
+          btn.onclick = () => {
+            btn.dataset.state =
+              btn.dataset.state === "selected" ? "" : "selected";
+          };
         });
       }
       function wireAddPersonButton() {

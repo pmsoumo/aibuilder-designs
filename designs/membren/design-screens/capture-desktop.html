@@ -289,13 +289,13 @@
         width: 72px;
         height: 72px;
         border-radius: var(--radius-md);
-        overflow: hidden;
         background: var(--surface-raised);
         border: 1px solid var(--border);
       }
       .media-chip img {
         width: 100%;
         height: 100%;
+        border-radius: var(--radius-md);
         object-fit: cover;
         display: block;
       }
@@ -770,93 +770,117 @@
           </div>
 
           <form class="page-body" data-focus-order="1,2,3,4">
-              <div>
-                <label class="field-label" for="note">What happened?</label>
-                <textarea
-                  id="note"
-                  class="field-textarea"
-                  data-component="input"
-                  data-variant="textarea"
-                  data-state="textarea"
-                  placeholder="First steps. Four wobbly ones toward the fence…"
-                >
+            <div>
+              <label class="field-label" for="note">What happened?</label>
+              <textarea
+                id="note"
+                class="field-textarea"
+                data-component="input"
+                data-variant="textarea"
+                data-state="textarea"
+                placeholder="First steps. Four wobbly ones toward the fence…"
+              >
 First steps. Four wobbly ones toward the fence, then straight into my arms.</textarea>
 
-                <!-- media-toolbar: replaces the old 340px Photo column + separate Video field.
+              <!-- media-toolbar: replaces the old 340px Photo column + separate Video field.
                      Nothing renders below until something is attached; see reference states
                      after the page for cap-dimmed icons, tap-to-reveal preset row, video pending. -->
-                <div
-                  class="media-toolbar"
-                  data-component="media-toolbar"
-                  role="group"
-                  aria-label="Attach photo or video"
-                >
-                  <button type="button" aria-label="Add a photo, up to 3">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-component="icon" data-variant="camera">
-                      <rect x="3" y="6" width="18" height="13" rx="2" /><circle cx="12" cy="12.5" r="3.3" />
-                    </svg>
-                  </button>
-                  <button type="button" aria-label="Add a video">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-component="icon" data-variant="video">
-                      <rect x="3" y="6" width="13" height="12" rx="2" /><path d="M16 10.5l5-2.5v8l-5-2.5" />
-                    </svg>
-                  </button>
-                </div>
+              <div
+                class="media-toolbar"
+                data-component="media-toolbar"
+                role="group"
+                aria-label="Attach photo or video"
+              >
+                <button type="button" aria-label="Add a photo, up to 3">
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    data-component="icon"
+                    data-variant="camera"
+                  >
+                    <rect x="3" y="6" width="18" height="13" rx="2" />
+                    <circle cx="12" cy="12.5" r="3.3" />
+                  </svg>
+                </button>
+                <button type="button" aria-label="Add a video">
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    data-component="icon"
+                    data-variant="video"
+                  >
+                    <rect x="3" y="6" width="13" height="12" rx="2" />
+                    <path d="M16 10.5l5-2.5v8l-5-2.5" />
+                  </svg>
+                </button>
               </div>
+            </div>
 
-              <div>
-                <label class="field-label">How did it feel?</label>
-                <!-- default: nothing picked, chips stay hidden until a valence is chosen — see the reference block after the page for the expanded/confirmed states -->
-                <div
-                  class="feeling-toggle"
-                  data-component="feeling-picker"
-                  data-variant="toggle"
-                  data-validate="required"
-                  role="radiogroup"
-                  aria-label="How did it feel, broadly"
+            <div>
+              <label class="field-label">How did it feel?</label>
+              <!-- default: nothing picked, chips stay hidden until a valence is chosen — see the reference block after the page for the expanded/confirmed states -->
+              <div
+                class="feeling-toggle"
+                data-component="feeling-picker"
+                data-variant="toggle"
+                data-validate="required"
+                role="radiogroup"
+                aria-label="How did it feel, broadly"
+              >
+                <button
+                  type="button"
+                  class="feeling-toggle-btn"
+                  data-valence="positive"
                 >
-                  <button
-                    type="button"
-                    class="feeling-toggle-btn"
-                    data-valence="positive"
-                  >
-                    🙂 Good
-                  </button>
-                  <button
-                    type="button"
-                    class="feeling-toggle-btn"
-                    data-valence="negative"
-                  >
-                    😔 Hard
-                  </button>
-                  <button
-                    type="button"
-                    class="feeling-toggle-btn"
-                    data-valence="custom"
-                  >
-                    💬 Something else
-                  </button>
-                </div>
+                  🙂 Good
+                </button>
+                <button
+                  type="button"
+                  class="feeling-toggle-btn"
+                  data-valence="negative"
+                >
+                  😔 Hard
+                </button>
+                <button
+                  type="button"
+                  class="feeling-toggle-btn"
+                  data-valence="custom"
+                >
+                  💬 Something else
+                </button>
               </div>
+            </div>
 
-              <div>
-                <label class="field-label"
-                  >Who's this about?
-                  <span style="font-weight: 400; color: var(--ink-3)"
-                    >(optional)</span
-                  ></label
-                >
-                <div
-                  class="field-person-picker"
-                  data-component="input"
-                  data-variant="person-picker"
-                  data-state="person-picker"
-                >
-                  <button type="button" data-state="selected">Kai</button>
-                  <button type="button">Grandma Rita</button>
-                  <button type="button">+ Add person</button>
-                </div>
+            <div>
+              <label class="field-label"
+                >Who's this about?
+                <span style="font-weight: 400; color: var(--ink-3)"
+                  >(optional)</span
+                ></label
+              >
+              <div
+                class="field-person-picker"
+                data-component="input"
+                data-variant="person-picker"
+                data-state="person-picker"
+              >
+                <button type="button" data-state="selected">Kai</button>
+                <button type="button">Grandma Rita</button>
+                <button type="button">+ Add person</button>
               </div>
+            </div>
           </form>
         </div>
       </main>
@@ -978,39 +1002,89 @@ First steps. Four wobbly ones toward the fence, then straight into my arms.</tex
     <!-- media-toolbar / media-chip — step-by-step upload sequence, grounded in real
          CapturePage.jsx (onPickPhoto:138-168, onPickVideo:191-197). Same steps as mobile
          capture.html; desktop-sized chips (72px) and preview. -->
-    <div style="max-width: 480px; margin: 16px auto 0; font-family: var(--font-sans)">
+    <div
+      style="
+        max-width: 480px;
+        margin: 16px auto 0;
+        font-family: var(--font-sans);
+      "
+    >
       <p style="font-size: 12px; color: var(--ink-2); margin: 0 0 8px">
-        <strong>Step 1</strong> — empty, tap the camera icon: opens the OS's native photo picker (platform UI, not this app's).
+        <strong>Step 1</strong> — empty, tap the camera icon: opens the OS's
+        native photo picker (platform UI, not this app's).
       </p>
 
       <p style="font-size: 12px; color: var(--ink-2); margin: 16px 0 8px">
-        <strong>Step 2</strong> — file picked, chip appears instantly with the raw original (presets not computed yet — CapturePage.jsx:150, no network call):
+        <strong>Step 2</strong> — file picked, chip appears instantly with the
+        raw original (presets not computed yet — CapturePage.jsx:150, no network
+        call):
       </p>
       <div class="media-toolbar">
         <button type="button" aria-label="Add a photo, up to 3">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2" /><circle cx="12" cy="12.5" r="3.3" /></svg>
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="3" y="6" width="18" height="13" rx="2" />
+            <circle cx="12" cy="12.5" r="3.3" />
+          </svg>
         </button>
         <button type="button" aria-label="Add a video">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2" /><path d="M16 10.5l5-2.5v8l-5-2.5" /></svg>
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="3" y="6" width="13" height="12" rx="2" />
+            <path d="M16 10.5l5-2.5v8l-5-2.5" />
+          </svg>
         </button>
       </div>
       <div class="media-chips">
         <div class="media-chip" data-kind="photo" data-state="processing">
-          <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='72' height='72'><rect width='72' height='72' fill='%23cdbfae'/></svg>" alt="Photo 1, raw original" />
+          <img
+            src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='72' height='72'><rect width='72' height='72' fill='%23cdbfae'/></svg>"
+            alt="Photo 1, raw original"
+          />
         </div>
-        <span style="font-size:10px;color:var(--ink-3)">↑ original, presets pending (near-instant)</span>
+        <span style="font-size: 10px; color: var(--ink-3)"
+          >↑ original, presets pending (near-instant)</span
+        >
       </div>
 
       <p style="font-size: 12px; color: var(--ink-2); margin: 16px 0 8px">
-        <strong>Step 3</strong> — presets ready (CapturePage.jsx:153-163): chip swaps to the Warm default; tapping reveals Original/Warm/Bright (reuses field-preset-picker/preset-thumb verbatim):
+        <strong>Step 3</strong> — presets ready (CapturePage.jsx:153-163): chip
+        swaps to the Warm default; tapping reveals Original/Warm/Bright (reuses
+        field-preset-picker/preset-thumb verbatim):
       </p>
       <div class="media-chips" data-component="media-chip">
         <div class="media-chip" data-kind="photo" data-state="expanded">
-          <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='72' height='72'><rect width='72' height='72' fill='%23e7c9a9'/></svg>" alt="Photo 1, Warm preset" />
-          <button type="button" class="remove" aria-label="Remove photo 1">×</button>
+          <img
+            src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='72' height='72'><rect width='72' height='72' fill='%23e7c9a9'/></svg>"
+            alt="Photo 1, Warm preset"
+          />
+          <button type="button" class="remove" aria-label="Remove photo 1">
+            ×
+          </button>
         </div>
       </div>
-      <div class="field-preset-picker chip-preset-reveal" role="radiogroup" aria-label="Photo look" style="max-width: 320px">
+      <div
+        class="field-preset-picker chip-preset-reveal"
+        role="radiogroup"
+        aria-label="Photo look"
+        style="max-width: 320px"
+      >
         <button type="button" class="preset-thumb">
           <span class="swatch"></span><span>Original</span>
         </button>
@@ -1023,45 +1097,106 @@ First steps. Four wobbly ones toward the fence, then straight into my arms.</tex
       </div>
 
       <p style="font-size: 12px; color: var(--ink-2); margin: 16px 0 8px">
-        <strong>Step 4</strong> — 3 photos attached (cap reached, camera icon dims — MAX_PHOTOS):
+        <strong>Step 4</strong> — 3 photos attached (cap reached, camera icon
+        dims — MAX_PHOTOS):
       </p>
       <div class="media-toolbar">
-        <button type="button" data-state="disabled" aria-label="Photo limit reached">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2" /><circle cx="12" cy="12.5" r="3.3" /></svg>
+        <button
+          type="button"
+          data-state="disabled"
+          aria-label="Photo limit reached"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="3" y="6" width="18" height="13" rx="2" />
+            <circle cx="12" cy="12.5" r="3.3" />
+          </svg>
         </button>
         <button type="button" aria-label="Add a video">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2" /><path d="M16 10.5l5-2.5v8l-5-2.5" /></svg>
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="3" y="6" width="13" height="12" rx="2" />
+            <path d="M16 10.5l5-2.5v8l-5-2.5" />
+          </svg>
         </button>
       </div>
       <div class="media-chips">
-        <div class="media-chip" data-kind="photo"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='72' height='72'><rect width='72' height='72' fill='%23e7c9a9'/></svg>" alt="Photo 1" /><button type="button" class="remove">×</button></div>
-        <div class="media-chip" data-kind="photo"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='72' height='72'><rect width='72' height='72' fill='%23d8b48f'/></svg>" alt="Photo 2" /><button type="button" class="remove">×</button></div>
-        <div class="media-chip" data-kind="photo"><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='72' height='72'><rect width='72' height='72' fill='%23c99a6c'/></svg>" alt="Photo 3" /><button type="button" class="remove">×</button></div>
-      </div>
-
-      <p style="font-size: 12px; color: var(--ink-2); margin: 16px 0 8px">
-        <strong>Step 5</strong> — video just picked (CapturePage.jsx:191-197): a real, playable local preview appears below the toolbar — deliberately NOT a tiny chip (controls need real size). Collapses to a compact "1 video" pill only later, once saved and reopened:
-      </p>
-      <div class="video-inline-preview">
-        <button type="button" class="video-remove" aria-label="Remove video">×</button>
-        <span class="video-play-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z" /></svg></span>
-        <span class="video-duration">0:12</span>
-      </div>
-
-      <p style="font-size: 12px; color: var(--ink-2); margin: 16px 0 8px">
-        <strong>Step 6</strong> — later, reopening a saved memory to edit: the video collapses to an icon+label pill, no poster (matches real existingVideoId branch, CapturePage.jsx:764-772):
-      </p>
-      <div class="media-chips">
-        <div class="media-chip" data-kind="video-pill">
-          🎬<br /><span style="font-size:9px">1 video</span>
-          <button type="button" class="remove" aria-label="Remove video">×</button>
+        <div class="media-chip" data-kind="photo">
+          <img
+            src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='72' height='72'><rect width='72' height='72' fill='%23e7c9a9'/></svg>"
+            alt="Photo 1"
+          /><button type="button" class="remove">×</button>
+        </div>
+        <div class="media-chip" data-kind="photo">
+          <img
+            src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='72' height='72'><rect width='72' height='72' fill='%23d8b48f'/></svg>"
+            alt="Photo 2"
+          /><button type="button" class="remove">×</button>
+        </div>
+        <div class="media-chip" data-kind="photo">
+          <img
+            src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='72' height='72'><rect width='72' height='72' fill='%23c99a6c'/></svg>"
+            alt="Photo 3"
+          /><button type="button" class="remove">×</button>
         </div>
       </div>
 
       <p style="font-size: 12px; color: var(--ink-2); margin: 16px 0 8px">
-        <strong>Step 7</strong> — Save-time failure (CapturePage.jsx:529): a failed photo upload surfaces as an inline sentence below the media area, not a per-chip badge:
+        <strong>Step 5</strong> — video just picked (CapturePage.jsx:191-197): a
+        real, playable local preview appears below the toolbar — deliberately
+        NOT a tiny chip (controls need real size). Collapses to a compact "1
+        video" pill only later, once saved and reopened:
       </p>
-      <p class="upload-error">Couldn't add that photo: try again. The rest of the memory is saved — Save again to retry.</p>
+      <div class="video-inline-preview">
+        <button type="button" class="video-remove" aria-label="Remove video">
+          ×
+        </button>
+        <span class="video-play-badge"
+          ><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff">
+            <path d="M8 5v14l11-7z" /></svg
+        ></span>
+        <span class="video-duration">0:12</span>
+      </div>
+
+      <p style="font-size: 12px; color: var(--ink-2); margin: 16px 0 8px">
+        <strong>Step 6</strong> — later, reopening a saved memory to edit: the
+        video collapses to an icon+label pill, no poster (matches real
+        existingVideoId branch, CapturePage.jsx:764-772):
+      </p>
+      <div class="media-chips">
+        <div class="media-chip" data-kind="video-pill">
+          🎬<br /><span style="font-size: 9px">1 video</span>
+          <button type="button" class="remove" aria-label="Remove video">
+            ×
+          </button>
+        </div>
+      </div>
+
+      <p style="font-size: 12px; color: var(--ink-2); margin: 16px 0 8px">
+        <strong>Step 7</strong> — Save-time failure (CapturePage.jsx:529): a
+        failed photo upload surfaces as an inline sentence below the media area,
+        not a per-chip badge:
+      </p>
+      <p class="upload-error">
+        Couldn't add that photo: try again. The rest of the memory is saved —
+        Save again to retry.
+      </p>
     </div>
   </body>
 </html>
