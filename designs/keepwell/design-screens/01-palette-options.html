@@ -1,0 +1,70 @@
+<!-- COMPONENT INVENTORY: palette-option -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KeepWell Palette Options</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #e9ecea; color: #14201a; font: 15px/1.5 "IBM Plex Sans", system-ui, sans-serif; }
+  .wrap { max-width: 1440px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { font-size: 28px; letter-spacing: -0.02em; margin: 0 0 8px; }
+  .lede { max-width: 72ch; color: #46574f; margin: 0 0 32px; }
+  .opt { margin-bottom: 48px; }
+  .opt h2 { font-size: 20px; margin: 0 0 4px; }
+  .opt p { margin: 0 0 12px; color: #46574f; max-width: 80ch; }
+  .sw { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+  .sw i { width: 56px; height: 32px; border-radius: 6px; border: 1px solid rgba(0,0,0,.12); }
+  iframe { width: 100%; height: 820px; border: 1px solid #c3ccc7; border-radius: 12px; background: #fff; }
+  .rec { font-size: 12px; font-weight: 600; background: #1e6b4f; color: #fff; border-radius: 999px; padding: 2px 8px; vertical-align: middle; margin-left: 8px; }
+  @media (max-width: 767px) { iframe { height: 700px; } }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <h1>Green, three ways — on the real Patient Detail</h1>
+  <p class="lede">Each frame is the live Patient Detail screen with only the colour tokens swapped. Rule in all three: one green family + neutrals; "changed since last visit" is a green tint, not yellow; red is reserved for clinical risk. Scroll inside each frame; resize the window for phone width.</p>
+
+  <section class="opt" data-component="palette-option" data-variant="neem">
+    <h2>1 · Neem <span class="rec">Recommended</span></h2>
+    <p>Deep botanical green on a faintly green-tinted ground. Calm and trustworthy, dark enough to feel exact rather than "wellness". Reads like a good hospital, not a juice bar.</p>
+    <div class="sw"><i style="background:#1e6b4f"></i><i style="background:#e3f1ea"></i><i style="background:#f4f8f5"></i><i style="background:#12201a"></i><i style="background:#b42f12"></i></div>
+    <iframe title="Neem palette" src="patient-detail.html" data-palette="neem" loading="lazy"></iframe>
+  </section>
+
+  <section class="opt" data-component="palette-option" data-variant="emerald">
+    <h2>2 · Emerald</h2>
+    <p>Brighter, cleaner emerald on pure white. The most "clinical-modern" and energetic of the three; closest to the category default, so it leans hardest on type and spacing for distinction.</p>
+    <div class="sw"><i style="background:#047857"></i><i style="background:#d9f3e8"></i><i style="background:#ffffff"></i><i style="background:#0b1f17"></i><i style="background:#b42f12"></i></div>
+    <iframe title="Emerald palette" src="patient-detail.html" data-palette="emerald" loading="lazy"></iframe>
+  </section>
+
+  <section class="opt" data-component="palette-option" data-variant="sage">
+    <h2>3 · Sage</h2>
+    <p>Muted grey-green, softest and most human. Gentle when the screen is turned toward a patient; risk is that it reads quiet or low-energy at a busy front desk.</p>
+    <div class="sw"><i style="background:#3d6a4f"></i><i style="background:#e5eedf"></i><i style="background:#f5f7f3"></i><i style="background:#1c241e"></i><i style="background:#b42f12"></i></div>
+    <iframe title="Sage palette" src="patient-detail.html" data-palette="sage" loading="lazy"></iframe>
+  </section>
+</main>
+<script>
+  // Token overrides only. Same names as tokens.css; nothing else in the screen changes.
+  const P = {
+    neem: { ground:'#f4f8f5', surface:'#ffffff', sunk:'#eaf2ed', ink:'#12201a', 'ink-soft':'#45564d', 'ink-faint':'#5d6e65', line:'#c8d5cd', 'line-strong':'#a3b5aa', 'control-line':'#748a7e',
+            primary:'#1e6b4f', 'primary-press':'#17533d', 'primary-wash':'#e3f1ea', marigold:'#2e9e6e', highlight:'#d7eee2', 'highlight-ink':'#0f4a33', ok:'#1e6b4f', 'ok-wash':'#e3f1ea' },
+    emerald: { ground:'#ffffff', surface:'#ffffff', sunk:'#f0f7f3', ink:'#0b1f17', 'ink-soft':'#41544b', 'ink-faint':'#5a6d64', line:'#cbd9d1', 'line-strong':'#a5b8ad', 'control-line':'#71877b',
+            primary:'#047857', 'primary-press':'#065f46', 'primary-wash':'#d9f3e8', marigold:'#0e9f6e', highlight:'#cdf1e0', 'highlight-ink':'#064e3b', ok:'#047857', 'ok-wash':'#d9f3e8' },
+    sage: { ground:'#f5f7f3', surface:'#ffffff', sunk:'#edf1ea', ink:'#1c241e', 'ink-soft':'#4b574e', 'ink-faint':'#626e65', line:'#cdd5c9', 'line-strong':'#a9b5a6', 'control-line':'#7a8778',
+            primary:'#3d6a4f', 'primary-press':'#30553f', 'primary-wash':'#e5eedf', marigold:'#6f9a5a', highlight:'#e1ecd6', 'highlight-ink':'#2f4523', ok:'#3d6a4f', 'ok-wash':'#e5eedf' },
+  };
+  document.querySelectorAll('iframe[data-palette]').forEach(f => f.addEventListener('load', () => {
+    try {
+      const vars = Object.entries(P[f.dataset.palette]).map(([k, v]) => `--kw-${k}:${v}`).join(';');
+      const s = f.contentDocument.createElement('style');
+      s.textContent = `:root{${vars}}`;
+      f.contentDocument.head.append(s);
+    } catch (e) { /* cross-origin (file://) preview: frame shows base tokens */ }
+  }));
+</script>
+</body>
+</html>
