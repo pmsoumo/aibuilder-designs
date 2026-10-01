@@ -1,0 +1,93 @@
+/* KeepWell design tokens — Direction A "Chart & Marigold" (approved 2026-10-01).
+   Canonical source. Screens and the app's theme.css bind to these names; never inline raw values. */
+
+:root {
+  /* ---- Color: neutrals ---- */
+  --kw-ground: #f4f5f7;        /* page ground — cool neutral, never cream */
+  --kw-surface: #ffffff;       /* cards, sheets, sidebar */
+  --kw-sunk: #eef0f4;          /* wells, vital tiles, collapsed rows */
+  --kw-ink: #161a2e;           /* primary text — 16.9:1 on surface */
+  --kw-ink-soft: #4a5068;      /* secondary text — 8.1:1 on surface */
+  --kw-ink-faint: #656b82;     /* meta/stamps only — 5.3:1 on surface, 4.9:1 on ground */
+  --kw-line: #cdd1da;          /* dividers + card borders (visible on near-white-clipping panels) */
+  --kw-line-strong: #a9afbd;   /* table header rules, focus-adjacent boundaries */
+  --kw-control-line: #7a8094;  /* form control borders — 3.9:1 non-text contrast */
+
+  /* ---- Color: primary (indigo ink — actions only) ---- */
+  --kw-primary: #2f3d9e;       /* 9.1:1 on surface */
+  --kw-primary-press: #26327f;
+  --kw-primary-wash: #e6e9f7;  /* selected nav item, selected chip */
+  --kw-on-primary: #ffffff;
+
+  /* ---- Color: marigold (the highlighter — means "changed / worth a look", never decoration) ---- */
+  --kw-marigold: #f2b01e;      /* marks, sparkline last point, focus ring */
+  --kw-highlight: #fcebb6;     /* highlighter wash behind changed values + pattern callout */
+  --kw-highlight-ink: #4a3500; /* text on highlight — 10.6:1 */
+
+  /* ---- Color: clinical semantics ---- */
+  --kw-alert: #b42f12;         /* allergy, threshold breach, overdue — 6.4:1 on surface */
+  --kw-alert-wash: #fde4da;
+  --kw-ok: #1d6b45;            /* paid, sent, completed — 6.6:1 on surface */
+  --kw-ok-wash: #e1f1e8;
+
+  /* ---- Type ---- */
+  --kw-font: "IBM Plex Sans", system-ui, "Segoe UI", sans-serif;
+  --kw-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", monospace; /* every clinical number */
+  --kw-text-xs: 12px;   /* stamps, sparkline labels */
+  --kw-text-sm: 13px;   /* meta, chips, table cells */
+  --kw-text-base: 15px; /* body */
+  --kw-text-md: 18px;   /* section titles, vital values */
+  --kw-text-lg: 24px;   /* page titles, big vitals */
+  --kw-text-xl: 32px;   /* patient name */
+  --kw-weight-regular: 400;
+  --kw-weight-bold: 600;
+  --kw-leading: 1.5;
+  --kw-leading-tight: 1.15;
+  --kw-tracking-display: -0.02em;
+
+  /* ---- Spacing ---- */
+  --kw-space-1: 4px;
+  --kw-space-2: 8px;
+  --kw-space-3: 12px;
+  --kw-space-4: 16px;
+  --kw-space-6: 24px;
+  --kw-space-8: 32px;
+  --kw-space-12: 48px;
+  --kw-space-16: 64px;
+
+  /* ---- Radius ---- */
+  --kw-radius-sm: 6px;   /* tiles, inputs */
+  --kw-radius-md: 8px;   /* buttons, callouts */
+  --kw-radius-lg: 12px;  /* cards, sheets */
+  --kw-radius-pill: 999px; /* chips, toggles */
+
+  /* ---- Elevation (border OR shadow-blur <16px; never the ghost-card combo) ---- */
+  --kw-elev-1: 0 1px 2px rgba(22, 26, 46, 0.06);   /* bordered cards */
+  --kw-elev-2: 0 2px 8px rgba(22, 26, 46, 0.10);   /* sticky summary bar, popovers */
+  --kw-elev-3: 0 12px 32px rgba(22, 26, 46, 0.18); /* modal + sheet — borderless */
+
+  /* ---- z-index scale ---- */
+  --kw-z-dropdown: 10;
+  --kw-z-sticky: 20;
+  --kw-z-backdrop: 30;
+  --kw-z-modal: 40;
+  --kw-z-toast: 50;
+  --kw-z-tooltip: 60;
+
+  /* ---- Motion ---- */
+  --kw-ease: cubic-bezier(0.16, 1, 0.3, 1); /* exponential ease-out; no bounce */
+  --kw-dur-fast: 120ms;
+  --kw-dur: 200ms;
+
+  /* ---- Layout + touch ---- */
+  --kw-tap: 44px;
+  --kw-sidebar-w: 232px;
+  --kw-rail-w: 72px;
+  --kw-bottom-nav-h: 64px;
+  --kw-detail-max: 960px;
+  --kw-list-max: 1200px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --kw-dur-fast: 0ms; --kw-dur: 0ms; }
+}

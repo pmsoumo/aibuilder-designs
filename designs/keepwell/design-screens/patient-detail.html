@@ -1,0 +1,370 @@
+<!-- COMPONENT INVENTORY: app-shell, sidebar-nav, bottom-nav, page-header, button-primary, button-secondary, button-ghost, sticky-summary, patient-identity, consent-toggle, alert-chip, vital-tile, pattern-callout, visit-row, status-pill, plan-card, list-row, empty-state, skeleton, popover, mobile-action-bar -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KeepWell · Patient Detail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../screens.css">
+<style>
+  /* Screen-local layout only. Components live in screens.css. */
+  .detail { max-width: var(--kw-detail-max); margin: 0 auto; }
+  .identity { padding: var(--kw-space-6); display: flex; flex-direction: column; gap: var(--kw-space-4); }
+  .id-top { display: flex; justify-content: space-between; gap: var(--kw-space-6); align-items: flex-start; flex-wrap: wrap; }
+  .id-name { font-size: var(--kw-text-xl); font-weight: var(--kw-weight-bold); letter-spacing: var(--kw-tracking-display); line-height: var(--kw-leading-tight); }
+  .id-meta { display: flex; flex-wrap: wrap; gap: var(--kw-space-1) var(--kw-space-4); margin-top: var(--kw-space-2); color: var(--kw-ink-soft); font-size: var(--kw-text-sm); align-items: center; }
+  .id-meta a { color: var(--kw-ink-soft); }
+  .consents { display: flex; flex-direction: column; align-items: flex-end; gap: 0; }
+  .alerts-row { display: flex; flex-wrap: wrap; gap: var(--kw-space-2); align-items: center; padding-top: var(--kw-space-4); border-top: 1px solid var(--kw-line); position: relative; }
+  .alerts-row .lbl { font-size: var(--kw-text-sm); color: var(--kw-ink-soft); margin-right: var(--kw-space-2); }
+  .vitals { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--kw-space-3); }
+  .vitals-foot { margin-top: var(--kw-space-2); }
+  .thread-label { font-size: var(--kw-text-sm); color: var(--kw-ink-soft); margin: var(--kw-space-4) 0 var(--kw-space-2); }
+  .older { overflow: hidden; }
+  .older .visit-row + .visit-row { border-top: 1px solid var(--kw-line); }
+
+  /* sticky-summary (registry 4.19) — compact pinned identity while the doctor scrolls history */
+  .sticky-summary { position: sticky; top: 0; z-index: var(--kw-z-sticky); margin: 0 calc(-1 * var(--kw-space-8)); padding: var(--kw-space-2) var(--kw-space-8); background: var(--kw-surface); border-bottom: 1px solid var(--kw-line); box-shadow: var(--kw-elev-2); display: none; }
+  .sticky-summary[data-state="shown"] { display: block; }
+  .sticky-summary .inner { max-width: var(--kw-detail-max); margin: 0 auto; display: flex; align-items: center; gap: var(--kw-space-4); }
+  .sticky-summary .nm { font-weight: var(--kw-weight-bold); white-space: nowrap; }
+  .sticky-summary .mt { font-size: var(--kw-text-sm); color: var(--kw-ink-soft); white-space: nowrap; }
+  .sticky-summary .chips { display: flex; gap: var(--kw-space-2); flex: 1; min-width: 0; overflow: hidden; }
+  .sticky-summary .alert-chip { min-height: 28px; }
+
+  @media (max-width: 1023px) { .vitals { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 767px) {
+    .identity { padding: var(--kw-space-4); }
+    .id-name { font-size: var(--kw-text-lg); }
+    .consents { align-items: flex-start; }
+    .vitals { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .vitals .vital-tile:last-child { grid-column: 1 / -1; }
+    .sticky-summary { margin: 0 calc(-1 * var(--kw-space-4)); padding: var(--kw-space-2) var(--kw-space-4); }
+    .sticky-summary .mt, .sticky-summary .btn { display: none; }
+    .page-header { padding-top: var(--kw-space-4); }
+  }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6M16 4a4 4 0 0 1 0 8M22 21c0-3-2-5-4-5.5"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></symbol>
+    <symbol id="i-wallet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20M16 15h2"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5"/></symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></symbol>
+    <symbol id="i-staff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.75"/><circle cx="12" cy="12" r="1.75"/><circle cx="19" cy="12" r="1.75"/></symbol>
+    <symbol id="i-repeat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 0 1-3 3H3"/></symbol>
+    <symbol id="i-clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M21 11 12 20a6 6 0 0 1-8.5-8.5l9-9a4 4 0 0 1 5.7 5.7l-9 9a2 2 0 0 1-2.8-2.8L15 6"/></symbol>
+    <symbol id="i-msg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.8 7L3 21l2-6A8 8 0 1 1 21 12z"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+  </defs>
+</svg>
+
+<div class="app-shell" data-component="app-shell">
+  <nav class="sidebar-nav" data-component="sidebar-nav" aria-label="Main">
+    <div class="brand"><i class="brand-mark" aria-hidden="true"></i><span>KeepWell</span></div>
+    <a class="nav-item" href="#"><svg><use href="#i-home"/></svg><span>Overview</span></a>
+    <a class="nav-item" href="#" aria-current="page"><svg><use href="#i-users"/></svg><span>Patients</span></a>
+    <a class="nav-item" href="#"><svg><use href="#i-cal"/></svg><span>Appointments</span></a>
+    <a class="nav-item" href="#"><svg><use href="#i-wallet"/></svg><span>Payments</span></a>
+    <a class="nav-item" href="#"><svg><use href="#i-file"/></svg><span>Records</span></a>
+    <div class="nav-sep" role="separator"></div>
+    <a class="nav-item" href="#"><svg><use href="#i-tag"/></svg><span>Services</span></a>
+    <a class="nav-item" href="#"><svg><use href="#i-staff"/></svg><span>Staff</span></a>
+    <a class="nav-item" href="#"><svg><use href="#i-gear"/></svg><span>Settings</span></a>
+    <div class="clinic"><b>Shanti Polyclinic</b>Dr. Anjali Mehta</div>
+  </nav>
+
+  <main class="app-main">
+    <!-- Appears once the identity card scrolls out of view. Allergies never leave the screen. -->
+    <div class="sticky-summary" id="sticky" data-component="sticky-summary" data-state="hidden" aria-hidden="true">
+      <div class="inner">
+        <span class="nm">Rukhsana Begum</span><span class="mt">58 · F</span>
+        <span class="chips">
+          <span class="alert-chip" data-component="alert-chip" data-variant="allergy">Penicillin</span>
+          <span class="alert-chip" data-component="alert-chip" data-variant="condition">Type 2 diabetes</span>
+          <span class="alert-chip" data-component="alert-chip" data-variant="condition">Hypertension</span>
+        </span>
+        <button class="btn btn-primary" data-component="button-primary" tabindex="-1">Complete today's visit</button>
+      </div>
+    </div>
+
+    <div class="detail">
+      <header class="page-header" data-component="page-header">
+        <div class="crumbs"><a href="#">Patients</a><span aria-hidden="true">/</span><span>Rukhsana Begum</span></div>
+        <div class="actions">
+          <button class="btn btn-secondary" data-component="button-secondary">Book appointment</button>
+          <button class="btn btn-primary" data-component="button-primary" data-primary-action="true" data-condition="login.isDoctor && patient.hasBookedToday" data-focus-order="1">Complete today's visit</button>
+        </div>
+      </header>
+
+      <!-- Identity + alerts: the first 3 seconds of the read -->
+      <section class="card identity" id="identity" data-component="patient-identity" data-state="view" aria-labelledby="pt-name">
+        <div class="id-top">
+          <div>
+            <h1 class="id-name" id="pt-name">Rukhsana Begum</h1>
+            <div class="id-meta">
+              <span><span class="num">58</span> · Female</span>
+              <a href="#" class="num">+91 98301 44217</a>
+              <span>Patient since Mar 2024</span>
+              <span>Last seen by Dr. Anjali Mehta, <span class="num">14 Aug</span></span>
+              <button class="btn btn-ghost" data-component="button-ghost" data-interaction="inline-edit">Edit details</button>
+            </div>
+          </div>
+          <div class="consents">
+            <button class="consent-toggle" role="switch" aria-checked="true" data-component="consent-toggle" data-variant="messaging" onclick="this.setAttribute('aria-checked', this.getAttribute('aria-checked')!=='true')"><span class="track" aria-hidden="true"></span>WhatsApp messages</button>
+            <button class="consent-toggle" role="switch" aria-checked="true" data-component="consent-toggle" data-variant="ai-analysis" onclick="this.setAttribute('aria-checked', this.getAttribute('aria-checked')!=='true')"><span class="track" aria-hidden="true"></span>AI history analysis</button>
+          </div>
+        </div>
+        <div class="alerts-row" aria-label="Clinical alerts">
+          <span class="lbl">Alerts</span>
+          <button class="alert-chip" data-component="alert-chip" data-variant="allergy" data-interaction="popover:audit"><span class="kind">Allergy</span> Penicillin</button>
+          <button class="alert-chip" data-component="alert-chip" data-variant="condition" data-interaction="popover:audit"><span class="kind">Chronic</span> Type 2 diabetes</button>
+          <button class="alert-chip" data-component="alert-chip" data-variant="condition" data-interaction="popover:audit"><span class="kind">Chronic</span> Hypertension</button>
+          <button class="alert-chip" data-component="alert-chip" data-variant="add"><svg width="14" height="14"><use href="#i-plus"/></svg>Add</button>
+        </div>
+      </section>
+
+      <!-- Vitals: the delta is the message; threshold breach overrides -->
+      <section class="section" aria-labelledby="v-h">
+        <div class="section-head"><h2 id="v-h">Vitals <span class="count">last recorded 14 Aug · vs 10 Jun</span></h2></div>
+        <div class="vitals">
+          <article class="vital-tile" data-component="vital-tile" data-state="breach">
+            <span class="label">Blood pressure <span class="threshold">Above 140/90</span></span>
+            <span class="value">148/92<span class="unit">mmHg</span></span>
+            <span class="delta changed">↑ 12/6</span>
+            <svg class="spark" viewBox="0 0 100 28" aria-hidden="true"><polyline points="2,26 21,23.8 40,21.6 59,19.4 78,17.2 97,4"/><circle cx="97" cy="4" r="2.5"/></svg>
+          </article>
+          <article class="vital-tile" data-component="vital-tile" data-state="normal">
+            <span class="label">Pulse</span>
+            <span class="value">84<span class="unit">bpm</span></span>
+            <span class="delta">no change</span>
+            <svg class="spark" viewBox="0 0 100 28" aria-hidden="true"><polyline points="2,26 21,15 40,4 59,15 78,4 97,4"/><circle cx="97" cy="4" r="2.5"/></svg>
+          </article>
+          <article class="vital-tile" data-component="vital-tile" data-state="normal">
+            <span class="label">Temperature</span>
+            <span class="value">98.4<span class="unit">°F</span></span>
+            <span class="delta">no change</span>
+            <svg class="spark" viewBox="0 0 100 28" aria-hidden="true"><polyline points="2,21 21,16 40,4 59,21 78,26 97,21"/><circle cx="97" cy="21" r="2.5"/></svg>
+          </article>
+          <article class="vital-tile" data-component="vital-tile" data-state="normal">
+            <span class="label">Weight</span>
+            <span class="value">71.4<span class="unit">kg</span></span>
+            <span class="delta changed">↓ 1.2 kg</span>
+            <svg class="spark" viewBox="0 0 100 28" aria-hidden="true"><polyline points="2,4 21,9.5 40,12 59,15 78,15 97,26"/><circle cx="97" cy="26" r="2.5"/></svg>
+          </article>
+          <article class="vital-tile" data-component="vital-tile" data-state="normal">
+            <span class="label">SpO₂</span>
+            <span class="value">97<span class="unit">%</span></span>
+            <span class="delta">no change</span>
+            <svg class="spark" viewBox="0 0 100 28" aria-hidden="true"><polyline points="2,26 21,4 40,4 59,26 78,4 97,26"/><circle cx="97" cy="26" r="2.5"/></svg>
+          </article>
+        </div>
+      </section>
+
+      <!-- History: pattern first, then one thread, upcoming on top -->
+      <section class="section" aria-labelledby="h-h">
+        <div class="section-head"><h2 id="h-h">Visits <span class="count">7 total</span></h2></div>
+
+        <aside class="pattern-callout" data-component="pattern-callout" data-state="shown" role="note">
+          <svg aria-hidden="true"><use href="#i-repeat"/></svg>
+          <div class="body">
+            <b>Left knee pain reported at all 3 visits since April.</b>
+            <div class="sub">Seen by 2 doctors. A repeat observation, not a diagnosis.</div>
+          </div>
+          <button class="btn btn-ghost" data-component="button-ghost" data-interaction="dismiss">Dismiss</button>
+        </aside>
+
+        <p class="thread-label">Upcoming</p>
+        <article class="card visit-row" data-component="visit-row" data-variant="upcoming">
+          <div class="vr-head">
+            <span class="when">Today <span class="num">1 Oct · 11:30</span></span>
+            <span class="doctor"><span class="avatar" aria-hidden="true">RI</span><b>Dr. Rohan Iyer</b> Orthopaedics</span>
+            <span class="status-pill" data-component="status-pill" data-variant="booked">Booked</span>
+          </div>
+        </article>
+
+        <p class="thread-label">Past</p>
+        <div class="thread">
+          <article class="card visit-row" data-component="visit-row" data-variant="expanded">
+            <div class="vr-head">
+              <span class="when">14 Aug 2026 <span class="num">10:10</span></span>
+              <span class="doctor"><span class="avatar" aria-hidden="true">AM</span><b>Dr. Anjali Mehta</b> General physician</span>
+            </div>
+            <dl class="vr-grid">
+              <dt>Complaint</dt><dd>Left knee pain for 2 weeks, worse on stairs. Tired in the afternoons.</dd>
+              <dt>Findings</dt><dd>Crepitus left knee, no swelling. BP raised at 148/92. Early osteoarthritis, left knee. Diabetes controlled.</dd>
+              <dt>Treatment</dt><dd><ul class="rx">
+                <li>Metformin 500 mg <span class="num">1-0-1 · continue</span></li>
+                <li>Telmisartan 40 mg <span class="num">1-0-0 · 30 days · new</span></li>
+                <li>Paracetamol 650 mg <span class="num">SOS for pain</span></li>
+              </ul></dd>
+              <dt>Advice</dt><dd>Quad-strengthening exercises daily. Referred to Dr. Iyer. Recheck BP in 6 weeks.</dd>
+              <dt>Test</dt><dd><div class="test-result"><svg aria-hidden="true"><use href="#i-clip"/></svg><span><a href="#">X-ray, left knee</a> — mild medial joint-space narrowing, no fracture.</span></div></dd>
+            </dl>
+            <div class="vr-foot">
+              <span class="stamp">Edited 14 Aug, 18:42 by Dr. Anjali Mehta</span>
+              <span class="num" style="font-size:var(--kw-text-sm)">₹600 <span class="status-pill" data-component="status-pill" data-variant="paid">Paid</span></span>
+            </div>
+          </article>
+
+          <article class="card visit-row" data-component="visit-row" data-variant="expanded">
+            <div class="vr-head">
+              <span class="when">10 Jun 2026 <span class="num">09:40</span></span>
+              <span class="doctor"><span class="avatar" aria-hidden="true">AM</span><b>Dr. Anjali Mehta</b> General physician</span>
+            </div>
+            <dl class="vr-grid">
+              <dt>Complaint</dt><dd>Routine diabetes review. Left knee aches on stairs.</dd>
+              <dt>Findings</dt><dd>Type 2 diabetes, fair control. Knee pain likely mechanical.</dd>
+              <dt>Treatment</dt><dd><ul class="rx">
+                <li>Metformin 500 mg <span class="num">1-0-1 · continue</span></li>
+                <li>Diclofenac gel <span class="num">apply twice daily · 10 days</span></li>
+              </ul></dd>
+              <dt>Test</dt><dd><div class="test-result"><svg aria-hidden="true"><use href="#i-clip"/></svg><span><a href="#">HbA1c</a> — <span class="num">7.4%</span>, down from <span class="num">7.9%</span>.</span></div></dd>
+            </dl>
+            <div class="vr-foot"><span class="stamp">Follow-up set for 14 Aug</span><span class="num" style="font-size:var(--kw-text-sm)">₹500 <span class="status-pill" data-component="status-pill" data-variant="paid">Paid</span></span></div>
+          </article>
+
+          <article class="card visit-row" data-component="visit-row" data-variant="expanded">
+            <div class="vr-head">
+              <span class="when">22 Apr 2026 <span class="num">17:15</span></span>
+              <span class="doctor"><span class="avatar" aria-hidden="true">RI</span><b>Dr. Rohan Iyer</b> Orthopaedics</span>
+            </div>
+            <dl class="vr-grid">
+              <dt>Complaint</dt><dd>Left knee pain after a slip at home, 5 days.</dd>
+              <dt>Findings</dt><dd>Mild soft-tissue strain. Full range of motion.</dd>
+              <dt>Treatment</dt><dd>Physiotherapy course started — 8 sessions.</dd>
+            </dl>
+            <div class="vr-foot"><span class="stamp">Started plan: Physiotherapy, left knee</span><span class="num" style="font-size:var(--kw-text-sm)">₹800 <span class="status-pill" data-component="status-pill" data-variant="paid">Paid</span></span></div>
+          </article>
+
+          <div class="card older">
+            <article class="visit-row" data-component="visit-row" data-variant="collapsed"><button aria-expanded="false"><span class="num">3 Feb 2026</span><span class="who-col">Dr. Anjali Mehta</span><span class="sum">Cough and cold, 4 days — upper respiratory infection</span><svg width="20" height="20" aria-hidden="true"><use href="#i-down"/></svg></button></article>
+            <article class="visit-row" data-component="visit-row" data-variant="collapsed"><button aria-expanded="false"><span class="num">18 Nov 2025</span><span class="who-col">Dr. Anjali Mehta</span><span class="sum">Diabetes review — HbA1c 7.9%, metformin continued</span><svg width="20" height="20" aria-hidden="true"><use href="#i-down"/></svg></button></article>
+            <article class="visit-row" data-component="visit-row" data-variant="collapsed"><button aria-expanded="false"><span class="num">3 Mar 2024</span><span class="who-col">Dr. Anjali Mehta</span><span class="sum">First visit — raised sugars, Type 2 diabetes diagnosed</span><svg width="20" height="20" aria-hidden="true"><use href="#i-down"/></svg></button></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="p-h">
+        <div class="section-head"><h2 id="p-h">Treatment plans <span class="count">1 active</span></h2><button class="btn btn-ghost" data-component="button-ghost"><svg><use href="#i-plus"/></svg>New plan</button></div>
+        <article class="card plan-card" data-component="plan-card" data-state="active">
+          <div>
+            <h3>Physiotherapy — left knee <span class="status-pill" data-component="status-pill" data-variant="active">Active</span></h3>
+            <p class="services">Physiotherapy session · IFT · Started 25 Apr by Dr. Rohan Iyer</p>
+            <div class="progress" role="img" aria-label="5 of 8 sessions done"><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i></i><i></i><i></i></div>
+          </div>
+          <div class="tally"><span class="num">5 / 8</span>sessions</div>
+        </article>
+      </section>
+
+      <section class="section" aria-labelledby="m-h">
+        <div class="section-head"><h2 id="m-h">Messages</h2></div>
+        <ul class="card list">
+          <li class="list-row" data-component="list-row"><svg aria-hidden="true"><use href="#i-msg"/></svg><span>Appointment confirmation — today 11:30<div class="meta">Prepared 28 Sep by reception</div></span><span class="status-pill" data-component="status-pill" data-variant="sent">Sent</span></li>
+          <li class="list-row" data-component="list-row"><svg aria-hidden="true"><use href="#i-msg"/></svg><span>Receipt — ₹600<div class="meta">14 Aug</div></span><span class="status-pill" data-component="status-pill" data-variant="skipped">Skipped</span></li>
+        </ul>
+      </section>
+
+      <section class="section" aria-labelledby="a-h">
+        <div class="section-head"><h2 id="a-h">Attachments <span class="count">2</span></h2><button class="btn btn-ghost" data-component="button-ghost"><svg><use href="#i-plus"/></svg>Upload</button></div>
+        <ul class="card list">
+          <li class="list-row" data-component="list-row"><svg aria-hidden="true"><use href="#i-file"/></svg><span>X-ray, left knee.jpg<div class="meta">14 Aug · linked to visit with Dr. Anjali Mehta</div></span><span class="meta num">1.8 MB</span></li>
+          <li class="list-row" data-component="list-row"><svg aria-hidden="true"><use href="#i-file"/></svg><span>HbA1c report.pdf<div class="meta">10 Jun · linked to visit with Dr. Anjali Mehta</div></span><span class="meta num">240 KB</span></li>
+        </ul>
+      </section>
+
+      <!-- ================= Rendered states (spec, never ships) ================= -->
+      <section class="spec-states" aria-label="Other states">
+        <h2>Other states</h2>
+        <p style="color:var(--kw-ink-soft)">Each state renders exactly as it would ship.</p>
+
+        <span class="spec-label">STATE · alert chip tapped — who added it, when</span>
+        <div style="position:relative;height:150px">
+          <span class="alert-chip" data-component="alert-chip" data-variant="allergy" data-state="open"><span class="kind">Allergy</span> Penicillin</span>
+          <div class="popover" data-component="popover" style="top:44px;left:0" role="dialog" aria-label="Penicillin allergy">
+            <b>Penicillin allergy</b>
+            <p class="stamp" style="margin:var(--kw-space-1) 0 var(--kw-space-3)">Added by Dr. Anjali Mehta · 3 Mar 2024</p>
+            <button class="btn btn-secondary" data-component="button-secondary" style="min-width:0">Remove</button>
+            <p class="stamp" style="margin-top:var(--kw-space-2)">Removals are logged with your name.</p>
+          </div>
+        </div>
+
+        <span class="spec-label">STATE · identity in edit mode (inline, no separate screen)</span>
+        <section class="card identity" data-component="patient-identity" data-state="edit">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:var(--kw-space-3)">
+            <label style="font-size:var(--kw-text-sm);color:var(--kw-ink-soft)">Name<input value="Rukhsana Begum" data-validate="required" style="display:block;width:100%;min-height:44px;margin-top:4px;padding:0 12px;border:1px solid var(--kw-control-line);border-radius:var(--kw-radius-sm);font:inherit;color:var(--kw-ink)"></label>
+            <label style="font-size:var(--kw-text-sm);color:var(--kw-ink-soft)">Age<input value="58" inputmode="numeric" data-validate="required|number" style="display:block;width:100%;min-height:44px;margin-top:4px;padding:0 12px;border:1px solid var(--kw-control-line);border-radius:var(--kw-radius-sm);font:inherit;color:var(--kw-ink)"></label>
+            <label style="font-size:var(--kw-text-sm);color:var(--kw-ink-soft)">Phone<input value="+91 98301 44217" inputmode="tel" data-validate="required|phone" style="display:block;width:100%;min-height:44px;margin-top:4px;padding:0 12px;border:1px solid var(--kw-control-line);border-radius:var(--kw-radius-sm);font:inherit;color:var(--kw-ink)"></label>
+          </div>
+          <div style="display:flex;gap:var(--kw-space-2)"><button class="btn btn-primary" data-component="button-primary">Save</button><button class="btn btn-secondary" data-component="button-secondary">Cancel</button></div>
+        </section>
+
+        <span class="spec-label">STATE · new patient, nothing recorded yet</span>
+        <section class="card identity" data-component="patient-identity" data-state="view">
+          <div><h3 class="id-name" style="font-size:var(--kw-text-lg)">Arjun Nair</h3><div class="id-meta"><span>34 · Male</span><span class="num">+91 90040 21876</span><span>Added today</span></div></div>
+          <div class="alerts-row"><span class="lbl">Alerts</span><span style="font-size:var(--kw-text-sm);color:var(--kw-ink-soft)">No known allergies or conditions.</span><button class="alert-chip" data-component="alert-chip" data-variant="add"><svg width="14" height="14"><use href="#i-plus"/></svg>Add</button></div>
+        </section>
+        <div class="card empty-state" data-component="empty-state" style="margin-top:var(--kw-space-3)">
+          <b>Arjun's record starts at his first visit.</b>
+          <p>Vitals, notes and prescriptions from today will show here, and the next doctor sees them before he says a word.</p>
+          <button class="btn btn-secondary" data-component="button-secondary">Book appointment</button>
+        </div>
+
+        <span class="spec-label">STATE · loading (skeleton, shell stays put)</span>
+        <div class="card identity" data-component="skeleton" aria-busy="true">
+          <div class="skeleton" style="width:260px;height:32px"></div>
+          <div class="skeleton" style="width:60%;height:14px"></div>
+          <div style="display:flex;gap:8px"><div class="skeleton" style="width:120px;height:32px;border-radius:999px"></div><div class="skeleton" style="width:140px;height:32px;border-radius:999px"></div></div>
+        </div>
+        <div class="vitals" style="margin-top:var(--kw-space-3)"><div class="skeleton" style="height:118px"></div><div class="skeleton" style="height:118px"></div><div class="skeleton" style="height:118px"></div><div class="skeleton" style="height:118px"></div><div class="skeleton" style="height:118px"></div></div>
+
+        <span class="spec-label">STATE · visit history failed to load (inline, with retry)</span>
+        <div class="card empty-state" data-component="empty-state" data-variant="error" role="alert">
+          <b>Couldn't load visits.</b>
+          <p>Alerts and vitals above are current. Check the connection and try again.</p>
+          <button class="btn btn-secondary" data-component="button-secondary">Retry</button>
+        </div>
+
+        <span class="spec-label">STATE · vital never recorded</span>
+        <div class="vitals"><article class="vital-tile" data-component="vital-tile" data-state="empty"><span class="label">SpO₂</span><span class="value">—</span><span class="delta">not recorded yet</span></article></div>
+      </section>
+    </div>
+
+    <div class="mobile-action-bar" data-component="mobile-action-bar">
+      <button class="btn btn-secondary" data-component="button-secondary">Book</button>
+      <button class="btn btn-primary" data-component="button-primary">Complete today's visit</button>
+    </div>
+  </main>
+
+  <nav class="bottom-nav" data-component="bottom-nav" aria-label="Main">
+    <a href="#"><svg><use href="#i-home"/></svg>Overview</a>
+    <a href="#" aria-current="page"><svg><use href="#i-users"/></svg>Patients</a>
+    <a href="#"><svg><use href="#i-cal"/></svg>Appts</a>
+    <a href="#"><svg><use href="#i-wallet"/></svg>Payments</a>
+    <a href="#"><svg><use href="#i-more"/></svg>More</a>
+  </nav>
+</div>
+
+<script>
+  // Pin the compact summary once the identity card leaves the viewport.
+  const sticky = document.getElementById('sticky');
+  new IntersectionObserver(([e]) => {
+    sticky.dataset.state = e.isIntersecting ? 'hidden' : 'shown';
+    sticky.setAttribute('aria-hidden', e.isIntersecting);
+  }).observe(document.getElementById('identity'));
+  // Collapsed visit rows expand in place (demo toggle).
+  document.querySelectorAll('[data-variant="collapsed"] button').forEach(b =>
+    b.addEventListener('click', () => b.setAttribute('aria-expanded', b.getAttribute('aria-expanded') !== 'true')));
+</script>
+</body>
+</html>
