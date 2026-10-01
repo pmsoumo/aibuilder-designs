@@ -1,0 +1,189 @@
+<!-- COMPONENT INVENTORY: direction-panel, swatch, type-specimen, patient-header-sample, alert-chip, vital-delta, pattern-callout, button-primary, button-secondary -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KeepWell Direction Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600&family=Instrument+Sans:wght@400;600&family=Instrument+Serif&family=Geist:wght@400;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --page: #ececef; --page-ink: #17181c; --page-soft: #4d5160;
+    --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s6: 24px; --s8: 32px; --s12: 48px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page); color: var(--page-ink); font: 15px/1.5 system-ui, "Segoe UI", sans-serif; }
+  .board { max-width: 1440px; margin: 0 auto; padding: var(--s8) var(--s4) var(--s12); }
+  .board > header { max-width: 72ch; margin-bottom: var(--s8); }
+  .board h1 { font-size: 28px; margin: 0 0 var(--s2); letter-spacing: -0.02em; }
+  .board > header p { margin: 0 0 var(--s2); color: var(--page-soft); }
+  .grid { display: grid; gap: var(--s6); grid-template-columns: 1fr; }
+  @media (min-width: 1100px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+
+  /* ---- Direction panel (each panel re-binds its own tokens) ---- */
+  .dir { background: var(--d-ground); color: var(--d-ink); border-radius: 14px; padding: var(--s6); font-family: var(--d-font); display: flex; flex-direction: column; gap: var(--s6); border: 1px solid var(--d-line); }
+  .dir h2 { margin: 0; font: 600 20px/1.2 var(--d-font); letter-spacing: -0.015em; }
+  .dir .tag { margin: var(--s1) 0 0; color: var(--d-soft); font-size: 14px; }
+  .rec { display: inline-block; margin-left: var(--s2); font-size: 12px; font-weight: 600; padding: 2px var(--s2); border-radius: 999px; background: var(--d-primary); color: var(--d-on-primary); vertical-align: middle; }
+  .swatches { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--s2); }
+  .sw { display: flex; flex-direction: column; gap: var(--s1); font: 11px/1.3 var(--d-mono); color: var(--d-soft); }
+  .sw i { display: block; height: 40px; border-radius: 7px; border: 1px solid var(--d-line); }
+  .spec { display: flex; flex-direction: column; gap: var(--s1); }
+  .spec .big { font: var(--d-name-weight) 30px/1.1 var(--d-name-font); letter-spacing: -0.02em; }
+  .spec .mono { font: 500 15px/1.4 var(--d-mono); font-variant-numeric: tabular-nums; }
+  .spec small { color: var(--d-soft); font-size: 13px; }
+
+  /* ---- Sample: patient header as it would read mid-consult ---- */
+  .card { background: var(--d-surface); border: 1px solid var(--d-line); border-radius: 12px; padding: var(--s4); display: flex; flex-direction: column; gap: var(--s4); }
+  .who { display: flex; justify-content: space-between; gap: var(--s3); align-items: flex-start; }
+  .who .name { font: var(--d-name-weight) 22px/1.15 var(--d-name-font); letter-spacing: -0.015em; margin: 0; }
+  .who .meta { font-size: 13px; color: var(--d-soft); margin: var(--s1) 0 0; }
+  .chips { display: flex; flex-wrap: wrap; gap: var(--s2); }
+  .chip { font-size: 13px; font-weight: 600; padding: var(--s1) var(--s3); border-radius: 999px; background: var(--d-alert-wash); color: var(--d-alert); }
+  .chip.calm { background: var(--d-sunk); color: var(--d-ink); font-weight: 400; }
+  .vitals { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s2); }
+  .vital { background: var(--d-sunk); border-radius: 8px; padding: var(--s2) var(--s3); }
+  .vital b { display: block; font: 500 18px/1.2 var(--d-mono); font-variant-numeric: tabular-nums; }
+  .vital span { font-size: 12px; color: var(--d-soft); }
+  .vital .d { font: 500 12px var(--d-mono); color: var(--d-soft); }
+  .vital.hi b, .vital.hi .d { color: var(--d-alert); }
+  .pattern { background: var(--d-highlight); color: var(--d-highlight-ink); border-radius: 8px; padding: var(--s2) var(--s3); font-size: 14px; }
+  .actions { display: flex; gap: var(--s2); flex-wrap: wrap; }
+  .btn { min-height: 44px; min-width: 116px; padding: 0 var(--s4); border-radius: var(--d-btn-radius); font: 600 14px var(--d-font); cursor: pointer; border: 1px solid transparent; }
+  .btn.primary { background: var(--d-primary); color: var(--d-on-primary); }
+  .btn.secondary { background: transparent; color: var(--d-ink); border-color: var(--d-control-line); }
+  .btn:focus-visible { outline: 3px solid var(--d-highlight); outline-offset: 2px; }
+  .risk { margin: 0; font-size: 13px; color: var(--d-soft); border-top: 1px solid var(--d-line); padding-top: var(--s3); }
+  .risk b { color: var(--d-ink); }
+
+  /* A — Chart & Marigold */
+  .a { --d-ground:#f4f5f7; --d-surface:#ffffff; --d-sunk:#eef0f4; --d-ink:#161a2e; --d-soft:#4a5068; --d-line:#cdd1da; --d-control-line:#7a8094;
+       --d-primary:#2f3d9e; --d-on-primary:#ffffff; --d-highlight:#fcebb6; --d-highlight-ink:#4a3500; --d-alert:#b42f12; --d-alert-wash:#fde4da;
+       --d-font:"IBM Plex Sans",system-ui,sans-serif; --d-mono:"IBM Plex Mono",ui-monospace,monospace; --d-name-font:"IBM Plex Sans",sans-serif; --d-name-weight:600; --d-btn-radius:8px; }
+  /* B — Consult Room */
+  .b { --d-ground:#ffffff; --d-surface:#ffffff; --d-sunk:#f4f1f5; --d-ink:#241a26; --d-soft:#5e5262; --d-line:#d6cfd8; --d-control-line:#83768a;
+       --d-primary:#5b2a5e; --d-on-primary:#ffffff; --d-highlight:#fde2da; --d-highlight-ink:#6b2412; --d-alert:#b3261e; --d-alert-wash:#fbe3e1;
+       --d-font:"Instrument Sans",system-ui,sans-serif; --d-mono:"Instrument Sans",system-ui,sans-serif; --d-name-font:"Instrument Serif",Georgia,serif; --d-name-weight:400; --d-btn-radius:999px; }
+  /* C — Night Desk */
+  .c { --d-ground:#0e1116; --d-surface:#161b22; --d-sunk:#1f2630; --d-ink:#e6edf3; --d-soft:#9aa6b2; --d-line:#2d3540; --d-control-line:#5b6673;
+       --d-primary:#3dd6f5; --d-on-primary:#04151a; --d-highlight:#16323a; --d-highlight-ink:#a6ecfa; --d-alert:#ff8a80; --d-alert-wash:#3a1c1c;
+       --d-font:"Geist",system-ui,sans-serif; --d-mono:"Geist Mono",ui-monospace,monospace; --d-name-font:"Geist",sans-serif; --d-name-weight:600; --d-btn-radius:6px; }
+</style>
+</head>
+<body>
+<main class="board">
+  <header>
+    <h1>KeepWell — three directions</h1>
+    <p><b>Who it's for:</b> a doctor with a patient in the chair who has ten seconds to know who this person is medically.</p>
+    <p><b>Owns:</b> composed, exact, human. <b>Core loop:</b> book → read the record → complete the visit → follow-up goes out → patient returns to a richer record.</p>
+    <p>Each panel renders the same Patient Detail header with the same real content. Judge the feel, not the layout — layout comes next.</p>
+  </header>
+
+  <div class="grid">
+    <section class="dir a" data-component="direction-panel" data-variant="chart-marigold" aria-labelledby="a-h">
+      <div>
+        <h2 id="a-h">A · Chart &amp; Marigold <span class="rec">Recommended</span></h2>
+        <p class="tag">A precise clinical chart with a highlighter pen. Indigo ink does the work; marigold marks what changed.</p>
+      </div>
+      <div class="swatches" aria-label="Palette">
+        <div class="sw" data-component="swatch"><i style="background:#f4f5f7"></i>ground</div>
+        <div class="sw" data-component="swatch"><i style="background:#161a2e"></i>ink</div>
+        <div class="sw" data-component="swatch"><i style="background:#2f3d9e"></i>primary</div>
+        <div class="sw" data-component="swatch"><i style="background:#f2b01e"></i>marigold</div>
+        <div class="sw" data-component="swatch"><i style="background:#b42f12"></i>alert</div>
+        <div class="sw" data-component="swatch"><i style="background:#cdd1da"></i>line</div>
+      </div>
+      <div class="spec" data-component="type-specimen">
+        <span class="big">Rukhsana Begum</span>
+        <span class="mono">BP 148/92 · +12 since 14 Aug</span>
+        <small>IBM Plex Sans + Plex Mono. Tabular numerals for vitals. Plex has a matching Devanagari cut, so Hindi later costs nothing.</small>
+      </div>
+      <article class="card" data-component="patient-header-sample">
+        <div class="who">
+          <div><p class="name">Rukhsana Begum</p><p class="meta">58 · F · +91 98301 44217 · since Mar 2024</p></div>
+        </div>
+        <div class="chips"><span class="chip" data-component="alert-chip">Penicillin allergy</span><span class="chip" data-component="alert-chip">Type 2 diabetes</span></div>
+        <div class="vitals">
+          <div class="vital hi" data-component="vital-delta"><span>BP</span><b>148/92</b><span class="d">↑ 12 / 6</span></div>
+          <div class="vital" data-component="vital-delta"><span>Pulse</span><b>84</b><span class="d">— same</span></div>
+          <div class="vital" data-component="vital-delta"><span>Weight</span><b>71.4</b><span class="d">↓ 1.2 kg</span></div>
+        </div>
+        <p class="pattern" data-component="pattern-callout">Knee pain reported in 3 of last 4 visits</p>
+        <div class="actions"><button class="btn primary" data-component="button-primary">Complete visit</button><button class="btn secondary" data-component="button-secondary">Book follow-up</button></div>
+      </article>
+      <p class="risk"><b>Why it wins:</b> reads like a chart doctors already trust; the highlighter is a real clinical gesture, not decoration. <b>Risk:</b> indigo can feel corporate — warmth has to come from copy and the marigold, used sparingly.</p>
+    </section>
+
+    <section class="dir b" data-component="direction-panel" data-variant="consult-room" aria-labelledby="b-h">
+      <div>
+        <h2 id="b-h">B · Consult Room</h2>
+        <p class="tag">Warm and personal. Aubergine and coral, patient names set in a serif like a handwritten file.</p>
+      </div>
+      <div class="swatches" aria-label="Palette">
+        <div class="sw" data-component="swatch"><i style="background:#ffffff"></i>ground</div>
+        <div class="sw" data-component="swatch"><i style="background:#241a26"></i>ink</div>
+        <div class="sw" data-component="swatch"><i style="background:#5b2a5e"></i>primary</div>
+        <div class="sw" data-component="swatch"><i style="background:#e8664a"></i>coral</div>
+        <div class="sw" data-component="swatch"><i style="background:#b3261e"></i>alert</div>
+        <div class="sw" data-component="swatch"><i style="background:#d6cfd8"></i>line</div>
+      </div>
+      <div class="spec" data-component="type-specimen">
+        <span class="big">Rukhsana Begum</span>
+        <span class="mono">BP 148/92 · +12 since 14 Aug</span>
+        <small>Instrument Serif for names, Instrument Sans for everything else. No Devanagari cut.</small>
+      </div>
+      <article class="card" data-component="patient-header-sample">
+        <div class="who">
+          <div><p class="name">Rukhsana Begum</p><p class="meta">58 · F · +91 98301 44217 · since Mar 2024</p></div>
+        </div>
+        <div class="chips"><span class="chip" data-component="alert-chip">Penicillin allergy</span><span class="chip" data-component="alert-chip">Type 2 diabetes</span></div>
+        <div class="vitals">
+          <div class="vital hi" data-component="vital-delta"><span>BP</span><b>148/92</b><span class="d">↑ 12 / 6</span></div>
+          <div class="vital" data-component="vital-delta"><span>Pulse</span><b>84</b><span class="d">— same</span></div>
+          <div class="vital" data-component="vital-delta"><span>Weight</span><b>71.4</b><span class="d">↓ 1.2 kg</span></div>
+        </div>
+        <p class="pattern" data-component="pattern-callout">Knee pain reported in 3 of last 4 visits</p>
+        <div class="actions"><button class="btn primary" data-component="button-primary">Complete visit</button><button class="btn secondary" data-component="button-secondary">Book follow-up</button></div>
+      </article>
+      <p class="risk"><b>Risk:</b> this is the alternate cliché — editorial serif "wellness" (§3 grader 4b). Lovely on a landing page, soft where a doctor needs exactness; numbers lose their tabular discipline.</p>
+    </section>
+
+    <section class="dir c" data-component="direction-panel" data-variant="night-desk" aria-labelledby="c-h">
+      <div>
+        <h2 id="c-h">C · Night Desk</h2>
+        <p class="tag">Dark, dense, instrument-panel precision. Cyan signal on near-black.</p>
+      </div>
+      <div class="swatches" aria-label="Palette">
+        <div class="sw" data-component="swatch"><i style="background:#0e1116"></i>ground</div>
+        <div class="sw" data-component="swatch"><i style="background:#e6edf3"></i>ink</div>
+        <div class="sw" data-component="swatch"><i style="background:#3dd6f5"></i>primary</div>
+        <div class="sw" data-component="swatch"><i style="background:#16323a"></i>signal</div>
+        <div class="sw" data-component="swatch"><i style="background:#ff8a80"></i>alert</div>
+        <div class="sw" data-component="swatch"><i style="background:#2d3540"></i>line</div>
+      </div>
+      <div class="spec" data-component="type-specimen">
+        <span class="big">Rukhsana Begum</span>
+        <span class="mono">BP 148/92 · +12 since 14 Aug</span>
+        <small>Geist + Geist Mono. Sharp and modern. No Devanagari cut.</small>
+      </div>
+      <article class="card" data-component="patient-header-sample">
+        <div class="who">
+          <div><p class="name">Rukhsana Begum</p><p class="meta">58 · F · +91 98301 44217 · since Mar 2024</p></div>
+        </div>
+        <div class="chips"><span class="chip" data-component="alert-chip">Penicillin allergy</span><span class="chip" data-component="alert-chip">Type 2 diabetes</span></div>
+        <div class="vitals">
+          <div class="vital hi" data-component="vital-delta"><span>BP</span><b>148/92</b><span class="d">↑ 12 / 6</span></div>
+          <div class="vital" data-component="vital-delta"><span>Pulse</span><b>84</b><span class="d">— same</span></div>
+          <div class="vital" data-component="vital-delta"><span>Weight</span><b>71.4</b><span class="d">↓ 1.2 kg</span></div>
+        </div>
+        <p class="pattern" data-component="pattern-callout">Knee pain reported in 3 of last 4 visits</p>
+        <div class="actions"><button class="btn primary" data-component="button-primary">Complete visit</button><button class="btn secondary" data-component="button-secondary">Book follow-up</button></div>
+      </article>
+      <p class="risk"><b>Risk:</b> a dev-tool clone (Linear/Vercel reflex). Glare-mismatched to a bright clinic, and a dark screen turned toward a worried patient reads ominous.</p>
+    </section>
+  </div>
+</main>
+</body>
+</html>
