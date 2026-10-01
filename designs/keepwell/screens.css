@@ -11,7 +11,7 @@ h1, h2, h3, p { margin: 0; }
 button { font: inherit; color: inherit; }
 .num { font-family: var(--kw-mono); font-variant-numeric: tabular-nums; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-:focus-visible { outline: 3px solid var(--kw-marigold); outline-offset: 2px; }
+:focus-visible { outline: 3px solid var(--kw-mark); outline-offset: 2px; }
 
 /* ---------- 4.1 app-shell ---------- */
 .app-shell { min-height: 100vh; display: grid; grid-template-columns: var(--kw-sidebar-w) 1fr; }
@@ -31,7 +31,7 @@ button { font: inherit; color: inherit; }
 }
 .sidebar-nav .brand { display: flex; align-items: center; gap: var(--kw-space-2); padding: var(--kw-space-2) var(--kw-space-3) var(--kw-space-6); font-weight: var(--kw-weight-bold); font-size: var(--kw-text-md); letter-spacing: var(--kw-tracking-display); }
 .brand-mark { width: 28px; height: 28px; border-radius: var(--kw-radius-md); background: var(--kw-primary); position: relative; flex: none; }
-.brand-mark::after { content: ""; position: absolute; left: 7px; right: 7px; top: 12px; height: 4px; border-radius: 2px; background: var(--kw-marigold); }
+.brand-mark::after { content: ""; position: absolute; left: 7px; right: 7px; top: 12px; height: 4px; border-radius: 2px; background: var(--kw-mark); }
 .nav-item {
   display: flex; align-items: center; gap: var(--kw-space-3); min-height: var(--kw-tap);
   padding: 0 var(--kw-space-3); border-radius: var(--kw-radius-md); color: var(--kw-ink-soft);

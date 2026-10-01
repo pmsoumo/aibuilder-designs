@@ -1,34 +1,34 @@
-/* KeepWell design tokens — Direction A "Chart & Marigold" (approved 2026-10-01).
+/* KeepWell design tokens — "Neem" palette on the Direction A type + layout system (approved 2026-10-01).
    Canonical source. Screens and the app's theme.css bind to these names; never inline raw values. */
 
 :root {
-  /* ---- Color: neutrals ---- */
-  --kw-ground: #f4f5f7;        /* page ground — cool neutral, never cream */
+  /* ---- Color: neutrals (faintly green-tinted) ---- */
+  --kw-ground: #f4f8f5;        /* page ground — green-tinted neutral, never cream */
   --kw-surface: #ffffff;       /* cards, sheets, sidebar */
-  --kw-sunk: #eef0f4;          /* wells, vital tiles, collapsed rows */
-  --kw-ink: #161a2e;           /* primary text — 16.9:1 on surface */
-  --kw-ink-soft: #4a5068;      /* secondary text — 8.1:1 on surface */
-  --kw-ink-faint: #656b82;     /* meta/stamps only — 5.3:1 on surface, 4.9:1 on ground */
-  --kw-line: #cdd1da;          /* dividers + card borders (visible on near-white-clipping panels) */
-  --kw-line-strong: #a9afbd;   /* table header rules, focus-adjacent boundaries */
-  --kw-control-line: #7a8094;  /* form control borders — 3.9:1 non-text contrast */
+  --kw-sunk: #eaf2ed;          /* wells, collapsed rows, skeletons */
+  --kw-ink: #12201a;           /* primary text — 16.6:1 on surface */
+  --kw-ink-soft: #45564d;      /* secondary text — 7.6:1 on surface */
+  --kw-ink-faint: #5d6e65;     /* meta/stamps only — 5.4:1 on surface, 5.1:1 on ground */
+  --kw-line: #c8d5cd;          /* dividers + card borders (visible on near-white-clipping panels) */
+  --kw-line-strong: #a3b5aa;   /* condition-chip border, sparkline stroke */
+  --kw-control-line: #748a7e;  /* form control borders — 3.6:1 non-text contrast */
 
-  /* ---- Color: primary (indigo ink — actions only) ---- */
-  --kw-primary: #2f3d9e;       /* 9.1:1 on surface */
-  --kw-primary-press: #26327f;
-  --kw-primary-wash: #e6e9f7;  /* selected nav item, selected chip */
+  /* ---- Color: primary (Neem green — actions, current nav, positive status) ---- */
+  --kw-primary: #1e6b4f;       /* 6.4:1 on surface; white on it 6.4:1 */
+  --kw-primary-press: #17533d;
+  --kw-primary-wash: #e3f1ea;  /* selected nav item, booked/paid pills */
   --kw-on-primary: #ffffff;
 
-  /* ---- Color: marigold (the highlighter — means "changed / worth a look", never decoration) ---- */
-  --kw-marigold: #f2b01e;      /* marks, sparkline last point, focus ring */
-  --kw-highlight: #fcebb6;     /* highlighter wash behind changed values + pattern callout */
-  --kw-highlight-ink: #4a3500; /* text on highlight — 10.6:1 */
+  /* ---- Color: change mark (green tint — means "changed since last visit / worth a look") ---- */
+  --kw-mark: #2e9e6e;          /* focus ring (3.4:1 non-text), sparkline last point */
+  --kw-highlight: #d7eee2;     /* tint behind changed values + pattern callout */
+  --kw-highlight-ink: #0f4a33; /* text on highlight — 9.4:1 */
 
   /* ---- Color: clinical semantics ---- */
-  --kw-alert: #b42f12;         /* allergy, threshold breach, overdue — 6.4:1 on surface */
+  --kw-alert: #b42f12;         /* allergy, threshold breach, overdue, destructive confirm — 6.4:1 on surface */
   --kw-alert-wash: #fde4da;
-  --kw-ok: #1d6b45;            /* paid, sent, completed — 6.6:1 on surface */
-  --kw-ok-wash: #e1f1e8;
+  --kw-ok: #1e6b4f;            /* paid, sent, completed — same family as primary by design */
+  --kw-ok-wash: #e3f1ea;
 
   /* ---- Type ---- */
   --kw-font: "IBM Plex Sans", system-ui, "Segoe UI", sans-serif;
