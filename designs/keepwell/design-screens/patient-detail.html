@@ -1,4 +1,4 @@
-<!-- COMPONENT INVENTORY: app-shell, sidebar-nav, bottom-nav, page-header, button-primary, button-secondary, button-ghost, sticky-summary, patient-identity, consent-toggle, alert-chip, vital-tile, pattern-callout, visit-row, status-pill, plan-card, list-row, empty-state, skeleton, popover, mobile-action-bar -->
+<!-- COMPONENT INVENTORY: text-input, icon-button, confirm-dialog, app-shell, sidebar-nav, bottom-nav, page-header, button-primary, button-secondary, button-ghost, button-danger, sticky-summary, patient-identity, consent-toggle, alert-chip, vital-tile, pattern-callout, visit-row, status-pill, plan-card, list-row, empty-state, skeleton, popover, mobile-action-bar -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -28,22 +28,25 @@
   .older .visit-row + .visit-row { border-top: 1px solid var(--kw-line); }
 
   /* sticky-summary (registry 4.19) — compact pinned identity while the doctor scrolls history */
-  .sticky-summary { position: sticky; top: 0; z-index: var(--kw-z-sticky); margin: 0 calc(-1 * var(--kw-space-8)); padding: var(--kw-space-2) var(--kw-space-8); background: var(--kw-surface); border-bottom: 1px solid var(--kw-line); box-shadow: var(--kw-elev-2); display: none; }
-  .sticky-summary[data-state="shown"] { display: block; }
+  /* 0-height sticky anchor: the bar never takes layout space, so showing it cannot shift content */
+  .sticky-summary { position: sticky; top: 0; height: 0; z-index: var(--kw-z-sticky); margin: 0 calc(-1 * var(--kw-space-8)); }
+  .sticky-summary .bar { position: absolute; left: 0; right: 0; top: 0; padding: var(--kw-space-2) var(--kw-space-8); background: var(--kw-surface); border-bottom: 1px solid var(--kw-line); box-shadow: var(--kw-elev-2); visibility: hidden; transform: translateY(-100%); transition: transform var(--kw-dur) var(--kw-ease), visibility var(--kw-dur); }
+  .sticky-summary[data-state="shown"] .bar { visibility: visible; transform: none; }
   .sticky-summary .inner { max-width: var(--kw-detail-max); margin: 0 auto; display: flex; align-items: center; gap: var(--kw-space-4); }
   .sticky-summary .nm { font-weight: var(--kw-weight-bold); white-space: nowrap; }
   .sticky-summary .mt { font-size: var(--kw-text-sm); color: var(--kw-ink-soft); white-space: nowrap; }
   .sticky-summary .chips { display: flex; gap: var(--kw-space-2); flex: 1; min-width: 0; overflow: hidden; }
   .sticky-summary .alert-chip { min-height: 28px; }
 
-  @media (max-width: 1023px) { .vitals { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 1199px) { .vitals { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
   @media (max-width: 767px) {
     .identity { padding: var(--kw-space-4); }
     .id-name { font-size: var(--kw-text-lg); }
     .consents { align-items: flex-start; }
     .vitals { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .vitals .vital-tile:last-child { grid-column: 1 / -1; }
-    .sticky-summary { margin: 0 calc(-1 * var(--kw-space-4)); padding: var(--kw-space-2) var(--kw-space-4); }
+    .sticky-summary { margin: 0 calc(-1 * var(--kw-space-4)); }
+    .sticky-summary .bar { padding: var(--kw-space-2) var(--kw-space-4); }
     .sticky-summary .mt, .sticky-summary .btn { display: none; }
     .page-header { padding-top: var(--kw-space-4); }
   }
@@ -87,7 +90,7 @@
   <main class="app-main">
     <!-- Appears once the identity card scrolls out of view. Allergies never leave the screen. -->
     <div class="sticky-summary" id="sticky" data-component="sticky-summary" data-state="hidden" aria-hidden="true">
-      <div class="inner">
+      <div class="bar"><div class="inner">
         <span class="nm">Rukhsana Begum</span><span class="mt">58 · F</span>
         <span class="chips">
           <span class="alert-chip" data-component="alert-chip" data-variant="allergy">Penicillin</span>
@@ -95,7 +98,7 @@
           <span class="alert-chip" data-component="alert-chip" data-variant="condition">Hypertension</span>
         </span>
         <button class="btn btn-primary" data-component="button-primary" tabindex="-1">Complete today's visit</button>
-      </div>
+      </div></div>
     </div>
 
     <div class="detail">
@@ -139,8 +142,9 @@
         <div class="section-head"><h2 id="v-h">Vitals <span class="count">last recorded 14 Aug · vs 10 Jun</span></h2></div>
         <div class="vitals">
           <article class="vital-tile" data-component="vital-tile" data-state="breach">
-            <span class="label">Blood pressure <span class="threshold">Above 140/90</span></span>
+            <span class="label">Blood pressure</span>
             <span class="value">148/92<span class="unit">mmHg</span></span>
+            <span class="threshold">Above 140/90</span>
             <span class="delta changed">↑ 12/6</span>
             <svg class="spark" viewBox="0 0 100 28" aria-hidden="true"><polyline points="2,26 21,23.8 40,21.6 59,19.4 78,17.2 97,4"/><circle cx="97" cy="4" r="2.5"/></svg>
           </article>
@@ -263,7 +267,7 @@
             <p class="services">Physiotherapy session · IFT · Started 25 Apr by Dr. Rohan Iyer</p>
             <div class="progress" role="img" aria-label="5 of 8 sessions done"><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i></i><i></i><i></i></div>
           </div>
-          <div class="tally"><span class="num">5 / 8</span>sessions</div>
+          <div style="display:flex;align-items:center;gap:var(--kw-space-2)"><div class="tally"><span class="num">5 / 8</span>sessions</div><button class="icon-button" data-component="icon-button" aria-label="Plan actions" aria-haspopup="menu" aria-expanded="false"><svg><use href="#i-more"/></svg></button></div>
         </article>
       </section>
 
@@ -278,8 +282,8 @@
       <section class="section" aria-labelledby="a-h">
         <div class="section-head"><h2 id="a-h">Attachments <span class="count">2</span></h2><button class="btn btn-ghost" data-component="button-ghost"><svg><use href="#i-plus"/></svg>Upload</button></div>
         <ul class="card list">
-          <li class="list-row" data-component="list-row"><svg aria-hidden="true"><use href="#i-file"/></svg><span>X-ray, left knee.jpg<div class="meta">14 Aug · linked to visit with Dr. Anjali Mehta</div></span><span class="meta num">1.8 MB</span></li>
-          <li class="list-row" data-component="list-row"><svg aria-hidden="true"><use href="#i-file"/></svg><span>HbA1c report.pdf<div class="meta">10 Jun · linked to visit with Dr. Anjali Mehta</div></span><span class="meta num">240 KB</span></li>
+          <li class="list-row" data-component="list-row"><svg aria-hidden="true"><use href="#i-file"/></svg><span>X-ray, left knee.jpg<div class="meta">14 Aug · linked to visit with Dr. Anjali Mehta</div></span><span style="display:flex;align-items:center;gap:var(--kw-space-2)"><span class="meta num">1.8 MB</span><button class="icon-button" data-component="icon-button" aria-label="File actions" aria-haspopup="menu" aria-expanded="false"><svg><use href="#i-more"/></svg></button></span></li>
+          <li class="list-row" data-component="list-row"><svg aria-hidden="true"><use href="#i-file"/></svg><span>HbA1c report.pdf<div class="meta">10 Jun · linked to visit with Dr. Anjali Mehta</div></span><span style="display:flex;align-items:center;gap:var(--kw-space-2)"><span class="meta num">240 KB</span><button class="icon-button" data-component="icon-button" aria-label="File actions" aria-haspopup="menu" aria-expanded="false"><svg><use href="#i-more"/></svg></button></span></li>
         </ul>
       </section>
 
@@ -299,12 +303,31 @@
           </div>
         </div>
 
+        <span class="spec-label">STATE · plan actions menu, then delete confirm (hard delete, PRD §4)</span>
+        <div style="display:flex;gap:var(--kw-space-6);flex-wrap:wrap;align-items:flex-start">
+          <div style="position:relative;height:190px;width:220px">
+            <button class="icon-button" data-component="icon-button" aria-label="Plan actions" aria-haspopup="menu" aria-expanded="true"><svg><use href="#i-more"/></svg></button>
+            <div class="popover" data-component="popover" data-variant="menu" style="top:48px;left:0"><ul class="menu" role="menu"><li><button role="menuitem">Edit plan</button></li><li><button role="menuitem">Mark completed</button></li><li><button role="menuitem" class="danger">Delete plan</button></li></ul></div>
+          </div>
+          <div class="confirm-dialog" data-component="confirm-dialog" role="alertdialog" aria-labelledby="del-h">
+            <h3 id="del-h">Delete this plan?</h3>
+            <p>"Physiotherapy — left knee" and its 5 recorded sessions are removed. Visits stay. If the course just ended, mark it completed instead.</p>
+            <div class="row"><button class="btn btn-secondary" data-component="button-secondary">Keep plan</button><button class="btn btn-danger" data-component="button-danger">Delete plan</button></div>
+          </div>
+        </div>
+
+        <span class="spec-label">STATE · attachment actions (archive is soft, restore from Records)</span>
+        <div style="position:relative;height:160px;width:240px">
+          <button class="icon-button" data-component="icon-button" aria-label="File actions" aria-haspopup="menu" aria-expanded="true"><svg><use href="#i-more"/></svg></button>
+          <div class="popover" data-component="popover" data-variant="menu" style="top:48px;left:0"><ul class="menu" role="menu"><li><button role="menuitem">Open</button></li><li><button role="menuitem">Archive</button></li></ul><p class="stamp" style="padding:0 var(--kw-space-4) var(--kw-space-3)">Archived files can be restored from Records.</p></div>
+        </div>
+
         <span class="spec-label">STATE · identity in edit mode (inline, no separate screen)</span>
         <section class="card identity" data-component="patient-identity" data-state="edit">
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:var(--kw-space-3)">
-            <label style="font-size:var(--kw-text-sm);color:var(--kw-ink-soft)">Name<input value="Rukhsana Begum" data-validate="required" style="display:block;width:100%;min-height:44px;margin-top:4px;padding:0 12px;border:1px solid var(--kw-control-line);border-radius:var(--kw-radius-sm);font:inherit;color:var(--kw-ink)"></label>
-            <label style="font-size:var(--kw-text-sm);color:var(--kw-ink-soft)">Age<input value="58" inputmode="numeric" data-validate="required|number" style="display:block;width:100%;min-height:44px;margin-top:4px;padding:0 12px;border:1px solid var(--kw-control-line);border-radius:var(--kw-radius-sm);font:inherit;color:var(--kw-ink)"></label>
-            <label style="font-size:var(--kw-text-sm);color:var(--kw-ink-soft)">Phone<input value="+91 98301 44217" inputmode="tel" data-validate="required|phone" style="display:block;width:100%;min-height:44px;margin-top:4px;padding:0 12px;border:1px solid var(--kw-control-line);border-radius:var(--kw-radius-sm);font:inherit;color:var(--kw-ink)"></label>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:var(--kw-space-3)" data-validate-group="identity">
+            <label class="field">Name<input class="text-input" data-component="text-input" value="Rukhsana Begum" data-validate="required"></label>
+            <label class="field">Age<input class="text-input" data-component="text-input" value="58" inputmode="numeric" data-validate="required|number"></label>
+            <label class="field">Phone<input class="text-input" data-component="text-input" value="+91 98301 44217" inputmode="tel" data-validate="required|phone"></label>
           </div>
           <div style="display:flex;gap:var(--kw-space-2)"><button class="btn btn-primary" data-component="button-primary">Save</button><button class="btn btn-secondary" data-component="button-secondary">Cancel</button></div>
         </section>
@@ -342,7 +365,7 @@
 
     <div class="mobile-action-bar" data-component="mobile-action-bar">
       <button class="btn btn-secondary" data-component="button-secondary">Book</button>
-      <button class="btn btn-primary" data-component="button-primary">Complete today's visit</button>
+      <button class="btn btn-primary" data-component="button-primary" data-primary-action="true" data-condition="login.isDoctor && patient.hasBookedToday">Complete visit</button>
     </div>
   </main>
 
