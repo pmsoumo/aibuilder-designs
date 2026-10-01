@@ -1,0 +1,128 @@
+<!-- COMPONENT INVENTORY: app-shell, sidebar-nav, bottom-nav, page-header, stat-tile, data-table, status-pill, list-row, empty-state, skeleton, button-primary, button-ghost, mobile-action-bar -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KeepWell · Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../screens.css">
+<style>
+  .page { max-width: var(--kw-list-max); margin: 0 auto; }
+  .hello h1 { font-size: var(--kw-text-lg); letter-spacing: var(--kw-tracking-display); }
+  .hello p { color: var(--kw-ink-soft); font-size: var(--kw-text-sm); margin-top: var(--kw-space-1); }
+  .cols { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--kw-space-6); align-items: start; margin-top: var(--kw-space-6); }
+  .panel-head { display: flex; justify-content: space-between; align-items: center; padding: var(--kw-space-3) var(--kw-space-4) var(--kw-space-3) var(--kw-space-6); border-bottom: 1px solid var(--kw-line); }
+  .panel-head h2 { font-size: var(--kw-text-md); }
+  .panel-head .count { font-size: var(--kw-text-sm); color: var(--kw-ink-soft); font-weight: var(--kw-weight-regular); margin-left: var(--kw-space-2); }
+  .data-table td:first-child, .data-table th:first-child { padding-left: var(--kw-space-6); }
+  .data-table tr[data-state="past"] td { color: var(--kw-ink-soft); }
+  .now-line td { height: auto; padding: 0; border-bottom: 2px solid var(--kw-mark); }
+  .list-row .av { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--kw-primary-wash); color: var(--kw-primary); font-size: var(--kw-text-xs); font-weight: var(--kw-weight-bold); }
+  .list-row { grid-template-columns: 32px 1fr auto; }
+  .onboard { padding: var(--kw-space-12) var(--kw-space-6); }
+  .onboard b { font-size: var(--kw-text-lg); letter-spacing: var(--kw-tracking-display); }
+  @media (max-width: 1023px) { .cols { grid-template-columns: 1fr; } }
+  @media (max-width: 767px) { .now-line { display: none !important; } .data-table td:first-child { padding-left: 0; } }
+</style>
+</head>
+<body>
+<div class="app-shell" data-component="app-shell">
+  <nav class="sidebar-nav" data-component="sidebar-nav" aria-label="Main">
+    <div class="brand"><i class="brand-mark" aria-hidden="true"></i><span>KeepWell</span></div>
+    <a class="nav-item" href="overview.html" aria-current="page"><svg><use href="assets/icons.svg#i-home"/></svg><span>Overview</span></a>
+    <a class="nav-item" href="#"><svg><use href="assets/icons.svg#i-users"/></svg><span>Patients</span></a>
+    <a class="nav-item" href="appointments.html"><svg><use href="assets/icons.svg#i-cal"/></svg><span>Appointments</span></a>
+    <a class="nav-item" href="#"><svg><use href="assets/icons.svg#i-wallet"/></svg><span>Payments</span></a>
+    <a class="nav-item" href="#"><svg><use href="assets/icons.svg#i-file"/></svg><span>Records</span></a>
+    <div class="nav-sep" role="separator"></div>
+    <a class="nav-item" href="#"><svg><use href="assets/icons.svg#i-tag"/></svg><span>Services</span></a>
+    <a class="nav-item" href="#"><svg><use href="assets/icons.svg#i-staff"/></svg><span>Staff</span></a>
+    <a class="nav-item" href="#"><svg><use href="assets/icons.svg#i-gear"/></svg><span>Settings</span></a>
+    <div class="clinic"><b>Shanti Polyclinic</b>Dr. Anjali Mehta</div>
+  </nav>
+
+  <main class="app-main">
+    <div class="page">
+      <header class="page-header" data-component="page-header">
+        <div class="hello"><h1>Good morning, Dr. Mehta</h1><p>Thursday, 1 October · 9 of 14 still to see</p></div>
+        <div class="actions"><a class="btn btn-primary" data-component="button-primary" data-primary-action="true" href="booking.html"><svg><use href="assets/icons.svg#i-plus"/></svg>Book appointment</a></div>
+      </header>
+
+      <div class="stat-row" aria-label="At a glance">
+        <div class="stat-tile" data-component="stat-tile"><span class="num">14</span><span class="lbl">appointments today</span></div>
+        <div class="stat-tile" data-component="stat-tile"><span class="num">1,284</span><span class="lbl">patients</span></div>
+        <div class="stat-tile" data-component="stat-tile"><span class="num">₹1,86,400</span><span class="lbl">revenue in October so far</span></div>
+      </div>
+
+      <div class="cols">
+        <section class="card" aria-labelledby="t-h">
+          <div class="panel-head"><h2 id="t-h">Today<span class="count">14</span></h2><a class="btn btn-ghost" data-component="button-ghost" href="appointments.html">All appointments</a></div>
+          <table class="data-table" data-component="data-table">
+            <thead><tr><th scope="col">Time</th><th scope="col">Patient</th><th scope="col">Doctor</th><th scope="col">Status</th><th scope="col"><span class="sr-only">Open</span></th></tr></thead>
+            <tbody>
+              <tr data-state="past"><td class="num">10:15</td><td><span class="pt"><b>Kavita Rao</b><span>42 · F</span></span></td><td data-col="doctor">Dr. Anjali Mehta</td><td data-col="status"><span class="status-pill" data-component="status-pill" data-variant="completed">Completed</span></td><td class="go"><svg><use href="assets/icons.svg#i-right"/></svg></td></tr>
+              <tr data-state="past"><td class="num">10:45</td><td><span class="pt"><b>Suresh Pillai</b><span>67 · M</span></span></td><td data-col="doctor">Dr. Priya Raman</td><td data-col="status"><span class="status-pill" data-component="status-pill" data-variant="completed">Completed</span></td><td class="go"><svg><use href="assets/icons.svg#i-right"/></svg></td></tr>
+              <tr class="now-line" aria-hidden="true"><td colspan="5"></td></tr>
+              <tr><td class="num">11:30</td><td><span class="pt"><b>Rukhsana Begum</b><span class="alert-dot">Penicillin allergy</span></span></td><td data-col="doctor">Dr. Rohan Iyer</td><td data-col="status"><span class="status-pill" data-component="status-pill" data-variant="booked">Booked</span></td><td class="go"><svg><use href="assets/icons.svg#i-right"/></svg></td></tr>
+              <tr><td class="num">11:30</td><td><span class="pt"><b>Farhan Sheikh</b><span>29 · M · first visit</span></span></td><td data-col="doctor">Dr. Rohan Iyer</td><td data-col="status"><span class="status-pill" data-component="status-pill" data-variant="booked">Booked</span></td><td class="go"><svg><use href="assets/icons.svg#i-right"/></svg></td></tr>
+              <tr><td class="num">11:45</td><td><span class="pt"><b>Lakshmi Iyengar</b><span>73 · F</span></span></td><td data-col="doctor">Dr. Anjali Mehta</td><td data-col="status"><span class="status-pill" data-component="status-pill" data-variant="booked">Booked</span></td><td class="go"><svg><use href="assets/icons.svg#i-right"/></svg></td></tr>
+              <tr><td class="num">12:15</td><td><span class="pt"><b>Debashish Ghosh</b><span class="alert-dot">Sulfa allergy</span></span></td><td data-col="doctor">Dr. Priya Raman</td><td data-col="status"><span class="status-pill" data-component="status-pill" data-variant="booked">Booked</span></td><td class="go"><svg><use href="assets/icons.svg#i-right"/></svg></td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="card" aria-labelledby="r-h">
+          <div class="panel-head"><h2 id="r-h">Recent patients</h2><a class="btn btn-ghost" data-component="button-ghost" href="#">All patients</a></div>
+          <ul class="list">
+            <li class="list-row" data-component="list-row"><span class="av" aria-hidden="true">SP</span><span>Suresh Pillai<div class="meta">Seen today · Dr. Priya Raman</div></span><svg aria-hidden="true"><use href="assets/icons.svg#i-right"/></svg></li>
+            <li class="list-row" data-component="list-row"><span class="av" aria-hidden="true">KR</span><span>Kavita Rao<div class="meta">Seen today · Dr. Anjali Mehta</div></span><svg aria-hidden="true"><use href="assets/icons.svg#i-right"/></svg></li>
+            <li class="list-row" data-component="list-row"><span class="av" aria-hidden="true">FS</span><span>Farhan Sheikh<div class="meta">Added yesterday</div></span><svg aria-hidden="true"><use href="assets/icons.svg#i-right"/></svg></li>
+            <li class="list-row" data-component="list-row"><span class="av" aria-hidden="true">MD</span><span>Meera Desai<div class="meta">Seen 30 Sep · Dr. Rohan Iyer</div></span><svg aria-hidden="true"><use href="assets/icons.svg#i-right"/></svg></li>
+            <li class="list-row" data-component="list-row"><span class="av" aria-hidden="true">AK</span><span>Anil Kapoor<div class="meta">Seen 30 Sep · Dr. Anjali Mehta</div></span><svg aria-hidden="true"><use href="assets/icons.svg#i-right"/></svg></li>
+          </ul>
+        </section>
+      </div>
+
+      <!-- ================= Rendered states ================= -->
+      <section class="spec-states" aria-label="Other states">
+        <h2>Other states</h2>
+
+        <span class="spec-label">STATE · day one — empty state is the onboarding</span>
+        <div class="card empty-state onboard" data-component="empty-state" data-variant="onboarding">
+          <b>Book your first patient.</b>
+          <p>Type their phone number — KeepWell finds them or adds them, books the slot and gets a WhatsApp confirmation ready. Everything here fills in from there.</p>
+          <a class="btn btn-primary" data-component="button-primary" href="booking.html"><svg><use href="assets/icons.svg#i-plus"/></svg>Book appointment</a>
+        </div>
+
+        <span class="spec-label">STATE · nothing booked today (but patients exist)</span>
+        <div class="card empty-state" data-component="empty-state">
+          <b>No appointments today.</b>
+          <p>Walk-ins and phone calls book the same way — it takes a few seconds.</p>
+          <a class="btn btn-secondary" data-component="button-secondary" href="booking.html">Book appointment</a>
+        </div>
+
+        <span class="spec-label">STATE · loading</span>
+        <div class="stat-row"><div class="skeleton" data-component="skeleton" style="width:200px;height:44px"></div><div class="skeleton" style="width:160px;height:44px"></div><div class="skeleton" style="width:260px;height:44px"></div></div>
+        <div class="cols"><div class="skeleton" style="height:320px"></div><div class="skeleton" style="height:320px"></div></div>
+      </section>
+    </div>
+
+    <div class="mobile-action-bar" data-component="mobile-action-bar">
+      <a class="btn btn-primary" data-component="button-primary" href="booking.html"><svg><use href="assets/icons.svg#i-plus"/></svg>Book appointment</a>
+    </div>
+  </main>
+
+  <nav class="bottom-nav" data-component="bottom-nav" aria-label="Main">
+    <a href="overview.html" aria-current="page"><svg><use href="assets/icons.svg#i-home"/></svg>Overview</a>
+    <a href="#"><svg><use href="assets/icons.svg#i-users"/></svg>Patients</a>
+    <a href="appointments.html"><svg><use href="assets/icons.svg#i-cal"/></svg>Appts</a>
+    <a href="#"><svg><use href="assets/icons.svg#i-wallet"/></svg>Payments</a>
+    <a href="#"><svg><use href="assets/icons.svg#i-more"/></svg>More</a>
+  </nav>
+</div>
+</body>
+</html>

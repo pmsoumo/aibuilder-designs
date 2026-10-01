@@ -1,0 +1,205 @@
+<!-- COMPONENT INVENTORY: app-shell, sidebar-nav, bottom-nav, page-header, modal, text-input, patient-option, choice-chip, inline-note, consent-toggle, dispatch-card, button-primary, button-secondary, button-ghost, icon-button, alert-chip, empty-state -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KeepWell · Booking</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../screens.css">
+<style>
+  .page { max-width: var(--kw-list-max); margin: 0 auto; }
+  .page h1 { font-size: var(--kw-text-lg); letter-spacing: var(--kw-tracking-display); }
+  .phone-field { display: flex; gap: var(--kw-space-2); }
+  .phone-field .prefix { display: grid; place-items: center; padding: 0 var(--kw-space-3); border: 1px solid var(--kw-control-line); border-radius: var(--kw-radius-sm); background: var(--kw-sunk); font-family: var(--kw-mono); font-size: var(--kw-text-sm); color: var(--kw-ink-soft); }
+  .phone-field .text-input { font-family: var(--kw-mono); font-size: var(--kw-text-md); letter-spacing: 0.02em; }
+  .found-alerts { display: flex; gap: var(--kw-space-2); flex-wrap: wrap; margin-top: var(--kw-space-2); }
+  .consent-box { display: flex; flex-direction: column; gap: 0; padding: var(--kw-space-3) var(--kw-space-4); border: 1px solid var(--kw-line); border-radius: var(--kw-radius-md); background: var(--kw-sunk); }
+  .consent-box p { font-size: var(--kw-text-xs); color: var(--kw-ink-soft); margin-top: var(--kw-space-1); }
+  .consent-box .consent-toggle { color: var(--kw-ink); }
+  .grid-3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: var(--kw-space-3); }
+  .spec-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: var(--kw-space-6); align-items: start; }
+  .spec-grid .modal { width: 100%; }
+  .done-head { display: flex; gap: var(--kw-space-3); align-items: center; }
+  .done-head .tick { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--kw-primary-wash); color: var(--kw-primary); flex: none; }
+  .done-head .tick svg { width: 22px; height: 22px; }
+  @media (max-width: 767px) { .grid-3 { grid-template-columns: 1fr 1fr; } .grid-3 .field:first-child { grid-column: 1 / -1; } }
+</style>
+</head>
+<body>
+<div class="app-shell" data-component="app-shell">
+  <nav class="sidebar-nav" data-component="sidebar-nav" aria-label="Main">
+    <div class="brand"><i class="brand-mark" aria-hidden="true"></i><span>KeepWell</span></div>
+    <a class="nav-item" href="overview.html"><svg><use href="assets/icons.svg#i-home"/></svg><span>Overview</span></a>
+    <a class="nav-item" href="#"><svg><use href="assets/icons.svg#i-users"/></svg><span>Patients</span></a>
+    <a class="nav-item" href="appointments.html" aria-current="page"><svg><use href="assets/icons.svg#i-cal"/></svg><span>Appointments</span></a>
+    <a class="nav-item" href="#"><svg><use href="assets/icons.svg#i-wallet"/></svg><span>Payments</span></a>
+    <a class="nav-item" href="#"><svg><use href="assets/icons.svg#i-file"/></svg><span>Records</span></a>
+    <div class="nav-sep" role="separator"></div>
+    <a class="nav-item" href="#"><svg><use href="assets/icons.svg#i-tag"/></svg><span>Services</span></a>
+    <a class="nav-item" href="#"><svg><use href="assets/icons.svg#i-staff"/></svg><span>Staff</span></a>
+    <a class="nav-item" href="#"><svg><use href="assets/icons.svg#i-gear"/></svg><span>Settings</span></a>
+    <div class="clinic"><b>Shanti Polyclinic</b>Meena (reception)</div>
+  </nav>
+
+  <main class="app-main">
+    <div class="page">
+      <header class="page-header" data-component="page-header"><h1>Appointments</h1></header>
+      <p style="color:var(--kw-ink-soft)">Booking opens over whichever screen it was started from — Overview, Appointments or a patient's page.</p>
+
+      <!-- ================= Spec states (inline dialogs) ================= -->
+      <section class="spec-states" aria-label="Booking states">
+        <h2>Booking — every state</h2>
+        <p style="color:var(--kw-ink-soft);max-width:70ch">One flow for walk-ins, phone calls and follow-ups. Phone number first; everything after it adapts. Open dialog (top of page) shows the most common path: a returning patient, booked now.</p>
+
+        <div class="spec-grid">
+          <div>
+            <span class="spec-label">STATE · several patients share the number — pick, never guess</span>
+            <div class="modal inline" data-component="modal" role="dialog" aria-label="Book appointment, pick patient">
+              <div class="modal-head"><h2>Book appointment</h2><button class="icon-button" data-component="icon-button" aria-label="Close"><svg><use href="assets/icons.svg#i-x"/></svg></button></div>
+              <div class="modal-body">
+                <div>
+                  <label class="step-label" for="ph2">Phone number</label>
+                  <div class="phone-field"><span class="prefix">+91</span><input id="ph2" class="text-input" data-component="text-input" inputmode="tel" value="98301 44217"></div>
+                </div>
+                <div role="listbox" aria-label="3 patients use this number">
+                  <span class="step-label">3 patients use this number</span>
+                  <button class="patient-option" data-component="patient-option" role="option" aria-selected="false"><span class="avatar">RB</span><span><b>Rukhsana Begum</b><span>58 · F · last visit 14 Aug</span></span><svg width="18" height="18"><use href="assets/icons.svg#i-right"/></svg></button>
+                  <button class="patient-option" data-component="patient-option" role="option" aria-selected="false"><span class="avatar">IB</span><span><b>Imran Begum</b><span>61 · M · last visit 2 Jul</span></span><svg width="18" height="18"><use href="assets/icons.svg#i-right"/></svg></button>
+                  <button class="patient-option" data-component="patient-option" role="option" aria-selected="false"><span class="avatar">SB</span><span><b>Sana Begum</b><span>9 · F · last visit 18 Mar</span></span><svg width="18" height="18"><use href="assets/icons.svg#i-right"/></svg></button>
+                  <button class="btn btn-ghost" data-component="button-ghost" style="margin-top:var(--kw-space-2)"><svg><use href="assets/icons.svg#i-plus"/></svg>Someone else on this number</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <span class="spec-label">STATE · no match — new patient inline, consent visible</span>
+            <div class="modal inline" data-component="modal" role="dialog" aria-label="Book appointment, new patient">
+              <div class="modal-head"><h2>Book appointment</h2><button class="icon-button" data-component="icon-button" aria-label="Close"><svg><use href="assets/icons.svg#i-x"/></svg></button></div>
+              <div class="modal-body">
+                <div>
+                  <label class="step-label" for="ph3">Phone number</label>
+                  <div class="phone-field"><span class="prefix">+91</span><input id="ph3" class="text-input" data-component="text-input" inputmode="tel" value="90040 21876"></div>
+                  <div class="inline-note" data-component="inline-note" style="margin-top:var(--kw-space-2)"><svg><use href="assets/icons.svg#i-plus"/></svg>New patient — add a name to continue.</div>
+                </div>
+                <div class="grid-3">
+                  <label class="field">Full name<input class="text-input" data-component="text-input" value="Arjun Nair" data-validate="required" autofocus></label>
+                  <label class="field">Age<input class="text-input num-input" data-component="text-input" inputmode="numeric" value="34" data-validate="number"></label>
+                  <label class="field">Sex<select class="select" style="min-height:var(--kw-tap)"><option>Male</option><option>Female</option><option>Other</option></select></label>
+                </div>
+                <div class="consent-box" role="group" aria-label="Patient consent">
+                  <button class="consent-toggle" role="switch" aria-checked="true" data-component="consent-toggle" data-variant="messaging"><span class="track" aria-hidden="true"></span>WhatsApp messages from the clinic</button>
+                  <button class="consent-toggle" role="switch" aria-checked="true" data-component="consent-toggle" data-variant="ai-analysis"><span class="track" aria-hidden="true"></span>AI-assisted review of visit history</button>
+                  <p>Read these to the patient. Saving with them on records their consent; they get a WhatsApp confirming it with a one-line opt-out.</p>
+                </div>
+              </div>
+              <div class="modal-foot"><button class="btn btn-primary" data-component="button-primary">Continue</button></div>
+            </div>
+          </div>
+
+          <div>
+            <span class="spec-label">STATE · booked — confirmation ready to send</span>
+            <div class="modal inline" data-component="modal" role="dialog" aria-label="Booked">
+              <div class="modal-head"><h2>Booked</h2><button class="icon-button" data-component="icon-button" aria-label="Close"><svg><use href="assets/icons.svg#i-x"/></svg></button></div>
+              <div class="modal-body">
+                <div class="done-head"><span class="tick"><svg><use href="assets/icons.svg#i-check"/></svg></span><div><b>Rukhsana Begum · today 11:30</b><div style="font-size:var(--kw-text-sm);color:var(--kw-ink-soft)">with Dr. Rohan Iyer</div></div></div>
+                <article class="dispatch-card" data-component="dispatch-card">
+                  <div class="to"><span>WhatsApp to +91 98301 44217</span><span>Confirmation</span></div>
+                  <p class="msg">Hello Rukhsana ji, your appointment at Shanti Polyclinic is confirmed for today, 1 Oct, at 11:30 with Dr. Rohan Iyer. Reply here if you need to change it.</p>
+                </article>
+              </div>
+              <div class="modal-foot"><button class="btn btn-secondary" data-component="button-secondary">Skip</button><button class="btn btn-primary" data-component="button-primary" data-interaction="wa.me handoff, marks Sent on tap"><svg><use href="assets/icons.svg#i-send"/></svg>Send on WhatsApp</button></div>
+            </div>
+          </div>
+
+          <div>
+            <span class="spec-label">STATE · number incomplete (inline, on blur)</span>
+            <div class="modal inline" data-component="modal" role="dialog" aria-label="Book appointment, invalid number">
+              <div class="modal-head"><h2>Book appointment</h2><button class="icon-button" data-component="icon-button" aria-label="Close"><svg><use href="assets/icons.svg#i-x"/></svg></button></div>
+              <div class="modal-body">
+                <div>
+                  <label class="step-label" for="ph4">Phone number</label>
+                  <div class="phone-field"><span class="prefix">+91</span><input id="ph4" class="text-input" data-component="text-input" inputmode="tel" value="98301 442" aria-invalid="true" aria-describedby="ph4e" data-validate="required|phone10"></div>
+                  <p id="ph4e" style="color:var(--kw-alert);font-size:var(--kw-text-sm);margin-top:var(--kw-space-1)">Indian mobile numbers have 10 digits — this has 8.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <nav class="bottom-nav" data-component="bottom-nav" aria-label="Main">
+    <a href="overview.html"><svg><use href="assets/icons.svg#i-home"/></svg>Overview</a>
+    <a href="#"><svg><use href="assets/icons.svg#i-users"/></svg>Patients</a>
+    <a href="appointments.html" aria-current="page"><svg><use href="assets/icons.svg#i-cal"/></svg>Appts</a>
+    <a href="#"><svg><use href="assets/icons.svg#i-wallet"/></svg>Payments</a>
+    <a href="#"><svg><use href="assets/icons.svg#i-more"/></svg>More</a>
+  </nav>
+</div>
+
+<!-- ================= Open dialog: returning patient, the common path ================= -->
+<div class="backdrop" aria-hidden="true"></div>
+<div class="modal" data-component="modal" role="dialog" aria-modal="true" aria-labelledby="bk-h" data-state="open">
+  <div class="modal-head"><h2 id="bk-h">Book appointment</h2><button class="icon-button" data-component="icon-button" aria-label="Close" onclick="document.querySelector('.backdrop').remove();this.closest('.modal').remove()"><svg><use href="assets/icons.svg#i-x"/></svg></button></div>
+  <div class="modal-body">
+    <div>
+      <label class="step-label" for="ph1">Phone number</label>
+      <div class="phone-field"><span class="prefix">+91</span><input id="ph1" class="text-input" data-component="text-input" inputmode="tel" autocomplete="off" value="98301 44217" data-validate="required|phone10" data-focus-order="1"></div>
+    </div>
+
+    <div>
+      <div class="patient-option" data-component="patient-option" data-state="selected"><span class="avatar">RB</span><span><b>Rukhsana Begum</b><span>58 · F · last seen 14 Aug by Dr. Anjali Mehta</span></span><button class="btn btn-ghost" data-component="button-ghost" style="font-size:var(--kw-text-sm)">Change</button></div>
+      <div class="found-alerts"><span class="alert-chip" data-component="alert-chip" data-variant="allergy">Penicillin</span><span class="alert-chip" data-component="alert-chip" data-variant="condition">Type 2 diabetes</span><span class="alert-chip" data-component="alert-chip" data-variant="condition">Hypertension</span></div>
+    </div>
+
+    <div data-condition="clinic.doctorCount > 1">
+      <span class="step-label" id="doc-l">Doctor</span>
+      <div class="chip-set" role="group" aria-labelledby="doc-l">
+        <button class="choice-chip" data-component="choice-chip" aria-pressed="false">Dr. Anjali Mehta</button>
+        <button class="choice-chip" data-component="choice-chip" aria-pressed="true">Dr. Rohan Iyer</button>
+        <button class="choice-chip" data-component="choice-chip" aria-pressed="false">Dr. Priya Raman</button>
+      </div>
+    </div>
+
+    <div>
+      <span class="step-label" id="time-l">When</span>
+      <div class="chip-set" role="group" aria-labelledby="time-l" style="margin-bottom:var(--kw-space-2)">
+        <button class="choice-chip" data-component="choice-chip" aria-pressed="true">Today</button>
+        <button class="choice-chip" data-component="choice-chip" aria-pressed="false">Tomorrow</button>
+        <button class="choice-chip" data-component="choice-chip" aria-pressed="false"><svg width="16" height="16"><use href="assets/icons.svg#i-cal"/></svg>Pick date</button>
+      </div>
+      <div class="chip-set" role="group" aria-label="Time">
+        <button class="choice-chip" data-component="choice-chip" aria-pressed="false">Now</button>
+        <button class="choice-chip" data-component="choice-chip" aria-pressed="false"><span class="n">11:00</span></button>
+        <button class="choice-chip" data-component="choice-chip" aria-pressed="false"><span class="n">11:15</span></button>
+        <button class="choice-chip" data-component="choice-chip" data-variant="busy" aria-pressed="true" aria-describedby="busy-n"><span class="n">11:30</span></button>
+        <button class="choice-chip" data-component="choice-chip" aria-pressed="false"><span class="n">11:45</span></button>
+        <button class="choice-chip" data-component="choice-chip" aria-pressed="false"><span class="n">12:00</span></button>
+        <button class="choice-chip" data-component="choice-chip" aria-pressed="false">Other time</button>
+      </div>
+      <div class="inline-note" id="busy-n" data-component="inline-note" data-variant="warning" style="margin-top:var(--kw-space-3)" role="status"><svg><use href="assets/icons.svg#i-warn"/></svg>2 other patients are booked with Dr. Iyer at 11:30. You can still book.</div>
+    </div>
+  </div>
+  <div class="modal-foot">
+    <span class="hint"><kbd>Enter</kbd> to book</span>
+    <button class="btn btn-primary" data-component="button-primary" data-primary-action="true">Book for 11:30</button>
+  </div>
+</div>
+
+<script>
+  // Single-select chip groups (demo).
+  document.querySelectorAll('.chip-set').forEach(g => g.addEventListener('click', e => {
+    const c = e.target.closest('.choice-chip'); if (!c) return;
+    g.querySelectorAll('.choice-chip').forEach(x => x.setAttribute('aria-pressed', x === c));
+  }));
+  document.querySelectorAll('.consent-toggle').forEach(t => t.addEventListener('click', () =>
+    t.setAttribute('aria-checked', t.getAttribute('aria-checked') !== 'true')));
+</script>
+</body>
+</html>

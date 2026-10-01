@@ -1,0 +1,243 @@
+<!-- COMPONENT INVENTORY: app-shell, sidebar-nav, bottom-nav, page-header, form-section, text-input, carried-field, rx-line, choice-chip, checkbox-row, inline-note, context-rail, alert-chip, pattern-callout, save-bar, button-primary, button-secondary, button-ghost, icon-button, status-pill, empty-state -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KeepWell · Complete Appointment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../screens.css">
+<style>
+  .layout { max-width: var(--kw-list-max); margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: var(--kw-space-6); align-items: start; }
+  .title h1 { font-size: var(--kw-text-lg); letter-spacing: var(--kw-tracking-display); }
+  .title p { color: var(--kw-ink-soft); font-size: var(--kw-text-sm); margin-top: var(--kw-space-1); }
+  .vitals-in { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--kw-space-3); }
+  .vitals-in .field .last { font-size: var(--kw-text-xs); color: var(--kw-ink-faint); font-family: var(--kw-mono); }
+  .vitals-in .field .breach { font-size: var(--kw-text-xs); color: var(--kw-alert); font-weight: var(--kw-weight-bold); }
+  .vitals-in .text-input[data-state="breach"] { border-color: var(--kw-alert); color: var(--kw-alert); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: var(--kw-space-4); }
+  .fee-row { display: grid; grid-template-columns: 200px 1fr; gap: var(--kw-space-6); align-items: start; }
+  .rupee { position: relative; }
+  .rupee span { position: absolute; left: var(--kw-space-3); top: 50%; transform: translateY(-50%); color: var(--kw-ink-soft); font-family: var(--kw-mono); }
+  .rupee input { padding-left: 28px; }
+  .rail-mini { display: none; }
+  .ctx-name { font-size: var(--kw-text-md); font-weight: var(--kw-weight-bold); }
+  .ctx-meta { color: var(--kw-ink-soft); font-size: var(--kw-text-sm); }
+  .ctx-row { display: flex; justify-content: space-between; gap: var(--kw-space-2); }
+  .ctx-row span:first-child { color: var(--kw-ink-soft); }
+  .rail-chips { display: flex; flex-wrap: wrap; gap: var(--kw-space-1); }
+  .rail-chips .alert-chip { min-height: 28px; font-size: var(--kw-text-xs); }
+  @media (max-width: 1199px) {
+    .layout { grid-template-columns: 1fr; }
+    .context-rail { display: none; }
+    .rail-mini { display: flex; flex-wrap: wrap; gap: var(--kw-space-2); align-items: center; padding: var(--kw-space-3) var(--kw-space-4); margin-bottom: var(--kw-space-4); }
+    .vitals-in { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (max-width: 767px) {
+    .vitals-in { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .two, .fee-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="app-shell" data-component="app-shell">
+  <nav class="sidebar-nav" data-component="sidebar-nav" aria-label="Main">
+    <div class="brand"><i class="brand-mark" aria-hidden="true"></i><span>KeepWell</span></div>
+    <a class="nav-item" href="overview.html"><svg><use href="assets/icons.svg#i-home"/></svg><span>Overview</span></a>
+    <a class="nav-item" href="#"><svg><use href="assets/icons.svg#i-users"/></svg><span>Patients</span></a>
+    <a class="nav-item" href="appointments.html" aria-current="page"><svg><use href="assets/icons.svg#i-cal"/></svg><span>Appointments</span></a>
+    <a class="nav-item" href="#"><svg><use href="assets/icons.svg#i-wallet"/></svg><span>Payments</span></a>
+    <a class="nav-item" href="#"><svg><use href="assets/icons.svg#i-file"/></svg><span>Records</span></a>
+    <div class="nav-sep" role="separator"></div>
+    <a class="nav-item" href="#"><svg><use href="assets/icons.svg#i-tag"/></svg><span>Services</span></a>
+    <a class="nav-item" href="#"><svg><use href="assets/icons.svg#i-staff"/></svg><span>Staff</span></a>
+    <a class="nav-item" href="#"><svg><use href="assets/icons.svg#i-gear"/></svg><span>Settings</span></a>
+    <div class="clinic"><b>Shanti Polyclinic</b>Dr. Rohan Iyer</div>
+  </nav>
+
+  <main class="app-main">
+    <header class="page-header" data-component="page-header" style="max-width:var(--kw-list-max);margin:0 auto">
+      <div class="title">
+        <div class="crumbs"><a href="appointments.html">Appointments</a><span aria-hidden="true">/</span><a href="patient-detail.html">Rukhsana Begum</a></div>
+        <h1>Complete appointment</h1>
+        <p>Today, 1 Oct · 11:30 · Dr. Rohan Iyer</p>
+      </div>
+    </header>
+
+    <!-- Compact context for widths without the rail -->
+    <div class="card rail-mini" style="max-width:var(--kw-list-max);margin-left:auto;margin-right:auto">
+      <b>Rukhsana Begum</b><span class="ctx-meta">58 · F</span>
+      <span class="alert-chip" data-component="alert-chip" data-variant="allergy">Penicillin</span>
+      <span class="alert-chip" data-component="alert-chip" data-variant="condition">Type 2 diabetes</span>
+      <span class="alert-chip" data-component="alert-chip" data-variant="condition">Hypertension</span>
+      <a href="patient-detail.html" style="margin-left:auto;font-size:var(--kw-text-sm);color:var(--kw-primary)">Full record</a>
+    </div>
+
+    <div class="layout">
+      <form class="card" aria-labelledby="ca-h" onsubmit="return false">
+        <h2 id="ca-h" class="sr-only">Visit details</h2>
+
+        <section class="form-section" data-component="form-section" aria-labelledby="fs-v">
+          <h2 id="fs-v">Vitals <small>Take fresh readings — last visit's are shown, never copied in</small></h2>
+          <div class="vitals-in">
+            <label class="field">BP <input class="text-input num-input" data-component="text-input" data-state="breach" inputmode="numeric" value="152/94" aria-describedby="bp-b" data-focus-order="1"><span class="breach" id="bp-b">Above 140/90 · ↑ 4/2</span></label>
+            <label class="field">Pulse <input class="text-input num-input" data-component="text-input" inputmode="numeric" value="82"><span class="last">last 84</span></label>
+            <label class="field">Temp °F <input class="text-input num-input" data-component="text-input" inputmode="decimal" placeholder="98.4"><span class="last">last 98.4</span></label>
+            <label class="field">Weight kg <input class="text-input num-input" data-component="text-input" inputmode="decimal" placeholder="71.4"><span class="last">last 71.4</span></label>
+            <label class="field">SpO₂ % <input class="text-input num-input" data-component="text-input" inputmode="numeric" placeholder="97"><span class="last">last 97</span></label>
+          </div>
+        </section>
+
+        <section class="form-section" data-component="form-section" aria-labelledby="fs-c">
+          <h2 id="fs-c">Consultation</h2>
+          <label class="field">Complaint<textarea class="text-input" data-component="text-input" rows="2">Left knee pain persists, now also at night. Physio helping a little.</textarea></label>
+          <div class="field carried-field" data-component="carried-field" data-state="unconfirmed">
+            <span style="display:flex;justify-content:space-between;gap:var(--kw-space-2);flex-wrap:wrap">Findings / diagnosis <span class="carried-tag">Carried forward from 14 Aug · unconfirmed <button type="button" class="btn btn-ghost" data-component="button-ghost" onclick="this.closest('.carried-field').dataset.state='confirmed'">Confirm</button></span></span>
+            <textarea class="text-input" rows="2" aria-label="Findings and diagnosis">Early osteoarthritis, left knee. Type 2 diabetes, controlled.</textarea>
+          </div>
+        </section>
+
+        <section class="form-section" data-component="form-section" aria-labelledby="fs-rx">
+          <h2 id="fs-rx">Prescription <small>3 lines carried forward — edit, remove or confirm</small></h2>
+          <div class="rx-table">
+            <div class="rx-head" aria-hidden="true"><span>Medicine</span><span>Dose</span><span>Frequency</span><span>Duration</span><span></span></div>
+            <div class="rx-line" data-component="rx-line" data-state="unconfirmed">
+              <input class="text-input drug" value="Metformin" aria-label="Medicine"><input class="text-input num-input" value="500 mg" aria-label="Dose"><input class="text-input num-input" value="1-0-1" aria-label="Frequency"><input class="text-input" value="Continue" aria-label="Duration">
+              <button type="button" class="icon-button" data-component="icon-button" aria-label="Remove Metformin"><svg><use href="assets/icons.svg#i-x"/></svg></button>
+            </div>
+            <div class="rx-line" data-component="rx-line" data-state="unconfirmed">
+              <input class="text-input drug" value="Telmisartan" aria-label="Medicine"><input class="text-input num-input" value="40 mg" aria-label="Dose"><input class="text-input num-input" value="1-0-0" aria-label="Frequency"><input class="text-input" value="30 days" aria-label="Duration">
+              <button type="button" class="icon-button" data-component="icon-button" aria-label="Remove Telmisartan"><svg><use href="assets/icons.svg#i-x"/></svg></button>
+            </div>
+            <div class="rx-line" data-component="rx-line" data-state="unconfirmed">
+              <input class="text-input drug" value="Paracetamol" aria-label="Medicine"><input class="text-input num-input" value="650 mg" aria-label="Dose"><input class="text-input" value="SOS" aria-label="Frequency"><input class="text-input" value="—" aria-label="Duration">
+              <button type="button" class="icon-button" data-component="icon-button" aria-label="Remove Paracetamol"><svg><use href="assets/icons.svg#i-x"/></svg></button>
+            </div>
+            <div class="rx-line" data-component="rx-line" data-state="new">
+              <input class="text-input drug" placeholder="Type a medicine…" aria-label="Medicine"><input class="text-input num-input" aria-label="Dose"><input class="text-input num-input" aria-label="Frequency"><input class="text-input" aria-label="Duration">
+              <span></span>
+            </div>
+          </div>
+          <div style="display:flex;gap:var(--kw-space-2);flex-wrap:wrap">
+            <button type="button" class="btn btn-ghost" data-component="button-ghost"><svg><use href="assets/icons.svg#i-plus"/></svg>Add medicine</button>
+            <button type="button" class="btn btn-ghost" data-component="button-ghost"><svg><use href="assets/icons.svg#i-check"/></svg>Confirm all 3</button>
+          </div>
+        </section>
+
+        <section class="form-section" data-component="form-section" aria-labelledby="fs-a">
+          <h2 id="fs-a">Advice & follow-up</h2>
+          <div class="field carried-field" data-component="carried-field" data-state="unconfirmed">
+            <span style="display:flex;justify-content:space-between;gap:var(--kw-space-2);flex-wrap:wrap">Advice <span class="carried-tag">Carried forward · unconfirmed <button type="button" class="btn btn-ghost" data-component="button-ghost" onclick="this.closest('.carried-field').dataset.state='confirmed'">Confirm</button></span></span>
+            <textarea class="text-input" rows="2" aria-label="Advice">Quad-strengthening exercises daily. Recheck BP in 6 weeks.</textarea>
+          </div>
+          <div>
+            <span class="step-label" id="fu-l">Follow-up</span>
+            <div class="chip-set" role="group" aria-labelledby="fu-l">
+              <button type="button" class="choice-chip" data-component="choice-chip" aria-pressed="false">1 week</button>
+              <button type="button" class="choice-chip" data-component="choice-chip" aria-pressed="false">2 weeks</button>
+              <button type="button" class="choice-chip" data-component="choice-chip" aria-pressed="false">1 month</button>
+              <button type="button" class="choice-chip" data-component="choice-chip" aria-pressed="true">6 weeks · <span class="n">12 Nov</span></button>
+              <button type="button" class="choice-chip" data-component="choice-chip" aria-pressed="false">3 months</button>
+              <button type="button" class="choice-chip" data-component="choice-chip" aria-pressed="false">None</button>
+            </div>
+            <div class="inline-note" data-component="inline-note" style="margin-top:var(--kw-space-3)"><svg><use href="assets/icons.svg#i-msg"/></svg>A WhatsApp reminder will be ready for reception the day before.</div>
+          </div>
+        </section>
+
+        <section class="form-section" data-component="form-section" aria-labelledby="fs-f">
+          <h2 id="fs-f">Fee & plan</h2>
+          <div class="fee-row">
+            <label class="field">Fee
+              <span class="rupee"><span>₹</span><input class="text-input num-input" data-component="text-input" inputmode="numeric" value="800"></span>
+              <span class="stamp">Same as last visit with Dr. Iyer</span>
+            </label>
+            <label class="checkbox-row" data-component="checkbox-row">
+              <input type="checkbox">
+              <span><b>Count toward Physiotherapy — left knee</b><span class="sub">This would be session 6 of 8</span></span>
+            </label>
+          </div>
+        </section>
+
+        <div class="save-bar" data-component="save-bar">
+          <span class="hint"><kbd>Tab</kbd> next field · <kbd>Ctrl</kbd>+<kbd>Enter</kbd> complete · saving confirms carried-forward items</span>
+          <button type="button" class="btn btn-secondary" data-component="button-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary" data-component="button-primary" data-primary-action="true">Complete appointment</button>
+        </div>
+      </form>
+
+      <aside class="card context-rail" data-component="context-rail" aria-label="Patient summary">
+        <div class="block">
+          <div><div class="ctx-name">Rukhsana Begum</div><div class="ctx-meta">58 · F · since Mar 2024</div></div>
+          <div class="rail-chips">
+            <span class="alert-chip" data-component="alert-chip" data-variant="allergy">Penicillin</span>
+            <span class="alert-chip" data-component="alert-chip" data-variant="condition">Type 2 diabetes</span>
+            <span class="alert-chip" data-component="alert-chip" data-variant="condition">Hypertension</span>
+          </div>
+        </div>
+        <div class="block">
+          <aside class="pattern-callout" data-component="pattern-callout" role="note" style="padding:var(--kw-space-2) var(--kw-space-3)">
+            <svg aria-hidden="true"><use href="assets/icons.svg#i-repeat"/></svg>
+            <div class="body"><b>Left knee pain</b> at all 3 visits since April.</div>
+          </aside>
+        </div>
+        <div class="block">
+          <h3>Last visit · 14 Aug · Dr. Anjali Mehta</h3>
+          <p>Knee pain 2 weeks; BP raised 148/92. Started telmisartan. Referred to you.</p>
+          <p class="stamp">X-ray: mild medial joint-space narrowing.</p>
+        </div>
+        <div class="block">
+          <h3>Active plan</h3>
+          <div class="ctx-row"><span>Physiotherapy — left knee</span><span class="num">5 / 8</span></div>
+        </div>
+        <a href="patient-detail.html" class="btn btn-ghost" data-component="button-ghost" style="align-self:flex-start">Open full record</a>
+      </aside>
+    </div>
+
+    <!-- ================= Rendered states ================= -->
+    <section class="spec-states" aria-label="Other states" style="max-width:var(--kw-list-max);margin-left:auto;margin-right:auto">
+      <h2>Other states</h2>
+
+      <span class="spec-label">STATE · completed — lands on Patient Detail with this banner</span>
+      <div class="card" role="status" style="padding:var(--kw-space-4) var(--kw-space-6);display:flex;gap:var(--kw-space-4);align-items:center;flex-wrap:wrap">
+        <span style="width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--kw-primary-wash);color:var(--kw-primary);flex:none"><svg width="20" height="20"><use href="assets/icons.svg#i-check"/></svg></span>
+        <div style="flex:1;min-width:220px"><b>Visit completed.</b> <span style="color:var(--kw-ink-soft)">₹800 is due · follow-up 12 Nov.</span></div>
+        <span class="status-pill" data-component="status-pill" data-variant="due">₹800 due</span>
+        <button class="btn btn-secondary" data-component="button-secondary">Record payment</button>
+      </div>
+
+      <span class="spec-label">STATE · first visit — nothing to carry forward</span>
+      <div class="card">
+        <section class="form-section" data-component="form-section">
+          <h2>Prescription</h2>
+          <div class="inline-note" data-component="inline-note">First visit for Arjun — nothing carried forward. Start typing a medicine.</div>
+          <div class="rx-line" data-component="rx-line" data-state="new"><input class="text-input drug" placeholder="Type a medicine…" aria-label="Medicine"><input class="text-input num-input" aria-label="Dose"><input class="text-input num-input" aria-label="Frequency"><input class="text-input" aria-label="Duration"><span></span></div>
+        </section>
+      </div>
+
+      <span class="spec-label">STATE · save failed — entries kept, retry in place</span>
+      <div class="card"><div class="save-bar" data-component="save-bar" style="position:relative;bottom:auto;left:auto;right:auto" role="alert">
+        <span class="hint" style="color:var(--kw-alert);font-size:var(--kw-text-sm);display:block">Couldn't save — check the connection. Nothing you typed is lost.</span>
+        <button type="button" class="btn btn-primary" data-component="button-primary">Try again</button>
+      </div></div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" data-component="bottom-nav" aria-label="Main">
+    <a href="overview.html"><svg><use href="assets/icons.svg#i-home"/></svg>Overview</a>
+    <a href="#"><svg><use href="assets/icons.svg#i-users"/></svg>Patients</a>
+    <a href="appointments.html" aria-current="page"><svg><use href="assets/icons.svg#i-cal"/></svg>Appts</a>
+    <a href="#"><svg><use href="assets/icons.svg#i-wallet"/></svg>Payments</a>
+    <a href="#"><svg><use href="assets/icons.svg#i-more"/></svg>More</a>
+  </nav>
+</div>
+<script>
+  document.querySelectorAll('.chip-set').forEach(g => g.addEventListener('click', e => {
+    const c = e.target.closest('.choice-chip'); if (!c) return;
+    g.querySelectorAll('.choice-chip').forEach(x => x.setAttribute('aria-pressed', x === c));
+  }));
+</script>
+</body>
+</html>
